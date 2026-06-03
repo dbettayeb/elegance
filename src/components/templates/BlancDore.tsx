@@ -1,57 +1,21 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
+import { useInvitationLogic } from '@/lib/use-invitation'
 
 export default function BlancDore({ wedding }: { wedding: Wedding }) {
-  const [opened, setOpened]       = useState(false)
-  const [visible, setVisible]     = useState(false)
-  const [countdown, setCountdown] = useState({ d: '000', h: '00', m: '00', s: '00' })
-  const [rsvpStatus, setRsvpStatus] = useState<'idle'|'loading'|'done'>('idle')
-  const [rsvpChoice, setRsvpChoice] = useState<'present'|'absent'|'maybe'>('present')
-  const [gbStatus, setGbStatus]   = useState<'idle'|'loading'|'done'>('idle')
-  const [gbPending, setGbPending] = useState(false)
-  const [messages, setMessages]   = useState<{id:string,author_name:string,message:string,created_at:string}[]>([])
+  const {
+    opened, visible, openEnvelope, countdown,
+    rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
+    gbStatus, gbPending, messages, submitMessage,
+    eventDate, introText,
+  } = useInvitationLogic(wedding)
+
+  // Player musique (spécifique à ce template)
   const audioRef = useRef<AudioContext | null>(null)
-  const gainRef  = useRef<GainNode | null>(null)
-  const [playing, setPlaying]     = useState(false)
+  const gainRef = useRef<GainNode | null>(null)
+  const [playing, setPlaying] = useState(false)
 
-  // Ouvrir l'enveloppe
-  function openEnvelope() {
-    setOpened(true)
-    setTimeout(() => setVisible(true), 100)
-  }
-
-  // Compte à rebours
-  useEffect(() => {
-    function tick() {
-      const diff = new Date(wedding.event_date).getTime() - Date.now()
-      if (diff <= 0) return
-      const d = Math.floor(diff / 86400000)
-      const h = Math.floor((diff % 86400000) / 3600000)
-      const m = Math.floor((diff % 3600000) / 60000)
-      const s = Math.floor((diff % 60000) / 1000)
-      setCountdown({
-        d: String(d).padStart(3, '0'),
-        h: String(h).padStart(2, '0'),
-        m: String(m).padStart(2, '0'),
-        s: String(s).padStart(2, '0'),
-      })
-    }
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [wedding.event_date])
-
-  // Charger les messages approuvés
-  useEffect(() => {
-    if (!visible || !wedding.show_guestbook) return
-    fetch(`/api/guestbook/list?wedding_id=${wedding.id}`)
-      .then(r => r.json())
-      .then(d => { if (d.messages) setMessages(d.messages) })
-      .catch(() => {})
-  }, [visible, wedding.id, wedding.show_guestbook])
-
-  // Musique
   function toggleMusic() {
     if (!playing) {
       const ctx = new AudioContext()
@@ -59,9 +23,9 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
       gain.gain.setValueAtTime(0, ctx.currentTime)
       gain.gain.linearRampToValueAtTime(0.035, ctx.currentTime + 2)
       gain.connect(ctx.destination)
-      ;[220, 330, 440, 550].forEach((freq, i) => {
+      ;[220, 330, 440, 550].forEach(freq => {
         const osc = ctx.createOscillator()
-        const g2  = ctx.createGain()
+        const g2 = ctx.createGain()
         osc.type = 'sine'
         osc.frequency.value = freq
         g2.gain.value = 0.25
@@ -70,7 +34,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
         osc.start()
       })
       audioRef.current = ctx
-      gainRef.current  = gain
+      gainRef.current = gain
       setPlaying(true)
     } else {
       gainRef.current?.gain.linearRampToValueAtTime(0, audioRef.current!.currentTime + 0.5)
@@ -78,56 +42,11 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
     }
   }
 
-  // RSVP
-  async function submitRSVP(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setRsvpStatus('loading')
-    const fd = new FormData(e.currentTarget)
-    const res = await fetch('/api/rsvp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        wedding_id: wedding.id,
-        name:    fd.get('name'),
-        phone:   fd.get('phone'),
-        status:  rsvpChoice,
-        guests:  fd.get('guests'),
-        note:    fd.get('note'),
-      }),
-    })
-    setRsvpStatus(res.ok ? 'done' : 'idle')
-  }
-
-  // Livre d'or
-  async function submitMessage(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setGbStatus('loading')
-    const fd = new FormData(e.currentTarget)
-    const res = await fetch('/api/guestbook', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        wedding_id:  wedding.id,
-        author_name: fd.get('author_name'),
-        message:     fd.get('message'),
-      }),
-    })
-    const data = await res.json()
-    if (res.ok) {
-      setGbStatus('done')
-      setGbPending(data.pending)
-      ;(e.target as HTMLFormElement).reset()
-    } else {
-      setGbStatus('idle')
-    }
-  }
-
-  const eventDate = new Date(wedding.event_date)
   const formattedDate = eventDate.toLocaleDateString('fr-TN', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
   const formattedTime = eventDate.toLocaleTimeString('fr-TN', {
-    hour: '2-digit', minute: '2-digit'
+    hour: '2-digit', minute: '2-digit',
   })
 
   return (
@@ -162,9 +81,8 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
         <div className="ed-hero">
           <div className="ed-hero-bg"/>
           <div className="ed-hero-content">
-    <p className="ed-pre-title">
-      {wedding.intro_text || 'Vous êtes cordialement invités au mariage de'}
-    </p>            <div className="ed-names">
+            <p className="ed-pre-title">{introText}</p>
+            <div className="ed-names">
               {wedding.bride_name}
               <span className="ed-amp">&</span>
               {wedding.groom_name}

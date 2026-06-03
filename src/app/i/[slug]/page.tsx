@@ -1,15 +1,15 @@
 import { notFound, redirect } from 'next/navigation'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { Wedding } from '@/lib/types'
-import BlancDore from '@/components/templates/BlancDore'
+import { getTemplate } from '@/lib/templates'
 
 interface Props {
-  params:       Promise<{ slug: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ t?: string }>
 }
 
 export async function generateMetadata({ params, searchParams }: Props) {
-  const { slug }  = await params
+  const { slug } = await params
   const { t: token } = await searchParams
   if (!token) return { title: 'Invitation' }
 
@@ -34,7 +34,7 @@ export async function generateMetadata({ params, searchParams }: Props) {
 }
 
 export default async function InvitationPage({ params, searchParams }: Props) {
-  const { slug }     = await params
+  const { slug } = await params
   const { t: token } = await searchParams
 
   if (!token) notFound()
@@ -48,8 +48,10 @@ export default async function InvitationPage({ params, searchParams }: Props) {
     .single()
 
   if (error || !wedding) notFound()
-
   if (wedding.status === 'archived') redirect('/expired')
 
-  return <BlancDore wedding={wedding as Wedding} />
+  const template = getTemplate(wedding.template_id)
+  const Component = template.component
+
+  return <Component wedding={wedding as Wedding} />
 }
