@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { generateAccessToken } from '@/lib/tokens'
+import { revalidatePath } from 'next/cache'
 
 export async function POST(req: NextRequest) {
-  // Vérifier session admin via header cookie de la requête
   const adminSession = req.cookies.get('admin_session')?.value
 
   if (!adminSession || adminSession !== process.env.ADMIN_SESSION_SECRET) {
@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
       venue_name, venue_address,
       gps_google, gps_apple,
       template_id, pack,
-      custom_message,
+      intro_text, custom_message,
+      program,
       show_guestbook, moderation_on,
     } = body
 
@@ -57,9 +58,10 @@ export async function POST(req: NextRequest) {
         gps_google:     gps_google     || null,
         gps_apple:      gps_apple      || null,
         template_id,    pack,
+        intro_text:     intro_text     || 'Vous êtes cordialement invités au mariage de',
         custom_message: custom_message || null,
         show_guestbook, moderation_on,
-        program: [],
+        program: Array.isArray(program) ? program : [],
       })
       .select('slug, access_token, couple_token')
       .single()
@@ -68,6 +70,9 @@ export async function POST(req: NextRequest) {
       console.error('[CREATE WEDDING] Supabase error:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
+
+    // Invalider le cache du dashboard pour voir le nouveau mariage immédiatement
+    revalidatePath('/admin')
 
     const base = process.env.NEXT_PUBLIC_BASE_URL
     return NextResponse.json({

@@ -2,122 +2,188 @@ import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboard() {
   const supabase = createServiceSupabaseClient()
 
   const { data: weddings } = await supabase
     .from('weddings')
-    .select('id, slug, bride_name, groom_name, event_date, status, pack, access_token')
-    .order('created_at', { ascending: false })
+    .select('id, slug, bride_name, groom_name, event_date, status, pack, access_token, created_at')
+    .order('event_date', { ascending: true })
 
   const all = weddings ?? []
+  const now = new Date()
+
+  const upcoming = all.filter(w => new Date(w.event_date) >= now && w.status === 'active')
+  const past = all.filter(w => new Date(w.event_date) < now)
+  const thisMonth = all.filter(w => {
+    const created = new Date(w.created_at)
+    return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()
+  })
 
   return (
-    <main style={{ minHeight: '100vh', background: '#FAF7F0', fontFamily: 'Montserrat, sans-serif' }}>
-
-      {/* Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #1a1108, #2C2416)',
-        padding: '32px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        flexWrap: 'wrap', gap: '16px',
-      }}>
+    <>
+      <div className="admin-page-header">
         <div>
-          <h1 style={{
-            fontFamily: 'Georgia, serif', fontSize: '1.5rem',
-            fontWeight: 300, color: '#FAF7F0',
-          }}>
-            ⬡ Administration
-          </h1>
-          <p style={{ fontSize: '0.6rem', letterSpacing: '0.25em', color: '#9B8A6E', marginTop: '4px' }}>
-            {all.length} mariage{all.length > 1 ? 's' : ''} enregistré{all.length > 1 ? 's' : ''}
+          <h1 className="admin-page-title">Tableau de bord</h1>
+          <p className="admin-page-subtitle">
+            Gestion de l'ensemble des invitations
           </p>
         </div>
-        <Link href="/admin/new" style={{
-          padding: '12px 24px',
-          background: 'linear-gradient(135deg, #8B6914, #C9A84C)',
-          color: '#fff', textDecoration: 'none',
-          fontSize: '0.62rem', letterSpacing: '0.25em',
-          textTransform: 'uppercase',
-        }}>
+        <Link href="/admin/new" className="admin-btn">
           + Nouveau mariage
         </Link>
       </div>
 
+      {/* Stats */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: '12px',
+        marginBottom: '28px',
+      }}>
+        <StatCard label="Total" value={all.length} />
+        <StatCard label="À venir" value={upcoming.length} accent="success" />
+        <StatCard label="Ce mois" value={thisMonth.length} accent="info" />
+        <StatCard label="Archivés" value={past.length} accent="neutral" />
+      </div>
+
       {/* Liste */}
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 20px' }}>
+      <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--admin-border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <div>
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>
+              Tous les mariages
+            </h2>
+            <p style={{ fontSize: '0.8rem', color: 'var(--admin-text-muted)', margin: '2px 0 0' }}>
+              {all.length} enregistrement{all.length > 1 ? 's' : ''}
+            </p>
+          </div>
+        </div>
+
         {all.length === 0 ? (
           <div style={{
-            textAlign: 'center', padding: '80px 24px',
-            color: '#9B8A6E', fontStyle: 'italic', fontFamily: 'Georgia, serif',
+            padding: '60px 20px',
+            textAlign: 'center',
+            color: 'var(--admin-text-muted)',
           }}>
-            Aucun mariage enregistré. Créez le premier !
+            <div style={{ fontSize: '0.95rem', marginBottom: '8px' }}>
+              Aucun mariage enregistré
+            </div>
+            <Link href="/admin/new" className="admin-btn" style={{ marginTop: '12px' }}>
+              Créer le premier
+            </Link>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {all.map(w => {
-              const date = new Date(w.event_date).toLocaleDateString('fr-TN', {
-                day: 'numeric', month: 'long', year: 'numeric',
-              })
-              const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/i/${w.slug}?t=${w.access_token}`
-
-              return (
-                <div key={w.id} style={{
-                  background: '#fff',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderLeft: `4px solid ${w.status === 'active' ? '#C9A84C' : '#ccc'}`,
-                  padding: '20px 24px',
-                  display: 'flex', alignItems: 'center',
-                  justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
-                }}>
-                  <div>
-                    <div style={{
-                      fontFamily: 'Georgia, serif', fontSize: '1.1rem',
-                      color: '#2C2416', marginBottom: '4px',
-                    }}>
-                      {w.bride_name} & {w.groom_name}
-                    </div>
-                    <div style={{ fontSize: '0.65rem', color: '#9B8A6E', letterSpacing: '0.1em' }}>
-                      {date} · Pack {w.pack}
-                    </div>
-                    <div style={{ fontSize: '0.6rem', color: '#C9A84C', marginTop: '4px', wordBreak: 'break-all' }}>
-                      {inviteUrl}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    <span style={{
-                      padding: '4px 12px', borderRadius: '20px', fontSize: '0.58rem',
-                      letterSpacing: '0.1em', textTransform: 'uppercase',
-                      background: w.status === 'active' ? '#d4edda' : '#f8d7da',
-                      color: w.status === 'active' ? '#155724' : '#721c24',
-                    }}>
-                      {w.status}
-                    </span>
-                    <Link href={`/couple/${w.slug}`} style={btnStyle('#6B5A3E')}>
-                      Portail mariés
-                    </Link>
-                    <Link href={`/admin/${w.id}`} style={btnStyle('#8B6914')}>
-                      Gérer
-                    </Link>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <table className="admin-table" style={{ border: 'none', borderRadius: 0 }}>
+            <thead>
+              <tr>
+                <th>Couple</th>
+                <th>Date</th>
+                <th>Pack</th>
+                <th>Statut</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {all.map(w => (
+                <WeddingRow key={w.id} wedding={w} />
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
-    </main>
+    </>
   )
 }
 
-function btnStyle(color: string): React.CSSProperties {
-  return {
-    padding: '8px 16px',
-    background: 'transparent',
-    border: `1px solid ${color}`,
-    color, textDecoration: 'none',
-    fontSize: '0.58rem', letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    whiteSpace: 'nowrap',
+function StatCard({ label, value, accent }: {
+  label: string
+  value: number
+  accent?: 'success' | 'info' | 'neutral'
+}) {
+  const colors = {
+    success: '#16a34a',
+    info: '#2563eb',
+    neutral: '#737373',
   }
+  return (
+    <div className="admin-card">
+      <div style={{
+        fontSize: '0.78rem',
+        color: 'var(--admin-text-muted)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        marginBottom: '8px',
+      }}>
+        {label}
+      </div>
+      <div style={{
+        fontSize: '1.8rem',
+        fontWeight: 600,
+        color: accent ? colors[accent] : 'var(--admin-text)',
+      }}>
+        {value}
+      </div>
+    </div>
+  )
+}
+
+function WeddingRow({ wedding }: { wedding: any }) {
+  const date = new Date(wedding.event_date)
+  const dateStr = date.toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+
+  const statusMap: Record<string, { label: string; cls: string }> = {
+    active: { label: 'Actif', cls: 'admin-badge-success' },
+    archived: { label: 'Archivé', cls: 'admin-badge-neutral' },
+    suspended: { label: 'Suspendu', cls: 'admin-badge-danger' },
+  }
+  const status = statusMap[wedding.status] ?? statusMap.active
+
+  return (
+    <tr>
+      <td>
+        <div style={{ fontWeight: 500 }}>
+          {wedding.bride_name} & {wedding.groom_name}
+        </div>
+        <div style={{
+          fontSize: '0.75rem',
+          color: 'var(--admin-text-muted)',
+          marginTop: '2px',
+        }}>
+          /{wedding.slug}
+        </div>
+      </td>
+      <td>{dateStr}</td>
+      <td>
+        <span className="admin-badge admin-badge-neutral">
+          {wedding.pack}
+        </span>
+      </td>
+      <td>
+        <span className={`admin-badge ${status.cls}`}>
+          {status.label}
+        </span>
+      </td>
+      <td style={{ textAlign: 'right' }}>
+        <Link
+          href={`/admin/${wedding.id}`}
+          className="admin-btn admin-btn-secondary"
+          style={{ padding: '5px 12px', fontSize: '0.8rem' }}
+        >
+          Gérer
+        </Link>
+      </td>
+    </tr>
+  )
 }

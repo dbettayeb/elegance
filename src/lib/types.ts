@@ -11,8 +11,9 @@ export interface Wedding {
   venue_address?: string
   gps_google?: string
   gps_apple?: string
-  template_id: 'blanc_dore' | 'or_noir' | 'minimal'
+  template_id: 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou' | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
   music_url?: string
+  intro_text?: string
   custom_message?: string
   program: ProgramItem[]
   pack: 'essentiel' | 'prestige' | 'haute_couture'

@@ -162,8 +162,9 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
         <div className="ed-hero">
           <div className="ed-hero-bg"/>
           <div className="ed-hero-content">
-            <p className="ed-pre-title">Vous êtes cordialement invités au mariage de</p>
-            <div className="ed-names">
+    <p className="ed-pre-title">
+      {wedding.intro_text || 'Vous êtes cordialement invités au mariage de'}
+    </p>            <div className="ed-names">
               {wedding.bride_name}
               <span className="ed-amp">&</span>
               {wedding.groom_name}
