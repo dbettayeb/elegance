@@ -3,6 +3,8 @@ import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { RSVP, GuestMessage } from '@/lib/types'
 import MessageCard from '@/components/couple-portal/MessageCard'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CouplePortal({
   params,
 }: {
