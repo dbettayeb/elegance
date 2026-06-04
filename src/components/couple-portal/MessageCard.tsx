@@ -1,17 +1,20 @@
 'use client'
 import { useState } from 'react'
 import { GuestMessage } from '@/lib/types'
+import type { CoupleTheme } from '@/lib/couple-themes'
 
 export default function MessageCard({
   message,
   weddingId,
+  theme,
 }: {
   message: GuestMessage
   weddingId: string
   coupleToken: string
+  theme: CoupleTheme
 }) {
   const [approved, setApproved] = useState(message.approved)
-  const [loading,  setLoading]  = useState(false)
+  const [loading, setLoading] = useState(false)
 
   async function toggle() {
     setLoading(true)
@@ -21,7 +24,7 @@ export default function MessageCard({
       body: JSON.stringify({
         message_id: message.id,
         wedding_id: weddingId,
-        approved:   !approved,
+        approved: !approved,
       }),
     })
     if (res.ok) setApproved(!approved)
@@ -30,9 +33,11 @@ export default function MessageCard({
 
   return (
     <div style={{
-      borderLeft: `3px solid ${approved ? '#C9A84C' : '#ddd'}`,
+      borderLeft: `3px solid ${approved ? theme.accent : theme.borderStrong}`,
+      borderRadius: theme.radius,
       padding: '16px 20px',
-      background: approved ? '#FAF7F0' : '#f9f9f9',
+      background: theme.cardBg,
+      boxShadow: theme.cardShadow,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
@@ -40,12 +45,25 @@ export default function MessageCard({
       opacity: loading ? 0.6 : 1,
       transition: 'opacity 0.2s',
     }}>
-      <div style={{ flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-          <strong style={{ fontSize: '0.82rem', color: '#2C2416' }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          marginBottom: '6px',
+          flexWrap: 'wrap',
+        }}>
+          <strong style={{
+            fontSize: '0.85rem',
+            color: theme.textPrimary,
+            fontFamily: theme.bodyFont,
+          }}>
             {message.author_name}
           </strong>
-          <span style={{ fontSize: '0.65rem', color: '#9B8A6E' }}>
+          <span style={{
+            fontSize: '0.7rem',
+            color: theme.textMuted,
+          }}>
             {new Date(message.created_at).toLocaleDateString('fr-TN', {
               day: 'numeric', month: 'short',
               hour: '2-digit', minute: '2-digit',
@@ -53,38 +71,47 @@ export default function MessageCard({
           </span>
           {!approved && (
             <span style={{
-              fontSize: '0.58rem', background: '#fff3cd',
-              color: '#856404', padding: '2px 8px', borderRadius: '10px',
+              fontSize: '0.62rem',
+              background: 'rgba(202, 138, 4, 0.15)',
+              color: '#854d0e',
+              padding: '2px 9px',
+              borderRadius: '20px',
+              fontWeight: 500,
             }}>
               En attente
             </span>
           )}
         </div>
         <p style={{
-          fontFamily: 'Georgia, serif',
-          fontSize: '0.95rem',
+          fontFamily: theme.headingFont,
+          fontSize: '0.98rem',
           fontStyle: 'italic',
-          color: '#6B5A3E',
+          color: theme.textSecondary,
           lineHeight: 1.6,
+          margin: 0,
         }}>
           "{message.message}"
         </p>
       </div>
+
       <button
         onClick={toggle}
         disabled={loading}
         style={{
-          padding: '8px 16px',
-          background: approved ? 'transparent' : '#C9A84C',
-          color: approved ? '#c0392b' : '#fff',
-          border: approved ? '1px solid #c0392b' : 'none',
-          fontSize: '0.6rem',
-          letterSpacing: '0.15em',
+          padding: '7px 14px',
+          background: approved ? 'transparent' : theme.accent,
+          color: approved ? theme.danger : (theme.pageBg === '#FFFFFF' ? '#fff' : theme.cardBg),
+          border: approved ? `1px solid ${theme.danger}` : 'none',
+          borderRadius: theme.radius === '0px' ? '4px' : theme.radius,
+          fontSize: '0.65rem',
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
           cursor: loading ? 'not-allowed' : 'pointer',
           whiteSpace: 'nowrap',
           flexShrink: 0,
           transition: 'all 0.2s',
+          fontFamily: theme.bodyFont,
+          fontWeight: 500,
         }}
       >
         {loading ? '...' : approved ? 'Masquer' : '✓ Approuver'}

@@ -1,0 +1,190 @@
+import type { Wedding } from '@/lib/types'
+
+export interface CoupleTheme {
+  // Backgrounds
+  pageBg: string
+  cardBg: string
+  headerBg: string
+
+  // Texts
+  textPrimary: string
+  textSecondary: string
+  textMuted: string
+
+  // Accents
+  accent: string
+  accentSoft: string
+  accentText: string
+
+  // Status colors (gardent leur signification universelle mais teintées du thème)
+  success: string
+  warning: string
+  danger: string
+
+  // Borders
+  border: string
+  borderStrong: string
+
+  // Typography
+  headingFont: string
+  bodyFont: string
+
+  // Other
+  cardShadow: string
+  radius: string
+}
+
+const THEMES: Record<Wedding['template_id'], CoupleTheme> = {
+  blanc_dore: {
+    pageBg: '#FAF7F0',
+    cardBg: '#FFFFFF',
+    headerBg: 'linear-gradient(135deg, #2C2416 0%, #3d2e18 100%)',
+    textPrimary: '#2C2416',
+    textSecondary: '#6B5A3E',
+    textMuted: '#9B8A6E',
+    accent: '#C9A84C',
+    accentSoft: 'rgba(201, 168, 76, 0.12)',
+    accentText: '#8B6914',
+    success: '#2d6a4f',
+    warning: '#8B6914',
+    danger: '#c0392b',
+    border: 'rgba(201, 168, 76, 0.2)',
+    borderStrong: 'rgba(201, 168, 76, 0.4)',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: '0 1px 3px rgba(139, 105, 20, 0.05)',
+    radius: '2px',
+  },
+
+  nuit_etoilee: {
+    pageBg: '#0A0A1F',
+    cardBg: '#161628',
+    headerBg: 'radial-gradient(ellipse at top, #1a1a3a 0%, #0A0A1F 70%)',
+    textPrimary: '#F5E6A8',
+    textSecondary: '#C5B47E',
+    textMuted: '#9B9B85',
+    accent: '#D4AF37',
+    accentSoft: 'rgba(212, 175, 55, 0.12)',
+    accentText: '#D4AF37',
+    success: '#7ABB8C',
+    warning: '#D4AF37',
+    danger: '#E58A8A',
+    border: 'rgba(212, 175, 55, 0.18)',
+    borderStrong: 'rgba(212, 175, 55, 0.4)',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+    radius: '2px',
+  },
+
+  jardin_andalou: {
+    pageBg: '#F4EFE6',
+    cardBg: '#FFFFFF',
+    headerBg: 'linear-gradient(135deg, #3D4A3A 0%, #2D372A 100%)',
+    textPrimary: '#3D4A3A',
+    textSecondary: '#6B7460',
+    textMuted: '#A8B5A0',
+    accent: '#C9A87A',
+    accentSoft: 'rgba(201, 168, 122, 0.15)',
+    accentText: '#8B6F47',
+    success: '#4A6741',
+    warning: '#C9A87A',
+    danger: '#A85B5B',
+    border: 'rgba(168, 181, 160, 0.3)',
+    borderStrong: 'rgba(168, 181, 160, 0.5)',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: '0 1px 3px rgba(61, 74, 58, 0.06)',
+    radius: '2px',
+  },
+
+  minimaliste: {
+    pageBg: '#FFFFFF',
+    cardBg: '#FFFFFF',
+    headerBg: '#FAFAFA',
+    textPrimary: '#000000',
+    textSecondary: '#404040',
+    textMuted: '#888888',
+    accent: '#B8985A',
+    accentSoft: 'rgba(184, 152, 90, 0.1)',
+    accentText: '#8C7042',
+    success: '#16a34a',
+    warning: '#B8985A',
+    danger: '#dc2626',
+    border: '#F0F0F0',
+    borderStrong: '#D4D4D4',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: 'none',
+    radius: '0px',
+  },
+
+  rose_poudre: {
+    pageBg: '#FAF0EB',
+    cardBg: '#FFFFFF',
+    headerBg: 'linear-gradient(135deg, #7C3F58 0%, #9B6478 100%)',
+    textPrimary: '#7C3F58',
+    textSecondary: '#9B6478',
+    textMuted: '#B58A99',
+    accent: '#D4A373',
+    accentSoft: 'rgba(212, 163, 115, 0.15)',
+    accentText: '#A87844',
+    success: '#5A8A6F',
+    warning: '#D4A373',
+    danger: '#C0392B',
+    border: 'rgba(212, 163, 115, 0.25)',
+    borderStrong: 'rgba(212, 163, 115, 0.5)',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: '0 2px 8px rgba(124, 63, 88, 0.08)',
+    radius: '12px',
+  },
+
+  marbre_noir: {
+    pageBg: '#1C1C1C',
+    cardBg: '#2A2A2A',
+    headerBg: 'radial-gradient(ellipse at center, #2A2A2A 0%, #1C1C1C 70%, #0A0A0A 100%)',
+    textPrimary: '#E5E4E2',
+    textSecondary: '#B8B8B6',
+    textMuted: '#888887',
+    accent: '#C0C0C0',
+    accentSoft: 'rgba(192, 192, 192, 0.1)',
+    accentText: '#E5E4E2',
+    success: '#8FCB94',
+    warning: '#E5C77B',
+    danger: '#E58A8A',
+    border: 'rgba(192, 192, 192, 0.15)',
+    borderStrong: 'rgba(192, 192, 192, 0.35)',
+    headingFont: 'Georgia, serif',
+    bodyFont: '"Montserrat", -apple-system, sans-serif',
+    cardShadow: '0 4px 16px rgba(0, 0, 0, 0.5)',
+    radius: '0px',
+  },
+}
+
+export function getTheme(templateId: Wedding['template_id']): CoupleTheme {
+  return THEMES[templateId] ?? THEMES.blanc_dore
+}
+
+// Helper pour générer le style CSS d'une page entière à partir d'un thème
+export function themeToCSS(theme: CoupleTheme): string {
+  return `
+    --cp-page-bg: ${theme.pageBg};
+    --cp-card-bg: ${theme.cardBg};
+    --cp-text-primary: ${theme.textPrimary};
+    --cp-text-secondary: ${theme.textSecondary};
+    --cp-text-muted: ${theme.textMuted};
+    --cp-accent: ${theme.accent};
+    --cp-accent-soft: ${theme.accentSoft};
+    --cp-accent-text: ${theme.accentText};
+    --cp-success: ${theme.success};
+    --cp-warning: ${theme.warning};
+    --cp-danger: ${theme.danger};
+    --cp-border: ${theme.border};
+    --cp-border-strong: ${theme.borderStrong};
+    --cp-heading-font: ${theme.headingFont};
+    --cp-body-font: ${theme.bodyFont};
+    --cp-card-shadow: ${theme.cardShadow};
+    --cp-radius: ${theme.radius};
+  `
+}
