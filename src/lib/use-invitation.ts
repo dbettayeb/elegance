@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { Wedding } from '@/lib/types'
 
 export function useInvitationLogic(wedding: Wedding) {
+  const isPreview = wedding.id === 'preview'
+
   const [opened, setOpened] = useState(false)
   const [visible, setVisible] = useState(false)
   const [countdown, setCountdown] = useState({ d: '000', h: '00', m: '00', s: '00' })
@@ -41,14 +43,44 @@ export function useInvitationLogic(wedding: Wedding) {
   // Load approved messages
   useEffect(() => {
     if (!visible || !wedding.show_guestbook) return
+    if (isPreview) {
+      // Données fictives pour la preview
+      setMessages([
+        {
+          id: 'preview-1',
+          author_name: 'Famille Ben Salah',
+          message: 'Tous nos vœux de bonheur pour ce magnifique jour. Que votre vie commune soit remplie d\'amour et de joie.',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: 'preview-2',
+          author_name: 'Sami & Leila',
+          message: 'Quelle belle aventure commence ! Nous sommes si heureux pour vous deux.',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: 'preview-3',
+          author_name: 'Karim',
+          message: 'Félicitations aux mariés ! Hâte de partager ce moment avec vous.',
+          created_at: new Date().toISOString(),
+        },
+      ])
+      return
+    }
     fetch(`/api/guestbook/list?wedding_id=${wedding.id}`)
       .then(r => r.json())
       .then(d => { if (d.messages) setMessages(d.messages) })
       .catch(() => {})
-  }, [visible, wedding.id, wedding.show_guestbook])
+  }, [visible, wedding.id, wedding.show_guestbook, isPreview])
 
   async function submitRSVP(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (isPreview) {
+      // En preview, simuler le succès sans appel API
+      setRsvpStatus('loading')
+      setTimeout(() => setRsvpStatus('done'), 600)
+      return
+    }
     setRsvpStatus('loading')
     const fd = new FormData(e.currentTarget)
     const res = await fetch('/api/rsvp', {
@@ -68,6 +100,15 @@ export function useInvitationLogic(wedding: Wedding) {
 
   async function submitMessage(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (isPreview) {
+      setGbStatus('loading')
+      setTimeout(() => {
+        setGbStatus('done')
+        setGbPending(wedding.moderation_on)
+        ;(e.target as HTMLFormElement).reset()
+      }, 600)
+      return
+    }
     setGbStatus('loading')
     const fd = new FormData(e.currentTarget)
     const res = await fetch('/api/guestbook', {
