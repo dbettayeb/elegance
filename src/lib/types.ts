@@ -22,6 +22,7 @@ export interface Wedding {
   custom_message?: string
   program: ProgramItem[]
   pack: 'essentiel' | 'prestige' | 'haute_couture'
+  show_rsvp: boolean
   show_guestbook: boolean
   moderation_on: boolean
   status: 'active' | 'archived' | 'suspended'
