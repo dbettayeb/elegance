@@ -48,7 +48,16 @@ export default async function InvitationPage({ params, searchParams }: Props) {
     .single()
 
   if (error || !wedding) notFound()
-  if (wedding.status === 'archived') redirect('/expired')
+
+  // Si archivé → page commémorative spécifique
+  if (wedding.status === 'archived') {
+    redirect(`/expired/${slug}`)
+  }
+
+  // Si suspendu → page expirée générique sans détails
+  if (wedding.status === 'suspended') {
+    redirect('/expired')
+  }
 
   const template = getTemplate(wedding.template_id)
   const Component = template.component
