@@ -206,6 +206,7 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP - Bilingue : titre arabe, formulaire français */}
+        {wedding.show_rsvp && (
         <section className="bs-rsvp">
           <div className="bs-section-sep" style={{ color: '#C9A84C' }}>۞</div>
           <p className="bs-label">تأكيد الحضور</p>
@@ -237,6 +238,7 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

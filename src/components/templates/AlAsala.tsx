@@ -206,6 +206,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="aa-rsvp">
           <p className="aa-label" style={{ color: '#F0E5D2' }}>تأكيد الحضور</p>
           <h2 className="aa-title" style={{ color: '#FAF3E8' }}>شرفونا بحضوركم</h2>
@@ -236,6 +237,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

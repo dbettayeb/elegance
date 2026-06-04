@@ -242,6 +242,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="aq-rsvp">
           <div className="aq-sep">
             <span></span><i>☾</i><span></span>
@@ -275,6 +276,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

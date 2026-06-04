@@ -190,6 +190,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="rp-section rp-rsvp">
           <p className="rp-label">Confirmation</p>
           <h2 className="rp-title">Aurons-nous le plaisir ?</h2>
@@ -219,6 +220,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

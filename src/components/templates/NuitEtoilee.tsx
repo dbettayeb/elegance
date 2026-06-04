@@ -141,6 +141,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="ne-section ne-rsvp">
           <p className="ne-label">Confirmation</p>
           <h2 className="ne-title">Serez-vous des nôtres ?</h2>
@@ -170,6 +171,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

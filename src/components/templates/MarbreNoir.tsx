@@ -171,6 +171,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="mb-section mb-rsvp">
           <p className="mb-label">Confirmation</p>
           <h2 className="mb-title">Honorez-nous de votre présence</h2>
@@ -200,6 +201,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

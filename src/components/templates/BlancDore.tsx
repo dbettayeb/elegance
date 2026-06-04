@@ -172,6 +172,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
         <div className="ed-divider">✦</div>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <div className="ed-rsvp-section">
           <p className="ed-label" style={{color:'#E8D49E'}}>Confirmation</p>
           <h2 className="ed-title" style={{color:'#FAF7F0'}}>Serez-vous des nôtres ?</h2>
@@ -204,6 +205,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </div>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

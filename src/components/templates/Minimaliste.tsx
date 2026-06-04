@@ -129,6 +129,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="mn-section mn-rsvp">
           <p className="mn-label">RSVP</p>
           <h2 className="mn-rsvp-title">Confirmez votre présence</h2>
@@ -158,6 +159,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (

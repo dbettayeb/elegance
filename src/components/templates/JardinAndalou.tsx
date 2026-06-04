@@ -172,6 +172,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* RSVP */}
+        {wedding.show_rsvp && (
         <section className="ja-rsvp">
           <p className="ja-label" style={{ color: '#C9A87A' }}>Confirmation</p>
           <h2 className="ja-title" style={{ color: '#F4EFE6' }}>Serez-vous des nôtres ?</h2>
@@ -201,6 +202,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
             </form>
           )}
         </section>
+        )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (
