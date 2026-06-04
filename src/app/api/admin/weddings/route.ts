@@ -13,14 +13,16 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const {
-      bride_name, groom_name, couple_email,
+      bride_name, groom_name,
+      bride_name_ar, groom_name_ar,
+      couple_email,
       event_date, event_time,
       venue_name, venue_address,
       gps_google, gps_apple,
       template_id, pack,
-      intro_text, custom_message,
+      intro_text, custom_message, music_url,
       program,
-      show_guestbook, moderation_on,
+      show_rsvp, show_guestbook, moderation_on,
     } = body
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
@@ -45,13 +47,15 @@ export async function POST(req: NextRequest) {
     const slug         = existing ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug
     const access_token = generateAccessToken(8)
     const couple_token = generateAccessToken(8)
-    const datetime     = `${event_date}T${event_time}:00`
+    const datetime     = event_time ? `${event_date}T${event_time}:00` : event_date
 
     const { data: wedding, error } = await supabase
       .from('weddings')
       .insert({
         slug, access_token, couple_token, couple_email,
         bride_name, groom_name,
+        bride_name_ar: bride_name_ar || null,
+        groom_name_ar: groom_name_ar || null,
         event_date: datetime,
         venue_name,
         venue_address:  venue_address  || null,
@@ -60,6 +64,8 @@ export async function POST(req: NextRequest) {
         template_id,    pack,
         intro_text:     intro_text     || 'Vous êtes cordialement invités au mariage de',
         custom_message: custom_message || null,
+        music_url:      music_url      || null,
+        show_rsvp:      show_rsvp ?? true,
         show_guestbook, moderation_on,
         program: Array.isArray(program) ? program : [],
       })
@@ -71,7 +77,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Invalider le cache du dashboard pour voir le nouveau mariage immédiatement
     revalidatePath('/admin')
 
     const base = process.env.NEXT_PUBLIC_BASE_URL

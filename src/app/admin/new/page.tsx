@@ -3,10 +3,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem } from '@/components/admin/ProgramEditor'
+import { TEMPLATES_META } from '@/lib/templates-meta'
 
 const EMPTY = {
   bride_name: '',
   groom_name: '',
+  bride_name_ar: '',
+  groom_name_ar: '',
   couple_email: '',
   event_date: '',
   event_time: '19:00',
@@ -18,6 +21,8 @@ const EMPTY = {
   pack: 'essentiel',
   intro_text: 'Vous êtes cordialement invités au mariage de',
   custom_message: '',
+  music_url: '',
+  show_rsvp: true,
   show_guestbook: true,
   moderation_on: true,
 }
@@ -91,6 +96,9 @@ export default function NewWedding() {
     )
   }
 
+  const templatesFR = TEMPLATES_META.filter(t => t.language !== 'ar')
+  const templatesAR = TEMPLATES_META.filter(t => t.language === 'ar')
+
   return (
     <>
       <div className="admin-page-header">
@@ -117,6 +125,28 @@ export default function NewWedding() {
             <Field label="Prénom du marié" required>
               <input className="admin-input" value={form.groom_name}
                 onChange={e => set('groom_name', e.target.value)} required />
+            </Field>
+          </Row>
+          <Row>
+            <Field label="Prénom de la mariée en arabe" help="Optionnel — utilisé dans les templates arabes uniquement">
+              <input
+                className="admin-input"
+                value={form.bride_name_ar}
+                onChange={e => set('bride_name_ar', e.target.value)}
+                placeholder="ex : سارة"
+                dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }}
+              />
+            </Field>
+            <Field label="Prénom du marié en arabe" help="Optionnel — utilisé dans les templates arabes uniquement">
+              <input
+                className="admin-input"
+                value={form.groom_name_ar}
+                onChange={e => set('groom_name_ar', e.target.value)}
+                placeholder="ex : مهدي"
+                dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }}
+              />
             </Field>
           </Row>
           <Field label="Email des mariés" required>
@@ -165,7 +195,7 @@ export default function NewWedding() {
         <Section title="Textes de l'invitation" description="Personnalisez les messages affichés">
           <Field
             label="Message d'introduction"
-            help="Phrase d'accroche en haut de l'invitation. Modifiable selon le ton souhaité."
+            help="Phrase d'accroche en haut de l'invitation."
           >
             <input className="admin-input" value={form.intro_text}
               onChange={e => set('intro_text', e.target.value)}
@@ -178,6 +208,14 @@ export default function NewWedding() {
             <textarea className="admin-textarea" rows={3} value={form.custom_message}
               onChange={e => set('custom_message', e.target.value)}
               placeholder="Ex: Avec joie et émotion, nous vous invitons à partager ce moment unique..." />
+          </Field>
+          <Field
+            label="URL musique de fond"
+            help="Optionnel — fichier MP3 hébergé en ligne"
+          >
+            <input className="admin-input" type="url" value={form.music_url}
+              onChange={e => set('music_url', e.target.value)}
+              placeholder="https://..." />
           </Field>
         </Section>
 
@@ -195,12 +233,20 @@ export default function NewWedding() {
             <Field label="Template">
               <select className="admin-select" value={form.template_id}
                 onChange={e => set('template_id', e.target.value)}>
-                <option value="blanc_dore">Blanc & Doré</option>
-                <option value="nuit_etoilee">Nuit Étoilée</option>
-                <option value="jardin_andalou">Jardin Andalou</option>
-                <option value="minimaliste">Minimaliste Parisien</option>
-                <option value="rose_poudre">Rose Poudré</option>
-                <option value="marbre_noir">Marbre Noir</option>
+                <optgroup label="🇫🇷 Templates français">
+                  {templatesFR.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} — {t.description.split('.')[0]}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="🇹🇳 Templates arabes / maghrébins">
+                  {templatesAR.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} — {t.description.split('.')[0]}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
             </Field>
             <Field label="Pack">
@@ -226,6 +272,12 @@ export default function NewWedding() {
         {/* SECTION : Options */}
         <Section title="Options" description="Paramètres de l'invitation">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Toggle
+              label="Confirmation de présence (RSVP)"
+              help="Permet aux invités de confirmer leur présence. Désactive si tu préfères une invitation purement informative."
+              checked={form.show_rsvp}
+              onChange={v => set('show_rsvp', v)}
+            />
             <Toggle
               label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"

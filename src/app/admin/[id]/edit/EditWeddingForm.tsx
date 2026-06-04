@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem } from '@/components/admin/ProgramEditor'
 import { Wedding } from '@/lib/types'
+import { TEMPLATES_META } from '@/lib/templates-meta'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -16,6 +17,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const [form, setForm] = useState({
     bride_name: wedding.bride_name,
     groom_name: wedding.groom_name,
+    bride_name_ar: wedding.bride_name_ar ?? '',
+    groom_name_ar: wedding.groom_name_ar ?? '',
     couple_email: wedding.couple_email,
     event_date: dateStr,
     event_time: timeStr,
@@ -27,6 +30,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     pack: wedding.pack,
     intro_text: wedding.intro_text ?? 'Vous êtes cordialement invités au mariage de',
     custom_message: wedding.custom_message ?? '',
+    music_url: wedding.music_url ?? '',
+    show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
     moderation_on: wedding.moderation_on,
   })
@@ -55,13 +60,15 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     const data = await res.json()
     if (res.ok) {
       setSavedAt(new Date())
-      // Petit délai puis on revient au dashboard du mariage
       setTimeout(() => router.push(`/admin/${wedding.id}`), 800)
     } else {
       setError(data.error ?? 'Erreur serveur.')
     }
     setLoading(false)
   }
+
+  const templatesFR = TEMPLATES_META.filter(t => t.language !== 'ar')
+  const templatesAR = TEMPLATES_META.filter(t => t.language === 'ar')
 
   return (
     <>
@@ -87,7 +94,6 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
       <form onSubmit={handleSubmit} style={{ maxWidth: '780px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-        {/* Avertissement slug non modifiable */}
         <div style={{
           padding: '12px 14px',
           background: '#fffbeb',
@@ -108,6 +114,28 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Field label="Prénom du marié" required>
               <input className="admin-input" value={form.groom_name}
                 onChange={e => set('groom_name', e.target.value)} required />
+            </Field>
+          </Row>
+          <Row>
+            <Field label="Prénom de la mariée en arabe" help="Utilisé dans les templates arabes uniquement">
+              <input
+                className="admin-input"
+                value={form.bride_name_ar}
+                onChange={e => set('bride_name_ar', e.target.value)}
+                placeholder="ex : سارة"
+                dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }}
+              />
+            </Field>
+            <Field label="Prénom du marié en arabe" help="Utilisé dans les templates arabes uniquement">
+              <input
+                className="admin-input"
+                value={form.groom_name_ar}
+                onChange={e => set('groom_name_ar', e.target.value)}
+                placeholder="ex : مهدي"
+                dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }}
+              />
             </Field>
           </Row>
           <Field label="Email des mariés" required>
@@ -158,6 +186,11 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <textarea className="admin-textarea" rows={3} value={form.custom_message}
               onChange={e => set('custom_message', e.target.value)} />
           </Field>
+          <Field label="URL musique de fond" help="MP3 hébergé en ligne (optionnel)">
+            <input className="admin-input" type="url" value={form.music_url}
+              onChange={e => set('music_url', e.target.value)}
+              placeholder="https://..." />
+          </Field>
         </Section>
 
         <Section title="Programme de la soirée">
@@ -169,12 +202,20 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Field label="Template">
               <select className="admin-select" value={form.template_id}
                 onChange={e => set('template_id', e.target.value)}>
-                <option value="blanc_dore">Blanc & Doré</option>
-                <option value="nuit_etoilee">Nuit Étoilée</option>
-                <option value="jardin_andalou">Jardin Andalou</option>
-                <option value="minimaliste">Minimaliste Parisien</option>
-                <option value="rose_poudre">Rose Poudré</option>
-                <option value="marbre_noir">Marbre Noir</option>
+                <optgroup label="🇫🇷 Templates français">
+                  {templatesFR.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} — {t.description.split('.')[0]}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="🇹🇳 Templates arabes / maghrébins">
+                  {templatesAR.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} — {t.description.split('.')[0]}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
             </Field>
             <Field label="Pack">
@@ -190,6 +231,12 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Toggle
+              label="Confirmation de présence (RSVP)"
+              help="Permet aux invités de confirmer leur présence"
+              checked={form.show_rsvp}
+              onChange={v => set('show_rsvp', v)}
+            />
             <Toggle
               label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"

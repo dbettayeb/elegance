@@ -77,26 +77,31 @@ export async function PATCH(
 
     // ─── Édition standard ───
     const {
-      bride_name, groom_name, couple_email,
+      bride_name, groom_name,
+      bride_name_ar, groom_name_ar,
+      couple_email,
       event_date, event_time,
       venue_name, venue_address,
       gps_google, gps_apple,
       template_id, pack,
-      intro_text, custom_message,
+      intro_text, custom_message, music_url,
       program,
-      show_guestbook, moderation_on,
+      show_rsvp, show_guestbook, moderation_on,
     } = body
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
     }
 
-    const datetime = `${event_date}T${event_time}:00`
+    const datetime = event_time ? `${event_date}T${event_time}:00` : event_date
 
     const { error } = await supabase
       .from('weddings')
       .update({
-        bride_name, groom_name, couple_email,
+        bride_name, groom_name,
+        bride_name_ar:  bride_name_ar  || null,
+        groom_name_ar:  groom_name_ar  || null,
+        couple_email,
         event_date: datetime,
         venue_name,
         venue_address:  venue_address  || null,
@@ -105,6 +110,8 @@ export async function PATCH(
         template_id, pack,
         intro_text:     intro_text     || 'Vous êtes cordialement invités au mariage de',
         custom_message: custom_message || null,
+        music_url:      music_url      || null,
+        show_rsvp:      show_rsvp ?? true,
         show_guestbook, moderation_on,
         program: Array.isArray(program) ? program : [],
       })
@@ -141,7 +148,6 @@ export async function DELETE(
   try {
     const supabase = createServiceSupabaseClient()
 
-    // Supprimer en cascade : RSVPs et messages d'abord (au cas où pas de ON DELETE CASCADE)
     await supabase.from('rsvps').delete().eq('wedding_id', id)
     await supabase.from('guestbook').delete().eq('wedding_id', id)
 
