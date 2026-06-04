@@ -38,6 +38,7 @@ export default async function TemplatePreview({
       { time: '23:00', event: 'Ouverture du bal', venue: 'Salle Sultan' },
     ],
     pack: 'haute_couture',
+    show_rsvp: true,
     show_guestbook: true,
     moderation_on: true,
     status: 'active',
