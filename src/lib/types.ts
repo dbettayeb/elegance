@@ -6,12 +6,17 @@ export interface Wedding {
   couple_email: string
   bride_name: string
   groom_name: string
+  bride_name_ar?: string
+  groom_name_ar?: string
   event_date: string
   venue_name: string
   venue_address?: string
   gps_google?: string
   gps_apple?: string
-  template_id: 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou' | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
+  template_id:
+    | 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou'
+    | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
+    | 'bismillah' | 'al_asala' | 'al_qamar'
   music_url?: string
   intro_text?: string
   custom_message?: string
@@ -25,9 +30,9 @@ export interface Wedding {
 }
 
 export interface ProgramItem {
-  time: string    // "19:00"
-  event: string   // "Katb El Kteb"
-  venue?: string  // "Dar El Jeld"
+  time: string
+  event: string
+  venue?: string
 }
 
 export interface RSVP {
