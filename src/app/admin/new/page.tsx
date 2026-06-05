@@ -46,17 +46,15 @@ export default function NewWeddingPage() {
     setLoading(true)
     setError('')
 
-    const event_iso = `${form.event_date}T${form.event_time}:00`
-
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: event_iso, program }),
+      body: JSON.stringify({ ...form, program }),
     })
 
     const data = await res.json()
     if (res.ok) {
-      router.push(`/admin/${data.wedding.id}`)
+      router.push(`/admin/${data.id}`)
     } else {
       setError(data.error ?? 'Erreur serveur.')
       setLoading(false)
