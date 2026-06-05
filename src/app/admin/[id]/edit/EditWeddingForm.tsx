@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem } from '@/components/admin/ProgramEditor'
+import FontPicker from '@/components/admin/FontPicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
 
-  // Date/heure depuis event_date
   const eventDate = new Date(wedding.event_date)
   const dateStr = eventDate.toISOString().split('T')[0]
   const timeStr = eventDate.toTimeString().slice(0, 5)
@@ -31,18 +31,17 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     intro_text: wedding.intro_text ?? 'Vous êtes cordialement invités au mariage de',
     custom_message: wedding.custom_message ?? '',
     music_url: wedding.music_url ?? '',
+    custom_font: (wedding.custom_font ?? '') as string | null,
     show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
     moderation_on: wedding.moderation_on,
   })
-  const [program, setProgram] = useState<ProgramItem[]>(
-    (wedding.program ?? []) as ProgramItem[]
-  )
+  const [program, setProgram] = useState<ProgramItem[]>((wedding.program ?? []) as ProgramItem[])
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')
 
-  function set(key: string, value: string | boolean) {
+  function set(key: string, value: string | boolean | null) {
     setForm(f => ({ ...f, [key]: value }))
   }
 
@@ -67,6 +66,14 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     setLoading(false)
   }
 
+  function handlePreview() {
+    sessionStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+    window.open('/preview', '_blank', 'noopener,noreferrer')
+  }
+
+  const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
+  const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
+
   const templatesFR = TEMPLATES_META.filter(t => t.language !== 'ar')
   const templatesAR = TEMPLATES_META.filter(t => t.language === 'ar')
 
@@ -77,32 +84,19 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           <h1 className="admin-page-title">Modifier le mariage</h1>
           <p className="admin-page-subtitle">
             {wedding.bride_name} & {wedding.groom_name} ·{' '}
-            <code style={{
-              fontSize: '0.78rem',
-              background: '#f5f5f5',
-              padding: '1px 6px',
-              borderRadius: '3px',
-            }}>
+            <code style={{ fontSize: '0.78rem', background: '#f5f5f5', padding: '1px 6px', borderRadius: '3px' }}>
               /{wedding.slug}
             </code>
           </p>
         </div>
-        <Link href={`/admin/${wedding.id}`} className="admin-btn admin-btn-secondary">
-          ← Retour au mariage
-        </Link>
+        <Link href={`/admin/${wedding.id}`} className="admin-btn admin-btn-secondary">← Retour au mariage</Link>
       </div>
 
       <form onSubmit={handleSubmit} style={{ maxWidth: '780px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-        <div style={{
-          padding: '12px 14px',
-          background: '#fffbeb',
-          border: '1px solid #fde68a',
-          borderRadius: 'var(--admin-radius)',
-          fontSize: '0.82rem',
-          color: '#92400e',
-        }}>
-          <strong>ℹ Note :</strong> L'identifiant unique <code style={{ background: '#fef3c7', padding: '1px 5px', borderRadius: '3px' }}>{wedding.slug}</code> ne peut pas être modifié pour préserver les liens déjà envoyés. Pour générer de nouveaux liens, utilisez l'action "Régénérer les liens" depuis la page du mariage.
+        <div style={{ padding: '12px 14px', background: '#fffbeb', border: '1px solid #fde68a',
+          borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
+          <strong>ℹ Note :</strong> L'identifiant unique <code style={{ background: '#fef3c7', padding: '1px 5px', borderRadius: '3px' }}>{wedding.slug}</code> ne peut pas être modifié pour préserver les liens déjà envoyés.
         </div>
 
         <Section title="Les mariés">
@@ -118,24 +112,16 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           </Row>
           <Row>
             <Field label="Prénom de la mariée en arabe" help="Utilisé dans les templates arabes uniquement">
-              <input
-                className="admin-input"
-                value={form.bride_name_ar}
+              <input className="admin-input" value={form.bride_name_ar}
                 onChange={e => set('bride_name_ar', e.target.value)}
-                placeholder="ex : سارة"
-                dir="rtl"
-                style={{ fontFamily: "'Amiri', serif" }}
-              />
+                placeholder="ex : سارة" dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
             <Field label="Prénom du marié en arabe" help="Utilisé dans les templates arabes uniquement">
-              <input
-                className="admin-input"
-                value={form.groom_name_ar}
+              <input className="admin-input" value={form.groom_name_ar}
                 onChange={e => set('groom_name_ar', e.target.value)}
-                placeholder="ex : مهدي"
-                dir="rtl"
-                style={{ fontFamily: "'Amiri', serif" }}
-              />
+                placeholder="ex : مهدي" dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
           <Field label="Email des mariés" required>
@@ -201,19 +187,20 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           <Row>
             <Field label="Template">
               <select className="admin-select" value={form.template_id}
-                onChange={e => set('template_id', e.target.value)}>
+                onChange={e => {
+                  set('template_id', e.target.value)
+                  const newLang = TEMPLATES_META.find(t => t.id === e.target.value)?.language
+                  const newFontLang = newLang === 'ar' ? 'ar' : 'fr'
+                  if (newFontLang !== fontLanguage) set('custom_font', null)
+                }}>
                 <optgroup label="🇫🇷 Templates français">
                   {templatesFR.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.name} — {t.description.split('.')[0]}
-                    </option>
+                    <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
                 <optgroup label="🇹🇳 Templates arabes / maghrébins">
                   {templatesAR.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.name} — {t.description.split('.')[0]}
-                    </option>
+                    <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
               </select>
@@ -229,79 +216,59 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           </Row>
         </Section>
 
+        <Section title="Police personnalisée">
+          <FontPicker
+            value={form.custom_font}
+            onChange={font => set('custom_font', font)}
+            language={fontLanguage}
+          />
+        </Section>
+
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <Toggle
-              label="Confirmation de présence (RSVP)"
+            <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
-              checked={form.show_rsvp}
-              onChange={v => set('show_rsvp', v)}
-            />
-            <Toggle
-              label="Activer le livre d'or"
+              checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />
+            <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
-              checked={form.show_guestbook}
-              onChange={v => set('show_guestbook', v)}
-            />
-            <Toggle
-              label="Modération des messages"
+              checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />
+            <Toggle label="Modération des messages"
               help="Les messages sont validés par les mariés avant publication"
-              checked={form.moderation_on}
-              onChange={v => set('moderation_on', v)}
-            />
+              checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
           </div>
         </Section>
 
         {error && (
-          <div style={{
-            padding: '12px 14px',
-            background: '#fee2e2',
-            border: '1px solid #fecaca',
-            borderRadius: 'var(--admin-radius)',
-            color: '#991b1b',
-            fontSize: '0.88rem',
-          }}>
+          <div style={{ padding: '12px 14px', background: '#fee2e2', border: '1px solid #fecaca',
+            borderRadius: 'var(--admin-radius)', color: '#991b1b', fontSize: '0.88rem' }}>
             {error}
           </div>
         )}
 
         {savedAt && (
-          <div style={{
-            padding: '12px 14px',
-            background: '#dcfce7',
-            border: '1px solid #bbf7d0',
-            borderRadius: 'var(--admin-radius)',
-            color: '#166534',
-            fontSize: '0.88rem',
-          }}>
+          <div style={{ padding: '12px 14px', background: '#dcfce7', border: '1px solid #bbf7d0',
+            borderRadius: 'var(--admin-radius)', color: '#166534', fontSize: '0.88rem' }}>
             ✓ Modifications enregistrées. Redirection en cours...
           </div>
         )}
 
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          paddingTop: '8px',
-          borderTop: '1px solid var(--admin-border)',
-          marginTop: '8px',
-          position: 'sticky',
-          bottom: 0,
-          background: 'var(--admin-bg)',
-          padding: '16px 0',
-        }}>
+        <div style={{ display: 'flex', gap: '10px', paddingTop: '8px',
+          borderTop: '1px solid var(--admin-border)', marginTop: '8px',
+          position: 'sticky', bottom: 0, background: 'var(--admin-bg)',
+          padding: '16px 0', flexWrap: 'wrap' }}>
           <button type="submit" disabled={loading} className="admin-btn">
             {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
           </button>
-          <Link href={`/admin/${wedding.id}`} className="admin-btn admin-btn-secondary">
-            Annuler
-          </Link>
+          <button type="button" onClick={handlePreview} className="admin-btn admin-btn-secondary">
+            👁 Prévisualiser
+          </button>
+          <Link href={`/admin/${wedding.id}`} className="admin-btn admin-btn-secondary">Annuler</Link>
         </div>
       </form>
     </>
   )
 }
 
-// ── Sous-composants ──
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="admin-card">
@@ -334,11 +301,9 @@ function Toggle({ label, help, checked, onChange }: {
   label: string; help?: string; checked: boolean; onChange: (v: boolean) => void
 }) {
   return (
-    <label style={{
-      display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer',
-      padding: '10px', border: '1px solid var(--admin-border)',
-      borderRadius: 'var(--admin-radius)', background: '#fafafa',
-    }}>
+    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px',
+      cursor: 'pointer', padding: '10px', border: '1px solid var(--admin-border)',
+      borderRadius: 'var(--admin-radius)', background: '#fafafa' }}>
       <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)}
         style={{ marginTop: '2px', accentColor: 'var(--admin-accent)' }} />
       <div>

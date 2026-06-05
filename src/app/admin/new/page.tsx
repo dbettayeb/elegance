@@ -1,41 +1,43 @@
 'use client'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem } from '@/components/admin/ProgramEditor'
+import FontPicker from '@/components/admin/FontPicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 
-const EMPTY = {
-  bride_name: '',
-  groom_name: '',
-  bride_name_ar: '',
-  groom_name_ar: '',
-  couple_email: '',
-  event_date: '',
-  event_time: '19:00',
-  venue_name: '',
-  venue_address: '',
-  gps_google: '',
-  gps_apple: '',
-  template_id: 'blanc_dore',
-  pack: 'essentiel',
-  intro_text: 'Vous êtes cordialement invités au mariage de',
-  custom_message: '',
-  music_url: '',
-  show_rsvp: true,
-  show_guestbook: true,
-  moderation_on: true,
-}
-
-export default function NewWedding() {
-  const [form, setForm] = useState(EMPTY)
-  const [program, setProgram] = useState<ProgramItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<{ inviteUrl: string; coupleUrl: string; coupleToken: string } | null>(null)
-  const [error, setError] = useState('')
+export default function NewWeddingPage() {
   const router = useRouter()
 
-  function set(key: string, value: string | boolean) {
+  const [form, setForm] = useState({
+    bride_name: '',
+    groom_name: '',
+    bride_name_ar: '',
+    groom_name_ar: '',
+    couple_email: '',
+    event_date: '',
+    event_time: '19:00',
+    venue_name: '',
+    venue_address: '',
+    gps_google: '',
+    gps_apple: '',
+    template_id: 'blanc_dore',
+    pack: 'essentiel',
+    intro_text: 'Vous êtes cordialement invités au mariage de',
+    custom_message: '',
+    music_url: '',
+    custom_font: '' as string | null,
+    show_rsvp: true,
+    show_guestbook: true,
+    moderation_on: true,
+  })
+
+  const [program, setProgram] = useState<ProgramItem[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  function set(key: string, value: string | boolean | null) {
     setForm(f => ({ ...f, [key]: value }))
   }
 
@@ -44,57 +46,30 @@ export default function NewWedding() {
     setLoading(true)
     setError('')
 
+    const event_iso = `${form.event_date}T${form.event_time}:00`
+
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, program }),
+      body: JSON.stringify({ ...form, event_date: event_iso, program }),
     })
 
     const data = await res.json()
     if (res.ok) {
-      setResult(data)
+      router.push(`/admin/${data.wedding.id}`)
     } else {
       setError(data.error ?? 'Erreur serveur.')
+      setLoading(false)
     }
-    setLoading(false)
   }
 
-  if (result) {
-    return (
-      <>
-        <div className="admin-page-header">
-          <div>
-            <h1 className="admin-page-title">Mariage créé avec succès</h1>
-            <p className="admin-page-subtitle">
-              Voici les liens à partager. Copiez-les avant de quitter cette page.
-            </p>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '720px' }}>
-          {[
-            { label: 'Lien invités', sub: 'À envoyer via WhatsApp aux invités', value: result.inviteUrl },
-            { label: 'Lien portail mariés', sub: 'À donner aux mariés pour suivre les confirmations', value: result.coupleUrl },
-            { label: 'Code d\'accès portail mariés', sub: 'Saisi par les mariés sur leur portail', value: result.coupleToken },
-          ].map(item => (
-            <LinkCard key={item.label} {...item} />
-          ))}
-        </div>
-
-        <div style={{ marginTop: '24px', display: 'flex', gap: '10px' }}>
-          <Link href="/admin" className="admin-btn">
-            Retour au tableau de bord
-          </Link>
-          <button
-            onClick={() => { setResult(null); setForm(EMPTY); setProgram([]) }}
-            className="admin-btn admin-btn-secondary"
-          >
-            Créer un autre mariage
-          </button>
-        </div>
-      </>
-    )
+  function handlePreview() {
+    sessionStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+    window.open('/preview', '_blank', 'noopener,noreferrer')
   }
+
+  const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
+  const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
 
   const templatesFR = TEMPLATES_META.filter(t => t.language !== 'ar')
   const templatesAR = TEMPLATES_META.filter(t => t.language === 'ar')
@@ -103,20 +78,15 @@ export default function NewWedding() {
     <>
       <div className="admin-page-header">
         <div>
-          <h1 className="admin-page-title">Nouveau mariage</h1>
-          <p className="admin-page-subtitle">
-            Remplissez les informations pour générer une invitation
-          </p>
+          <h1 className="admin-page-title">Créer un mariage</h1>
+          <p className="admin-page-subtitle">Renseigne les informations du couple et configure leur invitation.</p>
         </div>
-        <Link href="/admin" className="admin-btn admin-btn-secondary">
-          ← Retour
-        </Link>
+        <Link href="/admin" className="admin-btn admin-btn-secondary">← Retour</Link>
       </div>
 
       <form onSubmit={handleSubmit} style={{ maxWidth: '780px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-        {/* SECTION : Mariés */}
-        <Section title="Les mariés" description="Informations sur le couple">
+        <Section title="Les mariés">
           <Row>
             <Field label="Prénom de la mariée" required>
               <input className="admin-input" value={form.bride_name}
@@ -128,37 +98,28 @@ export default function NewWedding() {
             </Field>
           </Row>
           <Row>
-            <Field label="Prénom de la mariée en arabe" help="Optionnel — utilisé dans les templates arabes uniquement">
-              <input
-                className="admin-input"
-                value={form.bride_name_ar}
+            <Field label="Prénom de la mariée en arabe" help="Utilisé dans les templates arabes uniquement">
+              <input className="admin-input" value={form.bride_name_ar}
                 onChange={e => set('bride_name_ar', e.target.value)}
-                placeholder="ex : سارة"
-                dir="rtl"
-                style={{ fontFamily: "'Amiri', serif" }}
-              />
+                placeholder="ex : سارة" dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
-            <Field label="Prénom du marié en arabe" help="Optionnel — utilisé dans les templates arabes uniquement">
-              <input
-                className="admin-input"
-                value={form.groom_name_ar}
+            <Field label="Prénom du marié en arabe" help="Utilisé dans les templates arabes uniquement">
+              <input className="admin-input" value={form.groom_name_ar}
                 onChange={e => set('groom_name_ar', e.target.value)}
-                placeholder="ex : مهدي"
-                dir="rtl"
-                style={{ fontFamily: "'Amiri', serif" }}
-              />
+                placeholder="ex : مهدي" dir="rtl"
+                style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
-          <Field label="Email des mariés" required>
+          <Field label="Email des mariés" required help="Servira pour la connexion au portail couple.">
             <input className="admin-input" type="email" value={form.couple_email}
               onChange={e => set('couple_email', e.target.value)} required />
           </Field>
         </Section>
 
-        {/* SECTION : Date & lieu */}
-        <Section title="Date & lieu" description="Quand et où l'événement aura lieu">
+        <Section title="Date & lieu">
           <Row>
-            <Field label="Date de l'événement" required>
+            <Field label="Date" required>
               <input className="admin-input" type="date" value={form.event_date}
                 onChange={e => set('event_date', e.target.value)} required />
             </Field>
@@ -169,21 +130,19 @@ export default function NewWedding() {
           </Row>
           <Field label="Nom du lieu" required>
             <input className="admin-input" value={form.venue_name}
-              onChange={e => set('venue_name', e.target.value)}
-              placeholder="Ex: Dar El Jeld" required />
+              onChange={e => set('venue_name', e.target.value)} required />
           </Field>
           <Field label="Adresse complète">
             <input className="admin-input" value={form.venue_address}
-              onChange={e => set('venue_address', e.target.value)}
-              placeholder="Ex: 5 Rue Dar El Jeld, Tunis 1006" />
+              onChange={e => set('venue_address', e.target.value)} />
           </Field>
           <Row>
-            <Field label="Lien Google Maps" help="Optionnel — bouton de navigation">
+            <Field label="Lien Google Maps">
               <input className="admin-input" value={form.gps_google}
                 onChange={e => set('gps_google', e.target.value)}
                 placeholder="https://maps.google.com/..." />
             </Field>
-            <Field label="Lien Apple Maps" help="Optionnel — bouton de navigation">
+            <Field label="Lien Apple Maps">
               <input className="admin-input" value={form.gps_apple}
                 onChange={e => set('gps_apple', e.target.value)}
                 placeholder="https://maps.apple.com/..." />
@@ -191,60 +150,44 @@ export default function NewWedding() {
           </Row>
         </Section>
 
-        {/* SECTION : Texte */}
-        <Section title="Textes de l'invitation" description="Personnalisez les messages affichés">
-          <Field
-            label="Message d'introduction"
-            help="Phrase d'accroche en haut de l'invitation."
-          >
+        <Section title="Textes de l'invitation">
+          <Field label="Message d'introduction" help="Phrase d'accroche en haut de l'invitation.">
             <input className="admin-input" value={form.intro_text}
-              onChange={e => set('intro_text', e.target.value)}
-              placeholder="Vous êtes cordialement invités au mariage de" />
+              onChange={e => set('intro_text', e.target.value)} />
           </Field>
-          <Field
-            label="Message personnalisé"
-            help="Texte plus long sous les noms (citation, mot des mariés, verset...)"
-          >
+          <Field label="Message personnalisé" help="Texte plus long sous les noms.">
             <textarea className="admin-textarea" rows={3} value={form.custom_message}
-              onChange={e => set('custom_message', e.target.value)}
-              placeholder="Ex: Avec joie et émotion, nous vous invitons à partager ce moment unique..." />
+              onChange={e => set('custom_message', e.target.value)} />
           </Field>
-          <Field
-            label="URL musique de fond"
-            help="Optionnel — fichier MP3 hébergé en ligne"
-          >
+          <Field label="URL musique de fond" help="MP3 hébergé en ligne (optionnel)">
             <input className="admin-input" type="url" value={form.music_url}
               onChange={e => set('music_url', e.target.value)}
               placeholder="https://..." />
           </Field>
         </Section>
 
-        {/* SECTION : Programme dynamique */}
-        <Section
-          title="Programme de la soirée"
-          description="Les différentes étapes affichées sur l'invitation. Ordre et contenu modifiables."
-        >
+        <Section title="Programme de la soirée">
           <ProgramEditor initial={program} onChange={setProgram} />
         </Section>
 
-        {/* SECTION : Template & pack */}
-        <Section title="Template & pack" description="Apparence visuelle et formule choisie">
+        <Section title="Template & pack">
           <Row>
-            <Field label="Template">
+            <Field label="Template d'invitation" required>
               <select className="admin-select" value={form.template_id}
-                onChange={e => set('template_id', e.target.value)}>
+                onChange={e => {
+                  set('template_id', e.target.value)
+                  const newLang = TEMPLATES_META.find(t => t.id === e.target.value)?.language
+                  const newFontLang = newLang === 'ar' ? 'ar' : 'fr'
+                  if (newFontLang !== fontLanguage) set('custom_font', null)
+                }}>
                 <optgroup label="🇫🇷 Templates français">
                   {templatesFR.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.name} — {t.description.split('.')[0]}
-                    </option>
+                    <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
                 <optgroup label="🇹🇳 Templates arabes / maghrébins">
                   {templatesAR.map(t => (
-                    <option key={t.id} value={t.id}>
-                      {t.name} — {t.description.split('.')[0]}
-                    </option>
+                    <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
               </select>
@@ -258,101 +201,69 @@ export default function NewWedding() {
               </select>
             </Field>
           </Row>
-          <div style={{ marginTop: '8px' }}>
-            <Link href="/admin/templates" style={{
-              fontSize: '0.82rem',
-              color: 'var(--admin-accent)',
-              textDecoration: 'none',
-            }}>
-              → Voir le catalogue complet des templates
-            </Link>
-          </div>
         </Section>
 
-        {/* SECTION : Options */}
-        <Section title="Options" description="Paramètres de l'invitation">
+        <Section title="Police personnalisée">
+          <FontPicker
+            value={form.custom_font}
+            onChange={font => set('custom_font', font)}
+            language={fontLanguage}
+          />
+        </Section>
+
+        <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <Toggle
-              label="Confirmation de présence (RSVP)"
-              help="Permet aux invités de confirmer leur présence. Désactive si tu préfères une invitation purement informative."
-              checked={form.show_rsvp}
-              onChange={v => set('show_rsvp', v)}
-            />
-            <Toggle
-              label="Activer le livre d'or"
+            <Toggle label="Confirmation de présence (RSVP)"
+              help="Permet aux invités de confirmer leur présence"
+              checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />
+            <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
-              checked={form.show_guestbook}
-              onChange={v => set('show_guestbook', v)}
-            />
-            <Toggle
-              label="Modération des messages"
+              checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />
+            <Toggle label="Modération des messages"
               help="Les messages sont validés par les mariés avant publication"
-              checked={form.moderation_on}
-              onChange={v => set('moderation_on', v)}
-            />
+              checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
           </div>
         </Section>
 
         {error && (
-          <div style={{
-            padding: '12px 14px',
-            background: '#fee2e2',
-            border: '1px solid #fecaca',
-            borderRadius: 'var(--admin-radius)',
-            color: '#991b1b',
-            fontSize: '0.88rem',
-          }}>
+          <div style={{ padding: '12px 14px', background: '#fee2e2',
+            border: '1px solid #fecaca', borderRadius: 'var(--admin-radius)',
+            color: '#991b1b', fontSize: '0.88rem' }}>
             {error}
           </div>
         )}
 
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          paddingTop: '8px',
-          borderTop: '1px solid var(--admin-border)',
-          marginTop: '8px',
-        }}>
+        <div style={{ display: 'flex', gap: '10px', paddingTop: '8px',
+          borderTop: '1px solid var(--admin-border)', marginTop: '8px',
+          position: 'sticky', bottom: 0, background: 'var(--admin-bg)',
+          padding: '16px 0', flexWrap: 'wrap' }}>
           <button type="submit" disabled={loading} className="admin-btn">
-            {loading ? 'Création en cours...' : 'Créer l\'invitation'}
+            {loading ? 'Création...' : 'Créer le mariage'}
           </button>
-          <Link href="/admin" className="admin-btn admin-btn-secondary">
-            Annuler
-          </Link>
+          <button type="button" onClick={handlePreview}
+            className="admin-btn admin-btn-secondary"
+            disabled={!form.bride_name && !form.groom_name}
+            title={!form.bride_name && !form.groom_name ? 'Renseigne au moins un nom pour prévisualiser' : 'Prévisualiser dans un nouvel onglet'}>
+            👁 Prévisualiser
+          </button>
+          <Link href="/admin" className="admin-btn admin-btn-secondary">Annuler</Link>
         </div>
       </form>
     </>
   )
 }
 
-// ── Sous-composants ──
-function Section({ title, description, children }: {
-  title: string
-  description?: string
-  children: React.ReactNode
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="admin-card">
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>{title}</h2>
-        {description && (
-          <p style={{ fontSize: '0.82rem', color: 'var(--admin-text-muted)', margin: '4px 0 0' }}>
-            {description}
-          </p>
-        )}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        {children}
-      </div>
+      <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: '0 0 16px' }}>{title}</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>{children}</div>
     </div>
   )
 }
 
 function Field({ label, required, help, children }: {
-  label: string
-  required?: boolean
-  help?: string
-  children: React.ReactNode
+  label: string; required?: boolean; help?: string; children: React.ReactNode
 }) {
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
@@ -367,36 +278,18 @@ function Field({ label, required, help, children }: {
 }
 
 function Row({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-      {children}
-    </div>
-  )
+  return <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>{children}</div>
 }
 
 function Toggle({ label, help, checked, onChange }: {
-  label: string
-  help?: string
-  checked: boolean
-  onChange: (v: boolean) => void
+  label: string; help?: string; checked: boolean; onChange: (v: boolean) => void
 }) {
   return (
-    <label style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: '10px',
-      cursor: 'pointer',
-      padding: '10px',
-      border: '1px solid var(--admin-border)',
-      borderRadius: 'var(--admin-radius)',
-      background: '#fafafa',
-    }}>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={e => onChange(e.target.checked)}
-        style={{ marginTop: '2px', accentColor: 'var(--admin-accent)' }}
-      />
+    <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px',
+      cursor: 'pointer', padding: '10px', border: '1px solid var(--admin-border)',
+      borderRadius: 'var(--admin-radius)', background: '#fafafa' }}>
+      <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)}
+        style={{ marginTop: '2px', accentColor: 'var(--admin-accent)' }} />
       <div>
         <div style={{ fontSize: '0.88rem', fontWeight: 500 }}>{label}</div>
         {help && (
@@ -406,39 +299,5 @@ function Toggle({ label, help, checked, onChange }: {
         )}
       </div>
     </label>
-  )
-}
-
-function LinkCard({ label, sub, value }: { label: string; sub: string; value: string }) {
-  return (
-    <div className="admin-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '0.88rem', fontWeight: 600, marginBottom: '2px' }}>
-            {label}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--admin-text-muted)', marginBottom: '8px' }}>
-            {sub}
-          </div>
-          <div style={{
-            fontFamily: 'ui-monospace, monospace',
-            fontSize: '0.82rem',
-            background: '#f5f5f5',
-            padding: '8px 10px',
-            borderRadius: '4px',
-            wordBreak: 'break-all',
-          }}>
-            {value}
-          </div>
-        </div>
-        <button
-          onClick={() => navigator.clipboard.writeText(value)}
-          className="admin-btn admin-btn-secondary"
-          style={{ padding: '7px 14px', fontSize: '0.82rem' }}
-        >
-          Copier
-        </button>
-      </div>
-    </div>
   )
 }

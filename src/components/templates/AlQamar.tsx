@@ -2,6 +2,7 @@
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function AlQamar({ wedding }: { wedding: Wedding }) {
   const {
@@ -36,6 +37,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".aq-container" />
 
       {/* Ciel étoilé en fond fixe */}
       <div className="aq-sky">
@@ -137,11 +139,6 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
             <span className="aq-and">و</span>
             <span className="aq-name">{groomAr}</span>
           </h1>
-
-          {(wedding.bride_name_ar || wedding.groom_name_ar) && (
-            <p className="aq-names-fr">{wedding.bride_name} & {wedding.groom_name}</p>
-          )}
-
           <div className="aq-divider">
             <span></span>
             <i>☾</i>

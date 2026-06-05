@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function BlancDore({ wedding }: { wedding: Wedding }) {
   const {
@@ -52,6 +53,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".ed-container" />
 
       {/* ── ENVELOPPE ── */}
       {!opened && (

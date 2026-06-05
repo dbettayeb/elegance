@@ -1,6 +1,7 @@
 'use client'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function RosePoudre({ wedding }: { wedding: Wedding }) {
   const {
@@ -18,6 +19,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".rp-container" />
 
       {/* Aquarelles décoratives */}
       <svg className="rp-watercolor rp-wc-top" viewBox="0 0 200 200">

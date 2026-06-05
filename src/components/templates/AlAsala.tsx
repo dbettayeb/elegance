@@ -2,6 +2,7 @@
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function AlAsala({ wedding }: { wedding: Wedding }) {
   const {
@@ -26,6 +27,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".aa-container" />
 
       {/* Motif zellige en fond */}
       <svg className="aa-zellige" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -90,11 +92,6 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
             <span className="aa-and">و</span>
             <span className="aa-name">{groomAr}</span>
           </h1>
-
-          {(wedding.bride_name_ar || wedding.groom_name_ar) && (
-            <p className="aa-names-fr">{wedding.bride_name} & {wedding.groom_name}</p>
-          )}
-
           <div className="aa-divider">
             <span></span>
             <i>◆</i>

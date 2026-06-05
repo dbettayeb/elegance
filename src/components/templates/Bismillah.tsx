@@ -2,6 +2,7 @@
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function Bismillah({ wedding }: { wedding: Wedding }) {
   const {
@@ -26,6 +27,7 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".bs-container" />
 
       {/* ENVELOPPE */}
       {!opened && (

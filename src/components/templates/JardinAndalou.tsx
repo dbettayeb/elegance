@@ -1,6 +1,7 @@
 'use client'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
+import FontOverride from '@/components/common/FontOverride'
 
 export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
   const {
@@ -18,6 +19,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
+      <FontOverride font={wedding.custom_font} container=".ja-container" />
 
       {/* Motif arabesque en fond, fixe */}
       <svg className="ja-pattern" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
