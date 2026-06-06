@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
-import FontPicker from '@/components/admin/FontPicker'
+import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 
