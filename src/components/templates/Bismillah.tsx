@@ -111,12 +111,6 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
             <span className="bs-name">{groomAr}</span>
           </h1>
 
-          {/* Noms français en sous-titre élégant */}
-          {(wedding.bride_name_ar || wedding.groom_name_ar) && (
-            <p className="bs-names-fr">
-              {wedding.bride_name} & {wedding.groom_name}
-            </p>
-          )}
 
           {/* Message personnalisé */}
           {wedding.custom_message && (

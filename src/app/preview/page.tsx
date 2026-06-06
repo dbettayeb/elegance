@@ -17,7 +17,7 @@ export default function PreviewPage() {
 
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem('__preview_wedding')
+      const raw = localStorage.getItem('__preview_wedding')
       if (!raw) {
         setError("Aucune donnée de prévisualisation trouvée. Reviens sur le formulaire de création et clique sur « Prévisualiser ».")
         return

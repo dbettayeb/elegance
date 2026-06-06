@@ -62,9 +62,9 @@ export default function NewWeddingPage() {
   }
 
   function handlePreview() {
-    sessionStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
-    window.open('/preview', '_blank', 'noopener,noreferrer')
-  }
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+  window.open('/preview', '_blank', 'noopener,noreferrer')
+}
 
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
