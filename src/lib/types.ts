@@ -19,6 +19,7 @@ export interface Wedding {
   | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
   | 'bismillah' | 'al_asala' | 'al_qamar'
   | 'sceau_royal'| 'cristal_champagne'
+  | 'chateau_pivoines' | 'coeur_dore'
   music_url?: string
   custom_font?: string
   intro_text?: string

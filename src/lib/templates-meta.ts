@@ -113,4 +113,22 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'sombre',
     language: 'fr',
   },
+  {
+    id: 'chateau_pivoines',
+    name: 'Château & Pivoines',
+    description: 'Conte de fées classique. Château à la fontaine, colombes, bouquet de pivoines rouges et blanches, et ouverture cinématique par enveloppe à sceau de cire doré.',
+    tags: ['Romantique', 'Classique', 'Floral', 'Cinématique'],
+    palette: ['#7B1E2E', '#FAF6EE', '#C9A961', '#C44A5C'],
+    ambiance: 'pastel',
+    language: 'fr',
+  },
+  {
+    id: 'coeur_dore',
+    name: 'Cœur Doré',
+    description: 'Romance ivoire & or chaud. Enveloppe à branches dorées qui s\'ouvre comme deux portes sur un sceau cœur. Carte gravée à pivoines blanches sculptées. Compatible mariages internationaux et orientaux.',
+    tags: ['Romantique', 'Or', 'Floral', 'International', 'Bismillah'],
+    palette: ['#F7ECD5', '#FBF6EA', '#C9A961', '#B8924A'],
+    ambiance: 'clair',
+    language: 'fr',
+  },
 ]
