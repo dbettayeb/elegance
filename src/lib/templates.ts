@@ -8,6 +8,7 @@ import Bismillah from '@/components/templates/Bismillah'
 import AlAsala from '@/components/templates/AlAsala'
 import AlQamar from '@/components/templates/AlQamar'
 import SceauRoyal from '@/components/templates/SceauRoyal'
+import CristalChampagne from '@/components/templates/CristalChampagne'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META, TemplateMeta } from '@/lib/templates-meta'
 
@@ -29,6 +30,7 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   al_asala: AlAsala,
   al_qamar: AlQamar,
   sceau_royal: SceauRoyal,
+  cristal_champagne: CristalChampagne,
 
 }
 

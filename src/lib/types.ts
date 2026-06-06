@@ -18,7 +18,7 @@ export interface Wedding {
   | 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou'
   | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
   | 'bismillah' | 'al_asala' | 'al_qamar'
-  | 'sceau_royal'
+  | 'sceau_royal'| 'cristal_champagne'
   music_url?: string
   custom_font?: string
   intro_text?: string

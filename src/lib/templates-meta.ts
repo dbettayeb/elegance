@@ -104,4 +104,13 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'fr',
   },
+  {
+    id: 'cristal_champagne',
+    name: 'Cristal & Champagne',
+    description: 'Haute couture. Marbre noir veiné d\'or, ouverture cinématique avec coupe de champagne qui se remplit et déborde. Pour mariages cocktail de gala et palaces.',
+    tags: ['Haute couture', 'Cocktail', 'Cinématique', 'Premium'],
+    palette: ['#0A0A0A', '#D4AF7A', '#E8D9B8', '#F7F1E5'],
+    ambiance: 'sombre',
+    language: 'fr',
+  },
 ]

@@ -245,6 +245,26 @@ const THEMES: Record<Wedding['template_id'], CoupleTheme> = {
     cardShadow: '0 1px 3px rgba(74, 15, 15, 0.06)',
     radius: '2px',
   },
+  cristal_champagne: {
+    pageBg: '#F7F1E5',
+    cardBg: '#FFFFFF',
+    headerBg: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)',
+    textPrimary: '#0A0A0A',
+    textSecondary: '#5C5043',
+    textMuted: '#8B7A5C',
+    accent: '#D4AF7A',
+    accentSoft: 'rgba(212, 175, 122, 0.12)',
+    accentText: '#A88547',
+    success: '#2d6a4f',
+    warning: '#A88547',
+    danger: '#7B1E1E',
+    border: 'rgba(212, 175, 122, 0.25)',
+    borderStrong: 'rgba(212, 175, 122, 0.5)',
+    headingFont: '"Bodoni Moda", Georgia, serif',
+    bodyFont: '"Cormorant Garamond", Georgia, serif',
+    cardShadow: '0 1px 3px rgba(10, 10, 10, 0.06)',
+    radius: '2px',
+  },
 }
 
 export function getTheme(templateId: Wedding['template_id']): CoupleTheme {
