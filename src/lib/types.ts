@@ -15,9 +15,10 @@ export interface Wedding {
   gps_google?: string
   gps_apple?: string
   template_id:
-    | 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou'
-    | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
-    | 'bismillah' | 'al_asala' | 'al_qamar'
+  | 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou'
+  | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
+  | 'bismillah' | 'al_asala' | 'al_qamar'
+  | 'sceau_royal'
   music_url?: string
   custom_font?: string
   intro_text?: string

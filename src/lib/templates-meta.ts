@@ -95,4 +95,13 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'sombre',
     language: 'ar',
   },
+  {
+    id: 'sceau_royal',
+    name: 'Sceau Royal',
+    description: 'Ouverture cinématique avec sceau de cire qui se brise. Papier vélin crème, cire bordeaux, calligraphie Pinyon Script. Pour mariages qui veulent un effet "wow" dès l\'arrivée.',
+    tags: ['Cinématique', 'Premium', 'Animation', 'Royal'],
+    palette: ['#F4EDE0', '#7B1E1E', '#B8985A', '#1A1A1A'],
+    ambiance: 'clair',
+    language: 'fr',
+  },
 ]
