@@ -7,6 +7,20 @@ interface Props {
   container?: string  // ignoré, gardé pour compat
 }
 
+// Tous les sélecteurs où s'affichent les noms des mariés, à travers les 9 templates.
+// `.X-names *` couvre les enfants (.X-name, .X-amp, .X-and).
+const NAME_SELECTORS = [
+  '.ed-names', '.ed-names *', '.ed-footer-names',
+  '.ne-names', '.ne-names *', '.ne-footer-names',
+  '.ja-names', '.ja-names *', '.ja-footer-names',
+  '.mn-names', '.mn-names *', '.mn-footer-names',
+  '.rp-names', '.rp-names *', '.rp-footer-names',
+  '.mb-names', '.mb-names *', '.mb-footer-names',
+  '.bs-names', '.bs-names *', '.bs-footer-names',
+  '.aa-names', '.aa-names *', '.aa-footer-names',
+  '.aq-names', '.aq-names *', '.aq-footer-names',
+].join(',\n')
+
 export default function FontOverride({ font }: Props) {
   if (!font) return null
   const fontOption = getFontByName(font)
@@ -19,8 +33,7 @@ export default function FontOverride({ font }: Props) {
         href={`https://fonts.googleapis.com/css2?family=${fontOption.googleFont}&display=swap`}
       />
       <style>{`
-        body,
-        body * {
+        ${NAME_SELECTORS} {
           font-family: ${fontOption.family} !important;
         }
       `}</style>

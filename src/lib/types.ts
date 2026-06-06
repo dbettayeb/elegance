@@ -4,6 +4,7 @@ export interface Wedding {
   access_token: string
   couple_token: string
   couple_email: string
+  couple_phone?: string
   bride_name: string
   groom_name: string
   bride_name_ar?: string
@@ -26,7 +27,7 @@ export interface Wedding {
   show_rsvp: boolean
   show_guestbook: boolean
   moderation_on: boolean
-  status: 'active' | 'archived' | 'suspended'
+  status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string
 }
