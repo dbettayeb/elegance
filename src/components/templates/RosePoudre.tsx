@@ -1,7 +1,7 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function RosePoudre({ wedding }: { wedding: Wedding }) {
   const {
@@ -158,7 +158,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
             <p className="rp-label">Déroulement</p>
             <h2 className="rp-title">Programme de la fête</h2>
             <div className="rp-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="rp-prog-item">
                   <div className="rp-prog-time">{item.time}</div>
                   <div className="rp-prog-dot"></div>

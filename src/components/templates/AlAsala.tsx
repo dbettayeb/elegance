@@ -1,8 +1,8 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function AlAsala({ wedding }: { wedding: Wedding }) {
   const {
@@ -159,7 +159,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
             <p className="aa-label">برنامج الحفل</p>
             <h2 className="aa-title">ترتيب الأحداث</h2>
             <div className="aa-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="aa-prog-item">
                   <div className="aa-prog-time">{toArabicNumerals(item.time)}</div>
                   <div className="aa-prog-diamond">◆</div>

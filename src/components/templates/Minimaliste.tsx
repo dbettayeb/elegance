@@ -1,7 +1,7 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function Minimaliste({ wedding }: { wedding: Wedding }) {
   const {
@@ -98,7 +98,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
           <section className="mn-section">
             <p className="mn-label">Programme</p>
             <div className="mn-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="mn-prog-item">
                   <div className="mn-prog-time">{item.time}</div>
                   <div className="mn-prog-content">

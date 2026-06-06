@@ -1,7 +1,7 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
   const {
@@ -109,7 +109,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
             <p className="ne-label">Déroulement</p>
             <h2 className="ne-title">Programme de la soirée</h2>
             <div className="ne-timeline">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="ne-tl-item">
                   <div className="ne-tl-time">{item.time}</div>
                   <div className="ne-tl-dot"><span></span></div>

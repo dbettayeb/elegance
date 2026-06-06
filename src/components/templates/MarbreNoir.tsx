@@ -1,7 +1,7 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
   const {
@@ -139,7 +139,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
             <p className="mb-label">Déroulement</p>
             <h2 className="mb-title">Programme</h2>
             <div className="mb-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="mb-prog-item">
                   <div className="mb-prog-num">{String(i + 1).padStart(2, '0')}</div>
                   <div className="mb-prog-content">

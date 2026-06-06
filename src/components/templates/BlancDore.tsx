@@ -1,8 +1,8 @@
 'use client'
 import { useState, useRef } from 'react'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function BlancDore({ wedding }: { wedding: Wedding }) {
   const {
@@ -131,7 +131,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
             <p className="ed-label">Déroulement</p>
             <h2 className="ed-title">Programme de la Soirée</h2>
             <ul className="ed-timeline">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <li key={i} className={`ed-tl-item ${i % 2 === 0 ? 'ed-tl-left' : 'ed-tl-right'}`}>
                   <div className="ed-tl-content">
                     <span className="ed-tl-time">{item.time}</span>

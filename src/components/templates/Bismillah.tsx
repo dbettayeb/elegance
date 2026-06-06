@@ -1,8 +1,8 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function Bismillah({ wedding }: { wedding: Wedding }) {
   const {
@@ -173,7 +173,7 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
             <p className="bs-label">برنامج الحفل</p>
             <h2 className="bs-title">ترتيب الأحداث</h2>
             <div className="bs-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="bs-prog-item">
                   <div className="bs-prog-time">{toArabicNumerals(item.time)}</div>
                   <div className="bs-prog-star">۞</div>

@@ -12,12 +12,12 @@ export type TemplateId =
 
 export type Pack = 'essentiel' | 'prestige' | 'haute_couture'
 
-export type WeddingStatus = 'active' | 'expired'
+export type WeddingStatus = 'active' | 'archived' | 'suspended'
 
-export interface WeddingProgramItem {
+export interface ProgramItem {
   time: string
-  title: string
-  description?: string
+  event: string
+  venue?: string
 }
 
 export interface Wedding {
@@ -46,7 +46,8 @@ export interface Wedding {
   /** Nom de la Google Font à appliquer sur tout le template. NULL = polices natives. */
   custom_font?: string
 
-  program?: WeddingProgramItem[]
+  /** Programme de la soirée. Toujours un tableau (peut être vide). */
+  program: ProgramItem[]
 
   pack: Pack
   show_rsvp: boolean

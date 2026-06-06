@@ -1,7 +1,7 @@
 'use client'
-import { Wedding, ProgramItem } from '@/lib/types'
+import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
-import FontOverride from '@/components/common/FontOverride'
+import FontOverride from '@/components/common/fontoverride'
 
 export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
   const {
@@ -132,7 +132,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
             <p className="ja-label">Déroulement</p>
             <h2 className="ja-title">Programme de la fête</h2>
             <div className="ja-program">
-              {(wedding.program as ProgramItem[]).map((item, i) => (
+              {(wedding.program as ProgramItem []).map((item, i) => (
                 <div key={i} className="ja-prog-item">
                   <div className="ja-prog-time">{item.time}</div>
                   <div className="ja-prog-line"></div>

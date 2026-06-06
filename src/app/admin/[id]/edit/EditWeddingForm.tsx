@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import ProgramEditor, { ProgramItem } from '@/components/admin/ProgramEditor'
+import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/FontPicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
@@ -36,7 +36,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     show_guestbook: wedding.show_guestbook,
     moderation_on: wedding.moderation_on,
   })
-  const [program, setProgram] = useState<ProgramItem[]>((wedding.program ?? []) as ProgramItem[])
+  const [program, setProgram] = useState<ProgramItem []>((wedding.program ?? []) as ProgramItem [])
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')

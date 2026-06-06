@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-export interface ProgramItem {
+export interface ProgramItem  {
   time: string
   event: string
   venue?: string
@@ -11,12 +11,12 @@ export default function ProgramEditor({
   initial,
   onChange,
 }: {
-  initial: ProgramItem[]
-  onChange: (items: ProgramItem[]) => void
+  initial: ProgramItem []
+  onChange: (items: ProgramItem []) => void
 }) {
-  const [items, setItems] = useState<ProgramItem[]>(initial.length ? initial : [])
+  const [items, setItems] = useState<ProgramItem []>(initial.length ? initial : [])
 
-  function update(next: ProgramItem[]) {
+  function update(next: ProgramItem []) {
     setItems(next)
     onChange(next)
   }
@@ -29,7 +29,7 @@ export default function ProgramEditor({
     update(items.filter((_, i) => i !== index))
   }
 
-  function updateField(index: number, field: keyof ProgramItem, value: string) {
+  function updateField(index: number, field: keyof ProgramItem , value: string) {
     update(items.map((it, i) => (i === index ? { ...it, [field]: value } : it)))
   }
 
