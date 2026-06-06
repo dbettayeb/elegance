@@ -36,7 +36,7 @@ export default async function AdminWeddingDetail({
   const pendingMessages = allMessages.filter(m => !m.approved).length
 
   const base = process.env.NEXT_PUBLIC_BASE_URL
-  const inviteUrl = `${base}/i/${wedding.slug}?t=${wedding.access_token}`
+  const inviteUrl = `${base}/i/${wedding.slug}/${wedding.access_token}`
   const coupleUrl = `${base}/couple/${wedding.slug}/login`
 
   const eventDate = new Date(wedding.event_date)

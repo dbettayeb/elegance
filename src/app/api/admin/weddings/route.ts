@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       success:     true,
       id:          wedding.id,
       slug:        wedding.slug,
-      inviteUrl:   `${base}/i/${wedding.slug}?t=${wedding.access_token}`,
+      inviteUrl:   `${base}/i/${wedding.slug}/${wedding.access_token}`,
       coupleUrl:   `${base}/couple/${wedding.slug}/login`,
       coupleToken: wedding.couple_token,
     })

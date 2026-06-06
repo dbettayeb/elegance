@@ -23,8 +23,15 @@ export async function PATCH(
     const body = await req.json()
     const supabase = createServiceSupabaseClient()
 
-    // Régénérer les tokens
+    // ─── Régénérer les tokens ───
     if (body._action === 'regenerate_tokens') {
+      // ⚠️ Récupérer l'ancien token AVANT update pour invalider son cache
+      const { data: previous } = await supabase
+        .from('weddings')
+        .select('slug, access_token')
+        .eq('id', id)
+        .single()
+
       const access_token = generateAccessToken(8)
       const couple_token = generateAccessToken(8)
 
@@ -40,21 +47,35 @@ export async function PATCH(
       revalidatePath(`/admin/${id}`)
       revalidatePath('/admin')
 
+      // Invalider l'ancien lien (qui doit désormais retourner 404)
+      if (previous) {
+        revalidatePath(`/i/${previous.slug}/${previous.access_token}`)
+      }
+      // Invalider le nouveau lien (au cas où quelqu'un l'aurait déjà ouvert avant l'update)
+      revalidatePath(`/i/${data.slug}/${data.access_token}`)
+
       const base = process.env.NEXT_PUBLIC_BASE_URL
       return NextResponse.json({
         success: true,
-        inviteUrl: `${base}/i/${data.slug}?t=${data.access_token}`,
+        inviteUrl: `${base}/i/${data.slug}/${data.access_token}`,
         coupleUrl: `${base}/couple/${data.slug}/login`,
         coupleToken: data.couple_token,
       })
     }
 
-    // Changer le statut
+    // ─── Changer le statut ───
     if (body._action === 'change_status') {
       const validStatuses = ['active', 'archived', 'suspended']
       if (!validStatuses.includes(body.status)) {
         return NextResponse.json({ error: 'Statut invalide.' }, { status: 400 })
       }
+
+      // Récupérer slug+token pour invalider le cache après changement
+      const { data: wedding } = await supabase
+        .from('weddings')
+        .select('slug, access_token')
+        .eq('id', id)
+        .single()
 
       const { error } = await supabase
         .from('weddings')
@@ -65,10 +86,17 @@ export async function PATCH(
 
       revalidatePath(`/admin/${id}`)
       revalidatePath('/admin')
+
+      // ⚠️ CRITIQUE : un suspended/archived doit prendre effet immédiatement,
+      // sinon les invités voient l'invitation pendant encore 1h via le cache CDN
+      if (wedding) {
+        revalidatePath(`/i/${wedding.slug}/${wedding.access_token}`)
+      }
+
       return NextResponse.json({ success: true })
     }
 
-    // Édition standard
+    // ─── Édition standard ───
     const {
       bride_name, groom_name,
       bride_name_ar, groom_name_ar,
@@ -85,6 +113,17 @@ export async function PATCH(
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
+    }
+
+    // Récupérer slug+token AVANT update pour invalider le cache
+    const { data: existingWedding } = await supabase
+      .from('weddings')
+      .select('slug, access_token')
+      .eq('id', id)
+      .single()
+
+    if (!existingWedding) {
+      return NextResponse.json({ error: 'Mariage introuvable.' }, { status: 404 })
     }
 
     const datetime = event_time ? `${event_date}T${event_time}:00` : event_date
@@ -119,6 +158,8 @@ export async function PATCH(
 
     revalidatePath(`/admin/${id}`)
     revalidatePath('/admin')
+    revalidatePath(`/i/${existingWedding.slug}/${existingWedding.access_token}`)
+
     return NextResponse.json({ success: true })
 
   } catch (err) {
@@ -141,6 +182,13 @@ export async function DELETE(
   try {
     const supabase = createServiceSupabaseClient()
 
+    // ⚠️ Récupérer slug+token AVANT suppression pour purger le cache
+    const { data: wedding } = await supabase
+      .from('weddings')
+      .select('slug, access_token')
+      .eq('id', id)
+      .single()
+
     await supabase.from('rsvps').delete().eq('wedding_id', id)
     await supabase.from('guestbook').delete().eq('wedding_id', id)
 
@@ -155,6 +203,12 @@ export async function DELETE(
     }
 
     revalidatePath('/admin')
+
+    // Invalider le cache CDN : l'invitation doit désormais retourner 404
+    if (wedding) {
+      revalidatePath(`/i/${wedding.slug}/${wedding.access_token}`)
+    }
+
     return NextResponse.json({ success: true })
 
   } catch (err) {
