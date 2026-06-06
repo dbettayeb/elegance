@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getTemplate } from '@/lib/templates'
-import { Wedding, TemplateId, Pack } from '@/lib/types'
+import { Wedding } from '@/lib/types'
 
 /**
  * Page de prévisualisation. Lit les données du formulaire stockées dans sessionStorage
@@ -55,7 +55,7 @@ export default function PreviewPage() {
         gps_google: parsed.gps_google || undefined,
         gps_apple: parsed.gps_apple || undefined,
 
-        template_id: (parsed.template_id || 'blanc_dore') as TemplateId,
+        template_id: (parsed.template_id || 'blanc_dore') as Wedding['template_id'],
         intro_text: parsed.intro_text || 'Vous êtes cordialement invités au mariage de',
         custom_message: parsed.custom_message || undefined,
         music_url: parsed.music_url || undefined,
@@ -63,7 +63,7 @@ export default function PreviewPage() {
 
         program: parsed.program || [],
 
-        pack: (parsed.pack || 'essentiel') as Pack,
+        pack: (parsed.pack || 'essentiel') as Wedding['pack'],
         show_rsvp: parsed.show_rsvp ?? true,
         show_guestbook: parsed.show_guestbook ?? true,
         moderation_on: parsed.moderation_on ?? true,
