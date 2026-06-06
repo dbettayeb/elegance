@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { TEMPLATES } from '@/lib/templates'
 import { Wedding } from '@/lib/types'
+import PublicShell from '@/components/public/PublicShell'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -57,7 +58,7 @@ export default async function PublicTemplatePreview({ params }: Props) {
   }
 
   return (
-    <>
+    <PublicShell>
       <style>{CSS}</style>
 
       <div className="ptp-bar">
@@ -76,7 +77,7 @@ export default async function PublicTemplatePreview({ params }: Props) {
       <div className="ptp-content">
         <Component wedding={mockWedding} />
       </div>
-    </>
+    </PublicShell>
   )
 }
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { PACKS } from '@/lib/packs'
+import PublicShell from '@/components/public/PublicShell'
 
 export const metadata = {
   title: 'Élégance Digitale · Invitations de mariage digitales haut de gamme',
@@ -12,7 +13,7 @@ export default function LandingPage() {
   const featuredTemplates = TEMPLATES_META.filter(t => featured.includes(t.id))
 
   return (
-    <>
+    <PublicShell>
       <style>{CSS}</style>
 
       <section className="lp-hero">
@@ -161,7 +162,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-    </>
+    </PublicShell>
   )
 }
 

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import PublicShell from '@/components/public/PublicShell'
 
 export const metadata = {
   title: 'Designs · Élégance Digitale',
@@ -8,7 +9,7 @@ export const metadata = {
 
 export default function PublicTemplatesPage() {
   return (
-    <>
+    <PublicShell>
       <style>{CSS}</style>
 
       <section className="tpl-header">
@@ -51,7 +52,7 @@ export default function PublicTemplatesPage() {
           </div>
         </div>
       </section>
-    </>
+    </PublicShell>
   )
 }
 

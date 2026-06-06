@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import OrderForm from '@/components/public/OrderForm'
+import PublicShell from '@/components/public/PublicShell'
 
 export const metadata = {
   title: 'Commander · Élégance Digitale',
@@ -8,7 +9,7 @@ export const metadata = {
 
 export default function CommanderPage() {
   return (
-    <>
+    <PublicShell>
       <style>{`
         .cmd-header {
           text-align: center; padding: 64px 28px 32px;
@@ -38,6 +39,6 @@ export default function CommanderPage() {
       <Suspense fallback={<div style={{ textAlign: 'center', padding: '40px' }}>Chargement…</div>}>
         <OrderForm />
       </Suspense>
-    </>
+    </PublicShell>
   )
 }
