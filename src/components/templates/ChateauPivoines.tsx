@@ -20,6 +20,8 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
   const formattedDate = eventDate.toLocaleDateString('fr-TN', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
+  // Format court "05.07.26" pour le hero (style vidéo)
+  const shortDate = `${String(eventDate.getDate()).padStart(2, '0')}.${String(eventDate.getMonth() + 1).padStart(2, '0')}.${String(eventDate.getFullYear()).slice(-2)}`
 
   function playSealCrack() {
     try {
@@ -57,98 +59,113 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
 
       {/* === ÉCRAN D'OUVERTURE — ENVELOPPE & SCEAU === */}
       {!opened && (
-        <div className={`cp-env-screen cp-phase-${phase}`}>
-          <div className="cp-env-wrap" onClick={startSequence}>
-            {/* Corps de l'enveloppe (papier texturé) */}
-            <div className="cp-env-body">
-              <div className="cp-env-paper-texture" />
+        <div className={`cp-env-screen cp-phase-${phase}`} onClick={startSequence}>
+          {/* Texture papier de fond (visible derrière les rabats quand ils sont ouverts) */}
+          <div className="cp-env-back" aria-hidden="true" />
 
-              {/* Rabat inférieur (toujours fermé) */}
-              <div className="cp-env-flap-bottom" />
-              {/* Rabats latéraux */}
-              <div className="cp-env-flap-left" />
-              <div className="cp-env-flap-right" />
-
-              {/* Rabat supérieur — s'ouvre vers le haut */}
-              <div className="cp-env-flap-top">
-                <div className="cp-env-flap-shadow" />
-              </div>
-
-              {/* Sceau de cire doré */}
-              <div className="cp-seal">
-                <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                  {/* Demi-sceau gauche */}
-                  <g className="cp-seal-left">
-                    <circle cx="60" cy="60" r="46" fill="url(#cpSealGrad)" />
-                    <circle cx="60" cy="60" r="46" fill="none" stroke="#7a5a1e" strokeWidth="1.5" opacity="0.6" />
-                    {/* Texture éclats de cire */}
-                    <circle cx="44" cy="44" r="2" fill="#7a5a1e" opacity="0.18" />
-                    <circle cx="52" cy="78" r="1.5" fill="#7a5a1e" opacity="0.14" />
-                    <circle cx="38" cy="68" r="1" fill="#7a5a1e" opacity="0.18" />
-                    {/* Bord déchiré gauche */}
-                    <path d="M 60 14 Q 58 30 60 45 Q 56 55 60 65 Q 58 80 60 95 Q 56 105 60 106 L 14 60 Z" fill="url(#cpSealGrad)" opacity="0" />
-                  </g>
-
-                  {/* Demi-sceau droit (se détache en phase 1) */}
-                  <g className="cp-seal-right">
-                    <circle cx="60" cy="60" r="46" fill="url(#cpSealGrad)" clipPath="url(#cpSealRightClip)" />
-                  </g>
-
-                  {/* Motif floral central : trois petites fleurs */}
-                  <g className="cp-seal-flowers">
-                    {/* Fleur centrale (plus grande) */}
-                    <g transform="translate(60 60)">
-                      <circle cx="0" cy="-6" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="0" cy="0" r="2.2" fill="#9c7a2e" />
-                    </g>
-                    {/* Fleur haut-gauche */}
-                    <g transform="translate(40 38) scale(0.55)">
-                      <circle cx="0" cy="-6" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="0" cy="0" r="2" fill="#9c7a2e" />
-                    </g>
-                    {/* Fleur bas-droite */}
-                    <g transform="translate(80 82) scale(0.55)">
-                      <circle cx="0" cy="-6" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-3.5" cy="5" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="-5.7" cy="-1.8" r="3.5" fill="#fef7e6" opacity="0.85" />
-                      <circle cx="0" cy="0" r="2" fill="#9c7a2e" />
-                    </g>
-                    {/* Petites feuilles décoratives */}
-                    <path d="M 50 50 Q 55 48 58 52" stroke="#fef7e6" strokeWidth="1.2" fill="none" opacity="0.7" />
-                    <path d="M 70 70 Q 65 72 62 68" stroke="#fef7e6" strokeWidth="1.2" fill="none" opacity="0.7" />
-                  </g>
-
-                  <defs>
-                    <radialGradient id="cpSealGrad" cx="0.35" cy="0.35" r="0.75">
-                      <stop offset="0%" stopColor="#e8c878" />
-                      <stop offset="50%" stopColor="#c9a05a" />
-                      <stop offset="100%" stopColor="#8c6a2a" />
-                    </radialGradient>
-                    <clipPath id="cpSealRightClip">
-                      <path d="M 60 14 Q 62 30 60 45 Q 64 55 60 65 Q 62 80 60 95 Q 64 105 60 106 L 106 60 Z" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </div>
+          {/* Aperçu de l'invitation derrière (apparaît quand les rabats s'ouvrent) */}
+          <div className="cp-env-reveal">
+            <div className="cp-env-reveal-inner">
+              <p className="cp-env-reveal-eyebrow">Wedding Day</p>
+              <p className="cp-env-reveal-names">
+                {wedding.bride_name}<br />
+                <em>&amp;</em><br />
+                {wedding.groom_name}
+              </p>
             </div>
-
-            {/* Texte d'invitation sous l'enveloppe */}
-            <p className="cp-env-hint">
-              <span className="cp-env-hint-line" />
-              Cliquez sur le sceau pour ouvrir l'invitation
-              <span className="cp-env-hint-line" />
-            </p>
           </div>
+
+          {/* Les 4 rabats triangulaires de l'enveloppe */}
+          <div className="cp-env-flap cp-flap-top" aria-hidden="true" />
+          <div className="cp-env-flap cp-flap-bottom" aria-hidden="true" />
+          <div className="cp-env-flap cp-flap-left" aria-hidden="true" />
+          <div className="cp-env-flap cp-flap-right" aria-hidden="true" />
+
+          {/* Sceau de cire doré pile au centre, à cheval sur les 4 rabats */}
+          <div className="cp-seal">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              {/* Disque de cire avec bords légèrement irréguliers */}
+              <path
+                d="M 60 8
+                   Q 78 10 86 18
+                   Q 102 22 106 36
+                   Q 116 46 112 62
+                   Q 116 78 106 86
+                   Q 102 100 86 104
+                   Q 78 114 60 112
+                   Q 42 114 34 104
+                   Q 18 100 14 86
+                   Q 4 78 8 62
+                   Q 4 46 14 36
+                   Q 18 22 34 18
+                   Q 42 10 60 8 Z"
+                fill="url(#cpSealGrad)"
+              />
+              {/* Reflet doré */}
+              <ellipse cx="48" cy="38" rx="22" ry="14" fill="url(#cpSealHl)" />
+              {/* Éclats de cire */}
+              <circle cx="38" cy="44" r="1.5" fill="#5C4418" opacity="0.22" />
+              <circle cx="84" cy="56" r="1.2" fill="#5C4418" opacity="0.18" />
+              <circle cx="50" cy="86" r="1.8" fill="#5C4418" opacity="0.25" />
+              <circle cx="76" cy="82" r="1.3" fill="#5C4418" opacity="0.2" />
+
+              {/* Motif floral central : trois petites fleurs */}
+              <g className="cp-seal-flowers" stroke="#5C4418" strokeWidth="1" fill="none" opacity="0.55">
+                {/* Tige centrale */}
+                <path d="M 60 88 Q 58 70 60 56" strokeLinecap="round" />
+                <path d="M 60 76 Q 50 72 46 64" strokeLinecap="round" />
+                <path d="M 60 70 Q 70 66 74 58" strokeLinecap="round" />
+                {/* Feuilles */}
+                <path d="M 56 80 Q 50 78 48 82" />
+                <path d="M 64 80 Q 70 78 72 82" />
+              </g>
+              <g className="cp-seal-flowers">
+                {/* Fleur centrale (la plus haute) */}
+                <g transform="translate(60 50)">
+                  <circle cx="0" cy="-5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="0" cy="0" r="2" fill="#5C4418" opacity="0.5" />
+                </g>
+                {/* Fleur gauche */}
+                <g transform="translate(43 62) scale(0.75)">
+                  <circle cx="0" cy="-5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="0" cy="0" r="1.8" fill="#5C4418" opacity="0.5" />
+                </g>
+                {/* Fleur droite */}
+                <g transform="translate(77 56) scale(0.75)">
+                  <circle cx="0" cy="-5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-3" cy="4" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="-4.8" cy="-1.5" r="3.2" fill="#9C7A2E" opacity="0.65" />
+                  <circle cx="0" cy="0" r="1.8" fill="#5C4418" opacity="0.5" />
+                </g>
+              </g>
+
+              <defs>
+                <radialGradient id="cpSealGrad" cx="0.3" cy="0.25" r="0.85">
+                  <stop offset="0%" stopColor="#E8C878" />
+                  <stop offset="45%" stopColor="#C9A05A" />
+                  <stop offset="85%" stopColor="#8C6A2A" />
+                  <stop offset="100%" stopColor="#5C4418" />
+                </radialGradient>
+                <radialGradient id="cpSealHl" cx="0.3" cy="0.25" r="0.6">
+                  <stop offset="0%" stopColor="#F7E2B0" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#F7E2B0" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+            </svg>
+          </div>
+
+          {/* Hint sous l'enveloppe */}
+          <div className="cp-env-hint">Click to open</div>
         </div>
       )}
 
@@ -260,8 +277,8 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
 
           {/* Type d'événement + date en haut */}
           <div className="cp-hero-top">
-            <p className="cp-hero-eyebrow">— Mariage —</p>
-            <p className="cp-hero-date-top">{formattedDate}</p>
+            <p className="cp-hero-wedding-day">Wedding Day</p>
+            <p className="cp-hero-date-top">{shortDate}</p>
           </div>
 
           {/* Noms cursifs centrés au-dessus de la fontaine */}
@@ -354,7 +371,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
           </div>
         </section>
 
-        {/* ===== 2. MOT D'ACCUEIL + COMPTE À REBOURS ===== */}
+        {/* ===== 2. MOT D'ACCUEIL (sur bordeaux) ===== */}
         <section className="cp-welcome">
           {/* Découpe papier déchiré haut */}
           <div className="cp-tear cp-tear-top" aria-hidden="true">
@@ -364,78 +381,105 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
           </div>
 
           <div className="cp-welcome-inner">
-            <p className="cp-welcome-eyebrow">— Le mot d'accueil —</p>
+            <h2 className="cp-welcome-title">Dear Friends and Family,</h2>
             <p className="cp-welcome-text">
               Avec une joie immense, nous vous invitons à partager
               une journée unique placée sous le signe de l'amour,
-              du raffinement et de la fête. Votre présence sera
-              le plus beau des cadeaux.
+              du raffinement et de la fête.
             </p>
-
-            <div className="cp-countdown-wrap">
-              <div className="cp-tear-mini cp-tear-mini-top" aria-hidden="true" />
-              <p className="cp-countdown-label">Le grand jour dans</p>
-              <div className="cp-countdown">
-                <div className="cp-cd-cell">
-                  <span className="cp-cd-num">{countdown.d}</span>
-                  <span className="cp-cd-lbl">Jours</span>
-                </div>
-                <span className="cp-cd-sep">:</span>
-                <div className="cp-cd-cell">
-                  <span className="cp-cd-num">{countdown.h}</span>
-                  <span className="cp-cd-lbl">Heures</span>
-                </div>
-                <span className="cp-cd-sep">:</span>
-                <div className="cp-cd-cell">
-                  <span className="cp-cd-num">{countdown.m}</span>
-                  <span className="cp-cd-lbl">Minutes</span>
-                </div>
-                <span className="cp-cd-sep">:</span>
-                <div className="cp-cd-cell">
-                  <span className="cp-cd-num">{countdown.s}</span>
-                  <span className="cp-cd-lbl">Secondes</span>
-                </div>
-              </div>
-              <div className="cp-tear-mini cp-tear-mini-bot" aria-hidden="true" />
-            </div>
+            <p className="cp-welcome-text">
+              Votre présence sera le plus beau des cadeaux,
+              et nous serions honorés de vous accueillir
+              parmi nous pour cette célébration.
+            </p>
           </div>
         </section>
 
-        {/* ===== 3. PROGRAMME — TIMELINE VERTICALE ===== */}
+        {/* ===== 3. COMPTE À REBOURS (sur blanc, entre deux découpes bordeaux) ===== */}
+        <section className="cp-countdown-section">
+          {/* Découpe haut (du bordeaux vers blanc) */}
+          <div className="cp-tear cp-tear-burgundy-bottom" aria-hidden="true">
+            <svg viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 0 0 L 1440 0 L 1440 15 Q 1380 28 1320 18 Q 1260 8 1200 22 Q 1140 34 1080 20 Q 1020 10 960 26 Q 900 36 840 22 Q 780 12 720 28 Q 660 36 600 20 Q 540 10 480 26 Q 420 34 360 20 Q 300 10 240 26 Q 180 36 120 22 Q 60 12 0 24 Z" fill="#7B1E2E" />
+            </svg>
+          </div>
+
+          <div className="cp-countdown-inner">
+            <h2 className="cp-countdown-title">The Celebration Begins In</h2>
+            <div className="cp-countdown-big">
+              <div className="cp-cdb-cell">
+                <span className="cp-cdb-num">{countdown.d}</span>
+                <span className="cp-cdb-lbl">Days</span>
+              </div>
+              <span className="cp-cdb-sep" aria-hidden="true">:</span>
+              <div className="cp-cdb-cell">
+                <span className="cp-cdb-num">{countdown.h}</span>
+                <span className="cp-cdb-lbl">Hours</span>
+              </div>
+              <span className="cp-cdb-sep" aria-hidden="true">:</span>
+              <div className="cp-cdb-cell">
+                <span className="cp-cdb-num">{countdown.m}</span>
+                <span className="cp-cdb-lbl">Minutes</span>
+              </div>
+              <span className="cp-cdb-sep" aria-hidden="true">:</span>
+              <div className="cp-cdb-cell">
+                <span className="cp-cdb-num">{countdown.s}</span>
+                <span className="cp-cdb-lbl">Seconds</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Découpe bas (du blanc vers bordeaux pour la section suivante) */}
+          <div className="cp-tear cp-tear-burgundy-top" aria-hidden="true">
+            <svg viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 0 40 L 1440 40 L 1440 15 Q 1380 28 1320 18 Q 1260 8 1200 22 Q 1140 34 1080 20 Q 1020 10 960 26 Q 900 36 840 22 Q 780 12 720 28 Q 660 36 600 20 Q 540 10 480 26 Q 420 34 360 20 Q 300 10 240 26 Q 180 36 120 22 Q 60 12 0 24 Z" fill="#7B1E2E" />
+            </svg>
+          </div>
+        </section>
+
+        {/* ===== 4. PROGRAMME — TIMELINE STYLE VIDÉO ===== */}
         {wedding.program?.length > 0 && (
           <section className="cp-program">
-            <p className="cp-section-eyebrow cp-eyebrow-light">— Programme de la journée —</p>
-            <h2 className="cp-section-title cp-title-light">Le déroulé</h2>
+            <h2 className="cp-program-title">Schedule of Events</h2>
 
-            <div className="cp-timeline">
-              <div className="cp-timeline-line" />
-              {(wedding.program as ProgramItem[]).map((item, i) => (
-                <div key={i} className={`cp-tl-item ${i % 2 === 0 ? 'cp-tl-left' : 'cp-tl-right'}`}>
-                  <div className="cp-tl-marker" aria-hidden="true">
-                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                      {/* Bouton de rose blanche */}
-                      <defs>
-                        <radialGradient id={`cpBudGrad${i}`} cx="0.4" cy="0.4" r="0.6">
-                          <stop offset="0%" stopColor="#ffffff" />
-                          <stop offset="100%" stopColor="#e8d5be" />
-                        </radialGradient>
-                      </defs>
-                      {/* Feuilles */}
-                      <ellipse cx="12" cy="28" rx="8" ry="3" fill="#4a6a3a" transform="rotate(-30 12 28)" />
-                      <ellipse cx="28" cy="28" rx="8" ry="3" fill="#4a6a3a" transform="rotate(30 28 28)" />
-                      {/* Bouton */}
-                      <ellipse cx="20" cy="18" rx="9" ry="11" fill={`url(#cpBudGrad${i})`} />
-                      <path d="M 20 8 Q 14 12 14 20 Q 14 26 20 28 Q 26 26 26 20 Q 26 12 20 8 Z" fill="#ffffff" opacity="0.5" />
-                      <ellipse cx="20" cy="18" rx="3" ry="6" fill="#c8a878" opacity="0.4" />
-                    </svg>
+            <div className="cp-timeline-v">
+              {(wedding.program as ProgramItem[]).map((item, i) => {
+                const isMiddle = i === Math.floor((wedding.program as ProgramItem[]).length / 2) - 1
+                return (
+                  <div key={i} className="cp-tlv-row">
+                    <div className="cp-tlv-time">{item.time}</div>
+                    <div className="cp-tlv-axis">
+                      {isMiddle ? (
+                        <div className="cp-tlv-rose" aria-hidden="true">
+                          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                              <radialGradient id={`cpRoseG${i}`} cx="0.4" cy="0.4" r="0.6">
+                                <stop offset="0%" stopColor="#ffffff" />
+                                <stop offset="100%" stopColor="#e8d5be" />
+                              </radialGradient>
+                            </defs>
+                            {/* Pétales superposés (rose blanche photographique) */}
+                            <circle cx="30" cy="30" r="22" fill={`url(#cpRoseG${i})`} />
+                            <circle cx="22" cy="24" r="14" fill="#ffffff" opacity="0.85" />
+                            <circle cx="38" cy="26" r="13" fill="#ffffff" opacity="0.75" />
+                            <circle cx="30" cy="38" r="14" fill="#ffffff" opacity="0.8" />
+                            <circle cx="20" cy="36" r="11" fill={`url(#cpRoseG${i})`} opacity="0.85" />
+                            <circle cx="40" cy="38" r="11" fill={`url(#cpRoseG${i})`} opacity="0.85" />
+                            <circle cx="30" cy="30" r="8" fill="#f4e3c8" opacity="0.7" />
+                            <circle cx="30" cy="30" r="4" fill="#c8a878" opacity="0.5" />
+                          </svg>
+                        </div>
+                      ) : (
+                        <span className="cp-tlv-diamond" aria-hidden="true">◆</span>
+                      )}
+                    </div>
+                    <div className="cp-tlv-event">
+                      <p className="cp-tlv-event-name">{item.event}</p>
+                      {item.venue && <p className="cp-tlv-event-venue">{item.venue}</p>}
+                    </div>
                   </div>
-                  <div className="cp-tl-card">
-                    <p className="cp-tl-time">{item.time}</p>
-                    <p className="cp-tl-event">{item.event}</p>
-                    {item.venue && <p className="cp-tl-venue">{item.venue}</p>}
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </section>
         )}
@@ -539,11 +583,10 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
             </div>
 
             <div className="cp-rsvp-inner">
-              <p className="cp-section-eyebrow cp-eyebrow-light">— Confirmation —</p>
-              <h2 className="cp-section-title cp-title-light">Serez-vous des nôtres ?</h2>
+              <h2 className="cp-rsvp-title">Confirm Your Attendance</h2>
               <p className="cp-rsvp-sub">
-                Merci de bien vouloir nous confirmer votre présence
-                avant le {formattedDate}.
+                To help us prepare for a joyful celebration,
+                kindly confirm your attendance before {formattedDate}.
               </p>
 
               {rsvpStatus === 'done' ? (
@@ -621,39 +664,73 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
           </section>
         )}
 
-        {/* ===== 7. CONCLUSION + FOOTER ===== */}
+        {/* ===== 7. CONCLUSION : "Hope to see you there!" + couple ===== */}
         <section className="cp-conclusion">
-          <p className="cp-conclusion-text">
-            « Avec tout notre amour, nous comptons les jours
-            qui nous séparent du moment de vous accueillir. »
-          </p>
-          <p className="cp-conclusion-sig">
-            {wedding.bride_name} &amp; {wedding.groom_name}
+          <h2 className="cp-conclusion-title">Hope to see you there!</h2>
+          <p className="cp-conclusion-names">
+            {wedding.bride_name} and {wedding.groom_name}
           </p>
 
-          {/* Photo finale stylisée (placeholder élégant) */}
+          {/* Photo finale stylisée (silhouettes du couple) */}
           <div className="cp-couple-photo" aria-hidden="true">
-            <div className="cp-photo-inner">
-              <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="cpPhotoBg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f3e9d8" />
-                    <stop offset="100%" stopColor="#d4c08e" />
-                  </linearGradient>
-                </defs>
-                <rect width="200" height="240" fill="url(#cpPhotoBg)" />
-                {/* Silhouettes du couple */}
-                <ellipse cx="78" cy="95" rx="22" ry="26" fill="#3e2818" opacity="0.85" />
-                <path d="M 56 120 Q 56 170 78 200 Q 100 240 100 240 L 56 240 Z" fill="#3e2818" opacity="0.85" />
-                <path d="M 56 120 Q 78 130 100 130 L 100 200 Q 80 220 56 200 Z" fill="#3e2818" opacity="0.85" />
-                <ellipse cx="125" cy="92" rx="20" ry="24" fill="#7B1E2E" opacity="0.85" />
-                <path d="M 105 115 Q 105 175 125 200 Q 145 240 145 240 L 105 240 Z" fill="#7B1E2E" opacity="0.85" />
-                {/* Bouquet entre eux */}
-                <circle cx="100" cy="160" r="10" fill="#c44a5c" />
-                <circle cx="93" cy="155" r="8" fill="#ffffff" opacity="0.9" />
-                <circle cx="107" cy="158" r="8" fill="#c44a5c" />
-              </svg>
-            </div>
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cpPhotoBg2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#5C1422" />
+                  <stop offset="60%" stopColor="#4A3320" />
+                  <stop offset="100%" stopColor="#2D1A0F" />
+                </linearGradient>
+                <linearGradient id="cpFoliage" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3a4a2a" />
+                  <stop offset="100%" stopColor="#1a2515" />
+                </linearGradient>
+              </defs>
+
+              {/* Fond ambré sombre */}
+              <rect width="400" height="500" fill="url(#cpPhotoBg2)" />
+
+              {/* Feuillage en arrière-plan */}
+              <ellipse cx="60" cy="180" rx="80" ry="120" fill="url(#cpFoliage)" opacity="0.85" />
+              <ellipse cx="340" cy="160" rx="90" ry="130" fill="url(#cpFoliage)" opacity="0.85" />
+              <ellipse cx="200" cy="120" rx="120" ry="90" fill="url(#cpFoliage)" opacity="0.7" />
+
+              {/* Balustrade en pierre */}
+              <rect x="0" y="320" width="400" height="40" fill="#8a7a5e" opacity="0.5" />
+              <rect x="0" y="315" width="400" height="6" fill="#a89a7e" opacity="0.6" />
+              {[40, 100, 160, 220, 280, 340].map(x => (
+                <g key={x}>
+                  <ellipse cx={x} cy="345" rx="10" ry="6" fill="#a89a7e" opacity="0.5" />
+                  <rect x={x - 6} y="360" width="12" height="35" fill="#8a7a5e" opacity="0.5" />
+                </g>
+              ))}
+
+              {/* Silhouette homme (gauche) — costume crème */}
+              <g>
+                <ellipse cx="155" cy="170" rx="22" ry="26" fill="#3a2a1c" />
+                <path d="M 130 200 Q 130 280 145 360 L 175 360 Q 180 280 175 200 Q 165 195 155 195 Q 145 195 130 200 Z" fill="#e8dcc4" />
+                <path d="M 145 220 L 145 300 L 165 300 L 165 220 Z" fill="#1a1a1a" opacity="0.85" />
+                <path d="M 130 360 Q 130 440 145 500 L 175 500 Q 180 440 175 360 Z" fill="#d4c8a8" />
+                <ellipse cx="140" cy="180" rx="8" ry="4" fill="#1a1a1a" opacity="0.9" />
+              </g>
+
+              {/* Silhouette femme (droite) — robe blanche */}
+              <g>
+                <ellipse cx="240" cy="172" rx="20" ry="25" fill="#5a3a2c" />
+                <path d="M 240 145 Q 260 150 270 165 Q 268 155 258 152" fill="#3a2418" />
+                <path d="M 215 200 Q 215 280 225 340 L 265 340 Q 275 280 270 200 Q 260 195 240 195 Q 220 195 215 200 Z" fill="#fbf6ea" />
+                <path d="M 215 340 Q 200 410 195 500 L 295 500 Q 295 410 280 340 Z" fill="#ffffff" />
+                <ellipse cx="222" cy="186" rx="8" ry="4" fill="#1a1a1a" opacity="0.9" />
+              </g>
+
+              {/* Vignette atmosphérique */}
+              <rect width="400" height="500" fill="url(#cpVignette)" />
+              <defs>
+                <radialGradient id="cpVignette" cx="0.5" cy="0.5" r="0.7">
+                  <stop offset="50%" stopColor="#000000" stopOpacity="0" />
+                  <stop offset="100%" stopColor="#000000" stopOpacity="0.4" />
+                </radialGradient>
+              </defs>
+            </svg>
           </div>
         </section>
 
@@ -699,167 +776,172 @@ const CSS = `
   .cp-container { font-family: 'Cormorant Garamond', Georgia, serif; }
 
   /* =========================================
-     ÉCRAN ENVELOPPE
+     ÉCRAN ENVELOPPE — 4 RABATS TRIANGULAIRES
      ========================================= */
   .cp-env-screen {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: radial-gradient(ellipse at center, #f7ecdf 0%, #e0cdb0 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    background: #fefcf7;
     transition: opacity 0.6s ease;
   }
   .cp-env-screen.cp-phase-3 { opacity: 0; pointer-events: none; }
 
-  .cp-env-wrap {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2.5rem;
-    user-select: none;
-  }
-
-  .cp-env-body {
-    position: relative;
-    width: 360px;
-    height: 240px;
-    transform-style: preserve-3d;
-    perspective: 1200px;
-  }
-
-  /* Corps de l'enveloppe (texture papier) */
-  .cp-env-paper-texture {
+  /* Fond papier texturé (visible une fois les rabats partis) */
+  .cp-env-back {
     position: absolute;
     inset: 0;
-    background: #fefcf7;
-    border-radius: 4px;
-    box-shadow:
-      0 12px 40px rgba(60, 30, 10, 0.18),
-      0 2px 6px rgba(60, 30, 10, 0.08),
-      inset 0 0 80px rgba(180, 140, 90, 0.08);
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(200, 170, 130, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(200, 170, 130, 0.05) 0%, transparent 50%),
-      repeating-linear-gradient(45deg, rgba(180, 140, 90, 0.02) 0px, rgba(180, 140, 90, 0.02) 1px, transparent 1px, transparent 3px);
-  }
-
-  /* Rabats latéraux & inférieur */
-  .cp-env-flap-bottom {
-    position: absolute;
-    inset: 0;
-    border-radius: 4px;
     background:
-      linear-gradient(135deg, transparent 49.5%, rgba(180, 140, 90, 0.18) 50%, transparent 50.5%),
-      linear-gradient(-135deg, transparent 49.5%, rgba(180, 140, 90, 0.18) 50%, transparent 50.5%);
-    pointer-events: none;
-  }
-  .cp-env-flap-left,
-  .cp-env-flap-right {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 50%;
-    background: linear-gradient(to right, rgba(180, 140, 90, 0.05), transparent 80%);
-    pointer-events: none;
-  }
-  .cp-env-flap-right {
-    left: auto; right: 0;
-    background: linear-gradient(to left, rgba(180, 140, 90, 0.05), transparent 80%);
+      radial-gradient(ellipse at 50% 50%, #fefcf7 0%, #f3e9d3 100%);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(180, 140, 90, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(180, 140, 90, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, #fefcf7 0%, #f3e9d3 100%);
   }
 
-  /* Rabat supérieur — clé de l'animation */
-  .cp-env-flap-top {
+  /* Aperçu de l'invitation derrière l'enveloppe (apparait quand les rabats s'ouvrent) */
+  .cp-env-reveal {
     position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(to bottom, #c8dcea 0%, #e6eef5 50%, #f3e9d8 100%);
+    opacity: 0;
+    transition: opacity 0.7s ease 0.5s;
+  }
+  .cp-phase-2 .cp-env-reveal,
+  .cp-phase-3 .cp-env-reveal { opacity: 1; }
+
+  .cp-env-reveal-inner {
+    text-align: center;
+    padding: 2rem;
+  }
+  .cp-env-reveal-eyebrow {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2rem, 7vw, 3rem);
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(60, 20, 30, 0.35);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+  .cp-env-reveal-names {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(3rem, 10vw, 4.5rem);
+    color: #ffffff;
+    text-shadow: 0 3px 12px rgba(60, 20, 30, 0.4);
+    line-height: 1.1;
+  }
+  .cp-env-reveal-names em {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.5em;
+    color: #ffffff;
+    margin: 0.1em 0;
+  }
+
+  /* Les 4 rabats triangulaires — chacun occupe la moitié de l'écran
+     avec une forme de triangle pointant vers le centre */
+  .cp-env-flap {
+    position: absolute;
+    z-index: 4;
+    background:
+      radial-gradient(ellipse at 50% 50%, #fefcf7 0%, #f3e9d3 100%);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(180, 140, 90, 0.025) 0px, rgba(180, 140, 90, 0.025) 1px, transparent 1px, transparent 4px),
+      radial-gradient(ellipse at 50% 50%, #fefcf7 0%, #f3e9d3 100%);
+    box-shadow: 0 4px 12px rgba(60, 30, 10, 0.18);
+    transition: transform 1.3s cubic-bezier(0.55, 0, 0.3, 1), opacity 0.4s ease 0.9s;
+  }
+
+  /* Rabat HAUT : triangle dont la base est en haut de l'écran, pointe vers le centre */
+  .cp-flap-top {
     top: 0; left: 0; right: 0;
-    height: 130px;
-    background: #fefcf7;
+    height: 60vh;
     clip-path: polygon(0 0, 100% 0, 50% 100%);
     transform-origin: top center;
-    transition: transform 0.9s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.4s ease 0.6s;
-    box-shadow: 0 4px 8px rgba(60, 30, 10, 0.08);
-    z-index: 3;
   }
-  .cp-env-flap-shadow {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 60%, rgba(180, 140, 90, 0.12));
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  /* Rabat BAS : triangle dont la base est en bas, pointe vers le centre */
+  .cp-flap-bottom {
+    bottom: 0; left: 0; right: 0;
+    height: 60vh;
+    clip-path: polygon(0 100%, 100% 100%, 50% 0);
+    transform-origin: bottom center;
   }
-  .cp-phase-2 .cp-env-flap-top,
-  .cp-phase-3 .cp-env-flap-top {
-    transform: rotateX(-180deg);
-    opacity: 0;
+  /* Rabat GAUCHE : triangle base sur le bord gauche, pointe au centre */
+  .cp-flap-left {
+    top: 0; bottom: 0; left: 0;
+    width: 60vw;
+    clip-path: polygon(0 0, 0 100%, 100% 50%);
+    transform-origin: left center;
+  }
+  /* Rabat DROIT : triangle base sur le bord droit, pointe au centre */
+  .cp-flap-right {
+    top: 0; bottom: 0; right: 0;
+    width: 60vw;
+    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+    transform-origin: right center;
   }
 
-  /* Sceau de cire */
+  /* OUVERTURE des rabats en phase 2+ : chacun se rétracte vers son bord */
+  .cp-phase-2 .cp-flap-top,
+  .cp-phase-3 .cp-flap-top    { transform: translateY(-100%); opacity: 0; }
+  .cp-phase-2 .cp-flap-bottom,
+  .cp-phase-3 .cp-flap-bottom { transform: translateY(100%); opacity: 0; }
+  .cp-phase-2 .cp-flap-left,
+  .cp-phase-3 .cp-flap-left   { transform: translateX(-100%); opacity: 0; }
+  .cp-phase-2 .cp-flap-right,
+  .cp-phase-3 .cp-flap-right  { transform: translateX(100%); opacity: 0; }
+
+  /* Sceau de cire — pile au centre, sur les 4 rabats */
   .cp-seal {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 110px;
-    height: 110px;
+    width: clamp(120px, 28vw, 170px);
+    height: clamp(120px, 28vw, 170px);
     transform: translate(-50%, -50%);
-    z-index: 4;
-    filter: drop-shadow(0 4px 8px rgba(80, 50, 20, 0.35));
-    animation: cpSealPulse 2.4s ease-in-out infinite;
+    z-index: 5;
+    filter: drop-shadow(0 6px 12px rgba(80, 50, 20, 0.4));
+    animation: cpSealPulse 2.6s ease-in-out infinite;
+    transition: opacity 0.55s ease, transform 0.55s ease;
   }
   .cp-seal svg { width: 100%; height: 100%; }
   .cp-phase-1 .cp-seal,
   .cp-phase-2 .cp-seal,
   .cp-phase-3 .cp-seal {
     animation: none;
-  }
-
-  /* Casse du sceau en phase 1 */
-  .cp-seal-left,
-  .cp-seal-right {
-    transform-origin: center;
-    transition: transform 0.6s cubic-bezier(0.6, 0, 0.4, 1), opacity 0.5s ease 0.3s;
-  }
-  .cp-phase-1 .cp-seal-left { transform: translateX(-30px) rotate(-12deg); opacity: 0; }
-  .cp-phase-1 .cp-seal-right { transform: translateX(30px) rotate(12deg); opacity: 0; }
-  .cp-phase-2 .cp-seal-left,
-  .cp-phase-3 .cp-seal-left { transform: translateX(-30px) rotate(-12deg); opacity: 0; }
-  .cp-phase-2 .cp-seal-right,
-  .cp-phase-3 .cp-seal-right { transform: translateX(30px) rotate(12deg); opacity: 0; }
-
-  .cp-seal-flowers {
-    transition: opacity 0.4s ease;
-  }
-  .cp-phase-1 .cp-seal-flowers,
-  .cp-phase-2 .cp-seal-flowers,
-  .cp-phase-3 .cp-seal-flowers {
     opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
   }
-
   @keyframes cpSealPulse {
     0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.04); }
+    50% { transform: translate(-50%, -50%) scale(1.05); }
   }
 
-  /* Hint sous l'enveloppe */
+  /* Hint sous le sceau */
   .cp-env-hint {
-    font-family: 'Cinzel', serif;
-    font-size: 0.78rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: #7a5a3a;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    text-align: center;
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    color: #7B1E2E;
+    transition: opacity 0.4s ease;
   }
-  .cp-env-hint-line {
-    display: inline-block;
-    width: 36px;
-    height: 1px;
-    background: #7a5a3a;
-    opacity: 0.5;
-  }
+  .cp-phase-1 .cp-env-hint,
+  .cp-phase-2 .cp-env-hint,
+  .cp-phase-3 .cp-env-hint { opacity: 0; }
 
   /* =========================================
      INVITATION — base
@@ -907,22 +989,24 @@ const CSS = `
     position: relative;
     z-index: 2;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
   }
-  .cp-hero-eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--cp-burgundy);
-    margin-bottom: 0.5rem;
+  .cp-hero-wedding-day {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    color: #ffffff;
+    text-shadow: 0 3px 12px rgba(60, 20, 30, 0.4), 0 1px 4px rgba(60, 20, 30, 0.3);
+    line-height: 1;
+    margin-bottom: 0.4rem;
   }
   .cp-hero-date-top {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--cp-ink-soft);
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(60, 20, 30, 0.4);
     letter-spacing: 0.05em;
+    font-weight: 500;
   }
 
   .cp-hero-names {
@@ -1026,96 +1110,99 @@ const CSS = `
     text-align: center;
     padding-top: 2rem;
   }
-  .cp-welcome-eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--cp-gold);
+  .cp-welcome-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2.6rem, 8vw, 3.8rem);
+    color: #ffffff;
+    line-height: 1.1;
     margin-bottom: 2rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   .cp-welcome-text {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1.25rem;
-    line-height: 1.8;
+    font-size: 1.2rem;
+    line-height: 1.7;
     color: #f7ecdf;
-    margin-bottom: 3.5rem;
+    margin-bottom: 1.5rem;
     max-width: 580px;
     margin-left: auto;
     margin-right: auto;
   }
+  .cp-welcome-text:last-child { margin-bottom: 0; }
 
-  /* Compte à rebours */
-  .cp-countdown-wrap {
+  /* =========================================
+     SECTION COMPTE À REBOURS (sur blanc, entre deux découpes bordeaux)
+     ========================================= */
+  .cp-countdown-section {
     position: relative;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    padding: 2.5rem 1.5rem;
-    max-width: 580px;
-    margin: 0 auto;
+    background: var(--cp-paper);
+    padding: 0;
   }
-  .cp-tear-mini {
-    position: absolute;
-    left: 0; right: 0;
-    height: 12px;
-    background-image:
-      linear-gradient(135deg, transparent 49%, var(--cp-burgundy) 50%),
-      linear-gradient(-135deg, transparent 49%, var(--cp-burgundy) 50%);
-    background-size: 16px 12px;
-    background-repeat: repeat-x;
+  .cp-tear-burgundy-bottom,
+  .cp-tear-burgundy-top {
+    height: 40px;
+    line-height: 0;
+    margin: 0;
   }
-  .cp-tear-mini-top { top: -1px; background-position: 0 0; }
-  .cp-tear-mini-bot { bottom: -1px; transform: scaleY(-1); }
+  .cp-tear-burgundy-bottom { margin-top: -1px; }
+  .cp-tear-burgundy-top { margin-bottom: -1px; }
+  .cp-tear-burgundy-bottom svg,
+  .cp-tear-burgundy-top svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
-  .cp-countdown-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--cp-gold);
+  .cp-countdown-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
     text-align: center;
-    margin-bottom: 1.5rem;
   }
-  .cp-countdown {
+  .cp-countdown-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2.4rem, 7vw, 3.4rem);
+    color: var(--cp-ink);
+    line-height: 1;
+    margin-bottom: 2.5rem;
+  }
+  .cp-countdown-big {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 0.4rem;
+    gap: clamp(0.6rem, 2vw, 1.5rem);
   }
-  .cp-cd-cell {
+  .cp-cdb-cell {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 60px;
+    min-width: 70px;
   }
-  .cp-cd-num {
+  .cp-cdb-num {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-size: clamp(2.5rem, 9vw, 4.2rem);
     font-weight: 500;
-    color: #ffffff;
+    color: var(--cp-ink);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
-  .cp-cd-lbl {
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--cp-gold);
-    margin-top: 0.6rem;
-  }
-  .cp-cd-sep {
+  .cp-cdb-lbl {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 6vw, 2.8rem);
-    color: rgba(255, 255, 255, 0.35);
+    font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+    color: var(--cp-ink-soft);
+    margin-top: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+  .cp-cdb-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 9vw, 4.2rem);
+    color: var(--cp-ink);
     line-height: 1;
     padding-top: 0;
   }
 
   /* =========================================
-     3. PROGRAMME (TIMELINE)
+     4. PROGRAMME (TIMELINE)
      ========================================= */
   .cp-program {
     background: var(--cp-burgundy);
@@ -1144,68 +1231,91 @@ const CSS = `
   }
   .cp-title-light { color: #ffffff; }
 
-  .cp-timeline {
-    position: relative;
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 1rem 0;
+  /* Nouveau titre cursive "Schedule of Events" */
+  .cp-program-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2.6rem, 7vw, 3.6rem);
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1;
   }
-  .cp-timeline-line {
+  /* Timeline verticale style vidéo : heure | axe | événement */
+  .cp-timeline-v {
+    max-width: 540px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .cp-tlv-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    align-items: center;
+    gap: 1rem;
+    min-height: 90px;
+    position: relative;
+  }
+  .cp-tlv-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: #ffffff;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .cp-tlv-axis {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Ligne verticale qui traverse l'axe */
+  .cp-tlv-axis::before {
+    content: '';
     position: absolute;
     top: 0; bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 2px;
-    background: linear-gradient(to bottom,
-      transparent,
-      rgba(255, 255, 255, 0.4) 5%,
-      rgba(255, 255, 255, 0.4) 95%,
-      transparent);
+    width: 1.5px;
+    background: rgba(255, 255, 255, 0.5);
   }
-  .cp-tl-item {
+  /* Première et dernière rangée : ligne partielle */
+  .cp-tlv-row:first-child .cp-tlv-axis::before { top: 50%; }
+  .cp-tlv-row:last-child .cp-tlv-axis::before { bottom: 50%; }
+
+  .cp-tlv-diamond {
     position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 2.5rem;
-    min-height: 80px;
-  }
-  .cp-tl-marker {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 56px;
-    height: 56px;
     z-index: 2;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
-  }
-  .cp-tl-marker svg { width: 100%; height: 100%; }
-  .cp-tl-card {
-    width: calc(50% - 50px);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 1.25rem 1.5rem;
-    border-radius: 4px;
-  }
-  .cp-tl-left .cp-tl-card { margin-right: auto; text-align: right; }
-  .cp-tl-right .cp-tl-card { margin-left: auto; text-align: left; }
-  .cp-tl-time {
-    font-family: 'Cinzel', serif;
-    font-size: 1.15rem;
-    letter-spacing: 0.15em;
-    color: var(--cp-gold);
-    margin-bottom: 0.3rem;
-  }
-  .cp-tl-event {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    font-style: italic;
     color: #ffffff;
-    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    background: var(--cp-burgundy);
+    padding: 0 4px;
   }
-  .cp-tl-venue {
+  .cp-tlv-rose {
+    position: relative;
+    z-index: 2;
+    width: 64px;
+    height: 64px;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+  }
+  .cp-tlv-rose svg { width: 100%; height: 100%; display: block; }
+
+  .cp-tlv-event {
+    text-align: center;
+    padding: 0 0.25rem;
+  }
+  .cp-tlv-event-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.95rem;
+    font-size: clamp(1.15rem, 3.5vw, 1.4rem);
+    color: #ffffff;
+    line-height: 1.25;
+  }
+  .cp-tlv-event-venue {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.2rem;
   }
 
   /* =========================================
@@ -1289,12 +1399,19 @@ const CSS = `
     text-align: center;
     padding-top: 2rem;
   }
+  .cp-rsvp-title {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(2.6rem, 8vw, 3.6rem);
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
   .cp-rsvp-sub {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.85);
     margin-bottom: 2.5rem;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
   .cp-rsvp-form { display: flex; flex-direction: column; gap: 1.25rem; }
   .cp-rsvp-choices {
@@ -1464,39 +1581,35 @@ const CSS = `
      7. CONCLUSION & FOOTER
      ========================================= */
   .cp-conclusion {
-    background: var(--cp-paper-warm);
-    padding: 5rem 1.5rem 3rem;
+    background: var(--cp-burgundy);
+    color: #ffffff;
+    padding: 4rem 0 0;
     text-align: center;
   }
-  .cp-conclusion-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1.3rem;
-    color: var(--cp-ink);
-    line-height: 1.7;
-    max-width: 560px;
-    margin: 0 auto 1.5rem;
-  }
-  .cp-conclusion-sig {
+  .cp-conclusion-title {
     font-family: 'Pinyon Script', cursive;
-    font-size: 2.5rem;
-    color: var(--cp-burgundy);
+    font-size: clamp(2.6rem, 8vw, 3.6rem);
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    padding: 0 1.5rem;
+  }
+  .cp-conclusion-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    color: #ffffff;
+    letter-spacing: 0.04em;
     margin-bottom: 3rem;
+    padding: 0 1.5rem;
   }
   .cp-couple-photo {
-    max-width: 280px;
-    margin: 0 auto;
-  }
-  .cp-photo-inner {
-    background: #ffffff;
-    padding: 14px 14px 56px;
-    box-shadow: 0 12px 32px rgba(60, 20, 30, 0.18);
-    transform: rotate(-2deg);
-    border-radius: 2px;
-  }
-  .cp-photo-inner svg {
     width: 100%;
-    height: auto;
+    max-height: 70vh;
+    overflow: hidden;
+  }
+  .cp-couple-photo svg {
+    width: 100%;
+    height: 100%;
     display: block;
   }
 
@@ -1543,17 +1656,11 @@ const CSS = `
      RESPONSIVE
      ========================================= */
   @media (max-width: 768px) {
-    .cp-env-body { width: 300px; height: 200px; }
-    .cp-env-flap-top { height: 108px; }
-    .cp-seal { width: 90px; height: 90px; }
+    .cp-env-hint { font-size: 0.95rem; bottom: 14%; }
   }
 
   @media (max-width: 480px) {
-    .cp-env-body { width: 260px; height: 175px; }
-    .cp-env-flap-top { height: 95px; }
-    .cp-seal { width: 78px; height: 78px; }
-    .cp-env-hint { font-size: 0.68rem; letter-spacing: 0.22em; gap: 0.6rem; }
-    .cp-env-hint-line { width: 20px; }
+    .cp-env-hint { font-size: 0.9rem; bottom: 12%; }
 
     .cp-hero { padding-top: 1.5rem; }
     .cp-name { font-size: 3.2rem; }
@@ -1563,30 +1670,17 @@ const CSS = `
     .cp-bouquet { height: 28vh; }
 
     .cp-welcome-text { font-size: 1.05rem; }
-    .cp-countdown { gap: 0.2rem; }
-    .cp-cd-cell { min-width: 48px; }
-    .cp-cd-num { font-size: 1.7rem; }
-    .cp-cd-lbl { font-size: 0.55rem; letter-spacing: 0.18em; }
-    .cp-cd-sep { font-size: 1.7rem; }
-    .cp-countdown-wrap { padding: 2rem 1rem; }
+    .cp-countdown-big { gap: 0.3rem; }
+    .cp-cdb-cell { min-width: 56px; }
+    .cp-cdb-lbl { font-size: 0.8rem; margin-top: 0.5rem; }
 
-    /* Timeline en colonne simple sur mobile */
-    .cp-timeline-line { left: 28px; }
-    .cp-tl-item { padding-left: 70px; }
-    .cp-tl-marker { left: 28px; width: 44px; height: 44px; }
-    .cp-tl-card,
-    .cp-tl-left .cp-tl-card,
-    .cp-tl-right .cp-tl-card {
-      width: 100%;
-      text-align: left;
-      margin-left: 0;
-      margin-right: 0;
-    }
-    .cp-tl-event { font-size: 1.15rem; }
+    /* Timeline mobile : encore grid, mais plus serré */
+    .cp-tlv-row { grid-template-columns: 0.8fr 50px 1fr; gap: 0.5rem; min-height: 76px; }
+    .cp-tlv-rose { width: 52px; height: 52px; }
+    .cp-tlv-time { font-size: 1.35rem; }
+    .cp-tlv-event-name { font-size: 1.1rem; }
 
     .cp-section-title { font-size: 1.75rem; }
-    .cp-conclusion-text { font-size: 1.1rem; }
-    .cp-conclusion-sig { font-size: 2rem; }
     .cp-footer-names { font-size: 1.6rem; }
 
     .cp-rsvp-choice { padding: 0.7rem 0.9rem; font-size: 0.62rem; letter-spacing: 0.18em; }
