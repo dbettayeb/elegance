@@ -212,79 +212,17 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
             )}
           </div>
 
-          {/* Bouquet de pivoines en premier plan */}
+          {/* Bouquet de pivoines en premier plan — VRAIE PHOTO
+              ↓ REMPLACER cette URL par votre propre photo si désiré.
+              Pour trouver des alternatives : https://unsplash.com/s/photos/peonies-bouquet
+              Crédit par défaut : Олег Мороз (@tengyart) / Unsplash */}
           <div className="cp-bouquet" aria-hidden="true">
-            <svg viewBox="0 0 1200 280" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <radialGradient id="cpRoseRed" cx="0.4" cy="0.35" r="0.7">
-                  <stop offset="0%" stopColor="#c44a5c" />
-                  <stop offset="60%" stopColor="#9c1f33" />
-                  <stop offset="100%" stopColor="#6e1424" />
-                </radialGradient>
-                <radialGradient id="cpRoseWhite" cx="0.4" cy="0.35" r="0.7">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="60%" stopColor="#f7ecdf" />
-                  <stop offset="100%" stopColor="#d8c4ad" />
-                </radialGradient>
-                <radialGradient id="cpRosePink" cx="0.4" cy="0.35" r="0.7">
-                  <stop offset="0%" stopColor="#f0c4cb" />
-                  <stop offset="100%" stopColor="#c88a96" />
-                </radialGradient>
-                <linearGradient id="cpLeaf" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#4a6a3a" />
-                  <stop offset="100%" stopColor="#2d4525" />
-                </linearGradient>
-              </defs>
-
-              {/* Feuillage arrière */}
-              <g opacity="0.85">
-                <ellipse cx="180" cy="160" rx="70" ry="28" fill="url(#cpLeaf)" transform="rotate(-20 180 160)" />
-                <ellipse cx="350" cy="130" rx="80" ry="30" fill="url(#cpLeaf)" transform="rotate(-10 350 130)" />
-                <ellipse cx="600" cy="100" rx="90" ry="32" fill="url(#cpLeaf)" />
-                <ellipse cx="850" cy="130" rx="80" ry="30" fill="url(#cpLeaf)" transform="rotate(10 850 130)" />
-                <ellipse cx="1020" cy="160" rx="70" ry="28" fill="url(#cpLeaf)" transform="rotate(20 1020 160)" />
-              </g>
-
-              {/* Roses & pivoines — rangée arrière */}
-              {[
-                { cx: 140, cy: 180, r: 55, fill: 'url(#cpRoseWhite)' },
-                { cx: 260, cy: 150, r: 60, fill: 'url(#cpRoseRed)' },
-                { cx: 380, cy: 130, r: 65, fill: 'url(#cpRoseWhite)' },
-                { cx: 510, cy: 115, r: 70, fill: 'url(#cpRoseRed)' },
-                { cx: 650, cy: 110, r: 72, fill: 'url(#cpRoseWhite)' },
-                { cx: 790, cy: 115, r: 70, fill: 'url(#cpRoseRed)' },
-                { cx: 920, cy: 130, r: 65, fill: 'url(#cpRoseWhite)' },
-                { cx: 1040, cy: 150, r: 60, fill: 'url(#cpRoseRed)' },
-                { cx: 1160, cy: 180, r: 55, fill: 'url(#cpRosePink)' },
-              ].map((r, i) => (
-                <g key={`back-${i}`}>
-                  <circle cx={r.cx} cy={r.cy} r={r.r} fill={r.fill} />
-                  {/* Pétales suggestifs */}
-                  <circle cx={r.cx - r.r * 0.25} cy={r.cy - r.r * 0.2} r={r.r * 0.45} fill={r.fill} opacity="0.7" />
-                  <circle cx={r.cx + r.r * 0.3} cy={r.cy + r.r * 0.1} r={r.r * 0.4} fill={r.fill} opacity="0.6" />
-                  <circle cx={r.cx} cy={r.cy} r={r.r * 0.25} fill="#000" opacity="0.08" />
-                </g>
-              ))}
-
-              {/* Rangée avant — plus petites, plus dense */}
-              {[
-                { cx: 80, cy: 230, r: 40, fill: 'url(#cpRoseRed)' },
-                { cx: 200, cy: 220, r: 45, fill: 'url(#cpRoseWhite)' },
-                { cx: 320, cy: 210, r: 50, fill: 'url(#cpRoseRed)' },
-                { cx: 450, cy: 200, r: 52, fill: 'url(#cpRoseWhite)' },
-                { cx: 590, cy: 195, r: 55, fill: 'url(#cpRoseRed)' },
-                { cx: 730, cy: 200, r: 52, fill: 'url(#cpRoseWhite)' },
-                { cx: 860, cy: 210, r: 50, fill: 'url(#cpRoseRed)' },
-                { cx: 980, cy: 220, r: 45, fill: 'url(#cpRoseWhite)' },
-                { cx: 1100, cy: 230, r: 40, fill: 'url(#cpRoseRed)' },
-              ].map((r, i) => (
-                <g key={`front-${i}`}>
-                  <circle cx={r.cx} cy={r.cy} r={r.r} fill={r.fill} />
-                  <circle cx={r.cx - r.r * 0.25} cy={r.cy - r.r * 0.2} r={r.r * 0.45} fill={r.fill} opacity="0.7" />
-                  <circle cx={r.cx} cy={r.cy} r={r.r * 0.22} fill="#000" opacity="0.1" />
-                </g>
-              ))}
-            </svg>
+            <img
+              className="cp-bouquet-photo"
+              src="https://images.unsplash.com/photo-1612771269260-ba63f7e6b53c?w=1400&q=85&auto=format&fit=crop"
+              alt=""
+              loading="eager"
+            />
           </div>
         </section>
 
@@ -474,29 +412,14 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
         {/* ===== 5. RSVP ===== */}
         {wedding.show_rsvp && (
           <section className="cp-rsvp">
-            {/* Petit rappel floral en haut */}
+            {/* Rappel floral en haut — même photo que le hero pour cohérence */}
             <div className="cp-rsvp-roses" aria-hidden="true">
-              <svg viewBox="0 0 600 60" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <radialGradient id="cpRsvpRoseR" cx="0.4" cy="0.4" r="0.7">
-                    <stop offset="0%" stopColor="#c44a5c" />
-                    <stop offset="100%" stopColor="#6e1424" />
-                  </radialGradient>
-                  <radialGradient id="cpRsvpRoseW" cx="0.4" cy="0.4" r="0.7">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#d8c4ad" />
-                  </radialGradient>
-                </defs>
-                <ellipse cx="100" cy="30" rx="40" ry="14" fill="#4a6a3a" opacity="0.8" transform="rotate(-15 100 30)" />
-                <ellipse cx="500" cy="30" rx="40" ry="14" fill="#4a6a3a" opacity="0.8" transform="rotate(15 500 30)" />
-                <circle cx="120" cy="32" r="22" fill="url(#cpRsvpRoseR)" />
-                <circle cx="170" cy="38" r="18" fill="url(#cpRsvpRoseW)" />
-                <circle cx="220" cy="34" r="20" fill="url(#cpRsvpRoseR)" />
-                <circle cx="300" cy="36" r="22" fill="url(#cpRsvpRoseW)" />
-                <circle cx="380" cy="34" r="20" fill="url(#cpRsvpRoseR)" />
-                <circle cx="430" cy="38" r="18" fill="url(#cpRsvpRoseW)" />
-                <circle cx="480" cy="32" r="22" fill="url(#cpRsvpRoseR)" />
-              </svg>
+              <img
+                className="cp-rsvp-roses-photo"
+                src="https://images.unsplash.com/photo-1612771269260-ba63f7e6b53c?w=1200&q=80&auto=format&fit=crop"
+                alt=""
+                loading="lazy"
+              />
             </div>
 
             <div className="cp-rsvp-inner">
@@ -992,19 +915,36 @@ const CSS = `
 
   .cp-bouquet {
     position: absolute;
-    bottom: -10px;
+    bottom: -2px;
     left: 0;
     right: 0;
-    height: 35vh;
-    max-height: 280px;
+    height: 38vh;
+    max-height: 340px;
     z-index: 1;
     pointer-events: none;
+    overflow: hidden;
   }
-  .cp-bouquet svg {
+  .cp-bouquet-photo {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
     display: block;
-    filter: drop-shadow(0 -4px 12px rgba(60, 20, 30, 0.2));
+    /* Fade le haut de la photo pour la blender avec le château au-dessus.
+       Masque qui révèle 0% en haut → 100% à 35% de hauteur */
+    -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 12%,
+      rgba(0, 0, 0, 0.7) 25%,
+      #000 38%,
+      #000 100%);
+    mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 12%,
+      rgba(0, 0, 0, 0.7) 25%,
+      #000 38%,
+      #000 100%);
+    filter: drop-shadow(0 -4px 16px rgba(60, 20, 30, 0.25));
   }
 
   /* =========================================
@@ -1311,11 +1251,31 @@ const CSS = `
     padding: 0 1.5rem 5rem;
   }
   .cp-rsvp-roses {
-    height: 60px;
-    margin-top: -1px;
+    height: 200px;
+    margin-top: 0;
+    margin-bottom: 1rem;
     line-height: 0;
+    overflow: hidden;
+    position: relative;
   }
-  .cp-rsvp-roses svg { width: 100%; height: 100%; display: block; }
+  .cp-rsvp-roses-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    /* Fade en bas pour blender vers le burgundy de la section RSVP */
+    -webkit-mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 55%,
+      rgba(0, 0, 0, 0.6) 75%,
+      transparent 100%);
+    mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 55%,
+      rgba(0, 0, 0, 0.6) 75%,
+      transparent 100%);
+  }
   .cp-rsvp-inner {
     max-width: 620px;
     margin: 0 auto;
