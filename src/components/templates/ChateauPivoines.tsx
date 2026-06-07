@@ -174,105 +174,22 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
 
         {/* ===== 1. HERO — CHÂTEAU & FONTAINE ===== */}
         <section className="cp-hero">
-          {/* Décor ciel + château */}
+          {/* Décor : photo de château baroque avec fontaine.
+              ↓ REMPLACER cette URL par votre propre photo de venue si désiré.
+              Vous pouvez utiliser :
+              - L'URL d'une photo de votre château/lieu (uploadée sur Cloudinary, votre serveur, etc.)
+              - Une photo Unsplash (https://unsplash.com/s/photos/baroque-palace)
+              - Une image générée par IA (Midjourney, DALL-E, etc.) avec un prompt type :
+                "watercolor baroque chateau courtyard with stone fountain, dreamy atmosphere" */}
           <div className="cp-hero-scene">
-            <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" className="cp-castle-svg">
-              {/* Ciel dégradé */}
-              <defs>
-                <linearGradient id="cpSky" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#c8dcea" />
-                  <stop offset="60%" stopColor="#e6eef5" />
-                  <stop offset="100%" stopColor="#f3e9d8" />
-                </linearGradient>
-                <linearGradient id="cpCastleStone" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#efe2c8" />
-                  <stop offset="100%" stopColor="#c8b48a" />
-                </linearGradient>
-                <linearGradient id="cpRoof" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7c5640" />
-                  <stop offset="100%" stopColor="#5a3e2c" />
-                </linearGradient>
-                <radialGradient id="cpFountainWater" cx="0.5" cy="0.3" r="0.7">
-                  <stop offset="0%" stopColor="#d6e6ef" />
-                  <stop offset="100%" stopColor="#8aa9bd" />
-                </radialGradient>
-              </defs>
-
-              {/* Ciel */}
-              <rect x="0" y="0" width="800" height="600" fill="url(#cpSky)" />
-
-              {/* Nuages */}
-              <g opacity="0.85" fill="#ffffff">
-                <ellipse cx="120" cy="90" rx="55" ry="14" />
-                <ellipse cx="160" cy="80" rx="35" ry="10" />
-                <ellipse cx="650" cy="110" rx="70" ry="16" />
-                <ellipse cx="700" cy="100" rx="40" ry="11" />
-                <ellipse cx="400" cy="60" rx="45" ry="11" />
-              </g>
-
-              {/* Colombes */}
-              <g className="cp-dove cp-dove-1" fill="#ffffff">
-                <path d="M 200 140 Q 210 130 220 138 Q 218 142 215 142 Q 222 145 226 142 Q 222 148 218 148 L 212 148 Q 206 150 200 146 Q 198 142 200 140 Z" />
-                <path d="M 205 138 Q 200 132 195 134 Q 200 138 205 138" />
-              </g>
-              <g className="cp-dove cp-dove-2" fill="#ffffff">
-                <path d="M 580 170 Q 590 160 600 168 Q 598 172 595 172 Q 602 175 606 172 Q 602 178 598 178 L 592 178 Q 586 180 580 176 Q 578 172 580 170 Z" />
-                <path d="M 585 168 Q 580 162 575 164 Q 580 168 585 168" />
-              </g>
-
-              {/* Château — tour gauche */}
-              <rect x="120" y="280" width="100" height="200" fill="url(#cpCastleStone)" />
-              <polygon points="120,280 170,210 220,280" fill="url(#cpRoof)" />
-              <rect x="155" y="320" width="30" height="50" fill="#5a3e2c" opacity="0.7" rx="14" />
-              <circle cx="170" cy="245" r="3" fill="#c9a961" />
-              <line x1="170" y1="195" x2="170" y2="210" stroke="#6a4a32" strokeWidth="2" />
-
-              {/* Château — corps central */}
-              <rect x="220" y="240" width="360" height="240" fill="url(#cpCastleStone)" />
-              <polygon points="220,240 400,180 580,240" fill="url(#cpRoof)" />
-              {/* Fenêtres */}
-              <g fill="#5a3e2c" opacity="0.7">
-                <rect x="250" y="290" width="22" height="40" rx="11" />
-                <rect x="295" y="290" width="22" height="40" rx="11" />
-                <rect x="340" y="290" width="22" height="40" rx="11" />
-                <rect x="438" y="290" width="22" height="40" rx="11" />
-                <rect x="483" y="290" width="22" height="40" rx="11" />
-                <rect x="528" y="290" width="22" height="40" rx="11" />
-              </g>
-              {/* Porte centrale */}
-              <path d="M 380 480 L 380 400 Q 380 370 400 370 Q 420 370 420 400 L 420 480 Z" fill="#3e2818" opacity="0.85" />
-              <line x1="400" y1="380" x2="400" y2="478" stroke="#c9a961" strokeWidth="0.8" opacity="0.6" />
-              {/* Drapeau */}
-              <line x1="400" y1="160" x2="400" y2="185" stroke="#6a4a32" strokeWidth="2" />
-              <path d="M 400 168 L 420 173 L 400 178 Z" fill="#7B1E2E" />
-
-              {/* Château — tour droite */}
-              <rect x="580" y="280" width="100" height="200" fill="url(#cpCastleStone)" />
-              <polygon points="580,280 630,210 680,280" fill="url(#cpRoof)" />
-              <rect x="615" y="320" width="30" height="50" fill="#5a3e2c" opacity="0.7" rx="14" />
-              <circle cx="630" cy="245" r="3" fill="#c9a961" />
-              <line x1="630" y1="195" x2="630" y2="210" stroke="#6a4a32" strokeWidth="2" />
-
-              {/* Sol / esplanade */}
-              <rect x="0" y="480" width="800" height="120" fill="#d4c08e" />
-              <rect x="0" y="478" width="800" height="6" fill="#a8915c" opacity="0.5" />
-
-              {/* Fontaine — bassin */}
-              <ellipse cx="400" cy="540" rx="170" ry="22" fill="#7a6a4a" opacity="0.4" />
-              <ellipse cx="400" cy="535" rx="170" ry="22" fill="url(#cpFountainWater)" />
-              <ellipse cx="400" cy="530" rx="170" ry="18" fill="none" stroke="#a8915c" strokeWidth="3" />
-
-              {/* Fontaine — colonne et vasque */}
-              <rect x="390" y="475" width="20" height="60" fill="#c8b48a" />
-              <ellipse cx="400" cy="475" rx="40" ry="8" fill="#c8b48a" />
-              <ellipse cx="400" cy="472" rx="40" ry="8" fill="none" stroke="#a8915c" strokeWidth="1.5" />
-              {/* Jets d'eau */}
-              <g fill="#d6e6ef" opacity="0.7">
-                <path d="M 400 470 Q 395 455 393 475" />
-                <path d="M 400 470 Q 405 455 407 475" />
-                <path d="M 400 468 L 400 455" stroke="#d6e6ef" strokeWidth="2" fill="none" />
-              </g>
-            </svg>
+            <img
+              className="cp-hero-photo"
+              src="https://images.unsplash.com/photo-1762245954281-b8b344981eb9?w=1400&q=85&auto=format&fit=crop"
+              alt=""
+              loading="eager"
+            />
+            {/* Overlay pour assombrir légèrement le bas et améliorer la lisibilité du texte */}
+            <div className="cp-hero-overlay" aria-hidden="true" />
           </div>
 
           {/* Type d'événement + date en haut */}
@@ -970,19 +887,25 @@ const CSS = `
     inset: 0;
     z-index: 0;
   }
-  .cp-castle-svg {
+  .cp-hero-photo {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
     display: block;
   }
-  .cp-dove {
-    animation: cpDoveFloat 5s ease-in-out infinite;
-    transform-origin: center;
-  }
-  .cp-dove-2 { animation-delay: -2s; animation-duration: 6s; }
-  @keyframes cpDoveFloat {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(8px, -10px); }
+  /* Overlay : éclaircit le haut (lisibilité du Wedding Day) et assombrit légèrement
+     le milieu (lisibilité des noms en cursive blanche). */
+  .cp-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.05) 30%,
+        rgba(0, 0, 0, 0.25) 60%,
+        rgba(123, 30, 46, 0.35) 100%);
+    pointer-events: none;
   }
 
   .cp-hero-top {
