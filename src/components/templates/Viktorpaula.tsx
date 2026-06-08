@@ -261,32 +261,6 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
         <TornSeparator flip />
 
-        {/* DRESS CODE */}
-        {wedding.dress_code && (
-          <div id="dress-code">
-            <div className="dress-inner">
-              <h2>Dress Code</h2>
-              <p className="dress-desc">{wedding.dress_code}</p>
-              {wedding.dress_palette && wedding.dress_palette.length > 0 && (
-                <div className="dress-swatches">
-                  {(wedding.dress_palette as string[]).map((color, i) => (
-                    <div key={i} className="dress-swatch" style={{ background: color }} />
-                  ))}
-                </div>
-              )}
-              <div className="dress-outfits">
-                <div className="dress-outfit">
-                  <img src="/assets/dresscode/gentleman.png" alt="Gentlemen" />
-                  <p className="dress-outfit-title">Gentlemen:<br />Well-tailored suits with classic dress shoes are preferred.</p>
-                </div>
-                <div className="dress-outfit">
-                  <img src="/assets/dresscode/lady.png" alt="Ladies" />
-                  <p className="dress-outfit-title">Ladies:<br />Formal dresses in elegant, polished styles are encouraged.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         <TornSeparator />
 
