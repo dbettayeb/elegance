@@ -131,4 +131,13 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'fr',
   },
+  {
+    id: 'viktor_paula',
+    name: 'Viktor & Paula',
+    description: 'Romance bordeaux & crème. Enveloppe à polygones qui s\'écartent sur une colombe. Hero avec rubis facettés, timeline à colombe animée, séparateurs déchirés. Élégance classique européenne.',
+    tags: ['Classique', 'Bordeaux', 'Occidental', 'Gemmes'],
+    palette: ['#66021f', '#fffaf8', '#f5ece9', '#4a0116'],
+    ambiance: 'sombre',
+    language: 'fr',
+  },
 ]

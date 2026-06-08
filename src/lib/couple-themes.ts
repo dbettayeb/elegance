@@ -305,6 +305,26 @@ const THEMES: Record<Wedding['template_id'], CoupleTheme> = {
     cardShadow: '0 2px 8px rgba(60, 20, 30, 0.06)',
     radius: '2px',
   },
+  viktor_paula: {
+    pageBg: '#66021f',
+    cardBg: '#fffaf8',
+    headerBg: 'linear-gradient(135deg, #7a0226 0%, #66021f 100%)',
+    textPrimary: '#fffaf8',
+    textSecondary: '#f5ece9',
+    textMuted: 'rgba(255,250,248,0.55)',
+    accent: '#c4294d',
+    accentSoft: 'rgba(102,1,32,0.12)',
+    accentText: '#4a0116',
+    success: '#2d6a4f',
+    warning: '#c4294d',
+    danger: '#8b0130',
+    border: 'rgba(255,250,248,0.18)',
+    borderStrong: 'rgba(255,250,248,0.4)',
+    headingFont: '"Cormorant Garamond", Georgia, serif',
+    bodyFont: '"Cormorant Garamond", Georgia, serif',
+    cardShadow: '0 4px 14px rgba(0,0,0,0.4)',
+    radius: '2px',
+  },
 }
 
 export function getTheme(templateId: Wedding['template_id']): CoupleTheme {
