@@ -261,6 +261,32 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
         <TornSeparator flip />
 
+        {/* DRESS CODE */}
+        {wedding.dress_code && (
+          <div id="dress-code">
+            <div className="dress-inner">
+              <h2>Dress Code</h2>
+              <p className="dress-desc">{wedding.dress_code}</p>
+              {wedding.dress_palette && wedding.dress_palette.length > 0 && (
+                <div className="dress-swatches">
+                  {(wedding.dress_palette as string[]).map((color, i) => (
+                    <div key={i} className="dress-swatch" style={{ background: color }} />
+                  ))}
+                </div>
+              )}
+              <div className="dress-outfits">
+                <div className="dress-outfit">
+                  <img src="/assets/dresscode/gentleman.png" alt="Gentlemen" />
+                  <p className="dress-outfit-title">Gentlemen:<br />Well-tailored suits with classic dress shoes are preferred.</p>
+                </div>
+                <div className="dress-outfit">
+                  <img src="/assets/dresscode/lady.png" alt="Ladies" />
+                  <p className="dress-outfit-title">Ladies:<br />Formal dresses in elegant, polished styles are encouraged.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <TornSeparator />
 
@@ -1227,5 +1253,79 @@ const CSS = `
     #schedule { height: calc(398px * (100vw / 1200)); }
     #details { height: calc(623px * (100vw / 1200)); }
     .opening-stage { height: calc(850px * (100vw / 1200)); }
+  }
+
+  @media (max-width: 768px) {
+    /* Dear Friends */
+    .dear-friends-inner h2 { font-size: 28px; }
+    .dear-friends-inner p  { font-size: 17px; }
+
+    /* Countdown */
+    .countdown-inner h2  { font-size: 26px; }
+    .time-number         { font-size: 32px; }
+    .time-label          { font-size: 14px; }
+    .time-sep            { font-size: 36px; margin-top: -28px; }
+
+    /* Location */
+    .location-inner h2   { font-size: 28px; }
+    .location-photo      { width: 100%; }
+    .location-name       { font-size: 17px; }
+    .location-address    { font-size: 15px; }
+    .location-buttons    { flex-direction: column; align-items: center; }
+
+    /* Dress code */
+    .dress-inner h2      { font-size: 28px; }
+    .dress-desc          { font-size: 17px; }
+    .dress-outfits       { gap: 30px; }
+    .dress-outfit img    { height: 160px; }
+    .dress-outfit-title  { font-size: 15px; }
+
+    /* RSVP */
+    .rsvp-inner h2       { font-size: 28px; }
+    .rsvp-inner > p      { font-size: 17px; }
+    .rsvp-choices        { flex-direction: column; align-items: stretch; }
+    .rsvp-choice         { text-align: center; }
+
+    /* Guestbook */
+    .guestbook-inner h2  { font-size: 28px; }
+    .guestbook-inner     { padding: 0 1rem 3rem; }
+    .guestbook-card      { padding: 1rem; }
+    .guestbook-message   { font-size: 0.95rem; }
+
+    /* Closing */
+    .closing-inner h2    { font-size: 26px; }
+    .closing-names       { font-size: 20px; }
+    .closing-photo       { width: 100%; }
+
+    /* Audio button */
+    .audio-control       { width: 48px; height: 48px; bottom: 14px; right: 14px; }
+    .audio-control svg   { width: 20px; height: 20px; }
+  }
+
+  @media (max-width: 480px) {
+    #dear-friends        { padding: 20px 0; }
+    .dear-friends-inner h2 { font-size: 24px; }
+    .dear-friends-inner p  { font-size: 15px; }
+
+    .countdown-inner     { padding: 24px 16px 40px; }
+    .countdown-inner h2  { font-size: 22px; }
+    .time-number         { font-size: 26px; }
+    .time-label          { font-size: 12px; }
+    .time-sep            { font-size: 28px; margin-top: -22px; }
+    .countdown-timer     { gap: 3px; }
+
+    .rsvp-inner h2       { font-size: 24px; }
+    .rsvp-inner > p      { font-size: 15px; }
+
+    .guestbook-inner h2  { font-size: 24px; }
+    .guestbook-message   { font-size: 0.9rem; }
+    .guestbook-author    { font-size: 0.72rem; }
+
+    .closing-inner h2    { font-size: 22px; }
+    .closing-names       { font-size: 17px; }
+
+    .dress-outfit img    { height: 130px; }
+
+    .location-inner      { padding: 24px 16px 50px; }
   }
 `
