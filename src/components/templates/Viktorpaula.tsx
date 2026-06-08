@@ -117,6 +117,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ovo&display=swap" rel="stylesheet" />
       <style>{CSS}</style>
+      <style>{POS_CSS}</style>
       <FontOverride font={wedding.custom_font} container="#main-content" />
 
       <audio ref={audioRef} loop src="/assets/audio/music.mp3" preload="auto" />
@@ -215,27 +216,19 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             </div>
 
             {/* Génération des 4 lignes exactement comme dans le HTML */}
-            {program.slice(0, 4).map((item, idx) => {
-              const tops = { time: [96, 178, 266, 343], dot: [116, 198, 286, 363], event: [98, 180, 279, 356] }
-              const lefts = { time: idx === 3 ? 463 : 465, event: [643, 650, 655, 659][idx] }
-              const widths = { time: idx === 3 ? 79 : 75, event: [94, 80, 69, 61][idx] }
-              return (
-                <div key={idx}>
-                  <div className={`tl-time tl-time-${idx+1}`} style={{ top: tops.time[idx] + 'px', left: lefts.time + 'px', width: widths.time + 'px' }}>
-                    {item.time}
-                  </div>
-                  <div
-                    className={`tl-dot tl-dot-${idx+1}`}
-                    ref={el => { dotRefs.current[idx] = el }}
-                    style={{ top: tops.dot[idx] + 'px', left: '596px' }}
-                  />
-                  <div className={`tl-event tl-event-${idx+1}`} style={{ top: tops.event[idx] + 'px', left: lefts.event + 'px', width: widths.event + 'px' }}>
-                    {item.event}
-                    {item.venue && <div className="tl-event-venue">{item.venue}</div>}
-                  </div>
+            {program.slice(0, 4).map((item, idx) => (
+              <div key={idx}>
+                <div className={`tl-time tl-time-${idx+1}`}>{item.time}</div>
+                <div
+                  className={`tl-dot tl-dot-${idx+1}`}
+                  ref={el => { dotRefs.current[idx] = el }}
+                />
+                <div className={`tl-event tl-event-${idx+1}`}>
+                  {item.event}
+                  {item.venue && <div className="tl-event-venue">{item.venue}</div>}
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -385,9 +378,8 @@ const CSS = `
   /* ========== ARTBOARD ========== */
   .artboard {
     position: relative;
-    width: 1200px;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
   }
 
   /* ========== OPENING SCREEN ========== */
@@ -399,14 +391,14 @@ const CSS = `
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
   #opening-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
   .opening-stage {
     position: relative;
-    width: 1200px;
-    max-width: 100%;
+    width: 100%;
     height: 850px;
     cursor: pointer;
     overflow: hidden;
@@ -1213,21 +1205,15 @@ const CSS = `
     animation: zoomIn 2s ease forwards;
   }
 
-  /* ========== RESPONSIVE ========== */
-  @media (max-width: 1199px) {
-    .artboard,
-    .hero-artboard,
-    .schedule-artboard,
-    .details-artboard,
-    .opening-stage {
-      transform-origin: top center;
-      transform: scale(calc(100vw / 1200));
-    }
-    #hero { height: calc(763px * (100vw / 1200)); }
-    #schedule { height: calc(398px * (100vw / 1200)); }
-    #details { height: calc(623px * (100vw / 1200)); }
-    .opening-stage { height: calc(850px * (100vw / 1200)); }
-  }
+  /* ========== RESPONSIVE (Tilda model) ==========
+     No scaling. Artboards keep their design height at every width; their
+     children are anchored to the viewport centre with
+     left: calc(50% - 600px + Xpx) and re-positioned per breakpoint by the
+     generated rules in POS_CSS below. Heights stay fixed so text stays
+     full-size and simply reflows, exactly like the reference HTML. */
+  #hero     { height: 763px; }
+  #schedule { height: 398px; }
+  #details  { height: 623px; }
 
   @media (max-width: 768px) {
     /* Dear Friends */
@@ -1303,3 +1289,92 @@ const CSS = `
     .location-inner      { padding: 24px 16px 50px; }
   }
 `
+/* ============================================================================
+   POSITIONING (Tilda-faithful responsive model)
+   Each artboard element is anchored to the viewport centre:
+       left: calc(50% - HALF + offset)
+   where HALF is half of the reference canvas at that breakpoint
+   (600 / 480 / 320 / 240 / 160) and `offset` is the design X re-tuned for
+   that screen. Values are taken verbatim from the reference HTML
+   (data-field-left / -res-960 / -res-640 / -res-480 / -res-320). No scaling:
+   text keeps its real size and simply reflows, like the working HTML.
+   Columns: [selector, desktop, res960, res640, res480, res320]
+============================================================================ */
+const POS: [string, number, number, number, number, number][] = [
+  // --- Opening screen ---
+  ['.poly-left',         98,  -22, -182, -262, -342],
+  ['.poly-right',       635,  515,  355,  275,  195],
+  ['.poly-top',          94,  -26, -186, -266, -346],
+  ['.poly-bot',          95,  -25, -185, -265, -345],
+  ['.dove-btn',         515,  395,  235,  155,   75],
+  ['.click-hint',       535,  415,  255,  175,   95],
+  // --- Hero ---
+  ['.hero-video-wrap',  380,  260,  100,   20,  -60],
+  ['.hero-overlay',     380,  260,  100,   20,  -60],
+  ['.hero-gradient',    303,  167,    7,  -73, -137],
+  ['.hero-bottom-bar',  303,  157,   -3,  -83, -137],
+  ['.hero-wedding-day', 320,  200,   40,  -40, -120],
+  ['.hero-date',        320,  200,   40,  -40, -120],
+  ['.hero-names-block', 320,  200,   40,  -40, -120],
+  ['.ruby-1',           660,  540,  380,  300,  220],
+  ['.ruby-2',           632,  512,  352,  272,  192],
+  ['.ruby-4',           495,  375,  215,  135,   55],
+  ['.ruby-6d',          414,  294,  134,   54,  -26],
+  ['.ruby-7u',          457,  337,  177,   97,   17],
+  ['.ruby-8',           344,  224,   64,  -16,  -96],
+  ['.ruby-nr',          547,  427,  267,  187,  107],
+  // --- Schedule ---
+  ['.schedule-title',   320,  200,   40,  -40, -120],
+  ['.tl-time-1',        465,  345,  185,  105,   25],
+  ['.tl-time-2',        465,  345,  185,  105,   25],
+  ['.tl-time-3',        465,  345,  185,  105,   25],
+  ['.tl-time-4',        463,  343,  183,  103,   23],
+  ['.tl-event-1',       643,  523,  363,  283,  203],
+  ['.tl-event-2',       650,  530,  370,  290,  210],
+  ['.tl-event-3',       655,  535,  375,  295,  215],
+  ['.tl-event-4',       659,  539,  379,  299,  219],
+  ['.tl-line',          599,  479,  319,  239,  159],
+  ['.tl-dot-1',         596,  476,  316,  236,  156],
+  ['.tl-dot-2',         596,  476,  316,  236,  156],
+  ['.tl-dot-3',         596,  476,  316,  236,  156],
+  ['.tl-dot-4',         596,  476,  316,  236,  156],
+  ['.pigeon-timeline',  573,  453,  293,  213,  133],
+  // --- Details ---
+  ['.details-redbar', -1000, -220, -380, -460, -540],
+  ['.details-title',    320,  200,   40,  -40, -120],
+  ['.details-text-1',   409,  289,  129,   49,  -31],
+  ['.details-text-2',   407,  287,  127,   47,  -33],
+  ['.details-text-3',   407,  287,  127,   47,  -33],
+  ['.details-text-4',   409,  289,  129,   49,  -31],
+  ['.fl-1',             720,  600,  441,  360,  280],
+  ['.fl-2',             720,  600,  441,  360,  280],
+  ['.fl-3',             693,  573,  414,  333,  253],
+  ['.fl-4',             614,  494,  335,  254,  174],
+  ['.fl-5',             629,  509,  350,  269,  189],
+  ['.fl-6',             552,  432,  273,  192,  112],
+  ['.fl-7',             624,  504,  345,  264,  184],
+  ['.fl-8',             503,  383,  224,  143,   63],
+  ['.fl-9',             495,  375,  216,  135,   55],
+  ['.fl-10',            424,  304,  145,   64,  -16],
+  ['.fl-11',            424,  304,  145,   64,  -16],
+  ['.fl-12',            293,  173,   14,  -67, -147],
+]
+
+// [maxWidth, half] for each breakpoint, mirroring Tilda's 1200/960/640/480/320 canvases
+const BREAKPOINTS: [number, number][] = [
+  [1199, 480],
+  [959, 320],
+  [639, 240],
+  [479, 160],
+]
+
+const POS_CSS = (() => {
+  // Desktop (≥1200): reference canvas is 1200 → half = 600
+  let css = POS.map(([sel, d]) => `${sel}{left:calc(50% - 600px + ${d}px);}`).join('')
+  // Each smaller breakpoint re-anchors every element to the viewport centre
+  BREAKPOINTS.forEach(([mq, half], i) => {
+    const rules = POS.map((p) => `${p[0]}{left:calc(50% - ${half}px + ${p[i + 2]}px);}`).join('')
+    css += `@media (max-width:${mq}px){${rules}}`
+  })
+  return css
+})()
