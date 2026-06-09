@@ -43,29 +43,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     }, 3000)
   }
 
-  // --- Opening screen scale (responsive fix) ---
-  useEffect(() => {
-    function scaleOpening() {
-      const wrap = document.getElementById('opening-scale-wrap')
-      if (!wrap) return
-      // Fit-width : le canvas 1200px s'étire exactement à la largeur du viewport
-      // + léger zoom pour rogner les marges bordeaux latérales du canvas de design
-      const scaleX = window.innerWidth / 1200
-      const scale = Math.min(scaleX * 1.05, 1)
-      // transform:scale() ne change pas la taille occupée dans le layout (toujours 1200×850).
-      // On centre visuellement en compensant le vide avec un margin-top négatif.
-      // hauteur visuelle après scale = 850 * scale
-      // vide total = vh - (850 * scale)
-      // margin-top = -(850 - 850*scale) / 2  pour remonter le canvas au centre
-      const visualH = 850 * scale
-      const marginTop = (window.innerHeight - visualH) / 2
-      wrap.style.transform = `scale(${scale})`
-      wrap.style.marginTop = `${marginTop}px`
-    }
-    scaleOpening()
-    window.addEventListener('resize', scaleOpening)
-    return () => window.removeEventListener('resize', scaleOpening)
-  }, [])
+
 
   // --- Pigeon tracker ---
   useEffect(() => {
@@ -149,29 +127,22 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
       {/* ─── OPENING SCREEN ─── */}
       {!opened && (
         <div id="opening-screen" className={phase >= 2 ? 'hidden' : ''}>
-          {/*
-            opening-scale-wrap : canvas fixe 1200×850px, mis à l'échelle via JS (scaleOpening).
-            Cela garantit que tous les éléments aux positions absolues d'origine restent visibles
-            et centrés sur n'importe quelle taille d'écran, sans toucher aux coordonnées.
-          */}
-          <div id="opening-scale-wrap" className="opening-scale-wrap">
-            <div
-              className={`opening-stage ${phase >= 1 ? 'animating' : ''}`}
-              onClick={startSequence}
-              aria-label="Open invitation"
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
-            >
-              <img className="poly poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
-              <img className="poly poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
-              <img className="poly poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
-              <img className="poly poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
-              <button className="dove-btn" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/dove/dove-open.webp" alt="" />
-              </button>
-              <span className="click-hint">Click to open</span>
-            </div>
+          <div
+            className={`opening-stage ${phase >= 1 ? 'animating' : ''}`}
+            onClick={startSequence}
+            aria-label="Open invitation"
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
+          >
+            <img className="poly poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
+            <img className="poly poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
+            <img className="poly poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
+            <img className="poly poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
+            <button className="dove-btn" tabIndex={-1} aria-hidden="true">
+              <img src="/assets/dove/dove-open.webp" alt="" />
+            </button>
+            <span className="click-hint">Click to open</span>
           </div>
         </div>
       )}
@@ -420,22 +391,21 @@ const CSS = `
   }
 
   /* ═══════════════════════════════════════════════════════
-     OPENING SCREEN — responsive fix
-     • #opening-screen  : couche fixe plein écran (100dvh)
-     • .opening-scale-wrap : canvas 1200×850 px mis à l'échelle
-       par scaleOpening() via transform:scale(). Toutes les
-       positions absolues des enfants restent calculées pour
-       le canvas 1200 px et sont simplement réduites.
-     • .opening-stage : dimensions réelles du canvas de design
+     OPENING SCREEN — pure CSS responsive
+     Strategy:
+     • #opening-screen fills the viewport (position:fixed, inset:0)
+     • .opening-stage is 1200×850, centered with absolute + translate(-50%,-50%)
+       so its center always sits at the viewport center regardless of size
+     • transform: translate(-50%,-50%) scale(var(--os-scale)) scales from the
+       center outward — set via CSS custom property at each breakpoint
+     • On mobile portrait the envelope is zoomed-in on its center,
+       cropping the bordeaux margins — exactly like a "zoom on center"
   ═══════════════════════════════════════════════════════ */
   #opening-screen {
     position: fixed;
     inset: 0;
     background: var(--bordeaux);
     z-index: 9999;
-    display: flex;
-    align-items: flex-start; /* le centrage vertical est géré par marginTop en JS */
-    justify-content: center;
     overflow: hidden;
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
@@ -445,22 +415,21 @@ const CSS = `
     pointer-events: none;
   }
 
-  /* Canvas de référence : toujours 1200×850, mis à l'échelle par JS */
-  .opening-scale-wrap {
-    width: 1200px;
-    height: 850px;
-    transform-origin: top center;
-    flex-shrink: 0;
-    /* transform + marginTop injectés inline par scaleOpening() */
-  }
-
   .opening-stage {
-    position: relative;
+    /* fixed 1200×850 canvas, centered in the viewport */
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 1200px;
     height: 850px;
     cursor: pointer;
-    /* pas d'overflow:hidden : les poly peuvent déborder du canvas
-       sans être clippés, ils sont de toute façon masqués par #opening-screen */
+    /* translate(-50%,-50%) centers it; scale zooms from the center outward.
+       Desktop (≥1200px): scale 1 — no zoom, fits perfectly.
+       Smaller screens: scale < 1 zooms out just enough to show the envelope.
+       The --os-scale custom property is set per breakpoint below. */
+    --os-scale: 1;
+    transform: translate(-50%, -50%) scale(var(--os-scale));
+    transform-origin: center center;
   }
 
   .poly {
@@ -477,6 +446,30 @@ const CSS = `
   .opening-stage.animating .poly-right { transform: translateX(560px);  opacity: 0; }
   .opening-stage.animating .poly-top   { transform: translateY(-430px); }
   .opening-stage.animating .poly-bot   { transform: translateY(566px); }
+
+  /* Responsive scale: the envelope (the paper part) sits roughly in the
+     center 440px of the 1200px canvas. We want it to fill ~100% of viewport
+     width on mobile. That means scale ≈ vw / 440.
+     But since we want the full bordeaux background visible on large screens
+     and a zoomed-in envelope on small ones, we use vw/1200 as the base
+     (fills canvas edge to edge) and add a boost factor so the envelope paper
+     reaches the screen edges on mobile.
+     Computed values: scale = vw / 1200 * boost
+       boost ≈ 1200/440 ≈ 2.73 would fully fill with paper — too much.
+       boost ≈ 1.8 gives a nice "zoomed in on center" look.
+     Per standard breakpoint (scale = vw / 1200 * 1.8, capped at 1):
+       1199px → 1199/1200*1.8 = 1.80 → cap at 1
+        959px →  959/1200*1.8 = 1.44 → cap at 1
+        767px →  767/1200*1.8 = 1.15 → cap at 1
+        599px →  599/1200*1.8 = 0.90
+        479px →  479/1200*1.8 = 0.72
+        374px →  374/1200*1.8 = 0.56
+        319px →  319/1200*1.8 = 0.48
+  */
+  @media (max-width: 599px)  { .opening-stage { --os-scale: 0.90; } }
+  @media (max-width: 479px)  { .opening-stage { --os-scale: 0.72; } }
+  @media (max-width: 374px)  { .opening-stage { --os-scale: 0.56; } }
+  @media (max-width: 319px)  { .opening-stage { --os-scale: 0.48; } }
 
   .dove-btn {
     position: absolute;
