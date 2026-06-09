@@ -48,9 +48,11 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     function scaleOpening() {
       const wrap = document.getElementById('opening-scale-wrap')
       if (!wrap) return
+      // Fit-width uniquement : le canvas 1200px s'étire jusqu'aux bords gauche/droite.
+      // Un léger zoom (×1.05) rogne les marges bordeaux sur les côtés du canvas de design.
+      // Sur desktop (≥1200px) on plafonne à 1 pour ne pas sur-zoomer.
       const scaleX = window.innerWidth / 1200
-      const scaleY = window.innerHeight / 850
-      const scale = Math.min(scaleX, scaleY)
+      const scale = Math.min(scaleX * 1.05, 1)
       wrap.style.transform = `scale(${scale})`
     }
     scaleOpening()
@@ -425,9 +427,10 @@ const CSS = `
     background: var(--bordeaux);
     z-index: 9999;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* canvas collé en haut, pas centré verticalement */
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;        /* scroll vertical si le canvas scaled dépasse la hauteur */
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
   #opening-screen.hidden {
@@ -440,7 +443,8 @@ const CSS = `
   .opening-scale-wrap {
     width: 1200px;
     height: 850px;
-    transform-origin: center center;
+    transform-origin: top center; /* ancre le scale en haut pour coller au bord supérieur */
+    flex-shrink: 0;
     /* transform est injecté inline par scaleOpening() */
   }
 
