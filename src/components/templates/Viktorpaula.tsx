@@ -45,6 +45,25 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
 
 
+  // --- Opening screen scale (responsive) ---
+  useEffect(() => {
+    function scaleOpening() {
+      const stage = document.querySelector<HTMLElement>('.opening-stage')
+      if (!stage) return
+      // The envelope paper sits in roughly the center 580px of the 850px canvas height.
+      // We scale so the paper fills the full viewport height (no bordeaux strips).
+      // scale = vh / 580. Since the canvas is centered with translate(-50%,-50%),
+      // scaling > 1 just crops the bordeaux margins — which is exactly what we want.
+      // On desktop (≥1200px wide AND ≥850px tall) we keep scale = 1.
+      const PAPER_H = 580
+      const scale = window.innerWidth >= 1200 ? 1 : window.innerHeight / PAPER_H
+      stage.style.setProperty('--os-scale', String(scale.toFixed(4)))
+    }
+    scaleOpening()
+    window.addEventListener('resize', scaleOpening)
+    return () => window.removeEventListener('resize', scaleOpening)
+  }, [])
+
   // --- Pigeon tracker ---
   useEffect(() => {
     if (!visible) return
@@ -466,10 +485,9 @@ const CSS = `
         374px →  374/1200*1.8 = 0.56
         319px →  319/1200*1.8 = 0.48
   */
-  @media (max-width: 599px)  { .opening-stage { --os-scale: 0.90; } }
-  @media (max-width: 479px)  { .opening-stage { --os-scale: 0.72; } }
-  @media (max-width: 374px)  { .opening-stage { --os-scale: 0.56; } }
-  @media (max-width: 319px)  { .opening-stage { --os-scale: 0.48; } }
+  /* --os-scale is set dynamically by scaleOpening() in JS, which computes
+     vh / 580 so the envelope paper fills the screen exactly.
+     The default --os-scale: 1 (desktop) is declared on .opening-stage above. */
 
   .dove-btn {
     position: absolute;
