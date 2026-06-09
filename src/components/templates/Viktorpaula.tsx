@@ -491,7 +491,7 @@ const CSS = `
 
   .dove-btn {
     position: absolute;
-    top: 288px;
+    top: 248px;
     left: 515px;
     width: 170px;
     height: 170px;
@@ -506,7 +506,7 @@ const CSS = `
 
   .click-hint {
     position: absolute;
-    top: 468px;
+    top: 428px;
     left: 535px;
     width: 130px;
     text-align: center;
