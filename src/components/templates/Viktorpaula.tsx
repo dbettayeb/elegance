@@ -48,12 +48,19 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     function scaleOpening() {
       const wrap = document.getElementById('opening-scale-wrap')
       if (!wrap) return
-      // Fit-width uniquement : le canvas 1200px s'étire jusqu'aux bords gauche/droite.
-      // Un léger zoom (×1.05) rogne les marges bordeaux sur les côtés du canvas de design.
-      // Sur desktop (≥1200px) on plafonne à 1 pour ne pas sur-zoomer.
+      // Fit-width : le canvas 1200px s'étire exactement à la largeur du viewport
+      // + léger zoom pour rogner les marges bordeaux latérales du canvas de design
       const scaleX = window.innerWidth / 1200
       const scale = Math.min(scaleX * 1.05, 1)
+      // transform:scale() ne change pas la taille occupée dans le layout (toujours 1200×850).
+      // On centre visuellement en compensant le vide avec un margin-top négatif.
+      // hauteur visuelle après scale = 850 * scale
+      // vide total = vh - (850 * scale)
+      // margin-top = -(850 - 850*scale) / 2  pour remonter le canvas au centre
+      const visualH = 850 * scale
+      const marginTop = (window.innerHeight - visualH) / 2
       wrap.style.transform = `scale(${scale})`
+      wrap.style.marginTop = `${marginTop}px`
     }
     scaleOpening()
     window.addEventListener('resize', scaleOpening)
@@ -427,10 +434,9 @@ const CSS = `
     background: var(--bordeaux);
     z-index: 9999;
     display: flex;
-    align-items: flex-start; /* canvas collé en haut, pas centré verticalement */
+    align-items: flex-start; /* le centrage vertical est géré par marginTop en JS */
     justify-content: center;
-    overflow-x: hidden;
-    overflow-y: auto;        /* scroll vertical si le canvas scaled dépasse la hauteur */
+    overflow: hidden;
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
   #opening-screen.hidden {
@@ -443,9 +449,9 @@ const CSS = `
   .opening-scale-wrap {
     width: 1200px;
     height: 850px;
-    transform-origin: top center; /* ancre le scale en haut pour coller au bord supérieur */
+    transform-origin: top center;
     flex-shrink: 0;
-    /* transform est injecté inline par scaleOpening() */
+    /* transform + marginTop injectés inline par scaleOpening() */
   }
 
   .opening-stage {
