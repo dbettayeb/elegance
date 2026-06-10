@@ -768,7 +768,7 @@ const CSS = `
   .ar-dear-heart-small {
     position: absolute;
     pointer-events: none;
-    z-index: 5;
+    z-index: 1;
     animation: ar-bob 2.2s ease-in-out infinite;
   }
   .ar-dear-heart-cup {
