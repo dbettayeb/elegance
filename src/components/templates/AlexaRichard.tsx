@@ -329,6 +329,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
         {/* ── DEAR FRIENDS ── */}
         <div id="ar-dear">
           <div className="ar-artboard ar-dear-artboard" ref={dearRef}>
+            <img className="ar-dear-hearts" src="/assets/alexa-richard/dear/heart-outline.png" alt="" />
             <div className="ar-dear-box">
               <h2 className="ar-dear-title">Dear friends and family,</h2>
               <p className="ar-dear-text">
@@ -336,10 +337,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                   `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
               </p>
             </div>
-            <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png"  alt="" />
-            <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
-            <div className="ar-dear-heart-2-wrap"><img className="ar-dear-heart-2" src="/assets/alexa-richard/dear/heart-cup.png"   alt="" /></div>
-            <div className="ar-dear-heart-3-wrap"><img className="ar-dear-heart-3" src="/assets/alexa-richard/dear/heart-small.png" alt="" /></div>
+            <img className="ar-dear-envelope" src="/assets/alexa-richard/dear/envelope-old.png" alt="" />
           </div>
         </div>
 
@@ -729,15 +727,30 @@ const CSS = `
     width: 100%;
     overflow: hidden;
   }
-  .ar-dear-artboard { height: 670px; }
+  .ar-dear-artboard {
+    height: 670px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
 
-  /* the letter: starts tucked inside the envelope (small, low, hidden behind the flaps),
-     then slides up + scales to full size as --dear-p goes 0 -> 1 */
+  /* small heart doodle, centered above the letter */
+  .ar-dear-hearts {
+    width: 90px; height: auto;
+    margin-bottom: 14px;
+    opacity: var(--dear-p, 0);
+    transform: translateY(calc((1 - var(--dear-p, 0)) * 24px));
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    animation: ar-bob 2.5s ease-in-out infinite;
+  }
+
+  /* the letter card: sits centered, its bottom portion tucked behind the envelope's front flap */
   .ar-dear-box {
-    position: absolute;
-    top: 174px;
-    left: calc(50% - 600px + 449px);
+    position: relative;
     width: 302px; height: 327px;
+    margin-bottom: -210px; /* pulled down so the envelope flap covers its lower part */
     background: #fff;
     box-shadow: -7px -7px 19px 0 rgba(42,38,38,0.09);
     display: flex;
@@ -755,52 +768,14 @@ const CSS = `
     will-change: transform, opacity;
   }
 
-  /* envelope flaps: sit above the letter, slide outward to "open" as the letter rises */
-  .ar-dear-leaves-l,
-  .ar-dear-leaves-r {
-    position: absolute;
-    top: 21px;
-    left: calc(50% - 600px + 355px);
-    width: 490px; height: auto;
+  /* envelope: sits at the bottom, full width, in front of the letter */
+  .ar-dear-envelope {
+    position: relative;
+    width: 100%; max-width: 490px; height: auto;
     pointer-events: none;
     z-index: 6;
-    transition: transform 0.25s ease-out, opacity 0.25s ease-out;
-  }
-  .ar-dear-leaves-l {
-    clip-path: inset(0 50% 0 0);
-    transform: translate(calc(var(--dear-p, 0) * -36px), calc(var(--dear-p, 0) * -22px)) rotate(calc(var(--dear-p, 0) * -6deg));
-  }
-  .ar-dear-leaves-r {
-    clip-path: inset(0 0 0 50%);
-    transform: translate(calc(var(--dear-p, 0) * 36px), calc(var(--dear-p, 0) * -22px)) rotate(calc(var(--dear-p, 0) * 6deg));
   }
 
-  .ar-dear-heart-2-wrap,
-  .ar-dear-heart-3-wrap {
-    position: absolute;
-    pointer-events: none;
-    z-index: 4;
-    opacity: var(--dear-p, 0);
-    transform: translateY(calc((1 - var(--dear-p, 0)) * 40px));
-    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
-  }
-  .ar-dear-heart-2-wrap {
-    top: 64px;
-    left: calc(50% - 600px + 533px);
-    width: 108px;
-  }
-  .ar-dear-heart-3-wrap {
-    top: 90px;
-    left: calc(50% - 600px + 598px);
-    width: 69px;
-  }
-  .ar-dear-heart-2,
-  .ar-dear-heart-3 {
-    display: block;
-    width: 100%; height: auto;
-  }
-  .ar-dear-heart-2 { animation: ar-bob 2.5s ease-in-out infinite 0.4s; }
-  .ar-dear-heart-3 { animation: ar-bob 2.5s ease-in-out infinite; }
   @keyframes ar-bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
 
   .ar-dear-title {
@@ -1224,7 +1199,7 @@ const CSS = `
 
   @media (max-width: 480px) {
     .ar-dear-artboard { height: 760px; }
-    .ar-dear-box      { width: 260px; height: 300px; padding: 20px 16px; }
+    .ar-dear-box      { width: 260px; height: 300px; padding: 20px 16px; margin-bottom: -190px; }
     .ar-dear-title    { font-size: 20px; }
     .ar-dear-text     { font-size: 15px; }
     .ar-countdown-inner    { padding: 20px 16px 32px; }
@@ -1260,12 +1235,7 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-hero-fade-bottom',  380, 260, 100,  20, -60],
   ['.ar-hero-names',        320, 200,  40, -40,-120],
   ['.ar-hero-sub',          430, 310, 150,  70, -10],
-  // dear friends
-  ['.ar-dear-leaves-l',     355, 235,  75,  -5, -85],
-  ['.ar-dear-leaves-r',     355, 235,  75,  -5, -85],
-  ['.ar-dear-heart-2-wrap', 533, 414, 254, 174,  94],
-  ['.ar-dear-heart-3-wrap', 598, 477, 317, 237, 157],
-  ['.ar-dear-box',          449, 329, 169,  89,   9],
+  // dear friends — now centered via flexbox, no per-breakpoint left offsets needed
   // schedule
   ['.ar-sched-title',       320, 200,  40, -40,-120],
   ['.ar-sched-leaves',      122,   2,-158,-238,-318],
