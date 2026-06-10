@@ -408,22 +408,55 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
               <img className="ar-dress-arrow" src="/assets/alexa-richard/dress/arrow.png" alt="" />
             </div>
 
-            <div className="ar-dress-gallery">
-              <div className="ar-dress-track" ref={galleryRef}>
+            <div className="t1148__gallery ar-dress-gallery">
+              <div
+                className="t1148__slider ar-dress-track"
+                ref={galleryRef}
+                onMouseDown={(e) => {
+                  const el = galleryRef.current
+                  if (!el) return
+                  el.classList.add('t1148__slider_dragging')
+                  const startX = e.pageX - el.offsetLeft
+                  const startScroll = el.scrollLeft
+                  let moved = false
+                  const onMove = (ev: MouseEvent) => {
+                    const x = ev.pageX - el.offsetLeft
+                    if (Math.abs(x - startX) > 5) moved = true
+                    el.scrollLeft = startScroll - (x - startX)
+                  }
+                  const onUp = () => {
+                    el.classList.remove('t1148__slider_dragging')
+                    window.removeEventListener('mousemove', onMove)
+                    window.removeEventListener('mouseup', onUp)
+                    if (moved) {
+                      const onClickCapture = (ev: MouseEvent) => { ev.preventDefault(); ev.stopPropagation() }
+                      el.addEventListener('click', onClickCapture, { capture: true, once: true })
+                    }
+                  }
+                  window.addEventListener('mousemove', onMove)
+                  window.addEventListener('mouseup', onUp)
+                }}
+              >
                 {GALLERY.map((src, i) => (
-                  <img key={i} className="ar-dress-slide" src={src} alt="" draggable={false} />
+                  <div key={i} className="t1148__item ar-dress-item">
+                    <div className="t1148__img-wrapper ar-dress-img-wrapper">
+                      <img className="t1148__img ar-dress-slide" src={src} alt="" draggable={false} />
+                    </div>
+                  </div>
                 ))}
               </div>
-              <button
-                className="ar-dress-nav ar-dress-prev"
-                onClick={() => galleryRef.current?.scrollBy({ left: -galleryRef.current.clientWidth * 0.8, behavior: 'smooth' })}
-                aria-label="Previous"
-              >&#8249;</button>
-              <button
-                className="ar-dress-nav ar-dress-next"
-                onClick={() => galleryRef.current?.scrollBy({ left: galleryRef.current.clientWidth * 0.8, behavior: 'smooth' })}
-                aria-label="Next"
-              >&#8250;</button>
+              <div className="t1148__controls t1148__controls_gallery">
+                <button
+                  className="t1148__control t1148__control_md ar-dress-nav ar-dress-prev"
+                  onClick={() => galleryRef.current?.scrollBy({ left: -((galleryRef.current.querySelector('.ar-dress-item') as HTMLElement)?.offsetWidth || 0), behavior: 'smooth' })}
+                  aria-label="Previous"
+                >&#8249;</button>
+                <button
+                  className="t1148__control t1148__control_md t1148__control_right ar-dress-nav ar-dress-next"
+                  onClick={() => galleryRef.current?.scrollBy({ left: (galleryRef.current.querySelector('.ar-dress-item') as HTMLElement)?.offsetWidth || 0, behavior: 'smooth' })}
+                  aria-label="Next"
+                >&#8249;</button>
+              </div>
             </div>
 
             <div className="ar-swatches">
@@ -970,46 +1003,68 @@ const CSS = `
     position: relative; width: 100%; max-width: 760px;
     margin: 0 auto 28px;
   }
-  /* horizontal scrollable strip (like Tilda's t1148 gallery): native swipe + scroll-snap */
+  /* Tilda t1148 slider: flex row, native overflow scroll + snap + drag */
   .ar-dress-track {
-    display: flex; gap: 20px;
-    overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    padding: 4px 4px 16px;
+    --padding-right: 4px; --padding-left: 4px;
+    display: flex; align-items: flex-start; gap: 20px;
+    padding: 4px var(--padding-right) 16px var(--padding-left);
+    max-width: 100%; box-sizing: border-box;
+    overflow: auto hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(100,160,189,0.45) transparent;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--padding-left);
+    scroll-padding-right: var(--padding-right);
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
   }
+  .ar-dress-track.t1148__slider_dragging {
+    scroll-behavior: smooth; cursor: grabbing;
+  }
+  .ar-dress-track.t1148__slider_dragging .ar-dress-item { pointer-events: none; }
   .ar-dress-track::-webkit-scrollbar { height: 6px; }
   .ar-dress-track::-webkit-scrollbar-thumb { background: rgba(100,160,189,0.45); border-radius: 3px; }
   .ar-dress-track::-webkit-scrollbar-track { background: transparent; }
+
+  .ar-dress-item {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .ar-dress-img-wrapper {
+    position: relative;
+    --height: 460px;
+    height: var(--height);
+    width: calc(var(--height) / 3 * 2); /* 2:3 portrait, like t1148__img-wrapper_2_3 */
+    flex-shrink: 0;
+  }
   .ar-dress-slide {
-    flex: 0 0 auto; width: 300px; max-width: 80%; height: 460px;
+    width: 100%; height: 100%;
     object-fit: cover; display: block; border-radius: 12px;
-    scroll-snap-align: center; user-select: none;
+    user-select: none;
+  }
+  @media (max-width: 640px) {
+    .ar-dress-img-wrapper { --height: 350px; }
+  }
+
+  .t1148__controls_gallery {
+    display: inline-flex; align-items: center; gap: 5px;
+    position: absolute; left: 0; top: 50%; z-index: 2;
+    width: 100%; justify-content: space-between;
+    padding: 0 10px; margin: 0; box-sizing: border-box;
+    transform: translateY(-50%); pointer-events: none;
   }
   .ar-dress-nav {
-    position: absolute; top: 50%; transform: translateY(-50%);
+    pointer-events: auto;
     background: rgba(255,253,251,0.85); border: none;
-    width: 42px; height: 42px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     font-size: 26px; line-height: 1; cursor: pointer;
     color: var(--ar-blue-deep); transition: background 0.2s;
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
   .ar-dress-nav:hover { background: rgba(255,253,251,1); }
-  .ar-dress-prev { left: 10px; }
-  .ar-dress-next { right: 10px; }
-  .ar-dress-dots {
-    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 6px;
-  }
-  .ar-dress-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    border: none; background: rgba(255,253,251,0.5);
-    cursor: pointer; padding: 0; transition: background 0.2s;
-  }
-  .ar-dress-dot.ar-active { background: rgba(255,253,251,1); }
+  .ar-dress-next { transform: rotate(0.5turn); }
 
   .ar-swatches { display: flex; justify-content: center; gap: 10px; margin-bottom: 24px; }
   .ar-swatch {
