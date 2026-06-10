@@ -16,9 +16,10 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const [allScratched, setAllScratched] = useState(false)
-  const [dressSlide, setDressSlide] = useState(0)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const scheduleRef = useRef<HTMLDivElement>(null)
+  const dearRef = useRef<HTMLDivElement>(null)
+  const galleryRef = useRef<HTMLDivElement>(null)
   const scratchDoneRef = useRef([false, false, false])
 
   const day   = String(eventDate.getDate())
@@ -64,6 +65,31 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     window.addEventListener('resize', scaleOpening)
     return () => window.removeEventListener('resize', scaleOpening)
   }, [])
+
+  // Scroll-linked reveals: Dear (letter sliding out of the envelope) + Schedule (leaves parting)
+  useEffect(() => {
+    function progressFor(el: HTMLElement | null) {
+      if (!el) return 0
+      const r = el.getBoundingClientRect()
+      const vh = window.innerHeight || 1
+      // 0 when the section's top hits the bottom of the viewport, 1 when it has scrolled up by ~70% of vh
+      const p = (vh - r.top) / (vh * 0.9)
+      return Math.max(0, Math.min(1, p))
+    }
+    function onScroll() {
+      const dp = progressFor(dearRef.current)
+      if (dearRef.current) dearRef.current.style.setProperty('--dear-p', dp.toFixed(4))
+      const sp = progressFor(scheduleRef.current)
+      if (scheduleRef.current) scheduleRef.current.style.setProperty('--sched-p', sp.toFixed(4))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [opened, visible])
 
   useEffect(() => {
     if (!opened || allScratched) return
@@ -257,24 +283,6 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
           </div>
         </div>
 
-        {/* ── DEAR FRIENDS ── */}
-        <div id="ar-dear">
-          <div className="ar-artboard ar-dear-artboard">
-            <img className="ar-dear-frame"    src="/assets/alexa-richard/dear/heart-outline.png" alt="" />
-            <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png"  alt="" />
-            <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
-            <img className="ar-dear-heart-2"  src="/assets/alexa-richard/dear/heart-cup.png"    alt="" />
-            <img className="ar-dear-heart-3"  src="/assets/alexa-richard/dear/heart-small.png"  alt="" />
-            <div className="ar-dear-box">
-              <h2 className="ar-dear-title">Dear friends and family,</h2>
-              <p className="ar-dear-text">
-                {wedding.custom_message ||
-                  `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* ── THE DATE (Scratch-to-reveal) ── */}
         <div id="ar-date">
           <div className="ar-date-inner">
@@ -310,6 +318,23 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
               <div className="ar-time-block"><div className="ar-time-num">{countdown.m}</div><div className="ar-time-label">Minutes</div></div>
               <div className="ar-time-sep">:</div>
               <div className="ar-time-block"><div className="ar-time-num">{countdown.s}</div><div className="ar-time-label">Seconds</div></div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── DEAR FRIENDS ── */}
+        <div id="ar-dear">
+          <div className="ar-artboard ar-dear-artboard" ref={dearRef}>
+            <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png"  alt="" />
+            <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
+            <img className="ar-dear-heart-2"  src="/assets/alexa-richard/dear/heart-cup.png"    alt="" />
+            <img className="ar-dear-heart-3"  src="/assets/alexa-richard/dear/heart-small.png"  alt="" />
+            <div className="ar-dear-box">
+              <h2 className="ar-dear-title">Dear friends and family,</h2>
+              <p className="ar-dear-text">
+                {wedding.custom_message ||
+                  `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
+              </p>
             </div>
           </div>
         </div>
@@ -384,34 +409,21 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
             </div>
 
             <div className="ar-dress-gallery">
-              <div
-                className="ar-dress-track"
-                style={{ transform: `translateX(-${dressSlide * 100}%)` }}
-              >
+              <div className="ar-dress-track" ref={galleryRef}>
                 {GALLERY.map((src, i) => (
-                  <img key={i} className="ar-dress-slide" src={src} alt="" />
+                  <img key={i} className="ar-dress-slide" src={src} alt="" draggable={false} />
                 ))}
               </div>
               <button
                 className="ar-dress-nav ar-dress-prev"
-                onClick={() => setDressSlide(s => (s - 1 + GALLERY.length) % GALLERY.length)}
+                onClick={() => galleryRef.current?.scrollBy({ left: -galleryRef.current.clientWidth * 0.8, behavior: 'smooth' })}
                 aria-label="Previous"
               >&#8249;</button>
               <button
                 className="ar-dress-nav ar-dress-next"
-                onClick={() => setDressSlide(s => (s + 1) % GALLERY.length)}
+                onClick={() => galleryRef.current?.scrollBy({ left: galleryRef.current.clientWidth * 0.8, behavior: 'smooth' })}
                 aria-label="Next"
               >&#8250;</button>
-              <div className="ar-dress-dots">
-                {GALLERY.map((_, i) => (
-                  <button
-                    key={i}
-                    className={`ar-dress-dot${dressSlide === i ? ' ar-active' : ''}`}
-                    onClick={() => setDressSlide(i)}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
-              </div>
             </div>
 
             <div className="ar-swatches">
@@ -689,19 +701,20 @@ const CSS = `
     pointer-events: none;
     z-index: 1;
   }
+  /* leaves = the envelope, kept IN FRONT so the letter tucks behind it as it slides up */
   .ar-dear-leaves-l {
     position: absolute;
     top: 21px;
     width: 490px; height: auto;
     pointer-events: none;
-    z-index: 2;
+    z-index: 6;
   }
   .ar-dear-leaves-r {
     position: absolute;
     top: 21px;
     width: 490px; height: auto;
     pointer-events: none;
-    z-index: 2;
+    z-index: 6;
   }
   .ar-dear-heart-2 {
     position: absolute;
@@ -710,6 +723,8 @@ const CSS = `
     animation: ar-bob 2.5s ease-in-out infinite 0.4s;
     pointer-events: none;
     z-index: 4;
+    opacity: var(--dear-p, 1);
+    transition: opacity 0.2s linear;
   }
   .ar-dear-heart-3 {
     position: absolute;
@@ -718,7 +733,10 @@ const CSS = `
     animation: ar-bob 2.5s ease-in-out infinite;
     pointer-events: none;
     z-index: 4;
+    opacity: var(--dear-p, 1);
+    transition: opacity 0.2s linear;
   }
+  /* the letter: slides up out of the envelope, driven by --dear-p (0 = inside, 1 = out) */
   .ar-dear-box {
     position: absolute;
     top: 174px;
@@ -731,6 +749,10 @@ const CSS = `
     padding: 28px 24px;
     text-align: center;
     z-index: 3;
+    transform: translateY(calc((1 - var(--dear-p, 1)) * 150px));
+    opacity: var(--dear-p, 1);
+    transition: transform 0.12s linear, opacity 0.12s linear;
+    will-change: transform, opacity;
   }
   @keyframes ar-bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
 
@@ -850,10 +872,15 @@ const CSS = `
     position: absolute;
     left: 122px; width: 957px; height: auto;
     display: block;
-    opacity: 0.7;
+    opacity: 0.85;
+    z-index: 5;                 /* in FRONT of the programme so they cover it, then part */
+    pointer-events: none;
+    transition: transform 0.08s linear;
+    will-change: transform;
   }
-  .ar-leaves-1 { top: 69px;  animation: ar-drift-r 8s ease-in-out infinite alternate; }
-  .ar-leaves-2 { top: 200px; animation: ar-drift-l 8s ease-in-out infinite alternate; }
+  /* --sched-p: 0 = closed (covers programme), 1 = fully parted. Matches Tilda mx +700 / -690 */
+  .ar-leaves-1 { top: 69px;  transform: translateX(calc(var(--sched-p, 1) * 700px)); }
+  .ar-leaves-2 { top: 200px; transform: translateX(calc(var(--sched-p, 1) * -690px)); }
   @keyframes ar-drift-r { from{transform:translateX(0);} to{transform:translateX(40px);} }
   @keyframes ar-drift-l { from{transform:translateX(0);} to{transform:translateX(-40px);} }
 
@@ -940,16 +967,27 @@ const CSS = `
   }
 
   .ar-dress-gallery {
-    position: relative; width: 100%; max-width: 640px;
-    margin: 0 auto 28px; overflow: hidden; border-radius: 12px;
+    position: relative; width: 100%; max-width: 760px;
+    margin: 0 auto 28px;
   }
+  /* horizontal scrollable strip (like Tilda's t1148 gallery): native swipe + scroll-snap */
   .ar-dress-track {
-    display: flex;
-    transition: transform 0.4s ease;
+    display: flex; gap: 20px;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 4px 4px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100,160,189,0.45) transparent;
   }
+  .ar-dress-track::-webkit-scrollbar { height: 6px; }
+  .ar-dress-track::-webkit-scrollbar-thumb { background: rgba(100,160,189,0.45); border-radius: 3px; }
+  .ar-dress-track::-webkit-scrollbar-track { background: transparent; }
   .ar-dress-slide {
-    flex-shrink: 0; width: 100%; height: 460px;
-    object-fit: cover; display: block;
+    flex: 0 0 auto; width: 300px; max-width: 80%; height: 460px;
+    object-fit: cover; display: block; border-radius: 12px;
+    scroll-snap-align: center; user-select: none;
   }
   .ar-dress-nav {
     position: absolute; top: 50%; transform: translateY(-50%);
