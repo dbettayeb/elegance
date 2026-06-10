@@ -338,7 +338,6 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
               </p>
             </div>
             <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
-            <img className="ar-dear-heart-outline" src="/assets/alexa-richard/dear/heart-outline.png" alt="" />
             <img className="ar-dear-heart-cup"   src="/assets/alexa-richard/dear/heart-cup.png"   alt="" />
             <img className="ar-dear-heart-small" src="/assets/alexa-richard/dear/heart-small.png" alt="" />
           </div>
@@ -731,8 +730,9 @@ const CSS = `
   }
   .ar-dear-artboard { position: relative; height: 670px; overflow: visible; }
 
-  /* envelope = two stacked layers (back layer under the letter, front layer over it),
-     both slide up from translateY(170px) to translateY(0) as --dear-p goes 0 -> 1 */
+  /* envelope = two stacked layers (back layer under the letter, front layer over it).
+     As --dear-p goes 0 -> 1 (scrolling down, further into the page), the flaps slide
+     DOWN over the letter — i.e. the letter appears to go back into the envelope. */
   .ar-dear-leaves-l,
   .ar-dear-leaves-r {
     position: absolute;
@@ -740,7 +740,7 @@ const CSS = `
     left: calc(50% - 600px + 355px);
     width: 490px; height: auto;
     pointer-events: none;
-    transform: translateY(calc((1 - var(--dear-p, 0)) * 170px));
+    transform: translateY(calc(var(--dear-p, 0) * 170px));
     transition: transform 0.25s ease-out;
     will-change: transform;
   }
@@ -761,19 +761,6 @@ const CSS = `
     padding: 28px 24px;
     text-align: center;
     z-index: 3;
-  }
-
-  /* small heart-outline doodle, fades/slides in once */
-  .ar-dear-heart-outline {
-    position: absolute;
-    top: -90px;
-    left: calc(50% - 600px + 535px);
-    width: 108px; height: auto;
-    pointer-events: none;
-    z-index: 5;
-    opacity: var(--dear-p, 0);
-    transform: translateY(calc((1 - var(--dear-p, 0)) * 30px));
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
   }
 
   /* the two bobbing hearts beside the envelope */
@@ -1259,7 +1246,6 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-dear-leaves-l',     355, 235,  75,  -5, -85],
   ['.ar-dear-leaves-r',     355, 235,  75,  -5, -85],
   ['.ar-dear-box',          449, 329, 169,  89,   9],
-  ['.ar-dear-heart-outline',535, 426, 266, 186, 106],
   ['.ar-dear-heart-cup',    533, 414, 254, 174,  94],
   ['.ar-dear-heart-small',  598, 477, 317, 237, 157],
   // schedule
