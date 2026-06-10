@@ -132,6 +132,15 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'fr',
   },
   {
+    id: 'alexa_richard',
+    name: 'Alexa & Richard',
+    description: 'Romantisme bleu poudré & crème. Ouverture à polygones, vidéo héro, scratch-to-reveal de la date, timeline alternée et section dress code. Élégance anglophone pour mariages internationaux.',
+    tags: ['International', 'Romantique', 'Vidéo', 'Interactif'],
+    palette: ['#fffdfb', '#64a0bd', '#52839c', '#9bc9e1'],
+    ambiance: 'clair',
+    language: 'fr',
+  },
+  {
     id: 'viktor_paula',
     name: 'Viktor & Paula',
     description: 'Romance bordeaux & crème. Enveloppe à polygones qui s\'écartent sur une colombe. Hero avec rubis facettés, timeline à colombe animée, séparateurs déchirés. Élégance classique européenne.',

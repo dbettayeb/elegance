@@ -20,6 +20,7 @@ export interface Wedding {
   | 'bismillah' | 'al_asala' | 'al_qamar'
   | 'sceau_royal'| 'cristal_champagne'
   | 'chateau_pivoines' | 'coeur_dore' | 'viktor_paula'
+  | 'alexa_richard'
   music_url?: string
   custom_font?: string
   intro_text?: string
