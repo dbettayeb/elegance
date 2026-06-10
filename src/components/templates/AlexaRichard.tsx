@@ -72,8 +72,12 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
       if (!el) return 0
       const r = el.getBoundingClientRect()
       const vh = window.innerHeight || 1
-      // 0 when the section's top hits the bottom of the viewport, 1 when it has scrolled up by ~70% of vh
-      const p = (vh - r.top) / (vh * 0.9)
+      // 0 when the section's top is at the bottom of the viewport,
+      // 1 when the section's center has reached the viewport's center.
+      const start = vh
+      const end = vh / 2 - r.height / 2
+      const span = start - end || 1
+      const p = (start - r.top) / span
       return Math.max(0, Math.min(1, p))
     }
     function onScroll() {
@@ -325,10 +329,6 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
         {/* ── DEAR FRIENDS ── */}
         <div id="ar-dear">
           <div className="ar-artboard ar-dear-artboard" ref={dearRef}>
-            <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png"  alt="" />
-            <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
-            <img className="ar-dear-heart-2"  src="/assets/alexa-richard/dear/heart-cup.png"    alt="" />
-            <img className="ar-dear-heart-3"  src="/assets/alexa-richard/dear/heart-small.png"  alt="" />
             <div className="ar-dear-box">
               <h2 className="ar-dear-title">Dear friends and family,</h2>
               <p className="ar-dear-text">
@@ -336,6 +336,10 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                   `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
               </p>
             </div>
+            <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png"  alt="" />
+            <img className="ar-dear-leaves-r" src="/assets/alexa-richard/dear/leaves-right.png" alt="" />
+            <div className="ar-dear-heart-2-wrap"><img className="ar-dear-heart-2" src="/assets/alexa-richard/dear/heart-cup.png"   alt="" /></div>
+            <div className="ar-dear-heart-3-wrap"><img className="ar-dear-heart-3" src="/assets/alexa-richard/dear/heart-small.png" alt="" /></div>
           </div>
         </div>
 
@@ -727,52 +731,12 @@ const CSS = `
   }
   .ar-dear-artboard { height: 670px; }
 
-  .ar-dear-frame {
-    position: absolute;
-    top: 21px;
-    width: 490px; height: auto;
-    pointer-events: none;
-    z-index: 1;
-  }
-  /* leaves = the envelope, kept IN FRONT so the letter tucks behind it as it slides up */
-  .ar-dear-leaves-l {
-    position: absolute;
-    top: 21px;
-    width: 490px; height: auto;
-    pointer-events: none;
-    z-index: 6;
-  }
-  .ar-dear-leaves-r {
-    position: absolute;
-    top: 21px;
-    width: 490px; height: auto;
-    pointer-events: none;
-    z-index: 6;
-  }
-  .ar-dear-heart-2 {
-    position: absolute;
-    top: 64px;
-    width: 108px; height: auto;
-    animation: ar-bob 2.5s ease-in-out infinite 0.4s;
-    pointer-events: none;
-    z-index: 4;
-    opacity: var(--dear-p, 1);
-    transition: opacity 0.2s linear;
-  }
-  .ar-dear-heart-3 {
-    position: absolute;
-    top: 90px;
-    width: 69px; height: auto;
-    animation: ar-bob 2.5s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 4;
-    opacity: var(--dear-p, 1);
-    transition: opacity 0.2s linear;
-  }
-  /* the letter: slides up out of the envelope, driven by --dear-p (0 = inside, 1 = out) */
+  /* the letter: starts tucked inside the envelope (small, low, hidden behind the flaps),
+     then slides up + scales to full size as --dear-p goes 0 -> 1 */
   .ar-dear-box {
     position: absolute;
     top: 174px;
+    left: calc(50% - 600px + 449px);
     width: 302px; height: 327px;
     background: #fff;
     box-shadow: -7px -7px 19px 0 rgba(42,38,38,0.09);
@@ -782,11 +746,61 @@ const CSS = `
     padding: 28px 24px;
     text-align: center;
     z-index: 3;
-    transform: translateY(calc((1 - var(--dear-p, 1)) * 150px));
-    opacity: var(--dear-p, 1);
-    transition: transform 0.12s linear, opacity 0.12s linear;
+    transform-origin: bottom center;
+    transform:
+      translateY(calc((1 - var(--dear-p, 0)) * 130px))
+      scale(calc(0.85 + var(--dear-p, 0) * 0.15));
+    opacity: calc(0.25 + var(--dear-p, 0) * 0.75);
+    transition: transform 0.25s ease-out, opacity 0.25s ease-out;
     will-change: transform, opacity;
   }
+
+  /* envelope flaps: sit above the letter, slide outward to "open" as the letter rises */
+  .ar-dear-leaves-l,
+  .ar-dear-leaves-r {
+    position: absolute;
+    top: 21px;
+    left: calc(50% - 600px + 355px);
+    width: 490px; height: auto;
+    pointer-events: none;
+    z-index: 6;
+    transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+  }
+  .ar-dear-leaves-l {
+    clip-path: inset(0 50% 0 0);
+    transform: translate(calc(var(--dear-p, 0) * -36px), calc(var(--dear-p, 0) * -22px)) rotate(calc(var(--dear-p, 0) * -6deg));
+  }
+  .ar-dear-leaves-r {
+    clip-path: inset(0 0 0 50%);
+    transform: translate(calc(var(--dear-p, 0) * 36px), calc(var(--dear-p, 0) * -22px)) rotate(calc(var(--dear-p, 0) * 6deg));
+  }
+
+  .ar-dear-heart-2-wrap,
+  .ar-dear-heart-3-wrap {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    opacity: var(--dear-p, 0);
+    transform: translateY(calc((1 - var(--dear-p, 0)) * 40px));
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  }
+  .ar-dear-heart-2-wrap {
+    top: 64px;
+    left: calc(50% - 600px + 533px);
+    width: 108px;
+  }
+  .ar-dear-heart-3-wrap {
+    top: 90px;
+    left: calc(50% - 600px + 598px);
+    width: 69px;
+  }
+  .ar-dear-heart-2,
+  .ar-dear-heart-3 {
+    display: block;
+    width: 100%; height: auto;
+  }
+  .ar-dear-heart-2 { animation: ar-bob 2.5s ease-in-out infinite 0.4s; }
+  .ar-dear-heart-3 { animation: ar-bob 2.5s ease-in-out infinite; }
   @keyframes ar-bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
 
   .ar-dear-title {
@@ -1247,11 +1261,10 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-hero-names',        320, 200,  40, -40,-120],
   ['.ar-hero-sub',          430, 310, 150,  70, -10],
   // dear friends
-  ['.ar-dear-frame',        355, 235,  75,  -5, -85],
   ['.ar-dear-leaves-l',     355, 235,  75,  -5, -85],
   ['.ar-dear-leaves-r',     355, 235,  75,  -5, -85],
-  ['.ar-dear-heart-2',      533, 414, 254, 174,  94],
-  ['.ar-dear-heart-3',      598, 477, 317, 237, 157],
+  ['.ar-dear-heart-2-wrap', 533, 414, 254, 174,  94],
+  ['.ar-dear-heart-3-wrap', 598, 477, 317, 237, 157],
   ['.ar-dear-box',          449, 329, 169,  89,   9],
   // schedule
   ['.ar-sched-title',       320, 200,  40, -40,-120],
