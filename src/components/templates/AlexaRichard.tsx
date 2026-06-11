@@ -75,15 +75,15 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   //    (Tilda sbs "scroll": dd=350/280 delay step + di=300 move step). This fixes the
   //    "they start moving too early" problem.
   useEffect(() => {
-    // --- Dear pin (tunable) ---
-    const PIN_DIST  = 170     // envelope freeze distance  (Tilda fix-dist)
-    const ENGAGE_VH = 0.38    // pin engages when the letter top reaches this fraction of the viewport
-    const BOX_TOP   = 174     // letter top inside the dear artboard
+    // --- Dear envelope pin (Tilda data-animate-fix) ---
+    const PIN_DIST  = 170     // EXACT Tilda fix-dist: envelope stays frozen for 170px while the letter scrolls out
+    const ENGAGE_VH = 0.45    // when the pin engages (the ONE value not in the Tilda files -> tunable)
+    const BOX_TOP   = 174     // letter rest position inside the artboard (matches .ar-dear-box top); the letter is NOT animated, it just scrolls
 
-    // --- Schedule leaves (tunable; values taken from the Tilda sbs-opts) ---
-    const SCHED_MOVE  = 300                       // px of scroll over which a leaf parts (di)
-    const LEAF1_TOP = 69,  LEAF1_DELAY = 350      // leaves-1: element top + dd (delay)
-    const LEAF2_TOP = 169, LEAF2_DELAY = 280      // leaves-2: element top + dd (delay)
+    // --- Schedule clouds (EXACT Tilda sbs-opts: dd delay, di move) ---
+    const SCHED_MOVE  = 300                       // di: px of scroll over which a cloud parts
+    const LEAF1_TOP = 69,  LEAF1_DELAY = 350      // leaves-1 (cloud): top + dd delay
+    const LEAF2_TOP = 169, LEAF2_DELAY = 280      // leaves-2 (cloud): top + dd delay
 
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
 
@@ -101,12 +101,13 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
       const sched = scheduleRef.current
       if (sched) {
         const r = sched.getBoundingClientRect()
-        const d1 = vh - (r.top + LEAF1_TOP)        // scroll distance past leaf-1 entering the viewport
+        const d1 = vh - (r.top + LEAF1_TOP)
         const d2 = vh - (r.top + LEAF2_TOP)
         const p1 = clamp((d1 - LEAF1_DELAY) / SCHED_MOVE, 0, 1)
         const p2 = clamp((d2 - LEAF2_DELAY) / SCHED_MOVE, 0, 1)
-        sched.style.setProperty('--sched-p1', p1.toFixed(4))
-        sched.style.setProperty('--sched-p2', p2.toFixed(4))
+        // Tilda mx values applied directly as px so the CSS just does translateX(var(--cloudN-x))
+        sched.style.setProperty('--cloud1-x', (p1 *  700).toFixed(2) + 'px')
+        sched.style.setProperty('--cloud2-x', (p2 * -690).toFixed(2) + 'px')
       }
     }
 
@@ -123,6 +124,23 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
+  }, [opened, visible])
+
+  // Hearts: Tilda "intoview" one-shot bob (my:-10 over 1s, then back). Triggered once,
+  // when the heart first enters the viewport.
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>('.ar-dear-heart-cup, .ar-dear-heart-small')
+    if (!els.length || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('ar-bob-once')
+          io.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.4 })
+    els.forEach(el => io.observe(el))
+    return () => io.disconnect()
   }, [opened, visible])
 
   useEffect(() => {
@@ -757,32 +775,53 @@ const CSS = `
   #ar-dear {
     background: var(--ar-cream);
     width: 100%;
+    overflow: hidden;     /* clip the wider Tilda artboard to the page width */
   }
-  .ar-dear-artboard { position: relative; height: 670px; overflow: hidden; }
+  /* DEAR: Tilda 1200x670 artboard. Two-step layout so it CENTERS properly on narrow screens:
+     1) The artboard is 1200 wide, positioned so its centre lands at the page centre
+        (left:50% + translateX(-50%)) BEFORE scaling.
+     2) Then scaled down by transform:scale(...). transform-origin:top center keeps the
+        centre fixed while shrinking. The negative bottom margin compensates the visual
+        height lost by the scale, so the next section sits right under it. */
+  .ar-dear-artboard {
+    position: relative;
+    width: 1200px; height: 670px;
+    left: 50%;
+    transform: translateX(-50%) scale(var(--ab-scale, 1));
+    transform-origin: top center;
+    margin-bottom: var(--ab-mb, 0px);
+  }
+  /* fluid scale: keep the artboard always fitting inside the viewport (1200 * scale <= vw) */
+  @media (max-width: 1240px) { .ar-dear-artboard { --ab-scale: 0.85; --ab-mb: -100px; } }
+  @media (max-width: 1024px) { .ar-dear-artboard { --ab-scale: 0.70; --ab-mb: -200px; } }
+  @media (max-width: 820px)  { .ar-dear-artboard { --ab-scale: 0.55; --ab-mb: -300px; } }
+  @media (max-width: 640px)  { .ar-dear-artboard { --ab-scale: 0.45; --ab-mb: -370px; } }
+  @media (max-width: 520px)  { .ar-dear-artboard { --ab-scale: 0.36; --ab-mb: -430px; } }
+  @media (max-width: 420px)  { .ar-dear-artboard { --ab-scale: 0.30; --ab-mb: -470px; } }
 
-  /* envelope = two stacked layers (back layer under the letter, front layer over it).
-     --dear-fix is the pin shift (0 -> 170px) set by the scroll effect: it freezes the
-     envelope in the viewport for 170px while the letter & hearts scroll up out of it.
-     No transition here — the transform must track the scroll exactly to look "pinned". */
+  /* Envelope = two stacked layers, both with EXACT Tilda left/top (centred under the
+     artboard with left:50% + the Tilda offset from the artboard centre = -245px,
+     because the 490px-wide layer starts at left=355 inside a 1200px artboard). */
   .ar-dear-leaves-l,
   .ar-dear-leaves-r {
     position: absolute;
     top: 21px;
-    left: 50%;                 /* centre-anchored: stays centred at every width */
+    left: 355px;             /* Tilda value, exact */
     width: 490px; height: auto;
     pointer-events: none;
-    transform: translate(-50%, var(--dear-fix, 0px));
+    transform: translateY(var(--dear-fix, 0px));   /* envelope pin only — no horizontal shift */
     will-change: transform;
   }
+  /* layer order from the HTML: BACK layer under the letter, FRONT layer over it */
   .ar-dear-leaves-l { z-index: 2; }
   .ar-dear-leaves-r { z-index: 4; }
 
-  /* the letter, sandwiched between the two envelope layers */
+  /* The letter (Tilda: left=449, top=174, 302x327) sits BETWEEN the two layers,
+     so the front layer hides its bottom — the "rises out of the envelope" effect. */
   .ar-dear-box {
     position: absolute;
     top: 174px;
-    left: 50%;                 /* centred regardless of the (responsive) box width */
-    transform: translateX(-50%);
+    left: 449px;
     width: 302px; height: 327px;
     background: #fff;
     box-shadow: -7px -7px 19px 0 rgba(42,38,38,0.09);
@@ -794,29 +833,28 @@ const CSS = `
     z-index: 3;
   }
 
-  /* the two bobbing hearts beside the envelope */
+  /* Hearts: Tilda intoview one-shot. They sit ON TOP of the envelope (z-index 5)
+     and bob once with my:-10 when first scrolled into view. */
   .ar-dear-heart-cup,
   .ar-dear-heart-small {
     position: absolute;
     pointer-events: none;
-    z-index: 1;
-    animation: ar-bob 2.2s ease-in-out infinite;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(0);
   }
-  /* hearts: anchored to the centre line so they keep their offset from the envelope
-     at every breakpoint (margin-left keeps the transform free for the bob animation) */
-  .ar-dear-heart-cup {
-    top: 64px;
-    left: 50%; margin-left: -67px;
-    width: 108px; height: auto;
-  }
-  .ar-dear-heart-small {
-    top: 90px;
-    left: 50%; margin-left: -2px;
-    width: 69px; height: auto;
-    animation-delay: 0.4s;
-  }
+  /* Tilda positions: heart-cup left=533 top=64 w=108 ; heart-small left=598 top=90 w=69 */
+  .ar-dear-heart-cup   { top: 64px; left: 533px; width: 108px; height: auto; }
+  .ar-dear-heart-small { top: 90px; left: 598px; width: 69px;  height: auto; }
 
-  @keyframes ar-bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+  /* one-shot bob added by the IntersectionObserver */
+  .ar-bob-once { animation: ar-bob-once 1.6s ease-out forwards; }
+  @keyframes ar-bob-once {
+    0%   { opacity: 0; transform: translateY(0); }
+    20%  { opacity: 1; transform: translateY(0); }
+    60%  { opacity: 1; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
 
   .ar-dear-title {
     font-size: 28px;
@@ -921,7 +959,22 @@ const CSS = `
     overflow: hidden;
     padding-top: 45px;
   }
-  .ar-sched-artboard { height: 620px; }
+  /* SCHEDULE: same Tilda 1200x608 artboard model, same two-step centering pattern. */
+  .ar-sched-artboard {
+    position: relative;
+    width: 1200px; height: 608px;
+    left: 50%;
+    transform: translateX(-50%) scale(var(--ab-scale, 1));
+    transform-origin: top center;
+    margin-bottom: var(--ab-mb, 0px);
+  }
+  @media (max-width: 1240px) { .ar-sched-artboard { --ab-scale: 0.85; --ab-mb: -90px; } }
+  @media (max-width: 1024px) { .ar-sched-artboard { --ab-scale: 0.70; --ab-mb: -180px; } }
+  @media (max-width: 820px)  { .ar-sched-artboard { --ab-scale: 0.55; --ab-mb: -270px; } }
+  @media (max-width: 640px)  { .ar-sched-artboard { --ab-scale: 0.45; --ab-mb: -330px; } }
+  @media (max-width: 520px)  { .ar-sched-artboard { --ab-scale: 0.36; --ab-mb: -380px; } }
+  @media (max-width: 420px)  { .ar-sched-artboard { --ab-scale: 0.30; --ab-mb: -420px; } }
+
   .ar-sched-title {
     position: absolute;
     top: 0; left: 320px; width: 560px;
@@ -930,23 +983,19 @@ const CSS = `
     color: var(--ar-dark);
     font-size: 41px; font-weight: 500; line-height: 1.55;
   }
+  /* Clouds: EXACT Tilda placement -> left=122 inside the 1200px artboard, width=957. */
   .ar-sched-leaves {
     position: absolute;
-    left: 50%;                  /* centre-anchored */
-    width: 957px; height: auto; /* fixed size like Tilda -> covers the programme on every device (clipped by the section) */
+    left: 122px;
+    width: 957px; height: auto;
     display: block;
-    opacity: 0.85;
-    z-index: 5;                 /* in FRONT of the programme so they cover it, then part */
+    z-index: 5;
     pointer-events: none;
     will-change: transform;
   }
-  /* --sched-p1 / --sched-p2: 0 = closed (covers the programme), 1 = fully parted.
-     The scroll effect keeps them at 0 during the delay (dd=350/280), then ramps to 1
-     over 300px (di). translateX(-50%) keeps them centred; the term parts them outward. */
-  .ar-leaves-1 { top: 69px;  transform: translateX(calc(-50% + var(--sched-p1, 1) * 700px)); }
-  .ar-leaves-2 { top: 169px; transform: translateX(calc(-50% - var(--sched-p2, 1) * 690px)); }
-  @keyframes ar-drift-r { from{transform:translateX(0);} to{transform:translateX(40px);} }
-  @keyframes ar-drift-l { from{transform:translateX(0);} to{transform:translateX(-40px);} }
+  /* --cloud1-x / --cloud2-x come from the scroll effect (Tilda dd delay then di move, mx +700 / -690). */
+  .ar-leaves-1 { top: 69px;  transform: translateX(var(--cloud1-x, 0px)); }
+  .ar-leaves-2 { top: 169px; transform: translateX(var(--cloud2-x, 0px)); }
 
   .ar-tl-line {
     position: absolute;
@@ -1240,10 +1289,7 @@ const CSS = `
   }
 
   @media (max-width: 480px) {
-    .ar-dear-artboard { height: 760px; }
-    .ar-dear-box      { width: 260px; height: 300px; padding: 20px 16px; }
-    .ar-dear-title    { font-size: 20px; }
-    .ar-dear-text     { font-size: 15px; }
+    /* Dear artboard is scaled (see .ar-dear-artboard media queries) so no per-element override is needed */
     .ar-countdown-inner    { padding: 20px 16px 32px; }
     .ar-countdown-inner h2 { font-size: 22px; }
     .ar-time-num  { font-size: 28px; }
@@ -1272,7 +1318,6 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-hero-sub',          430, 310, 150,  70, -10],
   // dear friends
   // schedule
-  ['.ar-sched-title',       320, 200,  40, -40,-120],
   ['.ar-tl-line',           598, 478, 318, 238, 158],
   ['.ar-tl-dot-1',          595, 475, 315, 235, 155],
   ['.ar-tl-dot-2',          595, 475, 315, 235, 155],
