@@ -66,27 +66,57 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     return () => window.removeEventListener('resize', scaleOpening)
   }, [])
 
-  // Scroll-linked reveals: Dear (letter sliding out of the envelope) + Schedule (leaves parting)
+  // Faithful reproduction of the two Tilda scroll behaviours:
+  //  • DEAR: the envelope is "pinned" (frozen in the viewport) for ~170px of scroll while the
+  //    letter & hearts keep scrolling up out of it  (Tilda data-animate-fix / fix-dist="170").
+  //    Implemented as a transform that exactly tracks scroll during the pin window, so the
+  //    leaves appear glued while everything else moves — responsive, no position:fixed needed.
+  //  • SCHEDULE: the two leaves stay CLOSED for a delay, THEN part outward
+  //    (Tilda sbs "scroll": dd=350/280 delay step + di=300 move step). This fixes the
+  //    "they start moving too early" problem.
   useEffect(() => {
-    function progressFor(el: HTMLElement | null) {
-      if (!el) return 0
-      const r = el.getBoundingClientRect()
+    // --- Dear pin (tunable) ---
+    const PIN_DIST  = 170     // envelope freeze distance  (Tilda fix-dist)
+    const ENGAGE_VH = 0.38    // pin engages when the letter top reaches this fraction of the viewport
+    const BOX_TOP   = 174     // letter top inside the dear artboard
+
+    // --- Schedule leaves (tunable; values taken from the Tilda sbs-opts) ---
+    const SCHED_MOVE  = 300                       // px of scroll over which a leaf parts (di)
+    const LEAF1_TOP = 69,  LEAF1_DELAY = 350      // leaves-1: element top + dd (delay)
+    const LEAF2_TOP = 169, LEAF2_DELAY = 280      // leaves-2: element top + dd (delay)
+
+    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
+
+    function update() {
       const vh = window.innerHeight || 1
-      // 0 when the section's top is at the bottom of the viewport,
-      // 1 when the section's center has reached the viewport's center.
-      const start = vh
-      const end = vh / 2 - r.height / 2
-      const span = start - end || 1
-      const p = (start - r.top) / span
-      return Math.max(0, Math.min(1, p))
+
+      const dear = dearRef.current
+      if (dear) {
+        const r = dear.getBoundingClientRect()
+        const engage = vh * ENGAGE_VH - BOX_TOP   // value of r.top when the pin starts
+        const shift  = clamp(engage - r.top, 0, PIN_DIST)
+        dear.style.setProperty('--dear-fix', shift.toFixed(2) + 'px')
+      }
+
+      const sched = scheduleRef.current
+      if (sched) {
+        const r = sched.getBoundingClientRect()
+        const d1 = vh - (r.top + LEAF1_TOP)        // scroll distance past leaf-1 entering the viewport
+        const d2 = vh - (r.top + LEAF2_TOP)
+        const p1 = clamp((d1 - LEAF1_DELAY) / SCHED_MOVE, 0, 1)
+        const p2 = clamp((d2 - LEAF2_DELAY) / SCHED_MOVE, 0, 1)
+        sched.style.setProperty('--sched-p1', p1.toFixed(4))
+        sched.style.setProperty('--sched-p2', p2.toFixed(4))
+      }
     }
+
+    let ticking = false
     function onScroll() {
-      const dp = progressFor(dearRef.current)
-      if (dearRef.current) dearRef.current.style.setProperty('--dear-p', dp.toFixed(4))
-      const sp = progressFor(scheduleRef.current)
-      if (scheduleRef.current) scheduleRef.current.style.setProperty('--sched-p', sp.toFixed(4))
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => { update(); ticking = false })
     }
-    onScroll()
+    update()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     return () => {
@@ -728,20 +758,20 @@ const CSS = `
     background: var(--ar-cream);
     width: 100%;
   }
-  .ar-dear-artboard { position: relative; height: 670px; overflow: visible; }
+  .ar-dear-artboard { position: relative; height: 670px; overflow: hidden; }
 
   /* envelope = two stacked layers (back layer under the letter, front layer over it).
-     As --dear-p goes 0 -> 1 (scrolling down, further into the page), the flaps slide
-     DOWN over the letter — i.e. the letter appears to go back into the envelope. */
+     --dear-fix is the pin shift (0 -> 170px) set by the scroll effect: it freezes the
+     envelope in the viewport for 170px while the letter & hearts scroll up out of it.
+     No transition here — the transform must track the scroll exactly to look "pinned". */
   .ar-dear-leaves-l,
   .ar-dear-leaves-r {
     position: absolute;
     top: 21px;
-    left: calc(50% - 600px + 355px);
+    left: 50%;                 /* centre-anchored: stays centred at every width */
     width: 490px; height: auto;
     pointer-events: none;
-    transform: translateY(calc(var(--dear-p, 0) * 170px));
-    transition: transform 0.25s ease-out;
+    transform: translate(-50%, var(--dear-fix, 0px));
     will-change: transform;
   }
   .ar-dear-leaves-l { z-index: 2; }
@@ -751,7 +781,8 @@ const CSS = `
   .ar-dear-box {
     position: absolute;
     top: 174px;
-    left: calc(50% - 600px + 449px);
+    left: 50%;                 /* centred regardless of the (responsive) box width */
+    transform: translateX(-50%);
     width: 302px; height: 327px;
     background: #fff;
     box-shadow: -7px -7px 19px 0 rgba(42,38,38,0.09);
@@ -771,14 +802,16 @@ const CSS = `
     z-index: 1;
     animation: ar-bob 2.2s ease-in-out infinite;
   }
+  /* hearts: anchored to the centre line so they keep their offset from the envelope
+     at every breakpoint (margin-left keeps the transform free for the bob animation) */
   .ar-dear-heart-cup {
     top: 64px;
-    left: calc(50% - 600px + 533px);
+    left: 50%; margin-left: -67px;
     width: 108px; height: auto;
   }
   .ar-dear-heart-small {
     top: 90px;
-    left: calc(50% - 600px + 598px);
+    left: 50%; margin-left: -2px;
     width: 69px; height: auto;
     animation-delay: 0.4s;
   }
@@ -899,17 +932,19 @@ const CSS = `
   }
   .ar-sched-leaves {
     position: absolute;
-    left: 122px; width: 957px; height: auto;
+    left: 50%;                  /* centre-anchored */
+    width: 957px; height: auto; /* fixed size like Tilda -> covers the programme on every device (clipped by the section) */
     display: block;
     opacity: 0.85;
     z-index: 5;                 /* in FRONT of the programme so they cover it, then part */
     pointer-events: none;
-    transition: transform 0.08s linear;
     will-change: transform;
   }
-  /* --sched-p: 0 = closed (covers programme), 1 = fully parted. Matches Tilda mx +700 / -690 */
-  .ar-leaves-1 { top: 69px;  transform: translateX(calc(var(--sched-p, 1) * 700px)); }
-  .ar-leaves-2 { top: 200px; transform: translateX(calc(var(--sched-p, 1) * -690px)); }
+  /* --sched-p1 / --sched-p2: 0 = closed (covers the programme), 1 = fully parted.
+     The scroll effect keeps them at 0 during the delay (dd=350/280), then ramps to 1
+     over 300px (di). translateX(-50%) keeps them centred; the term parts them outward. */
+  .ar-leaves-1 { top: 69px;  transform: translateX(calc(-50% + var(--sched-p1, 1) * 700px)); }
+  .ar-leaves-2 { top: 169px; transform: translateX(calc(-50% - var(--sched-p2, 1) * 690px)); }
   @keyframes ar-drift-r { from{transform:translateX(0);} to{transform:translateX(40px);} }
   @keyframes ar-drift-l { from{transform:translateX(0);} to{transform:translateX(-40px);} }
 
@@ -1224,14 +1259,7 @@ const CSS = `
     .ar-gb-message  { font-size: 0.9rem; }
     .ar-closing-title { font-size: 22px; }
     .ar-closing-names { font-size: 17px; }
-    .ar-sched-artboard { height: 740px; }
-    .ar-tl-line { height: 520px; }
-    .ar-tl-dot-1 { top: 133px; } .ar-tl-dot-2 { top: 222px; }
-    .ar-tl-dot-3 { top: 315px; } .ar-tl-dot-4 { top: 405px; }
-    .ar-tl-dot-5 { top: 497px; } .ar-tl-dot-6 { top: 587px; }
-    .ar-evt-r.ar-evt-1 { top: 113px; } .ar-evt-l.ar-evt-2 { top: 200px; }
-    .ar-evt-r.ar-evt-3 { top: 293px; } .ar-evt-l.ar-evt-4 { top: 383px; }
-    .ar-evt-r.ar-evt-5 { top: 475px; } .ar-evt-l.ar-evt-6 { top: 565px; }
+    /* schedule keeps its single fixed layout on mobile (like Tilda) so the leaves keep covering it */
   }
 `
 
@@ -1243,14 +1271,8 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-hero-names',        320, 200,  40, -40,-120],
   ['.ar-hero-sub',          430, 310, 150,  70, -10],
   // dear friends
-  ['.ar-dear-leaves-l',     355, 235,  75,  -5, -85],
-  ['.ar-dear-leaves-r',     355, 235,  75,  -5, -85],
-  ['.ar-dear-box',          449, 329, 169,  89,   9],
-  ['.ar-dear-heart-cup',    533, 414, 254, 174,  94],
-  ['.ar-dear-heart-small',  598, 477, 317, 237, 157],
   // schedule
   ['.ar-sched-title',       320, 200,  40, -40,-120],
-  ['.ar-sched-leaves',      122,   2,-158,-238,-318],
   ['.ar-tl-line',           598, 478, 318, 238, 158],
   ['.ar-tl-dot-1',          595, 475, 315, 235, 155],
   ['.ar-tl-dot-2',          595, 475, 315, 235, 155],
