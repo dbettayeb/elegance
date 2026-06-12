@@ -13,7 +13,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     eventDate,
   } = useInvitationLogic(wedding)
 
-  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0)
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const [allScratched, setAllScratched] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -41,16 +41,17 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
 
   function startSequence() {
     if (phase !== 0) return
-    setPhase(1)
-    setTimeout(() => setPhase(2), 2500)
+    setPhase(1)                          // seal & hint fade out
+    setTimeout(() => setPhase(2), 1000)  // polygons start opening
+    setTimeout(() => setPhase(3), 3500)  // opening screen fades out
     setTimeout(() => {
-      setPhase(3)
+      setPhase(4)
       openEnvelope()
       if (audioRef.current && !audioPlaying) {
         audioRef.current.play().catch(() => {})
         setAudioPlaying(true)
       }
-    }, 3000)
+    }, 4100)
   }
 
   useEffect(() => {
@@ -331,9 +332,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
 
       {/* ─── OPENING SCREEN ─── */}
       {!opened && (
-        <div id="ar-opening" className={phase >= 2 ? 'ar-hidden' : ''}>
+        <div id="ar-opening" className={phase >= 3 ? 'ar-hidden' : ''}>
           <div
-            className={`ar-opening-stage${phase >= 1 ? ' ar-animating' : ''}`}
+            className={`ar-opening-stage${phase >= 1 ? ' ar-seal-out' : ''}${phase >= 2 ? ' ar-animating' : ''}`}
             onClick={startSequence}
             role="button"
             tabIndex={0}
@@ -716,10 +717,10 @@ const CSS = `
     pointer-events: none;
     transition: transform 2s ease, opacity 0.5s ease;
   }
-  .ar-poly-left  { top: -13px; left: 98px;  width: 467px; height: auto; }
-  .ar-poly-right { top: -13px; left: 635px; width: 467px; height: auto; }
-  .ar-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; }
-  .ar-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; }
+  .ar-poly-left  { top: -13px; left: 98px;  width: 467px; height: auto; z-index: 1; }
+  .ar-poly-right { top: -13px; left: 635px; width: 467px; height: auto; z-index: 1; }
+  .ar-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
+  .ar-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
   .ar-opening-stage.ar-animating .ar-poly-left  { transform: translateX(-560px); opacity: 0; }
   .ar-opening-stage.ar-animating .ar-poly-right { transform: translateX(560px);  opacity: 0; }
   .ar-opening-stage.ar-animating .ar-poly-top   { transform: translateY(-430px); }
@@ -732,23 +733,31 @@ const CSS = `
     cursor: pointer;
     border: none; background: none; padding: 0;
     transition: transform 1.5s ease, opacity 1s ease;
+    z-index: 3;
   }
   .ar-seal-btn img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .ar-opening-stage.ar-seal-out .ar-seal-btn,
   .ar-opening-stage.ar-animating .ar-seal-btn { transform: scale(1.22); opacity: 0; }
 
   .ar-click-hint {
     position: absolute;
-    top: 478px; left: 535px;
+    top: 540px; left: 535px;
     width: 130px;
     text-align: center;
     color: var(--ar-blue-deep);
     font-family: var(--ar-font);
     font-size: 20px;
     pointer-events: none;
+    z-index: 1;
     transition: opacity 1.5s ease;
     animation: ar-pulse 2s ease-in-out infinite;
   }
-  .ar-opening-stage.ar-animating .ar-click-hint { opacity: 0; }
+  .ar-opening-stage.ar-seal-out .ar-click-hint,
+  .ar-opening-stage.ar-animating .ar-click-hint {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: none;
+  }
   @keyframes ar-pulse { 0%,100%{opacity:.6;} 50%{opacity:1;} }
 
   .ar-page {
@@ -868,8 +877,9 @@ const CSS = `
     z-index: 3;
   }
 
-  /* Hearts: Tilda intoview one-shot. They sit ON TOP of the envelope (z-index 5)
-     and bob once with my:-10 when first scrolled into view. */
+  /* Hearts: Tilda intoview one-shot. They sit BEHIND the envelope leaves (z-index 1,
+     under .ar-dear-leaves-l at 2 and .ar-dear-leaves-r at 4) so they peek out from
+     behind the envelope, and bob once with my:-10 when first scrolled into view. */
   .ar-dear-heart-cup,
   .ar-dear-heart-small {
     position: absolute;
