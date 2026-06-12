@@ -66,6 +66,37 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     return () => window.removeEventListener('resize', scaleOpening)
   }, [])
 
+  // ARTBOARD "ZOOM" (mobile fix):
+  // The Tilda artboards are 1200px wide, but the VISIBLE content only occupies the centre:
+  //   • DEAR     -> the envelope is 490px wide  (left 355 → 845)
+  //   • SCHEDULE -> title + timeline ≈ 600px    (left ~320 → ~880)
+  // The old media queries scaled the WHOLE 1200px artboard into the viewport, which made the
+  // envelope/schedule tiny on phones. Instead, we now compute the scale from the CONTENT width:
+  //   scale = min(1, viewportWidth / contentWidth)
+  // so the envelope spans (almost) exactly the device width. The 1200px artboard still overflows
+  // on the sides, but the parent has overflow:hidden, so it's cleanly clipped — and the leaves
+  // clouds of the schedule remain wide enough to keep covering the timeline before the reveal.
+  useEffect(() => {
+    const ARTBOARDS = [
+      { sel: '.ar-dear-artboard',  contentW: 500, height: 670 }, // 490px envelope + 10px breathing room
+      { sel: '.ar-sched-artboard', contentW: 620, height: 608 }, // 560px title/timeline + margins
+    ]
+    function scaleArtboards() {
+      const vw = window.innerWidth
+      ARTBOARDS.forEach(({ sel, contentW, height }) => {
+        const el = document.querySelector<HTMLElement>(sel)
+        if (!el) return
+        const scale = Math.min(1, vw / contentW)
+        el.style.setProperty('--ab-scale', scale.toFixed(4))
+        // compensate the visual height lost by the scale so the next section sits right under
+        el.style.setProperty('--ab-mb', (-(height * (1 - scale))).toFixed(1) + 'px')
+      })
+    }
+    scaleArtboards()
+    window.addEventListener('resize', scaleArtboards)
+    return () => window.removeEventListener('resize', scaleArtboards)
+  }, [opened, visible])
+
   // Faithful reproduction of the two Tilda scroll behaviours:
   //  • DEAR: the envelope is "pinned" (frozen in the viewport) for ~170px of scroll while the
   //    letter & hearts keep scrolling up out of it  (Tilda data-animate-fix / fix-dist="170").
@@ -74,6 +105,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   //  • SCHEDULE: the two leaves stay CLOSED for a delay, THEN part outward
   //    (Tilda sbs "scroll": dd=350/280 delay step + di=300 move step). This fixes the
   //    "they start moving too early" problem.
+  // NOTE: both effects are scale-aware — distances measured on screen are converted to
+  // artboard coordinates by dividing by --ab-scale, because the CSS transforms are applied
+  // INSIDE the scaled artboard.
   useEffect(() => {
     // --- Dear envelope pin (Tilda data-animate-fix) ---
     const PIN_DIST  = 170     // EXACT Tilda fix-dist: envelope stays frozen for 170px while the letter scrolls out
@@ -86,23 +120,29 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     const LEAF2_TOP = 169, LEAF2_DELAY = 280      // leaves-2 (cloud): top + dd delay
 
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
+    const getScale = (el: HTMLElement) =>
+      parseFloat(el.style.getPropertyValue('--ab-scale')) || 1
 
     function update() {
       const vh = window.innerHeight || 1
 
       const dear = dearRef.current
       if (dear) {
+        const s = getScale(dear)
         const r = dear.getBoundingClientRect()
-        const engage = vh * ENGAGE_VH - BOX_TOP   // value of r.top when the pin starts
-        const shift  = clamp(engage - r.top, 0, PIN_DIST)
+        const engage = vh * ENGAGE_VH - BOX_TOP * s   // value of r.top when the pin starts (screen px)
+        // shift is applied INSIDE the scaled artboard -> convert the screen distance to
+        // artboard px (÷ s) so the envelope tracks scroll 1:1 on screen during the pin
+        const shift  = clamp((engage - r.top) / s, 0, PIN_DIST)
         dear.style.setProperty('--dear-fix', shift.toFixed(2) + 'px')
       }
 
       const sched = scheduleRef.current
       if (sched) {
+        const s = getScale(sched)
         const r = sched.getBoundingClientRect()
-        const d1 = vh - (r.top + LEAF1_TOP)
-        const d2 = vh - (r.top + LEAF2_TOP)
+        const d1 = vh - (r.top + LEAF1_TOP * s)
+        const d2 = vh - (r.top + LEAF2_TOP * s)
         const p1 = clamp((d1 - LEAF1_DELAY) / SCHED_MOVE, 0, 1)
         const p2 = clamp((d2 - LEAF2_DELAY) / SCHED_MOVE, 0, 1)
         // Tilda mx values applied directly as px so the CSS just does translateX(var(--cloudN-x))
@@ -782,7 +822,9 @@ const CSS = `
         (left:50% + translateX(-50%)) BEFORE scaling.
      2) Then scaled down by transform:scale(...). transform-origin:top center keeps the
         centre fixed while shrinking. The negative bottom margin compensates the visual
-        height lost by the scale, so the next section sits right under it. */
+        height lost by the scale, so the next section sits right under it.
+     --ab-scale / --ab-mb are now set by JS (scaleArtboards) from the VISIBLE content width
+     (envelope = 490px), so the envelope fills the device width on mobile. */
   .ar-dear-artboard {
     position: relative;
     width: 1200px; height: 670px;
@@ -791,13 +833,6 @@ const CSS = `
     transform-origin: top center;
     margin-bottom: var(--ab-mb, 0px);
   }
-  /* fluid scale: keep the artboard always fitting inside the viewport (1200 * scale <= vw) */
-  @media (max-width: 1240px) { .ar-dear-artboard { --ab-scale: 0.85; --ab-mb: -100px; } }
-  @media (max-width: 1024px) { .ar-dear-artboard { --ab-scale: 0.70; --ab-mb: -200px; } }
-  @media (max-width: 820px)  { .ar-dear-artboard { --ab-scale: 0.55; --ab-mb: -300px; } }
-  @media (max-width: 640px)  { .ar-dear-artboard { --ab-scale: 0.45; --ab-mb: -370px; } }
-  @media (max-width: 520px)  { .ar-dear-artboard { --ab-scale: 0.36; --ab-mb: -430px; } }
-  @media (max-width: 420px)  { .ar-dear-artboard { --ab-scale: 0.30; --ab-mb: -470px; } }
 
   /* Envelope = two stacked layers, both with EXACT Tilda left/top (centred under the
      artboard with left:50% + the Tilda offset from the artboard centre = -245px,
@@ -839,7 +874,7 @@ const CSS = `
   .ar-dear-heart-small {
     position: absolute;
     pointer-events: none;
-    z-index: 5;
+    z-index: 1;
     opacity: 0;
     transform: translateY(0);
   }
@@ -959,7 +994,11 @@ const CSS = `
     overflow: hidden;
     padding-top: 45px;
   }
-  /* SCHEDULE: same Tilda 1200x608 artboard model, same two-step centering pattern. */
+  /* SCHEDULE: same Tilda 1200x608 artboard model, same two-step centering pattern.
+     --ab-scale / --ab-mb are set by JS from the visible content width (~620px),
+     so the timeline fills the device width on mobile instead of shrinking with
+     the full 1200px artboard. The 957px-wide leaf clouds still cover the centre
+     at every scale; the overflow is clipped by #ar-schedule. */
   .ar-sched-artboard {
     position: relative;
     width: 1200px; height: 608px;
@@ -968,12 +1007,6 @@ const CSS = `
     transform-origin: top center;
     margin-bottom: var(--ab-mb, 0px);
   }
-  @media (max-width: 1240px) { .ar-sched-artboard { --ab-scale: 0.85; --ab-mb: -90px; } }
-  @media (max-width: 1024px) { .ar-sched-artboard { --ab-scale: 0.70; --ab-mb: -180px; } }
-  @media (max-width: 820px)  { .ar-sched-artboard { --ab-scale: 0.55; --ab-mb: -270px; } }
-  @media (max-width: 640px)  { .ar-sched-artboard { --ab-scale: 0.45; --ab-mb: -330px; } }
-  @media (max-width: 520px)  { .ar-sched-artboard { --ab-scale: 0.36; --ab-mb: -380px; } }
-  @media (max-width: 420px)  { .ar-sched-artboard { --ab-scale: 0.30; --ab-mb: -420px; } }
 
   .ar-sched-title {
     position: absolute;
@@ -1289,7 +1322,7 @@ const CSS = `
   }
 
   @media (max-width: 480px) {
-    /* Dear artboard is scaled (see .ar-dear-artboard media queries) so no per-element override is needed */
+    /* Dear & Schedule artboards are now zoomed by JS (scaleArtboards) to fill the device width */
     .ar-countdown-inner    { padding: 20px 16px 32px; }
     .ar-countdown-inner h2 { font-size: 22px; }
     .ar-time-num  { font-size: 28px; }
@@ -1317,20 +1350,8 @@ const POS: [string, number, number, number, number, number][] = [
   ['.ar-hero-names',        320, 200,  40, -40,-120],
   ['.ar-hero-sub',          430, 310, 150,  70, -10],
   // dear friends
-  // schedule
-  ['.ar-tl-line',           598, 478, 318, 238, 158],
-  ['.ar-tl-dot-1',          595, 475, 315, 235, 155],
-  ['.ar-tl-dot-2',          595, 475, 315, 235, 155],
-  ['.ar-tl-dot-3',          595, 475, 315, 235, 155],
-  ['.ar-tl-dot-4',          595, 475, 315, 235, 155],
-  ['.ar-tl-dot-5',          595, 475, 315, 235, 155],
-  ['.ar-tl-dot-6',          595, 475, 315, 235, 155],
-  ['.ar-evt-r.ar-evt-1',    634, 514, 354, 274, 194],
-  ['.ar-evt-r.ar-evt-3',    630, 510, 350, 270, 190],
-  ['.ar-evt-r.ar-evt-5',    634, 514, 354, 274, 194],
-  ['.ar-evt-l.ar-evt-2',    445, 325, 165,  85,   5],
-  ['.ar-evt-l.ar-evt-4',    421, 301, 141,  61, -19],
-  ['.ar-evt-l.ar-evt-6',    421, 301, 141,  61, -19],
+  // schedule (positions are inside the SCALED artboard, so they stay at the Tilda
+  // 1200px-artboard coordinates at every breakpoint — the JS zoom handles the rest)
 ]
 
 const BREAKPOINTS: [number, number][] = [
