@@ -3,7 +3,6 @@ import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-
 export default function Bismillah({ wedding }: { wedding: Wedding }) {
   const {
     opened, visible, openEnvelope, countdown,
@@ -39,7 +38,6 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
               <path d="M10 40 L140 110 L10 190Z" fill="#FCFAF5" stroke="#C9A84C" strokeWidth="0.7"/>
               <path d="M270 40 L140 110 L270 190Z" fill="#FCFAF5" stroke="#C9A84C" strokeWidth="0.7"/>
               <path d="M10 40 L140 115 L270 40Z" fill="#FFFFFF" stroke="#C9A84C" strokeWidth="1.5"/>
-              {/* Sceau central avec étoile à 8 branches (motif islamique classique) */}
               <g transform="translate(140 105)">
                 <circle r="24" fill="#C9A84C"/>
                 <g fill="#FFFFFF">
@@ -62,234 +60,238 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
 
+        {/* UN SEUL fond texturé — toutes les sections sont des enfants */}
+        <div className="bs-texture-bg">
+
         {/* HERO - BISMILLAH */}
         <section className="bs-hero">
-          {/* Ornement supérieur en étoile à 8 branches */}
-          <div className="bs-orn">
-            <svg viewBox="0 0 60 60">
-              {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                <path
-                  key={angle}
-                  d="M30 8 L34 26 L52 30 L34 34 L30 52 L26 34 L8 30 L26 26 Z"
-                  fill="none"
-                  stroke="#C9A84C"
-                  strokeWidth="0.5"
-                  opacity="0.4"
-                  transform={`rotate(${angle} 30 30)`}
-                />
-              ))}
-              <circle cx="30" cy="30" r="3" fill="#C9A84C"/>
-            </svg>
-          </div>
-
-          {/* Bismillah */}
-          <div className="bs-bismillah">
-            بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-          </div>
-
-          {/* Verset coranique sur le mariage */}
-          <div className="bs-verse-wrap">
-            <p className="bs-verse">
-              وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
-            </p>
-            <p className="bs-verse-ref">﴿ سورة الروم - الآية ٢١ ﴾</p>
-          </div>
-
-          <div className="bs-divider">
-            <span></span>
-            <i>۞</i>
-            <span></span>
-          </div>
-
-          {/* Intro */}
-          <p className="bs-intro">يتشرفان بدعوتكم لحضور حفل زفافهما</p>
-
-          {/* Noms des mariés */}
-          <h1 className="bs-names">
-            <span className="bs-name">{brideAr}</span>
-            <span className="bs-and">و</span>
-            <span className="bs-name">{groomAr}</span>
-          </h1>
-
-
-          {/* Message personnalisé */}
-          {wedding.custom_message && (
-            <p className="bs-custom">{wedding.custom_message}</p>
-          )}
-
-          {/* Date */}
-          <div className="bs-date-wrap">
-            <div className="bs-date-corner bs-tl"></div>
-            <div className="bs-date-corner bs-tr"></div>
-            <div className="bs-date-corner bs-bl"></div>
-            <div className="bs-date-corner bs-br"></div>
-
-            <div className="bs-date-num">{toArabicNumerals(eventDate.getDate())}</div>
-            <div className="bs-date-info">
-              <div className="bs-date-month">{formatMonthArabic(eventDate)}</div>
-              <div className="bs-date-line"></div>
-              <div className="bs-date-year">{toArabicNumerals(eventDate.getFullYear())}</div>
+          <div className="bs-content-zone">
+            <div className="bs-orn">
+              <svg viewBox="0 0 60 60">
+                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
+                  <path
+                    key={angle}
+                    d="M30 8 L34 26 L52 30 L34 34 L30 52 L26 34 L8 30 L26 26 Z"
+                    fill="none"
+                    stroke="#C9A84C"
+                    strokeWidth="0.5"
+                    opacity="0.4"
+                    transform={`rotate(${angle} 30 30)`}
+                  />
+                ))}
+                <circle cx="30" cy="30" r="3" fill="#C9A84C"/>
+              </svg>
             </div>
-            <div className="bs-date-time">{timeAr}</div>
+
+            <div className="bs-bismillah">
+              بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+            </div>
+
+            <div className="bs-verse-wrap">
+              <p className="bs-verse">
+                وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
+              </p>
+              <p className="bs-verse-ref">﴿ سورة الروم - الآية ٢١ ﴾</p>
+            </div>
+
+            <div className="bs-divider">
+              <span></span>
+              <i>۞</i>
+              <span></span>
+            </div>
+
+            <p className="bs-intro">يتشرفان بدعوتكم لحضور حفل زفافهما</p>
+
+            <h1 className="bs-names">
+              <span className="bs-name">{brideAr}</span>
+              <span className="bs-and">و</span>
+              <span className="bs-name">{groomAr}</span>
+            </h1>
+
+            {wedding.custom_message && (
+              <p className="bs-custom">{wedding.custom_message}</p>
+            )}
+
+            <div className="bs-date-wrap">
+              <div className="bs-date-corner bs-tl"></div>
+              <div className="bs-date-corner bs-tr"></div>
+              <div className="bs-date-corner bs-bl"></div>
+              <div className="bs-date-corner bs-br"></div>
+              <div className="bs-date-num">{toArabicNumerals(eventDate.getDate())}</div>
+              <div className="bs-date-info">
+                <div className="bs-date-month">{formatMonthArabic(eventDate)}</div>
+                <div className="bs-date-line"></div>
+                <div className="bs-date-year">{toArabicNumerals(eventDate.getFullYear())}</div>
+              </div>
+              <div className="bs-date-time">{timeAr}</div>
+            </div>
+
+            <p className="bs-hadith">
+              « بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »
+            </p>
           </div>
-
-          {/* Hadith ou phrase coraniques en bas */}
-          <p className="bs-hadith">
-            « بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »
-          </p>
         </section>
-
-        <div className="bs-section-sep">۞</div>
 
         {/* COMPTE À REBOURS */}
         <section className="bs-section">
-          <p className="bs-label">العد التنازلي</p>
-          <h2 className="bs-title">يقترب اليوم الموعود</h2>
-          <div className="bs-countdown">
-            {[
-              { val: countdown.d, label: 'يوم' },
-              { val: countdown.h, label: 'ساعة' },
-              { val: countdown.m, label: 'دقيقة' },
-              { val: countdown.s, label: 'ثانية' },
-            ].map((item, i) => (
-              <div key={i} className="bs-cd">
-                <div className="bs-cd-num">{toArabicNumerals(item.val)}</div>
-                <div className="bs-cd-label">{item.label}</div>
-              </div>
-            ))}
+          <div className="bs-content-zone">
+            <p className="bs-label">العد التنازلي</p>
+            <h2 className="bs-title">يقترب اليوم الموعود</h2>
+            <div className="bs-countdown">
+              {[
+                { val: countdown.d, label: 'يوم' },
+                { val: countdown.h, label: 'ساعة' },
+                { val: countdown.m, label: 'دقيقة' },
+                { val: countdown.s, label: 'ثانية' },
+              ].map((item, i) => (
+                <div key={i} className="bs-cd">
+                  <div className="bs-cd-num">{toArabicNumerals(item.val)}</div>
+                  <div className="bs-cd-label">{item.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* PROGRAMME */}
         {wedding.program?.length > 0 && (
           <section className="bs-section">
-            <div className="bs-section-sep">۞</div>
-            <p className="bs-label">برنامج الحفل</p>
-            <h2 className="bs-title">ترتيب الأحداث</h2>
-            <div className="bs-program">
-              {(wedding.program as ProgramItem []).map((item, i) => (
-                <div key={i} className="bs-prog-item">
-                  <div className="bs-prog-time">{toArabicNumerals(item.time)}</div>
-                  <div className="bs-prog-star">۞</div>
-                  <div className="bs-prog-content">
-                    <div className="bs-prog-event">{item.event}</div>
-                    {item.venue && <div className="bs-prog-venue">{item.venue}</div>}
+            <div className="bs-content-zone">
+              <p className="bs-label">برنامج الحفل</p>
+              <h2 className="bs-title">ترتيب الأحداث</h2>
+              <div className="bs-program">
+                {(wedding.program as ProgramItem[]).map((item, i) => (
+                  <div key={i} className="bs-prog-item">
+                    <div className="bs-prog-time">{toArabicNumerals(item.time)}</div>
+                    <div className="bs-prog-star">۞</div>
+                    <div className="bs-prog-content">
+                      <div className="bs-prog-event">{item.event}</div>
+                      {item.venue && <div className="bs-prog-venue">{item.venue}</div>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
         )}
 
         {/* LIEU */}
         <section className="bs-section">
-          <div className="bs-section-sep">۞</div>
-          <p className="bs-label">مكان الحفل</p>
-          <h2 className="bs-title">{wedding.venue_name}</h2>
-          {wedding.venue_address && <p className="bs-body">{wedding.venue_address}</p>}
-          <div className="bs-btn-row" dir="ltr">
-            {wedding.gps_google && (
-              <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="bs-btn-map">
-                Google Maps
-              </a>
-            )}
-            {wedding.gps_apple && (
-              <a href={wedding.gps_apple} target="_blank" rel="noreferrer" className="bs-btn-map bs-btn-outline">
-                Apple Maps
-              </a>
-            )}
+          <div className="bs-content-zone">
+            <p className="bs-label">مكان الحفل</p>
+            <h2 className="bs-title">{wedding.venue_name}</h2>
+            {wedding.venue_address && <p className="bs-body">{wedding.venue_address}</p>}
+            <div className="bs-btn-row" dir="ltr">
+              {wedding.gps_google && (
+                <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="bs-btn-map">
+                  Google Maps
+                </a>
+              )}
+              {wedding.gps_apple && (
+                <a href={wedding.gps_apple} target="_blank" rel="noreferrer" className="bs-btn-map bs-btn-outline">
+                  Apple Maps
+                </a>
+              )}
+            </div>
           </div>
         </section>
 
-        {/* RSVP - Bilingue : titre arabe, formulaire français */}
+        {/* RSVP */}
         {wedding.show_rsvp && (
-        <section className="bs-rsvp">
-          <div className="bs-section-sep" style={{ color: '#C9A84C' }}>۞</div>
-          <p className="bs-label">تأكيد الحضور</p>
-          <h2 className="bs-title">هل ستشرفوننا بحضوركم؟</h2>
-          <p className="bs-rsvp-fr">Merci de confirmer votre présence</p>
-          {rsvpStatus === 'done' ? (
-            <p className="bs-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
-          ) : (
-            <form className="bs-form" onSubmit={submitRSVP} dir="ltr">
-              <input className="bs-input" name="name" placeholder="Prénom et nom" required />
-              <input className="bs-input" name="phone" placeholder="Numéro WhatsApp" />
-              <div className="bs-radios">
-                {(['present', 'absent', 'maybe'] as const).map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    className={`bs-radio${rsvpChoice === s ? ' bs-radio-on' : ''}`}
-                    onClick={() => setRsvpChoice(s)}
-                  >
-                    {s === 'present' ? '✓ Présent(e)' : s === 'absent' ? '✗ Absent(e)' : '? À confirmer'}
+          <section className="bs-rsvp">
+            <div className="bs-content-zone">
+              <p className="bs-label">تأكيد الحضور</p>
+              <h2 className="bs-title">هل ستشرفوننا بحضوركم؟</h2>
+              <p className="bs-rsvp-fr">Merci de confirmer votre présence</p>
+              {rsvpStatus === 'done' ? (
+                <p className="bs-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
+              ) : (
+                <form className="bs-form" onSubmit={submitRSVP} dir="ltr">
+                  <input className="bs-input" name="name" placeholder="Prénom et nom" required />
+                  <input className="bs-input" name="phone" placeholder="Numéro WhatsApp" />
+                  <div className="bs-radios">
+                    {(['present', 'absent', 'maybe'] as const).map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        className={`bs-radio${rsvpChoice === s ? ' bs-radio-on' : ''}`}
+                        onClick={() => setRsvpChoice(s)}
+                      >
+                        {s === 'present' ? '✓ Présent(e)' : s === 'absent' ? '✗ Absent(e)' : '? À confirmer'}
+                      </button>
+                    ))}
+                  </div>
+                  <input className="bs-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
+                  <textarea className="bs-input bs-textarea" name="note" placeholder="Message (optionnel)" />
+                  <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
+                    {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ۞'}
                   </button>
-                ))}
-              </div>
-              <input className="bs-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="bs-input bs-textarea" name="note" placeholder="Message (optionnel)" />
-              <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ۞'}
-              </button>
-            </form>
-          )}
-        </section>
+                </form>
+              )}
+            </div>
+          </section>
         )}
 
         {/* LIVRE D'OR */}
         {wedding.show_guestbook && (
           <section className="bs-section">
-            <div className="bs-section-sep">۞</div>
-            <p className="bs-label">دفتر التهاني</p>
-            <h2 className="bs-title">تهانيكم ودعواتكم</h2>
-            <p className="bs-rsvp-fr">Laissez un message de vœux</p>
-            {messages.length > 0 && (
-              <div className="bs-messages">
-                {messages.map(msg => (
-                  <div key={msg.id} className="bs-msg">
-                    <div className="bs-msg-orn">۞</div>
-                    <p className="bs-msg-text">{msg.message}</p>
-                    <p className="bs-msg-author">— {msg.author_name}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-            {gbStatus === 'done' ? (
-              <p className="bs-success" style={{ marginTop: '20px' }}>
-                {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
-              </p>
-            ) : (
-              <form className="bs-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
-                <input className="bs-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="bs-input bs-textarea" name="message" placeholder="Vos vœux..." required />
-                <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
-                  Publier ۞
-                </button>
-              </form>
-            )}
+            <div className="bs-content-zone">
+              <p className="bs-label">دفتر التهاني</p>
+              <h2 className="bs-title">تهانيكم ودعواتكم</h2>
+              <p className="bs-rsvp-fr">Laissez un message de vœux</p>
+              {messages.length > 0 && (
+                <div className="bs-messages">
+                  {messages.map(msg => (
+                    <div key={msg.id} className="bs-msg">
+                      <div className="bs-msg-orn">۞</div>
+                      <p className="bs-msg-text">{msg.message}</p>
+                      <p className="bs-msg-author">— {msg.author_name}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {gbStatus === 'done' ? (
+                <p className="bs-success" style={{ marginTop: '20px' }}>
+                  {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
+                </p>
+              ) : (
+                <form className="bs-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
+                  <input className="bs-input" name="author_name" placeholder="Votre prénom" required />
+                  <textarea className="bs-input bs-textarea" name="message" placeholder="Vos vœux..." required />
+                  <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
+                    Publier ۞
+                  </button>
+                </form>
+              )}
+            </div>
           </section>
         )}
 
         {/* FOOTER */}
         <footer className="bs-footer">
-          <div className="bs-orn-small">
-            <svg viewBox="0 0 40 40">
-              {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                <path
-                  key={angle}
-                  d="M20 6 L23 18 L34 20 L23 22 L20 34 L17 22 L6 20 L17 18 Z"
-                  fill="none" stroke="#C9A84C" strokeWidth="0.5"
-                  transform={`rotate(${angle} 20 20)`}
-                />
-              ))}
-              <circle cx="20" cy="20" r="2.5" fill="#C9A84C"/>
-            </svg>
+          <div className="bs-content-zone">
+            <div className="bs-orn-small">
+              <svg viewBox="0 0 40 40">
+                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
+                  <path
+                    key={angle}
+                    d="M20 6 L23 18 L34 20 L23 22 L20 34 L17 22 L6 20 L17 18 Z"
+                    fill="none" stroke="#C9A84C" strokeWidth="0.5"
+                    transform={`rotate(${angle} 20 20)`}
+                  />
+                ))}
+                <circle cx="20" cy="20" r="2.5" fill="#C9A84C"/>
+              </svg>
+            </div>
+            <div className="bs-footer-names">{brideAr} و {groomAr}</div>
+            <div className="bs-footer-date" dir="rtl">{dateAr}</div>
+            <div className="bs-footer-date-fr">{dateFr}</div>
+            <div className="bs-footer-credit">Élégance Digitale™</div>
           </div>
-          <div className="bs-footer-names">{brideAr} و {groomAr}</div>
-          <div className="bs-footer-date" dir="rtl">{dateAr}</div>
-          <div className="bs-footer-date-fr">{dateFr}</div>
-          <div className="bs-footer-credit">Élégance Digitale™</div>
         </footer>
+
+        </div>{/* fin bs-texture-bg */}
+
       </div>
     </>
   )
@@ -300,7 +302,7 @@ const CSS = `
 
   body{
     font-family:'Amiri',Georgia,serif;
-    background:#FFFFFF;color:#1A1A1A;overflow-x:hidden;
+    background:#1a1108;color:#1A1A1A;overflow-x:hidden;
   }
 
   /* Enveloppe */
@@ -323,27 +325,120 @@ const CSS = `
   }
   @keyframes bsPulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-  /* Invitation */
+  /* Invitation wrapper */
   .bs-invitation{
     opacity:0;transform:translateY(24px);
     transition:opacity 1s,transform 1s;
-    background:#FFFFFF;
     font-family:'Amiri',Georgia,serif;
   }
   .bs-invitation.bs-visible{opacity:1;transform:none}
 
-  /* Hero */
-  .bs-hero{
-    min-height:100vh;padding:80px 24px 60px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  /* ─── TEXTURE COMMUNE ─────────────────────────────────────────
+     Chaque section (hero, bs-section, bs-rsvp, footer) :
+     - pleine largeur
+     - texture JPG en background-size:cover
+     - hauteur naturelle (déterminée par le contenu)
+     Le contenu est centré dans la zone vide du damassé grâce à
+     bs-content-zone : margin auto + padding calqué sur X=18%, W=64%
+  ────────────────────────────────────────────────────────────── */
+
+  /* Zone de contenu = espace vide du damassé
+     Toutes les valeurs sont calculées en % de l'image affichée.
+
+     MOBILE  (image = 100vw × 177.78vw) :
+       X=18%  → margin-left : 18vw
+       W=64%  → width       : 64vw
+       Y=15%  → padding-top : 26.67vw  (15% × 177.78vw)
+       Y+H=85%→ padding-bot : 26.67vw
+
+     DESKTOP (image = 56.25vh × 100vh, centrée horizontalement) :
+       W=64%  → width       : 36vh     (64% × 56.25vh)
+       Y=15%  → padding-top : 15vh     (15% × 100vh)
+       Y+H=85%→ padding-bot : 15vh
+       centré dans la section de 56.25vh via margin:0 auto
+  */
+  /* ── bs-content-zone : valeurs mobile par défaut ──
+     Image mobile = 100vw × 177.78vw
+     Zone vide : X=18vw, W=64vw, Y=15%×177.78vw=26.67vw */
+  .bs-content-zone{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
     text-align:center;
+    box-sizing:border-box;
+    width:64vw;
+    margin-left:18vw;
+    margin-right:auto;
+    padding-top:26.67vw;
+    padding-bottom:26.67vw;
   }
+
+  /* ── Fond fixe entièrement visible ──
+     Mobile  : image en portrait → largeur = 100vw, hauteur = 177.78vw (ratio 9:16)
+     Desktop : image en portrait → hauteur = 100vh, largeur = 56.25vh (ratio 9:16)
+               on utilise background-size: auto 100vh pour que l'image entière tienne verticalement.
+  ── */
+  .bs-texture-bg{
+    width:100%;
+    min-height:100vh;
+    background-image:url('/bg-texture.jpg');
+    background-size:auto 100vh;
+    background-position:center center;
+    background-attachment:fixed;
+    background-repeat:no-repeat;
+    background-color:#FAF7F0;
+  }
+
+  /* Mobile ≤ 768px : image pleine largeur */
+  @media(max-width:768px){
+    .bs-texture-bg{
+      min-height:177.78vw;
+      background-size:100vw auto;
+      background-position:top left;
+    }
+    .bs-hero,.bs-section,.bs-rsvp,.bs-footer{
+      width:100%;
+    }
+    .bs-content-zone{
+      width:64vw;
+      margin-left:18vw;
+      margin-right:auto;
+      padding-top:26.67vw;
+      padding-bottom:26.67vw;
+    }
+  }
+
+  /* Les sections sont transparentes — elles héritent du fond */
+  .bs-hero{
+    width:100%;
+    position:relative;
+    background:transparent;
+  }
+
+  .bs-section{
+    width:100%;
+    position:relative;
+    background:transparent;
+  }
+
+  .bs-rsvp{
+    width:100%;
+    position:relative;
+    background:transparent;
+  }
+
+  .bs-footer{
+    width:100%;
+    position:relative;
+    background:transparent;
+  }
+
   .bs-orn{width:80px;height:80px;margin-bottom:32px}
   .bs-orn svg{width:100%;height:100%}
   .bs-orn-small{width:50px;height:50px;margin:0 auto 16px}
   .bs-orn-small svg{width:100%;height:100%}
 
-  /* Bismillah - LA pièce maîtresse */
+  /* Bismillah */
   .bs-bismillah{
     font-family:'Aref Ruqaa',serif;
     font-size:clamp(1.8rem,5vw,2.8rem);
@@ -360,32 +455,30 @@ const CSS = `
     border-top:1px solid rgba(201,168,76,0.3);
     border-bottom:1px solid rgba(201,168,76,0.3);
     padding:24px 28px;margin:0 0 36px;
-    max-width:600px;
+    width:100%;
   }
   .bs-verse{
     font-family:'Amiri',serif;
-    font-size:clamp(1.1rem,3vw,1.5rem);
+    font-size:clamp(1rem,2.5vw,1.4rem);
     color:#3D2817;line-height:2.2;
     font-weight:400;
   }
   .bs-verse-ref{
     margin-top:12px;
     font-family:'Reem Kufi',sans-serif;
-    font-size:.9rem;color:#C9A84C;letter-spacing:.05em;
+    font-size:.85rem;color:#C9A84C;letter-spacing:.05em;
   }
 
   /* Divider */
   .bs-divider{
     display:flex;align-items:center;justify-content:center;
-    gap:14px;margin:0 0 32px;width:100%;max-width:280px;
+    gap:14px;margin:0 0 32px;width:100%;
   }
   .bs-divider span{
     flex:1;height:1px;
     background:linear-gradient(90deg,transparent,#C9A84C,transparent);
   }
-  .bs-divider i{
-    color:#C9A84C;font-style:normal;font-size:1.1rem;
-  }
+  .bs-divider i{color:#C9A84C;font-style:normal;font-size:1.1rem;}
 
   /* Intro */
   .bs-intro{
@@ -398,7 +491,7 @@ const CSS = `
   /* Noms */
   .bs-names{
     font-family:'Aref Ruqaa',serif;
-    font-size:clamp(2.8rem,9vw,5rem);
+    font-size:clamp(2.2rem,7vw,4rem);
     color:#1A1A1A;line-height:1.2;font-weight:700;
     display:flex;flex-direction:column;align-items:center;gap:8px;
     margin:0;
@@ -406,22 +499,18 @@ const CSS = `
   .bs-name{display:block}
   .bs-and{
     color:#C9A84C;
-    font-size:clamp(2rem,6vw,3.5rem);
+    font-size:clamp(1.6rem,5vw,2.8rem);
     font-weight:400;margin:8px 0;
-  }
-  .bs-names-fr{
-    margin-top:20px;font-family:Georgia,serif;font-style:italic;
-    font-size:1rem;color:#9B8A6E;letter-spacing:.05em;
   }
 
   /* Message custom */
   .bs-custom{
     font-family:'Amiri',serif;font-size:1.1rem;font-style:italic;
     color:#4A3E2A;line-height:2;
-    max-width:500px;margin:32px auto;
+    width:100%;margin:32px auto;
   }
 
-  /* Date avec coins ornés */
+  /* Date */
   .bs-date-wrap{
     position:relative;
     display:flex;align-items:center;gap:24px;
@@ -448,9 +537,7 @@ const CSS = `
     font-size:1rem;color:#1A1A1A;font-weight:600;
   }
   .bs-date-line{width:30px;height:1px;background:#C9A84C}
-  .bs-date-year{
-    font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:#1A1A1A;
-  }
+  .bs-date-year{font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:#1A1A1A;}
   .bs-date-time{
     font-family:'Aref Ruqaa',serif;font-size:1.5rem;color:#C9A84C;
     border-right:1px solid rgba(201,168,76,0.3);
@@ -460,23 +547,12 @@ const CSS = `
 
   /* Hadith */
   .bs-hadith{
-    margin-top:40px;max-width:600px;
+    margin-top:40px;width:100%;
     font-family:'Amiri',serif;font-style:italic;
     font-size:1.1rem;color:#6B5A3E;line-height:2;
   }
 
-  /* Section separator */
-  .bs-section-sep{
-    text-align:center;color:#C9A84C;
-    font-size:1.5rem;padding:32px 0;
-    letter-spacing:.5em;opacity:.7;
-  }
-
-  /* Sections */
-  .bs-section{
-    max-width:680px;margin:0 auto;
-    padding:48px 24px 24px;text-align:center;
-  }
+  /* Sections labels */
   .bs-label{
     font-family:'Reem Kufi',sans-serif;
     font-size:.95rem;color:#C9A84C;
@@ -500,7 +576,7 @@ const CSS = `
   }
   .bs-cd{
     display:flex;flex-direction:column;align-items:center;
-    min-width:80px;padding:20px 14px;
+    min-width:70px;padding:16px 12px;
     background:#FFFFFF;
     border:1px solid rgba(201,168,76,0.25);
     position:relative;
@@ -512,18 +588,18 @@ const CSS = `
   .bs-cd::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
   .bs-cd::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
   .bs-cd-num{
-    font-family:'Aref Ruqaa',serif;font-size:2.2rem;
+    font-family:'Aref Ruqaa',serif;font-size:2rem;
     color:#C9A84C;line-height:1;font-weight:700;
   }
   .bs-cd-label{
     font-family:'Reem Kufi',sans-serif;
-    font-size:.78rem;color:#6B5A3E;margin-top:10px;
+    font-size:.72rem;color:#6B5A3E;margin-top:8px;
   }
 
   /* Programme */
   .bs-program{
     display:flex;flex-direction:column;gap:0;
-    max-width:520px;margin:0 auto;
+    width:100%;
   }
   .bs-prog-item{
     display:grid;grid-template-columns:1fr 24px 90px;gap:16px;
@@ -535,9 +611,7 @@ const CSS = `
     font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:#C9A84C;
     text-align:left;font-weight:700;
   }
-  .bs-prog-star{
-    color:#C9A84C;font-size:.9rem;text-align:center;
-  }
+  .bs-prog-star{color:#C9A84C;font-size:.9rem;text-align:center;}
   .bs-prog-content{text-align:right}
   .bs-prog-event{
     font-family:'Aref Ruqaa',serif;font-size:1.15rem;
@@ -570,19 +644,13 @@ const CSS = `
   .bs-btn-outline:hover{background:#C9A84C;color:#FFFFFF}
 
   /* RSVP */
-  .bs-rsvp{
-    background:linear-gradient(180deg,#FFFFFF 0%,#FAF7F0 100%);
-    padding:60px 24px;text-align:center;
-    border-top:1px solid rgba(201,168,76,0.2);
-    border-bottom:1px solid rgba(201,168,76,0.2);
-  }
   .bs-rsvp-fr{
     font-family:'Montserrat',sans-serif;
     font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;
     color:#9B8A6E;margin:-12px 0 24px;
   }
   .bs-form{
-    max-width:440px;margin:0 auto;
+    width:100%;
     display:flex;flex-direction:column;gap:14px;text-align:left;
     direction:ltr;
   }
@@ -625,15 +693,13 @@ const CSS = `
   /* Messages */
   .bs-messages{
     display:flex;flex-direction:column;gap:14px;
-    max-width:520px;margin:0 auto;
+    width:100%;margin-bottom:16px;
   }
   .bs-msg{
     background:#FAF7F0;border:1px solid rgba(201,168,76,0.2);
     padding:20px 24px;position:relative;
   }
-  .bs-msg-orn{
-    color:#C9A84C;font-size:.9rem;margin-bottom:8px;opacity:.7;
-  }
+  .bs-msg-orn{color:#C9A84C;font-size:.9rem;margin-bottom:8px;opacity:.7;}
   .bs-msg-text{
     font-family:'Amiri',serif;font-size:1rem;font-style:italic;
     color:#3D2817;line-height:1.8;
@@ -645,11 +711,6 @@ const CSS = `
   }
 
   /* Footer */
-  .bs-footer{
-    padding:48px 24px;text-align:center;
-    background:#FAF7F0;
-    border-top:1px solid rgba(201,168,76,0.2);
-  }
   .bs-footer-names{
     font-family:'Aref Ruqaa',serif;font-size:1.8rem;
     color:#C9A84C;margin-bottom:6px;font-weight:700;
@@ -669,11 +730,56 @@ const CSS = `
     color:#C9A84C;opacity:.6;
   }
 
-  @media(max-width:480px){
+  @media(max-width:600px){
     .bs-date-wrap{flex-direction:column;gap:16px;padding:24px}
     .bs-date-time{border-right:none;padding-right:0;margin-right:0}
     .bs-prog-item{grid-template-columns:60px 16px 1fr;gap:10px}
     .bs-prog-time{font-size:1rem;text-align:left}
     .bs-prog-content{text-align:right}
+    .bs-cd{min-width:58px;padding:12px 8px}
+    .bs-cd-num{font-size:1.6rem}
+  }
+
+  /* Desktop : tout calculé en % de l'image (56.25vh × 100vh)
+     Image largeur = 56.25vh, hauteur = 100vh  (background-size: auto 100vh, fixed)
+     Zone vide : X=18%, Y=15%, W=64%, H=70%
+
+     Calculs dans la section (= 56.25vh de large) :
+       content width      = 64% × 56.25vh = 36vh
+       margin-left        = 18% × 56.25vh = 10.125vh  (depuis bord gauche section)
+       margin-right       = 18% × 56.25vh = 10.125vh  (symétrique → zone centrée)
+       padding-top        = 15% × 100vh   = 15vh
+       padding-bottom     = 15% × 100vh   = 15vh
+
+     Note : margin:0 auto est équivalent à margin-left/right:10.125vh ici
+     car 10.125 + 36 + 10.125 = 56.25 (section pleine). On garde auto pour flexibilité. */
+  /* Desktop ≥ 769px :
+     Image fixe = 56.25vh × 100vh, centrée dans la viewport.
+     Les sections font aussi 56.25vh et sont centrées dans bs-texture-bg.
+     background-position: 50% 0% aligne l'image sur le centre de la viewport = centre des sections.
+     Zone vide dans la section :
+       margin-left  = 18% × 56.25vh = 10.125vh
+       width        = 64% × 56.25vh = 36vh
+       margin-right = 18% × 56.25vh = 10.125vh  (symétrique)
+       padding-top/bottom = 15% × 100vh = 15vh */
+  @media(min-width:769px){
+    .bs-texture-bg{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      overflow-y:scroll;
+      scrollbar-gutter:stable;
+      background-position:50% 0%;
+    }
+    .bs-hero,.bs-section,.bs-rsvp,.bs-footer{
+      width:56.25vh;
+    }
+    .bs-content-zone{
+      width:36vh;
+      margin-left:10.125vh;
+      margin-right:10.125vh;
+      padding-top:15vh;
+      padding-bottom:15vh;
+    }
   }
 `

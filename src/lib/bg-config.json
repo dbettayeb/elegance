@@ -1,0 +1,48 @@
+{
+  "backgrounds": {
+    "bg-texture.jpg": {
+      "label": "Damassé Oriental",
+      "image": {
+        "width": 1152,
+        "height": 2048,
+        "ratio": "9:16"
+      },
+      "emptyZone": {
+        "x": 18,
+        "y": 15,
+        "width": 64,
+        "height": 70
+      }
+    },
+
+    "bg-floral.jpg": {
+      "label": "Floral Élégant",
+      "image": {
+        "width": 1080,
+        "height": 1920,
+        "ratio": "9:16"
+      },
+      "emptyZone": {
+        "x": 20,
+        "y": 20,
+        "width": 60,
+        "height": 60
+      }
+    },
+
+    "bg-marble.jpg": {
+      "label": "Marbre Doré",
+      "image": {
+        "width": 1080,
+        "height": 1920,
+        "ratio": "9:16"
+      },
+      "emptyZone": {
+        "x": 10,
+        "y": 10,
+        "width": 80,
+        "height": 80
+      }
+    }
+  }
+}
