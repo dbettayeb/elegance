@@ -58,8 +58,15 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     function scaleOpening() {
       const stage = document.querySelector<HTMLElement>('.ar-opening-stage')
       if (!stage) return
+      // The envelope paper sits in roughly the center 580px (height) x 440px (width)
+      // of the 1200x850 canvas. We scale so the paper fills the viewport, but take the
+      // SMALLER of the height-based and width-based ratios so tall/narrow screens
+      // (vh/580 alone would over-zoom) don't crop too aggressively.
       const PAPER_H = 580
-      const scale = window.innerWidth >= 1200 ? 1 : window.innerHeight / PAPER_H
+      const PAPER_W = 440
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / PAPER_H, window.innerWidth / PAPER_W, 1.5)
       stage.style.setProperty('--os-scale', String(scale.toFixed(4)))
     }
     scaleOpening()

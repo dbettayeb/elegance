@@ -7,7 +7,7 @@ interface Props {
   container?: string  // ignoré, gardé pour compat
 }
 
-// Tous les sélecteurs où s'affichent les noms des mariés, à travers les 9 templates.
+// Tous les sélecteurs où s'affichent les noms des mariés, à travers les templates.
 // `.X-names *` couvre les enfants (.X-name, .X-amp, .X-and).
 const NAME_SELECTORS = [
   '.ed-names', '.ed-names *', '.ed-footer-names',
@@ -19,6 +19,10 @@ const NAME_SELECTORS = [
   '.bs-names', '.bs-names *', '.bs-footer-names',
   '.aa-names', '.aa-names *', '.aa-footer-names',
   '.aq-names', '.aq-names *', '.aq-footer-names',
+  // Alexa & Richard
+  '.ar-hero-names', '.ar-hero-names *', '.ar-closing-names',
+  // Viktor & Paula
+  '.hero-names-block', '.hero-names-block *', '.closing-names',
 ].join(',\n')
 
 export default function FontOverride({ font }: Props) {

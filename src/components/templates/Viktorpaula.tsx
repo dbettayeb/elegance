@@ -51,13 +51,16 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     function scaleOpening() {
       const stage = document.querySelector<HTMLElement>('.opening-stage')
       if (!stage) return
-      // The envelope paper sits in roughly the center 580px of the 850px canvas height.
-      // We scale so the paper fills the full viewport height (no bordeaux strips).
-      // scale = vh / 580. Since the canvas is centered with translate(-50%,-50%),
-      // scaling > 1 just crops the bordeaux margins — which is exactly what we want.
+      // The envelope paper sits in roughly the center 580px (height) x 440px (width)
+      // of the 1200x850 canvas. We scale so the paper fills the viewport, but take the
+      // SMALLER of the height-based and width-based ratios so tall/narrow screens
+      // (vh/580 alone would over-zoom) don't crop too aggressively.
       // On desktop (≥1200px wide AND ≥850px tall) we keep scale = 1.
       const PAPER_H = 580
-      const scale = window.innerWidth >= 1200 ? 1 : window.innerHeight / PAPER_H
+      const PAPER_W = 440
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / PAPER_H, window.innerWidth / PAPER_W, 1.5)
       stage.style.setProperty('--os-scale', String(scale.toFixed(4)))
     }
     scaleOpening()
@@ -492,10 +495,10 @@ const CSS = `
 
   .dove-btn {
     position: absolute;
-    top: 283px;
-    left: 480px;
-    width: 241px;
-    height: 241px;
+    top: 318px;
+    left: 515px;
+    width: 170px;
+    height: 170px;
     cursor: pointer;
     border: none;
     background: none;
