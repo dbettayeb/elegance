@@ -13,7 +13,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     eventDate,
   } = useInvitationLogic(wedding)
 
-  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0)
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
   const [pigeonTop, setPigeonTop] = useState(95)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -31,16 +31,17 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   // --- Opening sequence ---
   function startSequence() {
     if (phase !== 0) return
-    setPhase(1)
-    setTimeout(() => setPhase(2), 2500)
+    setPhase(1)                          // dove & hint fade out
+    setTimeout(() => setPhase(2), 1000)  // polygons start opening
+    setTimeout(() => setPhase(3), 3500)  // opening screen fades out
     setTimeout(() => {
-      setPhase(3)
+      setPhase(4)
       openEnvelope()
       if (audioRef.current && !audioPlaying) {
         audioRef.current.play().catch(() => {})
         setAudioPlaying(true)
       }
-    }, 3000)
+    }, 4100)
   }
 
 
@@ -145,9 +146,9 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
       {/* ─── OPENING SCREEN ─── */}
       {!opened && (
-        <div id="opening-screen" className={phase >= 2 ? 'hidden' : ''}>
+        <div id="opening-screen" className={phase >= 3 ? 'hidden' : ''}>
           <div
-            className={`opening-stage ${phase >= 1 ? 'animating' : ''}`}
+            className={`opening-stage${phase >= 1 ? ' seal-out' : ''}${phase >= 2 ? ' animating' : ''}`}
             onClick={startSequence}
             aria-label="Open invitation"
             role="button"
@@ -456,10 +457,10 @@ const CSS = `
     pointer-events: none;
     transition: transform 2.5s ease, opacity 0.5s ease;
   }
-  .poly-left  { top: -13px; left: 98px;  width: 467px; height: auto; }
-  .poly-right { top: -13px; left: 635px; width: 467px; height: auto; }
-  .poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; }
-  .poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; }
+  .poly-left  { top: -13px; left: 98px;  width: 467px; height: auto; z-index: 1; }
+  .poly-right { top: -13px; left: 635px; width: 467px; height: auto; z-index: 1; }
+  .poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
+  .poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
 
   .opening-stage.animating .poly-left  { transform: translateX(-560px); opacity: 0; }
   .opening-stage.animating .poly-right { transform: translateX(560px);  opacity: 0; }
@@ -499,14 +500,16 @@ const CSS = `
     border: none;
     background: none;
     padding: 0;
+    z-index: 3;
     transition: transform 1.5s ease, opacity 1.5s ease;
   }
   .dove-btn img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .opening-stage.seal-out .dove-btn,
   .opening-stage.animating .dove-btn { transform: scale(1.22); opacity: 0; }
 
   .click-hint {
     position: absolute;
-    top: 428px;
+    top: 440px;
     left: 535px;
     width: 130px;
     text-align: center;
@@ -515,10 +518,15 @@ const CSS = `
     font-size: 20px;
     font-weight: 400;
     pointer-events: none;
+    z-index: 1;
     transition: opacity 1.5s ease;
     white-space: nowrap;
   }
-  .opening-stage.animating .click-hint { opacity: 0; }
+  .opening-stage.seal-out .click-hint,
+  .opening-stage.animating .click-hint {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   /* ========== MAIN CONTENT ========== */
   #main-content {
