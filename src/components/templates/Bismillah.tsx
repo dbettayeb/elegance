@@ -3,6 +3,7 @@ import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
+import { getBgCSSForKey } from '@/lib/bg-texture-system'
 export default function Bismillah({ wedding }: { wedding: Wedding }) {
   const {
     opened, visible, openEnvelope, countdown,
@@ -19,6 +20,9 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })
 
+  // Background dynamique : lit bg-config.json via bg-texture-system.ts
+  const bgKey = (wedding.background_image ?? 'bg-texture.jpg') as string
+
   return (
     <>
       <link
@@ -26,6 +30,8 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
+      {/* CSS dynamique : zone vide + texture calculés depuis bg-config.json */}
+      <style>{getBgCSSForKey(bgKey, 'bs')}</style>
       <FontOverride font={wedding.custom_font} container=".bs-container" />
 
       {/* ENVELOPPE */}
@@ -333,101 +339,12 @@ const CSS = `
   }
   .bs-invitation.bs-visible{opacity:1;transform:none}
 
-  /* ─── TEXTURE COMMUNE ─────────────────────────────────────────
-     Chaque section (hero, bs-section, bs-rsvp, footer) :
-     - pleine largeur
-     - texture JPG en background-size:cover
-     - hauteur naturelle (déterminée par le contenu)
-     Le contenu est centré dans la zone vide du damassé grâce à
-     bs-content-zone : margin auto + padding calqué sur X=18%, W=64%
-  ────────────────────────────────────────────────────────────── */
+  /* ── Texture & layout : générés dynamiquement par getBgCSSForKey()
+     depuis src/lib/bg-texture-system.ts + src/lib/bg-config.json
+     → bs-texture-bg, bs-content-zone, media queries mobile/desktop ── */
 
-  /* Zone de contenu = espace vide du damassé
-     Toutes les valeurs sont calculées en % de l'image affichée.
-
-     MOBILE  (image = 100vw × 177.78vw) :
-       X=18%  → margin-left : 18vw
-       W=64%  → width       : 64vw
-       Y=15%  → padding-top : 26.67vw  (15% × 177.78vw)
-       Y+H=85%→ padding-bot : 26.67vw
-
-     DESKTOP (image = 56.25vh × 100vh, centrée horizontalement) :
-       W=64%  → width       : 36vh     (64% × 56.25vh)
-       Y=15%  → padding-top : 15vh     (15% × 100vh)
-       Y+H=85%→ padding-bot : 15vh
-       centré dans la section de 56.25vh via margin:0 auto
-  */
-  /* ── bs-content-zone : valeurs mobile par défaut ──
-     Image mobile = 100vw × 177.78vw
-     Zone vide : X=18vw, W=64vw, Y=15%×177.78vw=26.67vw */
-  .bs-content-zone{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    box-sizing:border-box;
-    width:64vw;
-    margin-left:18vw;
-    margin-right:auto;
-    padding-top:26.67vw;
-    padding-bottom:26.67vw;
-  }
-
-  /* ── Fond fixe entièrement visible ──
-     Mobile  : image en portrait → largeur = 100vw, hauteur = 177.78vw (ratio 9:16)
-     Desktop : image en portrait → hauteur = 100vh, largeur = 56.25vh (ratio 9:16)
-               on utilise background-size: auto 100vh pour que l'image entière tienne verticalement.
-  ── */
-  .bs-texture-bg{
-    width:100%;
-    min-height:100vh;
-    background-image:url('/bg-texture.jpg');
-    background-size:auto 100vh;
-    background-position:center center;
-    background-attachment:fixed;
-    background-repeat:no-repeat;
-    background-color:#FAF7F0;
-  }
-
-  /* Mobile ≤ 768px : image pleine largeur */
-  @media(max-width:768px){
-    .bs-texture-bg{
-      min-height:177.78vw;
-      background-size:100vw auto;
-      background-position:top left;
-    }
-    .bs-hero,.bs-section,.bs-rsvp,.bs-footer{
-      width:100%;
-    }
-    .bs-content-zone{
-      width:64vw;
-      margin-left:18vw;
-      margin-right:auto;
-      padding-top:26.67vw;
-      padding-bottom:26.67vw;
-    }
-  }
-
-  /* Les sections sont transparentes — elles héritent du fond */
-  .bs-hero{
-    width:100%;
-    position:relative;
-    background:transparent;
-  }
-
-  .bs-section{
-    width:100%;
-    position:relative;
-    background:transparent;
-  }
-
-  .bs-rsvp{
-    width:100%;
-    position:relative;
-    background:transparent;
-  }
-
-  .bs-footer{
+  /* Les sections sont transparentes (fond géré par bs-texture-bg) */
+  .bs-hero,.bs-section,.bs-rsvp,.bs-footer{
     width:100%;
     position:relative;
     background:transparent;
@@ -753,33 +670,5 @@ const CSS = `
 
      Note : margin:0 auto est équivalent à margin-left/right:10.125vh ici
      car 10.125 + 36 + 10.125 = 56.25 (section pleine). On garde auto pour flexibilité. */
-  /* Desktop ≥ 769px :
-     Image fixe = 56.25vh × 100vh, centrée dans la viewport.
-     Les sections font aussi 56.25vh et sont centrées dans bs-texture-bg.
-     background-position: 50% 0% aligne l'image sur le centre de la viewport = centre des sections.
-     Zone vide dans la section :
-       margin-left  = 18% × 56.25vh = 10.125vh
-       width        = 64% × 56.25vh = 36vh
-       margin-right = 18% × 56.25vh = 10.125vh  (symétrique)
-       padding-top/bottom = 15% × 100vh = 15vh */
-  @media(min-width:769px){
-    .bs-texture-bg{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      overflow-y:scroll;
-      scrollbar-gutter:stable;
-      background-position:50% 0%;
-    }
-    .bs-hero,.bs-section,.bs-rsvp,.bs-footer{
-      width:56.25vh;
-    }
-    .bs-content-zone{
-      width:36vh;
-      margin-left:10.125vh;
-      margin-right:10.125vh;
-      padding-top:15vh;
-      padding-bottom:15vh;
-    }
-  }
+  /* Desktop : géré par getBgCSSForKey() */
 `

@@ -9,6 +9,8 @@ export interface Wedding {
   groom_name: string
   bride_name_ar?: string
   groom_name_ar?: string
+  bride_family_ar?: string
+  groom_family_ar?: string
   event_date: string
   venue_name: string
   venue_address?: string
