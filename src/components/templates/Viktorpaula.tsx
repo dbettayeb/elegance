@@ -492,10 +492,10 @@ const CSS = `
 
   .dove-btn {
     position: absolute;
-    top: 248px;
-    left: 515px;
-    width: 170px;
-    height: 170px;
+    top: 283px;
+    left: 480px;
+    width: 241px;
+    height: 241px;
     cursor: pointer;
     border: none;
     background: none;
@@ -509,7 +509,7 @@ const CSS = `
 
   .click-hint {
     position: absolute;
-    top: 440px;
+    top: 540px;
     left: 535px;
     width: 130px;
     text-align: center;
