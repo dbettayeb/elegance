@@ -40,6 +40,7 @@ export default async function TemplatePreview({
     pack: 'haute_couture',
     show_rsvp: true,
     show_guestbook: true,
+    show_countdown: true,
     moderation_on: true,
     status: 'active',
     created_at: new Date().toISOString(),
