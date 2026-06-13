@@ -3,6 +3,8 @@ import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import WeddingActions from './WeddingActions'
 import LinkCard from './LinkCard'
+import GuestInvitationsPanel from '@/components/admin/GuestInvitationsPanel'
+import { GuestInvitation } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,9 +24,12 @@ export default async function AdminWeddingDetail({
 
   if (!wedding) notFound()
 
-  const [{ data: rsvps }, { data: messages }] = await Promise.all([
+  const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase.from('rsvps').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
     supabase.from('guestbook').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
+    wedding.template_id === 'bismillah' && wedding.guest_invite_enabled
+      ? supabase.from('guest_invitations').select('*').eq('wedding_id', id).order('created_at', { ascending: false })
+      : Promise.resolve({ data: [] }),
   ])
 
   const allRsvps = rsvps ?? []
@@ -118,6 +123,17 @@ export default async function AdminWeddingDetail({
           coupleNames={`${wedding.bride_name} & ${wedding.groom_name}`}
         />
       </Section>
+
+      {/* Invitations personnalisées (Bismillah uniquement) */}
+      {wedding.template_id === 'bismillah' && wedding.guest_invite_enabled && (
+        <Section title="Invitations personnalisées">
+          <GuestInvitationsPanel
+            weddingId={id}
+            initialInvitations={(guestInvites ?? []) as GuestInvitation[]}
+            baseUrl={base ?? ''}
+          />
+        </Section>
+      )}
 
       {/* RSVPs */}
       {allRsvps.length > 0 && (

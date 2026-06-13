@@ -1,4 +1,5 @@
 ﻿'use client'
+import { useState, useEffect } from 'react'
 import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
@@ -6,12 +7,12 @@ import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
 
-export default function Bismillah({ wedding }: { wedding: Wedding }) {
+export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
   const {
     opened, visible, openEnvelope, countdown,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
     gbStatus, gbPending, messages, submitMessage,
-    eventDate, introText,
+    eventDate,
   } = useInvitationLogic(wedding)
 
   const brideAr = getArabicName(wedding.bride_name_ar, wedding.bride_name)
@@ -23,6 +24,29 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
   })
 
   const palette = getBismillahPalette(wedding.bismillah_palette)
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
+
+  useEffect(() => {
+    function scaleOpening() {
+      const stage = document.querySelector<HTMLElement>('.bs-opening-stage')
+      if (!stage) return
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / 580, window.innerWidth / 440, 1.5)
+      stage.style.setProperty('--os-scale', scale.toFixed(4))
+    }
+    scaleOpening()
+    window.addEventListener('resize', scaleOpening)
+    return () => window.removeEventListener('resize', scaleOpening)
+  }, [])
+
+  function startSequence() {
+    if (phase !== 0) return
+    setPhase(1)
+    setTimeout(() => setPhase(2), 800)
+    setTimeout(() => setPhase(3), 3000)
+    setTimeout(() => { setPhase(4); openEnvelope() }, 3600)
+  }
 
   // Background dynamique : lit bg-config.json via bg-texture-system.ts
   const bgKey = (wedding.background_image ?? 'bg-texture.jpg') as string
@@ -64,32 +88,33 @@ export default function Bismillah({ wedding }: { wedding: Wedding }) {
       `}</style>
       <FontOverride font={wedding.custom_font} container=".bs-container" />
 
-      {/* ENVELOPPE */}
+      {/* OPENING */}
       {!opened && (
-        <div className="bs-env-screen">
-          <div className="bs-env-wrap" onClick={openEnvelope}>
-            <svg viewBox="0 0 280 200" className="bs-env-svg" fill="none">
-              <rect x="10" y="40" width="260" height="150" rx="2" fill="#FFFFFF" stroke="#C9A84C" strokeWidth="1.5"/>
-              <path d="M10 190 L140 110 L270 190Z" fill="#FAF7F0" stroke="#C9A84C" strokeWidth="1"/>
-              <path d="M10 40 L140 110 L10 190Z" fill="#FCFAF5" stroke="#C9A84C" strokeWidth="0.7"/>
-              <path d="M270 40 L140 110 L270 190Z" fill="#FCFAF5" stroke="#C9A84C" strokeWidth="0.7"/>
-              <path d="M10 40 L140 115 L270 40Z" fill="#FFFFFF" stroke="#C9A84C" strokeWidth="1.5"/>
-              <g transform="translate(140 105)">
-                <circle r="24" fill="#C9A84C"/>
-                <g fill="#FFFFFF">
-                  {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                    <path
-                      key={angle}
-                      d="M0 -14 L3 -3 L0 0 L-3 -3 Z"
-                      transform={`rotate(${angle})`}
-                    />
-                  ))}
-                  <circle r="3" fill="#FFFFFF"/>
-                </g>
-              </g>
-            </svg>
+        <div className={`bs-opening${phase >= 3 ? ' bs-op-hidden' : ''}`}>
+          <div
+            className={`bs-opening-stage${phase >= 1 ? ' bs-seal-out' : ''}${phase >= 2 ? ' bs-animating' : ''}`}
+            onClick={startSequence}
+            role="button"
+            tabIndex={0}
+            aria-label="Open invitation"
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
+          >
+            <img className="bs-poly bs-poly-left"  src="/assets/alexa-richard/polygons/polygon-left.png"   alt="" />
+            <img className="bs-poly bs-poly-right" src="/assets/alexa-richard/polygons/polygon-right.png"  alt="" />
+            <img className="bs-poly bs-poly-top"   src="/assets/alexa-richard/polygons/polygon-top.png"    alt="" />
+            <img className="bs-poly bs-poly-bot"   src="/assets/alexa-richard/polygons/polygon-bottom.png" alt="" />
+            {guestNameAr && (
+              <div className="bs-guest-name">
+                <span className="bs-guest-to">{guestPrefixAr || 'إلى السيد'}</span>
+                <span className="bs-guest-ar">{guestNameAr}</span>
+                <span className="bs-guest-suffix">{guestSuffixAr || 'و حرمه'}</span>
+              </div>
+            )}
+            <div className="bs-seal-btn">
+              <img src="/assets/alexa-richard/polygons/seal-center.png" alt="" className="bs-seal-img" />
+            </div>
+            <span className="bs-opening-hint">اضغط لفتح الدعوة</span>
           </div>
-          <p className="bs-env-hint">اضغط لفتح الدعوة</p>
         </div>
       )}
 
@@ -373,25 +398,66 @@ const CSS = `
     background:#1a1108;color:var(--bs-text);overflow-x:hidden;
   }
 
-  /* Enveloppe */
-  .bs-env-screen{
-    position:fixed;inset:0;z-index:1000;
-    background:linear-gradient(135deg,#FFFFFF 0%,#FAF7F0 100%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  /* Opening screen */
+  .bs-opening{
+    position:fixed;inset:0;z-index:9999;
+    background:#FAF7F0;overflow:hidden;
+    transition:opacity .6s ease,visibility .6s ease;
   }
-  .bs-env-wrap{
-    cursor:pointer;
-    filter:drop-shadow(0 16px 40px rgba(201,168,76,0.15));
-    transition:transform .3s;
+  .bs-opening.bs-op-hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .bs-opening-stage{
+    position:absolute;top:50%;left:50%;
+    width:1200px;height:850px;
+    cursor:pointer;--os-scale:1;
+    transform:translate(-50%,-50%) scale(var(--os-scale));
+    transform-origin:center center;
   }
-  .bs-env-wrap:hover{transform:translateY(-4px) scale(1.02)}
-  .bs-env-svg{width:280px;height:auto}
-  .bs-env-hint{
-    margin-top:28px;font-family:'Aref Ruqaa',serif;font-size:1.1rem;
-    color:var(--bs-accent);letter-spacing:.05em;
-    animation:bsPulse 2.5s ease-in-out infinite;
+  .bs-poly{
+    position:absolute;pointer-events:none;
+    transition:transform 2s ease,opacity .5s ease;
   }
-  @keyframes bsPulse{0%,100%{opacity:.5}50%{opacity:1}}
+  .bs-poly-left {top:-13px;left:98px; width:467px;height:auto;z-index:1}
+  .bs-poly-right{top:-13px;left:635px;width:467px;height:auto;z-index:1}
+  .bs-poly-bot  {top:271px;left:95px; width:1011px;height:auto;z-index:1}
+  .bs-poly-top  {top:-6px; left:94px; width:1012px;height:auto;z-index:2}
+  .bs-opening-stage.bs-animating .bs-poly-left {transform:translateX(-560px);opacity:0}
+  .bs-opening-stage.bs-animating .bs-poly-right{transform:translateX(560px); opacity:0}
+  .bs-opening-stage.bs-animating .bs-poly-top  {transform:translateY(-430px)}
+  .bs-opening-stage.bs-animating .bs-poly-bot  {transform:translateY(566px)}
+  .bs-guest-name{
+    position:absolute;top:195px;left:400px;width:400px;
+    text-align:center;direction:rtl;z-index:3;
+    color:#8B6914;
+    transition:transform 2s ease;
+  }
+  .bs-opening-stage.bs-animating .bs-guest-name{transform:translateY(-430px)}
+  .bs-guest-to,.bs-guest-suffix{
+    display:block;font-family:'Reem Kufi',sans-serif;
+    font-size:15px;letter-spacing:.04em;opacity:.85;
+  }
+  .bs-guest-ar{
+    display:block;font-family:'Aref Ruqaa',serif;
+    font-size:24px;font-weight:700;margin:6px 0;color:#5C4A14;
+  }
+  .bs-seal-btn{
+    position:absolute;top:283px;left:490px;
+    width:221px;height:221px;z-index:3;
+    transition:transform 1.5s ease,opacity 1s ease;
+  }
+  .bs-seal-img{width:100%;height:100%;object-fit:contain;display:block}
+  .bs-opening-stage.bs-seal-out .bs-seal-btn,
+  .bs-opening-stage.bs-animating .bs-seal-btn{transform:scale(1.22);opacity:0}
+  .bs-opening-hint{
+    position:absolute;top:526px;left:480px;width:240px;
+    text-align:center;
+    color:#C9A84C;font-family:'Aref Ruqaa',serif;font-size:20px;
+    pointer-events:none;z-index:4;
+    transition:opacity 1.5s ease;
+    animation:bsOpPulse 2s ease-in-out infinite;
+  }
+  .bs-opening-stage.bs-seal-out .bs-opening-hint,
+  .bs-opening-stage.bs-animating .bs-opening-hint{opacity:0;animation:none;transition:opacity .3s ease}
+  @keyframes bsOpPulse{0%,100%{opacity:.5}50%{opacity:1}}
 
   /* Invitation wrapper */
   .bs-invitation{

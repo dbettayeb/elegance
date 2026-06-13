@@ -74,6 +74,7 @@ export default function PreviewPage() {
         show_countdown:  parsed.show_countdown  ?? true,
         moderation_on:   parsed.moderation_on   ?? true,
         bismillah_palette: parsed.bismillah_palette || undefined,
+        guest_invite_enabled: parsed.guest_invite_enabled ?? false,
 
         status: 'active',
         created_at: new Date().toISOString(),

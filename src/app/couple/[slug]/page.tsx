@@ -1,8 +1,20 @@
 import { notFound } from 'next/navigation'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
-import { RSVP, GuestMessage, Wedding } from '@/lib/types'
-import { getTheme, themeToCSS } from '@/lib/couple-themes'
+import { RSVP, GuestMessage, GuestInvitation } from '@/lib/types'
 import MessageCard from '@/components/couple-portal/MessageCard'
+import GuestInvitationsPanel from '@/components/couple-portal/GuestInvitationsPanel'
+import type { CoupleTheme } from '@/lib/couple-themes'
+
+const NEUTRAL_THEME: CoupleTheme = {
+  accent: '#2563eb', accentSoft: '#eff6ff', accentText: '#1e40af',
+  headerBg: '#171717', pageBg: '#fafafa', cardBg: '#ffffff', cardShadow: '0 1px 3px rgba(0,0,0,0.06)',
+  border: '#e5e5e5', borderStrong: '#d4d4d4',
+  textPrimary: '#171717', textSecondary: '#404040', textMuted: '#737373',
+  success: '#16a34a', danger: '#dc2626', warning: '#ca8a04',
+  bodyFont: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  headingFont: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  radius: '6px',
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +34,7 @@ export default async function CouplePortal({
 
   if (!wedding) notFound()
 
-  const [{ data: rsvps }, { data: messages }] = await Promise.all([
+  const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase
       .from('rsvps')
       .select('*')
@@ -33,15 +45,18 @@ export default async function CouplePortal({
       .select('*')
       .eq('wedding_id', wedding.id)
       .order('created_at', { ascending: false }),
+    wedding.template_id === 'bismillah' && wedding.guest_invite_enabled
+      ? supabase.from('guest_invitations').select('*').eq('wedding_id', wedding.id).order('created_at', { ascending: false })
+      : Promise.resolve({ data: [] }),
   ])
 
   const allRsvps = (rsvps ?? []) as RSVP[]
   const allMessages = (messages ?? []) as GuestMessage[]
 
   const present = allRsvps.filter(r => r.status === 'present')
-  const absent = allRsvps.filter(r => r.status === 'absent')
-  const maybe = allRsvps.filter(r => r.status === 'maybe')
-  const pending = allMessages.filter(m => !m.approved)
+  const absent  = allRsvps.filter(r => r.status === 'absent')
+  const maybe   = allRsvps.filter(r => r.status === 'maybe')
+  const pending  = allMessages.filter(m => !m.approved)
   const approved = allMessages.filter(m => m.approved)
   const totalGuests = present.reduce((acc, r) => acc + r.guests + 1, 0)
 
@@ -49,325 +64,236 @@ export default async function CouplePortal({
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
 
-  const theme = getTheme(wedding.template_id as Wedding['template_id'])
-  const isDark = ['nuit_etoilee', 'marbre_noir'].includes(wedding.template_id)
-
   return (
     <>
-      <style>{`
-        :root {
-          ${themeToCSS(theme)}
-        }
-        body {
-          background: var(--cp-page-bg);
-          color: var(--cp-text-primary);
-          font-family: var(--cp-body-font);
-          margin: 0;
-        }
-        .cp-shell {
-          min-height: 100vh;
-        }
-        .cp-header {
-          background: ${theme.headerBg};
-          padding: 48px 24px;
-          text-align: center;
-          color: ${isDark ? theme.textPrimary : '#FAF7F0'};
-        }
-        .cp-header-orn {
-          color: var(--cp-accent);
-          font-size: 1.3rem;
-          margin-bottom: 12px;
-          letter-spacing: 0.5em;
-        }
-        .cp-header-names {
-          font-family: var(--cp-heading-font);
-          font-size: clamp(1.8rem, 4.5vw, 2.4rem);
-          font-weight: 300;
-          margin: 0 0 6px;
-        }
-        .cp-header-date {
-          font-size: 0.7rem;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          opacity: 0.8;
-        }
-        .cp-container {
-          max-width: 920px;
-          margin: 0 auto;
-          padding: 40px 20px;
-        }
-        .cp-section {
-          margin-bottom: 40px;
-        }
-        .cp-section-title {
-          font-family: var(--cp-heading-font);
-          font-size: 1.15rem;
-          font-weight: 400;
-          color: var(--cp-text-primary);
-          border-bottom: 1px solid var(--cp-border-strong);
-          padding-bottom: 10px;
-          margin: 0 0 18px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .cp-section-title-badge {
-          font-family: var(--cp-body-font);
-          font-size: 0.7rem;
-          font-weight: 500;
-          padding: 2px 9px;
-          border-radius: 20px;
-          background: var(--cp-accent-soft);
-          color: var(--cp-accent-text);
-        }
-        .cp-stats {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-          gap: 14px;
-        }
-        .cp-stat-card {
-          background: var(--cp-card-bg);
-          border: 1px solid var(--cp-border);
-          border-radius: var(--cp-radius);
-          padding: 20px 16px;
-          text-align: center;
-          box-shadow: var(--cp-card-shadow);
-          position: relative;
-          overflow: hidden;
-        }
-        .cp-stat-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-        }
-        .cp-stat-num {
-          font-family: var(--cp-heading-font);
-          font-size: 2.2rem;
-          font-weight: 300;
-          line-height: 1;
-        }
-        .cp-stat-label {
-          font-size: 0.58rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: var(--cp-text-muted);
-          margin-top: 8px;
-        }
-        .cp-table-wrap {
-          background: var(--cp-card-bg);
-          border: 1px solid var(--cp-border);
-          border-radius: var(--cp-radius);
-          overflow: hidden;
-          box-shadow: var(--cp-card-shadow);
-        }
-        .cp-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .cp-table th {
-          text-align: left;
-          padding: 12px 16px;
-          background: var(--cp-accent-soft);
-          font-size: 0.6rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: var(--cp-accent-text);
-          font-weight: 500;
-          border-bottom: 1px solid var(--cp-border);
-        }
-        .cp-table td {
-          padding: 12px 16px;
-          font-size: 0.85rem;
-          color: var(--cp-text-secondary);
-          border-bottom: 1px solid var(--cp-border);
-        }
-        .cp-table tr:last-child td {
-          border-bottom: none;
-        }
-        .cp-badge {
-          display: inline-block;
-          padding: 3px 10px;
-          border-radius: 20px;
-          font-size: 0.62rem;
-          font-weight: 500;
-          letter-spacing: 0.05em;
-        }
-        .cp-badge-success {
-          background: rgba(45, 106, 79, 0.15);
-          color: var(--cp-success);
-        }
-        .cp-badge-danger {
-          background: rgba(192, 57, 43, 0.15);
-          color: var(--cp-danger);
-        }
-        .cp-badge-warning {
-          background: var(--cp-accent-soft);
-          color: var(--cp-warning);
-        }
-        .cp-empty {
-          padding: 32px;
-          text-align: center;
-          color: var(--cp-text-muted);
-          font-style: italic;
-          font-family: var(--cp-heading-font);
-        }
+      <style>{CSS}</style>
 
-        /* Couleurs des stats par accent */
-        .cp-stat-success::before { background: var(--cp-success); }
-        .cp-stat-danger::before { background: var(--cp-danger); }
-        .cp-stat-warning::before { background: var(--cp-warning); }
-        .cp-stat-accent::before { background: var(--cp-accent); }
-      `}</style>
+      <div className="cp-shell">
+        <header className="cp-header">
+          <div className="cp-header-inner">
+            <div>
+              <h1 className="cp-header-title">
+                {wedding.bride_name} &amp; {wedding.groom_name}
+              </h1>
+              <p className="cp-header-sub">{eventDate}</p>
+            </div>
+          </div>
+        </header>
 
-      <main className="cp-shell">
-        {/* Header */}
-        <div className="cp-header">
-          <div className="cp-header-orn">✦</div>
-          <h1 className="cp-header-names">
-            {wedding.bride_name} & {wedding.groom_name}
-          </h1>
-          <p className="cp-header-date">{eventDate}</p>
-        </div>
-
-        <div className="cp-container">
+        <main className="cp-main">
 
           {/* Stats */}
-          <section className="cp-section">
-            <h2 className="cp-section-title">Confirmations</h2>
-            <div className="cp-stats">
-              <StatCard value={present.length} label="Présents" variant="success" theme={theme} />
-              <StatCard value={absent.length} label="Absents" variant="danger" theme={theme} />
-              <StatCard value={maybe.length} label="À confirmer" variant="warning" theme={theme} />
-              <StatCard value={totalGuests} label="Total invités" variant="accent" theme={theme} />
-            </div>
-          </section>
+          <div className="cp-stats">
+            <StatCard value={present.length}   label="Présents"      accent="#16a34a" />
+            <StatCard value={absent.length}    label="Absents"       accent="#dc2626" />
+            <StatCard value={maybe.length}     label="À confirmer"   accent="#ca8a04" />
+            <StatCard value={totalGuests}      label="Total invités" accent="#2563eb" />
+          </div>
+
+          {/* Invitations personnalisées */}
+          {wedding.template_id === 'bismillah' && wedding.guest_invite_enabled && (
+            <Section title="Invitations personnalisées" badge={(guestInvites ?? []).length || undefined}>
+              <GuestInvitationsPanel
+                weddingId={wedding.id}
+                slug={slug}
+                initialInvitations={(guestInvites ?? []) as GuestInvitation[]}
+                baseUrl={process.env.NEXT_PUBLIC_BASE_URL ?? ''}
+                accentColor="#171717"
+              />
+            </Section>
+          )}
 
           {/* RSVPs */}
           {allRsvps.length > 0 && (
-            <section className="cp-section">
-              <h2 className="cp-section-title">
-                Liste des réponses
-                <span className="cp-section-title-badge">{allRsvps.length}</span>
-              </h2>
-              <div className="cp-table-wrap">
-                <div style={{ overflowX: 'auto' }}>
-                  <table className="cp-table">
-                    <thead>
-                      <tr>
-                        <th>Nom</th>
-                        <th>Statut</th>
-                        <th>Acc.</th>
-                        <th>WhatsApp</th>
-                        <th>Date</th>
+            <Section title="Réponses des invités" badge={allRsvps.length}>
+              <div style={{ overflowX: 'auto' }}>
+                <table className="cp-table">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Statut</th>
+                      <th>Acc.</th>
+                      <th>WhatsApp</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allRsvps.map(r => (
+                      <tr key={r.id}>
+                        <td style={{ fontWeight: 500 }}>{r.name}</td>
+                        <td>
+                          <span className={`cp-badge ${
+                            r.status === 'present' ? 'cp-badge-success' :
+                            r.status === 'absent'  ? 'cp-badge-danger'  :
+                            'cp-badge-warning'
+                          }`}>
+                            {r.status === 'present' ? 'Présent(e)' : r.status === 'absent' ? 'Absent(e)' : 'À confirmer'}
+                          </span>
+                        </td>
+                        <td>{r.guests}</td>
+                        <td>{r.phone ?? '—'}</td>
+                        <td style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
+                          {new Date(r.created_at).toLocaleDateString('fr-TN', { day: 'numeric', month: 'short' })}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {allRsvps.map(r => (
-                        <tr key={r.id}>
-                          <td style={{ color: theme.textPrimary, fontWeight: 500 }}>{r.name}</td>
-                          <td>
-                            <span className={`cp-badge ${
-                              r.status === 'present' ? 'cp-badge-success' :
-                              r.status === 'absent' ? 'cp-badge-danger' :
-                              'cp-badge-warning'
-                            }`}>
-                              {r.status === 'present' ? 'Présent(e)' : r.status === 'absent' ? 'Absent(e)' : 'À confirmer'}
-                            </span>
-                          </td>
-                          <td>{r.guests}</td>
-                          <td>{r.phone ?? '—'}</td>
-                          <td style={{ whiteSpace: 'nowrap' }}>
-                            {new Date(r.created_at).toLocaleDateString('fr-TN', { day: 'numeric', month: 'short' })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </section>
+            </Section>
           )}
 
           {/* Messages en attente */}
           {wedding.moderation_on && pending.length > 0 && (
-            <section className="cp-section">
-              <h2 className="cp-section-title">
-                En attente d'approbation
-                <span className="cp-section-title-badge" style={{
-                  background: 'rgba(202, 138, 4, 0.18)',
-                  color: '#854d0e',
-                }}>
-                  {pending.length}
-                </span>
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Section title="En attente d'approbation" badge={pending.length}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {pending.map(msg => (
-                  <MessageCard
-                    key={msg.id}
-                    message={msg}
-                    weddingId={wedding.id}
-                    coupleToken=""
-                    theme={theme}
-                  />
+                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} />
                 ))}
               </div>
-            </section>
+            </Section>
           )}
 
-          {/* Messages approuvés */}
-          <section className="cp-section">
-            <h2 className="cp-section-title">
-              Livre d'or
-              {approved.length > 0 && (
-                <span className="cp-section-title-badge">{approved.length}</span>
-              )}
-            </h2>
+          {/* Livre d'or */}
+          <Section title="Livre d'or" badge={approved.length || undefined}>
             {approved.length === 0 ? (
-              <div className="cp-empty">
+              <p style={{ color: 'var(--cp-muted)', fontStyle: 'italic', margin: 0 }}>
                 Aucun message publié pour l'instant.
-              </div>
+              </p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {approved.map(msg => (
-                  <MessageCard
-                    key={msg.id}
-                    message={msg}
-                    weddingId={wedding.id}
-                    coupleToken=""
-                    theme={theme}
-                  />
+                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} />
                 ))}
               </div>
             )}
-          </section>
+          </Section>
 
-        </div>
-      </main>
+        </main>
+      </div>
     </>
   )
 }
 
-function StatCard({ value, label, variant, theme }: {
-  value: number
-  label: string
-  variant: 'success' | 'danger' | 'warning' | 'accent'
-  theme: ReturnType<typeof getTheme>
-}) {
-  const colors = {
-    success: theme.success,
-    danger: theme.danger,
-    warning: theme.warning,
-    accent: theme.accent,
-  }
+function Section({ title, badge, children }: { title: string; badge?: number; children: React.ReactNode }) {
   return (
-    <div className={`cp-stat-card cp-stat-${variant}`}>
-      <div className="cp-stat-num" style={{ color: colors[variant] }}>
-        {value}
-      </div>
+    <section className="cp-section">
+      <h2 className="cp-section-title">
+        {title}
+        {badge !== undefined && badge > 0 && (
+          <span className="cp-section-badge">{badge}</span>
+        )}
+      </h2>
+      {children}
+    </section>
+  )
+}
+
+function StatCard({ value, label, accent }: { value: number; label: string; accent: string }) {
+  return (
+    <div className="cp-stat" style={{ borderTopColor: accent }}>
+      <div className="cp-stat-num" style={{ color: accent }}>{value}</div>
       <div className="cp-stat-label">{label}</div>
     </div>
   )
 }
+
+const CSS = `
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --cp-bg: #fafafa;
+    --cp-surface: #ffffff;
+    --cp-border: #e5e5e5;
+    --cp-border-strong: #d4d4d4;
+    --cp-text: #171717;
+    --cp-muted: #737373;
+    --cp-subtle: #a3a3a3;
+    --cp-radius: 6px;
+  }
+
+  body { margin: 0; background: var(--cp-bg); color: var(--cp-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+  .cp-shell { min-height: 100vh; }
+
+  .cp-header {
+    background: var(--cp-surface);
+    border-bottom: 1px solid var(--cp-border);
+    padding: 0 40px;
+  }
+  .cp-header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cp-header-title { margin: 0; font-size: 1.3rem; font-weight: 600; }
+  .cp-header-sub { margin: 4px 0 0; font-size: 0.82rem; color: var(--cp-muted); }
+
+  .cp-main { max-width: 960px; margin: 0 auto; padding: 32px 40px; }
+
+  .cp-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .cp-stat {
+    background: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-top: 3px solid;
+    border-radius: var(--cp-radius);
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .cp-stat-num { font-size: 2rem; font-weight: 300; line-height: 1; }
+  .cp-stat-label {
+    font-size: 0.58rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cp-muted); margin-top: 8px;
+  }
+
+  .cp-section { margin-bottom: 32px; }
+  .cp-section-title {
+    font-size: 1rem; font-weight: 600; margin: 0 0 14px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--cp-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cp-section-badge {
+    font-size: 0.7rem; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px;
+    background: #f3f4f6; color: #374151;
+  }
+
+  .cp-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius);
+    overflow: hidden;
+    font-size: 0.875rem;
+  }
+  .cp-table th {
+    text-align: left; padding: 10px 14px;
+    background: #fafafa; border-bottom: 1px solid var(--cp-border);
+    font-size: 0.75rem; font-weight: 600; color: var(--cp-muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .cp-table td { padding: 11px 14px; border-bottom: 1px solid var(--cp-border); }
+  .cp-table tr:last-child td { border-bottom: none; }
+
+  .cp-badge {
+    display: inline-block; padding: 2px 9px;
+    border-radius: 4px; font-size: 0.72rem; font-weight: 500;
+  }
+  .cp-badge-success { background: #dcfce7; color: #166534; }
+  .cp-badge-danger  { background: #fee2e2; color: #991b1b; }
+  .cp-badge-warning { background: #fef3c7; color: #854d0e; }
+
+  @media (max-width: 640px) {
+    .cp-header { padding: 0 20px; }
+    .cp-main { padding: 20px; }
+  }
+`

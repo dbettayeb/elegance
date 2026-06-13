@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -39,6 +39,7 @@ export default function NewWeddingPage() {
     show_countdown: true,
     moderation_on: true,
     bismillah_palette: 'or_classique',
+    guest_invite_enabled: false,
   })
 
   const [program, setProgram] = useState<ProgramItem []>([])

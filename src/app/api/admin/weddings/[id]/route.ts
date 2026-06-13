@@ -113,6 +113,7 @@ export async function PATCH(
       program,
       show_rsvp, show_guestbook, show_countdown, moderation_on,
       bismillah_palette,
+      guest_invite_enabled,
     } = body
 
     const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre']
@@ -161,6 +162,7 @@ export async function PATCH(
         show_countdown: show_countdown ?? true,
         moderation_on,
         bismillah_palette: VALID_PALETTES.includes(bismillah_palette) ? bismillah_palette : 'or_classique',
+        guest_invite_enabled: guest_invite_enabled ?? false,
         program: Array.isArray(program) ? program : [],
       })
       .eq('id', id)

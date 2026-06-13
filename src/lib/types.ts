@@ -27,6 +27,7 @@ export interface Wedding {
   | 'chateau_pivoines' | 'coeur_dore' | 'viktor_paula'
   | 'alexa_richard'
   music_url?: string
+  background_image?: string
   custom_font?: string
   intro_text?: string
   custom_message?: string
@@ -37,6 +38,7 @@ export interface Wedding {
   show_countdown: boolean
   moderation_on: boolean
   bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre'
+  guest_invite_enabled?: boolean
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string
@@ -56,6 +58,16 @@ export interface RSVP {
   status: 'present' | 'absent' | 'maybe'
   guests: number
   note?: string
+  created_at: string
+}
+
+export interface GuestInvitation {
+  id: string
+  wedding_id: string
+  guest_name_ar: string
+  prefix_ar?: string
+  suffix_ar?: string
+  token: string
   created_at: string
 }
 

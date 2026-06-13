@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -43,6 +43,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     show_countdown: wedding.show_countdown ?? true,
     moderation_on: wedding.moderation_on,
     bismillah_palette: wedding.bismillah_palette ?? 'or_classique',
+    guest_invite_enabled: wedding.guest_invite_enabled ?? false,
   })
   const [program, setProgram] = useState<ProgramItem []>((wedding.program ?? []) as ProgramItem [])
   const [loading, setLoading] = useState(false)
@@ -202,6 +203,13 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                   ))}
                 </div>
               </Field>
+              <Toggle
+                label="Activer les invitations personnalisées"
+                help="Permet de générer un lien unique par invité avec son nom affiché sur l'enveloppe"
+                checked={form.guest_invite_enabled}
+                onChange={v => set('guest_invite_enabled', v)}
+              />
+
             </>
           )}
           <Field label="Email des mariés" required>
