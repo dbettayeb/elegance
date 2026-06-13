@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     .single()
 
   if (!invite) return { title: 'Invitation' }
-  const w = invite.weddings as { bride_name: string; groom_name: string } | null
+  const w = invite.weddings as unknown as { bride_name: string; groom_name: string } | null
   return {
     title: `دعوة زفاف ${w?.bride_name ?? ''} & ${w?.groom_name ?? ''}`,
   }

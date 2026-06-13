@@ -52,6 +52,7 @@ export default async function PublicTemplatePreview({ params }: Props) {
     pack: 'prestige',
     show_rsvp: true,
     show_guestbook: true,
+    show_countdown: true,
     moderation_on: true,
     status: 'active',
     created_at: new Date().toISOString(),
