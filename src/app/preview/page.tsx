@@ -48,6 +48,11 @@ export default function PreviewPage() {
         groom_name: parsed.groom_name || 'Marié',
         bride_name_ar: parsed.bride_name_ar || undefined,
         groom_name_ar: parsed.groom_name_ar || undefined,
+        bride_family_ar:        parsed.bride_family_ar        || undefined,
+        groom_family_ar:        parsed.groom_family_ar        || undefined,
+        bride_family_prefix_ar: parsed.bride_family_prefix_ar || undefined,
+        groom_family_prefix_ar: parsed.groom_family_prefix_ar || undefined,
+        families_intro_ar:      parsed.families_intro_ar      || undefined,
 
         event_date: buildDate(),
         venue_name: parsed.venue_name || 'Lieu de réception',
@@ -64,9 +69,11 @@ export default function PreviewPage() {
         program: parsed.program || [],
 
         pack: (parsed.pack || 'essentiel') as Wedding['pack'],
-        show_rsvp: parsed.show_rsvp ?? true,
-        show_guestbook: parsed.show_guestbook ?? true,
-        moderation_on: parsed.moderation_on ?? true,
+        show_rsvp:       parsed.show_rsvp       ?? true,
+        show_guestbook:  parsed.show_guestbook  ?? true,
+        show_countdown:  parsed.show_countdown  ?? true,
+        moderation_on:   parsed.moderation_on   ?? true,
+        bismillah_palette: parsed.bismillah_palette || undefined,
 
         status: 'active',
         created_at: new Date().toISOString(),

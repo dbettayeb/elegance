@@ -6,6 +6,7 @@ import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import { BISMILLAH_PALETTES } from '@/lib/bismillah-palettes'
 
 export default function NewWeddingPage() {
   const router = useRouter()
@@ -15,6 +16,11 @@ export default function NewWeddingPage() {
     groom_name: '',
     bride_name_ar: '',
     groom_name_ar: '',
+    bride_family_ar: '',
+    groom_family_ar: '',
+    bride_family_prefix_ar: '',
+    groom_family_prefix_ar: '',
+    families_intro_ar: '',
     couple_email: '',
     event_date: '',
     event_time: '19:00',
@@ -30,7 +36,9 @@ export default function NewWeddingPage() {
     custom_font: '' as string | null,
     show_rsvp: true,
     show_guestbook: true,
+    show_countdown: true,
     moderation_on: true,
+    bismillah_palette: 'or_classique',
   })
 
   const [program, setProgram] = useState<ProgramItem []>([])
@@ -109,6 +117,78 @@ export default function NewWeddingPage() {
                 style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
+          {form.template_id === 'bismillah' && (
+            <>
+              <div style={{ padding: '10px 12px', background: '#fffbeb', border: '1px solid #fde68a',
+                borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
+                Renseignez les familles pour afficher le bloc familial en tête d'invitation (tradition maghrébine). Le préfixe est libre — laissez vide pour le mot par défaut.
+              </div>
+              <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
+                <textarea className="admin-textarea" rows={2}
+                  value={form.families_intro_ar}
+                  onChange={e => set('families_intro_ar', e.target.value)}
+                  placeholder={"ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف"}
+                  dir="rtl" style={{ fontFamily: "'Amiri', serif" }} />
+              </Field>
+              <Row>
+                <Field label="Préfixe famille du marié" help="ex : عائلة الحاج, عائلة, عائلة المرحوم...">
+                  <input className="admin-input" value={form.groom_family_prefix_ar}
+                    onChange={e => set('groom_family_prefix_ar', e.target.value)}
+                    placeholder="عائلة الحاج" dir="rtl"
+                    style={{ fontFamily: "'Amiri', serif" }} />
+                </Field>
+                <Field label="Préfixe famille de la mariée" help="ex : عائلة الحاج, عائلة, عائلة المرحوم...">
+                  <input className="admin-input" value={form.bride_family_prefix_ar}
+                    onChange={e => set('bride_family_prefix_ar', e.target.value)}
+                    placeholder="عائلة المرحوم الحاج" dir="rtl"
+                    style={{ fontFamily: "'Amiri', serif" }} />
+                </Field>
+              </Row>
+              <Row>
+                <Field label="Nom famille du marié (arabe)">
+                  <input className="admin-input" value={form.groom_family_ar}
+                    onChange={e => set('groom_family_ar', e.target.value)}
+                    placeholder="محمد سمير الدسوقي" dir="rtl"
+                    style={{ fontFamily: "'Amiri', serif" }} />
+                </Field>
+                <Field label="Nom famille de la mariée (arabe)">
+                  <input className="admin-input" value={form.bride_family_ar}
+                    onChange={e => set('bride_family_ar', e.target.value)}
+                    placeholder="منذر سعيد شديد" dir="rtl"
+                    style={{ fontFamily: "'Amiri', serif" }} />
+                </Field>
+              </Row>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {BISMILLAH_PALETTES.map(p => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      title={p.name}
+                      onClick={() => set('bismillah_palette', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.bismillah_palette === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)', background: form.bismillah_palette === p.id ? p.accentSoft : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.bismillah_palette === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </>
+          )}
           <Field label="Email des mariés" required help="Servira pour la connexion au portail couple.">
             <input className="admin-input" type="email" value={form.couple_email}
               onChange={e => set('couple_email', e.target.value)} required />
@@ -211,6 +291,9 @@ export default function NewWeddingPage() {
 
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Toggle label="Afficher le compte à rebours"
+              help="Section compte à rebours jusqu'au jour J"
+              checked={form.show_countdown} onChange={v => set('show_countdown', v)} />
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />

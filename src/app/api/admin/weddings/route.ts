@@ -15,6 +15,9 @@ export async function POST(req: NextRequest) {
     const {
       bride_name, groom_name,
       bride_name_ar, groom_name_ar,
+      bride_family_ar, groom_family_ar,
+      bride_family_prefix_ar, groom_family_prefix_ar,
+      families_intro_ar,
       couple_email,
       event_date, event_time,
       venue_name, venue_address,
@@ -23,8 +26,11 @@ export async function POST(req: NextRequest) {
       intro_text, custom_message, music_url,
       custom_font,
       program,
-      show_rsvp, show_guestbook, moderation_on,
+      show_rsvp, show_guestbook, show_countdown, moderation_on,
+      bismillah_palette,
     } = body
+
+    const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre']
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
@@ -55,8 +61,13 @@ export async function POST(req: NextRequest) {
       .insert({
         slug, access_token, couple_token, couple_email,
         bride_name, groom_name,
-        bride_name_ar: bride_name_ar || null,
-        groom_name_ar: groom_name_ar || null,
+        bride_name_ar:   bride_name_ar   || null,
+        groom_name_ar:   groom_name_ar   || null,
+        bride_family_ar:        bride_family_ar        || null,
+        groom_family_ar:        groom_family_ar        || null,
+        bride_family_prefix_ar: bride_family_prefix_ar || null,
+        groom_family_prefix_ar: groom_family_prefix_ar || null,
+        families_intro_ar:      families_intro_ar      || null,
         event_date: datetime,
         venue_name,
         venue_address:  venue_address  || null,
@@ -67,8 +78,11 @@ export async function POST(req: NextRequest) {
         custom_message: custom_message || null,
         music_url:      music_url      || null,
         custom_font:    custom_font    || null,
-        show_rsvp:      show_rsvp ?? true,
-        show_guestbook, moderation_on,
+        show_rsvp:       show_rsvp       ?? true,
+        show_guestbook,
+        show_countdown:  show_countdown  ?? true,
+        moderation_on,
+        bismillah_palette: VALID_PALETTES.includes(bismillah_palette) ? bismillah_palette : 'or_classique',
         program: Array.isArray(program) ? program : [],
       })
       .select('id, slug, access_token, couple_token')

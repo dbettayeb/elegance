@@ -11,6 +11,9 @@ export interface Wedding {
   groom_name_ar?: string
   bride_family_ar?: string
   groom_family_ar?: string
+  bride_family_prefix_ar?: string
+  groom_family_prefix_ar?: string
+  families_intro_ar?: string
   event_date: string
   venue_name: string
   venue_address?: string
@@ -31,7 +34,9 @@ export interface Wedding {
   pack: 'essentiel' | 'prestige' | 'haute_couture'
   show_rsvp: boolean
   show_guestbook: boolean
+  show_countdown: boolean
   moderation_on: boolean
+  bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre'
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string
