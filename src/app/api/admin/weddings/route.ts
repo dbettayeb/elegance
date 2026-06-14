@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
       custom_font,
       program,
       show_rsvp, show_guestbook, show_countdown, moderation_on,
-      bismillah_palette,
-      guest_invite_enabled,
+      bismillah_palette, background_image, decoration_image,
+      guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
     } = body
 
     const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre']
@@ -84,7 +84,11 @@ export async function POST(req: NextRequest) {
         show_countdown:  show_countdown  ?? true,
         moderation_on,
         bismillah_palette: VALID_PALETTES.includes(bismillah_palette) ? bismillah_palette : 'or_classique',
-        guest_invite_enabled: guest_invite_enabled ?? false,
+        background_image:  background_image  || 'bg-texture.jpg',
+        decoration_image:  decoration_image  || 'decoration.png',
+        guest_invite_enabled:    guest_invite_enabled    ?? false,
+        guest_invite_prefix_ar:  guest_invite_prefix_ar  || null,
+        guest_invite_suffix_ar:  guest_invite_suffix_ar  || null,
         program: Array.isArray(program) ? program : [],
       })
       .select('id, slug, access_token, couple_token')

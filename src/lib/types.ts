@@ -28,6 +28,7 @@ export interface Wedding {
   | 'alexa_richard'
   music_url?: string
   background_image?: string
+  decoration_image?: string
   custom_font?: string
   intro_text?: string
   custom_message?: string
@@ -39,6 +40,8 @@ export interface Wedding {
   moderation_on: boolean
   bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre'
   guest_invite_enabled?: boolean
+  guest_invite_prefix_ar?: string
+  guest_invite_suffix_ar?: string
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string

@@ -121,6 +121,9 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
 
+        {/* Cadre décoratif fixe — se superpose au bg-texture avec les mêmes dimensions */}
+        <img src={`/${wedding.decoration_image ?? 'decoration.png'}`} alt="" className="bs-deco-fixed" aria-hidden="true" />
+
         {/* UN SEUL fond texturé — toutes les sections sont des enfants */}
         <div className="bs-texture-bg">
 
@@ -470,6 +473,30 @@ const CSS = `
   /* ── Texture & layout : générés dynamiquement par getBgCSSForKey()
      depuis src/lib/bg-texture-system.ts + src/lib/bg-config.json
      → bs-texture-bg, bs-content-zone, media queries mobile/desktop ── */
+
+  /* Cadre décoratif — position fixe, mêmes dimensions que bg-texture (2304×3832) */
+  .bs-deco-fixed {
+    position:fixed;
+    top:0;
+    pointer-events:none;
+    z-index:10;
+    object-fit:fill;
+  }
+  @media (max-width: 768px) {
+    .bs-deco-fixed {
+      left:0;
+      width:100vw;
+      height:166.32vw; /* 3832/2304 × 100vw */
+    }
+  }
+  @media (min-width: 769px) {
+    .bs-deco-fixed {
+      left:50%;
+      transform:translateX(-50%);
+      width:60.13vh;   /* 2304/3832 × 100vh */
+      height:100vh;
+    }
+  }
 
   /* Les sections sont transparentes (fond géré par bs-texture-bg) */
   .bs-hero,.bs-section,.bs-rsvp,.bs-footer{

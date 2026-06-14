@@ -6,7 +6,7 @@ import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
-import { BISMILLAH_PALETTES } from '@/lib/bismillah-palettes'
+import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS } from '@/lib/bismillah-palettes'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -43,6 +43,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     show_countdown: wedding.show_countdown ?? true,
     moderation_on: wedding.moderation_on,
     bismillah_palette: wedding.bismillah_palette ?? 'or_classique',
+    background_image: wedding.background_image ?? 'bg-texture.jpg',
+    decoration_image: wedding.decoration_image ?? 'decoration.png',
     guest_invite_enabled: wedding.guest_invite_enabled ?? false,
   })
   const [program, setProgram] = useState<ProgramItem []>((wedding.program ?? []) as ProgramItem [])
@@ -203,8 +205,46 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                   ))}
                 </div>
               </Field>
-
-
+              <Row>
+                <Field label="Texture de fond">
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {BISMILLAH_BACKGROUNDS.map(bg => (
+                      <button key={bg.id} type="button" title={bg.name}
+                        onClick={() => set('background_image', bg.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
+                        }}
+                      >
+                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field label="Cadre décoratif">
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {BISMILLAH_DECORATIONS.map(dec => (
+                      <button key={dec.id} type="button" title={dec.name}
+                        onClick={() => set('decoration_image', dec.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                        }}
+                      >
+                        <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </Row>
             </>
           )}
           <Field label="Email des mariés" required>

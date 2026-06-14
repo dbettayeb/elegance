@@ -85,3 +85,21 @@ export const BISMILLAH_PALETTES: BismillahPalette[] = [
 export function getBismillahPalette(id?: string | null): BismillahPalette {
   return BISMILLAH_PALETTES.find(p => p.id === id) ?? BISMILLAH_PALETTES[0]
 }
+
+export interface BismillahAsset {
+  id: string
+  name: string
+}
+
+export const BISMILLAH_BACKGROUNDS: BismillahAsset[] = [
+  { id: 'bg-texture.jpg',  name: 'Texturé crème' },
+  { id: 'bg-texture2.png', name: 'Ivoire doux' },
+  { id: 'bg-texture4.png', name: 'Gris taupe' },
+]
+
+export const BISMILLAH_DECORATIONS: BismillahAsset[] = [
+  { id: 'decoration.png',  name: 'Roses blanches' },
+  { id: 'decoration2.png', name: 'Roses sculptées' },
+  { id: 'decoration3.png', name: 'Arche dorée' },
+  { id: 'decoration4.png', name: 'Colonnades fleuries' },
+]

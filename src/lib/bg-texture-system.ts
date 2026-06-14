@@ -53,26 +53,32 @@ export interface BgConfig {
  */
 export const BG_CONFIGS: Record<string, BgConfig> = {
   'bg-texture.jpg': {
-    imgW: 1152,
-    imgH: 2048,
+    imgW: 2304,
+    imgH: 3832,
     x: 18,
     y: 15,
     w: 64,
     h: 70,
     fallbackColor: '#FAF7F0',
   },
-
-  // ── Exemples à compléter selon vos autres backgrounds ──
-  // 'bg-floral.jpg': {
-  //   imgW: 1080, imgH: 1920,
-  //   x: 20, y: 20, w: 60, h: 60,
-  //   fallbackColor: '#F5EDE0',
-  // },
-  // 'bg-marble-light.jpg': {
-  //   imgW: 1080, imgH: 1920,
-  //   x: 10, y: 10, w: 80, h: 80,
-  //   fallbackColor: '#F0ECE4',
-  // },
+  'bg-texture2.png': {
+    imgW: 800,
+    imgH: 1331,
+    x: 18,
+    y: 15,
+    w: 64,
+    h: 70,
+    fallbackColor: '#F9F6EE',
+  },
+  'bg-texture4.png': {
+    imgW: 800,
+    imgH: 1331,
+    x: 18,
+    y: 15,
+    w: 64,
+    h: 70,
+    fallbackColor: '#B5AFA8',
+  },
 }
 
 /**

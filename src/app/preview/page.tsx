@@ -74,7 +74,11 @@ export default function PreviewPage() {
         show_countdown:  parsed.show_countdown  ?? true,
         moderation_on:   parsed.moderation_on   ?? true,
         bismillah_palette: parsed.bismillah_palette || undefined,
-        guest_invite_enabled: parsed.guest_invite_enabled ?? false,
+        background_image:  parsed.background_image  || 'bg-texture.jpg',
+        decoration_image:  parsed.decoration_image  || 'decoration.png',
+        guest_invite_enabled:   parsed.guest_invite_enabled   ?? false,
+        guest_invite_prefix_ar: parsed.guest_invite_prefix_ar || undefined,
+        guest_invite_suffix_ar: parsed.guest_invite_suffix_ar || undefined,
 
         status: 'active',
         created_at: new Date().toISOString(),
