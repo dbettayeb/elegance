@@ -796,17 +796,18 @@ const CSS = `
   .bs-input::placeholder{color:rgba(26,26,26,0.4);font-style:italic}
   .bs-input:focus{border-color:var(--bs-accent)}
   .bs-textarea{resize:vertical;min-height:80px}
-  .bs-radios{display:flex;gap:8px}
+  .bs-radios{display:flex;gap:6px;width:100%}
   .bs-radio{
-    flex:1;padding:12px 6px;
+    flex:1;min-width:0;padding:12px 4px;
     background:rgba(255,255,255,0.45);
     backdrop-filter:blur(6px);
     -webkit-backdrop-filter:blur(6px);
     border:1px solid var(--bs-border);
     color:var(--bs-text-2);
     font-family:'Montserrat',sans-serif;
-    font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+    font-size:clamp(.48rem,.9vw,.62rem);letter-spacing:.08em;text-transform:uppercase;
     cursor:pointer;transition:all .2s;font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .bs-radio-on,.bs-radio:hover{
     background:var(--bs-accent);border-color:var(--bs-accent);color:#FFFFFF;font-weight:600;
