@@ -4,7 +4,7 @@ import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-import { getBgCSSForKey } from '@/lib/bg-texture-system'
+import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
@@ -50,6 +50,8 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
 
   // Background dynamique : lit bg-config.json via bg-texture-system.ts
   const bgKey = (wedding.background_image ?? 'bg-texture.jpg') as string
+  const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['bg-texture.jpg']
+  const decoWidthVh = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
 
   return (
     <>
@@ -77,6 +79,12 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       `}</style>
       {/* CSS dynamique : zone vide + texture calculés depuis bg-config.json */}
       <style>{getBgCSSForKey(bgKey, 'bs')}</style>
+      {/* Dimensions décoration = mêmes que bg sélectionné */}
+      <style>{`
+        @media (min-width: 769px) {
+          .bs-deco-fixed { width: ${decoWidthVh}vh; }
+        }
+      `}</style>
       {/* Surcharge du padding content-zone : 11% au lieu de 15% */}
       <style>{`
         @media (max-width: 768px) {
@@ -493,7 +501,6 @@ const CSS = `
     .bs-deco-fixed {
       left:50%;
       transform:translateX(-50%);
-      width:60.13vh;
       height:100vh;
     }
   }
