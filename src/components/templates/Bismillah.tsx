@@ -83,8 +83,11 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       {/* Dimensions décoration = mêmes que bg sélectionné */}
       <style>{`
         @media (max-width: 768px) {
-          .bs-deco-fixed { width: 100vw; height: ${decoHeightVw}vw; }
-          .bs-texture-bg { min-height: max(100vh, ${decoHeightVw}vw); }
+          .bs-deco-fixed { width: 100vw; height: 100vh; }
+          .bs-texture-bg {
+            background-size: 100vw 100vh !important;
+            min-height: 100vh;
+          }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
