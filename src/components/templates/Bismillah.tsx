@@ -51,7 +51,8 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
   // Background dynamique : lit bg-config.json via bg-texture-system.ts
   const bgKey = (wedding.background_image ?? 'bg-texture.jpg') as string
   const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['bg-texture.jpg']
-  const decoWidthVh = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
+  const decoWidthVh   = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)  // desktop: width en vh
+  const decoHeightVw  = (bgCfg.imgH / bgCfg.imgW * 100).toFixed(2)  // mobile:  height en vw
 
   return (
     <>
@@ -81,8 +82,11 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       <style>{getBgCSSForKey(bgKey, 'bs')}</style>
       {/* Dimensions décoration = mêmes que bg sélectionné */}
       <style>{`
+        @media (max-width: 768px) {
+          .bs-deco-fixed { width: 100vw; height: ${decoHeightVw}vw; }
+        }
         @media (min-width: 769px) {
-          .bs-deco-fixed { width: ${decoWidthVh}vh; }
+          .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
         }
       `}</style>
       {/* Surcharge du padding content-zone : 11% au lieu de 15% */}
@@ -491,18 +495,10 @@ const CSS = `
     object-fit:fill;
   }
   @media (max-width: 768px) {
-    .bs-deco-fixed {
-      left:0;
-      width:100vw;
-      height:100vh;
-    }
+    .bs-deco-fixed { left:0; }
   }
   @media (min-width: 769px) {
-    .bs-deco-fixed {
-      left:50%;
-      transform:translateX(-50%);
-      height:100vh;
-    }
+    .bs-deco-fixed { left:50%; transform:translateX(-50%); }
   }
 
   /* Les sections sont transparentes (fond géré par bs-texture-bg) */
