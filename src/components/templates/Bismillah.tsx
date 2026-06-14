@@ -464,7 +464,6 @@ const CSS = `
 
   /* Invitation wrapper */
   .bs-invitation{
-    position:relative;
     opacity:0;transform:translateY(24px);
     transition:opacity 1s,transform 1s;
     font-family:'Amiri',Georgia,serif;
@@ -475,9 +474,9 @@ const CSS = `
      depuis src/lib/bg-texture-system.ts + src/lib/bg-config.json
      → bs-texture-bg, bs-content-zone, media queries mobile/desktop ── */
 
-  /* Cadre décoratif — suit tout le contenu de l'invitation */
+  /* Cadre décoratif — fixe sur le viewport, couvre exactement l'écran */
   .bs-deco-fixed {
-    position:absolute;
+    position:fixed;
     top:0;
     pointer-events:none;
     z-index:10;
@@ -486,8 +485,8 @@ const CSS = `
   @media (max-width: 768px) {
     .bs-deco-fixed {
       left:0;
-      width:100%;
-      height:100%;
+      width:100vw;
+      height:100vh;
     }
   }
   @media (min-width: 769px) {
@@ -495,7 +494,7 @@ const CSS = `
       left:50%;
       transform:translateX(-50%);
       width:60.13vh;
-      height:100%;
+      height:100vh;
     }
   }
 
