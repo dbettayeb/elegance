@@ -84,6 +84,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       <style>{`
         @media (max-width: 768px) {
           .bs-deco-fixed { width: 100vw; height: ${decoHeightVw}vw; }
+          .bs-texture-bg { min-height: max(100vh, ${decoHeightVw}vw); }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
@@ -870,7 +871,7 @@ const CSS = `
 
   @media(max-width:600px){
     .bs-date-wrap{flex-direction:column;gap:16px;padding:24px}
-    .bs-date-time{border-right:none;padding-right:0;margin-right:0}
+    .bs-date-time{border-right:none;padding-right:0;margin-right:0;justify-content:center;}
     .bs-prog-item{grid-template-columns:60px 16px 1fr;gap:10px}
     .bs-prog-time{font-size:1rem;text-align:left}
     .bs-prog-content{text-align:right}
