@@ -141,6 +141,15 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'fr',
   },
   {
+    id: 'al_nour',
+    name: 'Al-Nour — النور',
+    description: 'Invitation classique maghrébine. Parchemin crème, calligraphie Aref Ruqaa, noms en grand, date en texte coulant. Style traditionnel tunisien sobre et élégant.',
+    tags: ['Islamique', 'Traditionnel', 'Maghrébin', 'Calligraphie'],
+    palette: ['#F5F0E8', '#2C2416', '#8B6914', '#C9A84C'],
+    ambiance: 'clair',
+    language: 'ar',
+  },
+  {
     id: 'viktor_paula',
     name: 'Viktor & Paula',
     description: 'Romance bordeaux & crème. Enveloppe à polygones qui s\'écartent sur une colombe. Hero avec rubis facettés, timeline à colombe animée, séparateurs déchirés. Élégance classique européenne.',

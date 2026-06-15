@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect } from 'react'
 import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
@@ -88,9 +88,11 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
             background-size: 100vw 100vh !important;
             min-height: 100vh;
           }
+          .bs-content-zone { margin-left: auto !important; margin-right: auto !important; }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
+          .bs-content-zone { margin-left: auto !important; margin-right: auto !important; }
         }
       `}</style>
       {/* Surcharge du padding content-zone : 11% au lieu de 15% */}
@@ -218,10 +220,6 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
               <span className="bs-name">{groomAr}</span>
             </h1>
 
-            {wedding.custom_message && (
-              <p className="bs-custom">{wedding.custom_message}</p>
-            )}
-
             <div className="bs-date-wrap">
               <div className="bs-date-corner bs-tl"></div>
               <div className="bs-date-corner bs-tr"></div>
@@ -237,7 +235,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
             </div>
 
             <p className="bs-hadith">
-              « بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »
+              {wedding.custom_message || '« بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »'}
             </p>
           </div>
         </section>
@@ -802,16 +800,16 @@ const CSS = `
   .bs-textarea{resize:vertical;min-height:80px}
   .bs-radios{display:flex;gap:6px;width:100%}
   .bs-radio{
-    flex:1;min-width:0;padding:12px 4px;
+    flex:1;min-width:0;padding:10px 4px;
     background:rgba(255,255,255,0.45);
     backdrop-filter:blur(6px);
     -webkit-backdrop-filter:blur(6px);
     border:1px solid var(--bs-border);
     color:var(--bs-text-2);
     font-family:'Montserrat',sans-serif;
-    font-size:clamp(.48rem,.9vw,.62rem);letter-spacing:.08em;text-transform:uppercase;
+    font-size:clamp(.38rem,2.2vw,.55rem);letter-spacing:0;text-transform:uppercase;
     cursor:pointer;transition:all .2s;font-weight:500;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    word-break:break-word;line-height:1.3;
   }
   .bs-radio-on,.bs-radio:hover{
     background:var(--bs-accent);border-color:var(--bs-accent);color:#FFFFFF;font-weight:600;

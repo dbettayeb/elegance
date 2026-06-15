@@ -1,5 +1,5 @@
 export interface BismillahPalette {
-  id: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre'
+  id: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre' | 'noir_elegant'
   name: string
   accent: string
   accentDark: string
@@ -79,6 +79,20 @@ export const BISMILLAH_PALETTES: BismillahPalette[] = [
     textSecondary: '#6B4530',
     textMuted: '#A07868',
     preview: ['#B87333', '#8C5524', '#FAF0EB', '#3D2817'],
+  },
+  {
+    id: 'noir_elegant',
+    name: 'Noir élégant',
+    accent: '#C9A84C',
+    accentDark: '#B8973F',
+    accentSoft: 'rgba(201,168,76,0.12)',
+    border: 'rgba(201,168,76,0.25)',
+    bg: '#0A0A0A',
+    textPrimary: '#F0EAD6',
+    textSecondary: '#C8B99A',
+    textMuted: '#7A6E5A',
+    decorativeGold: '#C9A84C',
+    preview: ['#0A0A0A', '#C9A84C', '#F0EAD6', '#C8B99A'],
   },
 ]
 

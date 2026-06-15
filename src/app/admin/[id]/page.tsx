@@ -27,7 +27,7 @@ export default async function AdminWeddingDetail({
   const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase.from('rsvps').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
     supabase.from('guestbook').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
-    wedding.template_id === 'bismillah' && wedding.guest_invite_enabled
+    (wedding.template_id === 'bismillah' || wedding.template_id === 'al_nour') && wedding.guest_invite_enabled
       ? supabase.from('guest_invitations').select('*').eq('wedding_id', id).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
@@ -125,7 +125,7 @@ export default async function AdminWeddingDetail({
       </Section>
 
       {/* Invitations personnalisées (Bismillah uniquement) */}
-      {wedding.template_id === 'bismillah' && wedding.guest_invite_enabled && (
+      {(wedding.template_id === 'bismillah' || wedding.template_id === 'al_nour') && wedding.guest_invite_enabled && (
         <Section title="Invitations personnalisées">
           <GuestInvitationsPanel
             weddingId={id}

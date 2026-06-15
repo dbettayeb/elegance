@@ -116,7 +116,7 @@ export async function PATCH(
       guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
     } = body
 
-    const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre']
+    const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre', 'noir_elegant']
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })

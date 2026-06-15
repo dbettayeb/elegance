@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -135,7 +135,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
-          {form.template_id === 'bismillah' && (
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
             <>
               <div style={{ padding: '10px 12px', background: '#fffbeb', border: '1px solid #fde68a',
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
@@ -291,7 +291,21 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <input className="admin-input" value={form.intro_text}
               onChange={e => set('intro_text', e.target.value)} />
           </Field>
-          <Field label="Message personnalisé" help="Texte plus long sous les noms.">
+          <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Cliquer sur un texte prédéfini pour l'insérer.">
+            {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
+                {[
+                  { label: 'Hadith mariage', value: '« بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »' },
+                  { label: 'Bénédiction', value: 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ' },
+                ].map(opt => (
+                  <button key={opt.label} type="button"
+                    onClick={() => set('custom_message', opt.value)}
+                    style={{ padding: '4px 10px', fontSize: '.75rem', background: '#f0f0f0', border: '1px solid #d4d4d4', borderRadius: 4, cursor: 'pointer', fontFamily: 'inherit' }}>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
             <textarea className="admin-textarea" rows={3} value={form.custom_message}
               onChange={e => set('custom_message', e.target.value)} />
           </Field>
@@ -361,7 +375,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Toggle label="Modération des messages"
               help="Les messages sont validés par les mariés avant publication"
               checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
-            {form.template_id === 'bismillah' && (
+            {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
               <Toggle label="Activer les invitations personnalisées"
                 help="Permet de générer un lien unique par invité avec son nom affiché sur l'enveloppe"
                 checked={form.guest_invite_enabled} onChange={v => set('guest_invite_enabled', v)} />
