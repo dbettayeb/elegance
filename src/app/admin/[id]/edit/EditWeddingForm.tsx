@@ -12,8 +12,12 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
 
   const eventDate = new Date(wedding.event_date)
-  const dateStr = eventDate.toISOString().split('T')[0]
-  const timeStr = eventDate.toTimeString().slice(0, 5)
+  const dateStr = [
+    eventDate.getFullYear(),
+    String(eventDate.getMonth() + 1).padStart(2, '0'),
+    String(eventDate.getDate()).padStart(2, '0'),
+  ].join('-')
+  const timeStr = `${String(eventDate.getHours()).padStart(2, '0')}:${String(eventDate.getMinutes()).padStart(2, '0')}`
 
   const [form, setForm] = useState({
     bride_name: wedding.bride_name,
@@ -61,10 +65,15 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     setLoading(true)
     setError('')
 
+    // Convertir heure locale → UTC pour éviter la dérive de timezone
+    const localDt = new Date(`${form.event_date}T${form.event_time}:00`)
+    const utcDate = localDt.toISOString().split('T')[0]
+    const utcTime = localDt.toISOString().split('T')[1].slice(0, 5)
+
     const res = await fetch(`/api/admin/weddings/${wedding.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
     })
 
     const data = await res.json()

@@ -133,7 +133,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Mariage introuvable.' }, { status: 404 })
     }
 
-    const datetime = event_time ? `${event_date}T${event_time}:00` : event_date
+    const datetime = event_time ? `${event_date}T${event_time}:00Z` : event_date
 
     const { error } = await supabase
       .from('weddings')

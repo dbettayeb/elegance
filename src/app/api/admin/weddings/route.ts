@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     const slug         = existing ? `${baseSlug}-${Date.now().toString().slice(-4)}` : baseSlug
     const access_token = generateAccessToken(8)
     const couple_token = generateAccessToken(8)
-    const datetime     = event_time ? `${event_date}T${event_time}:00` : event_date
+    const datetime     = event_time ? `${event_date}T${event_time}:00Z` : event_date
 
     const { data: wedding, error } = await supabase
       .from('weddings')

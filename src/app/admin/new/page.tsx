@@ -57,10 +57,15 @@ export default function NewWeddingPage() {
     setLoading(true)
     setError('')
 
+    // Convertir heure locale → UTC pour éviter la dérive de timezone
+    const localDt = new Date(`${form.event_date}T${form.event_time || '00:00'}:00`)
+    const utcDate = localDt.toISOString().split('T')[0]
+    const utcTime = localDt.toISOString().split('T')[1].slice(0, 5)
+
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
     })
 
     const data = await res.json()
