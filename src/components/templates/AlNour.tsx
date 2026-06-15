@@ -58,34 +58,45 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
           --an-accent-dark: ${palette.accentDark};
           --an-accent-soft: ${palette.accentSoft};
           --an-border:      ${palette.border};
+          --an-bg:          ${palette.bg};
           --an-text:        ${palette.textPrimary};
           --an-text-2:      ${palette.textSecondary};
           --an-text-muted:  ${palette.textMuted};
           --an-gold:        ${palette.decorativeGold ?? palette.accent};
         }
+        .an-texture-bg { background-color: ${palette.bg} !important; }
+        body { background-color: ${palette.bg}; }
       `}</style>
       <style>{getBgCSSForKey(bgKey, 'an')}</style>
       <style>{`
         @media (max-width: 768px) {
           .an-deco-fixed { width: 100vw; height: 100vh; }
-          .an-texture-bg {
-            background-size: 100vw 100vh !important;
-            min-height: 100vh;
+          .an-texture-bg { background-size: 100vw 100vh !important; min-height: 100vh; }
+          .an-hero, .an-section, .an-footer {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
           }
           .an-content-zone {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
             padding-top: 19.6vw;
             padding-bottom: 19.6vw;
-            margin-left: auto !important;
-            margin-right: auto !important;
           }
         }
         @media (min-width: 769px) {
           .an-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
+          .an-texture-bg { scrollbar-gutter: stable both-edges !important; }
+          .an-hero, .an-section, .an-footer {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+          }
           .an-content-zone {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
             padding-top: 11vh;
             padding-bottom: 11vh;
-            margin-left: auto !important;
-            margin-right: auto !important;
           }
         }
       `}</style>

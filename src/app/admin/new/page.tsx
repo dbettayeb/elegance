@@ -280,8 +280,9 @@ export default function NewWeddingPage() {
             {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
                 {[
-                  { label: 'Hadith mariage', value: '« بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »' },
+                  { label: 'Hadith mariage', value: 'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ' },
                   { label: 'Bénédiction', value: 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ' },
+                  { label: 'إن السرور', value: 'إن السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف' },
                 ].map(opt => (
                   <button key={opt.label} type="button"
                     onClick={() => set('custom_message', opt.value)}

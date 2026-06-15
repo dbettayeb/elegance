@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect } from 'react'
 import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
@@ -77,6 +77,8 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         .bs-invitation .bs-orn svg circle { fill: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg path { stroke: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg circle { fill: var(--bs-gold); }
+        .bs-texture-bg { background-color: ${palette.bg} !important; }
+        body { background-color: ${palette.bg}; }
       `}</style>
       {/* CSS dynamique : zone vide + texture calculés depuis bg-config.json */}
       <style>{getBgCSSForKey(bgKey, 'bs')}</style>
@@ -84,24 +86,33 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
       <style>{`
         @media (max-width: 768px) {
           .bs-deco-fixed { width: 100vw; height: 100vh; }
-          .bs-texture-bg {
-            background-size: 100vw 100vh !important;
-            min-height: 100vh;
+          .bs-texture-bg { background-size: 100vw 100vh !important; min-height: 100vh; }
+          .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
           }
-          .bs-content-zone { margin-left: auto !important; margin-right: auto !important; }
+          .bs-content-zone {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-top: 19.6vw;
+            padding-bottom: 19.6vw;
+          }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
-          .bs-content-zone { margin-left: auto !important; margin-right: auto !important; }
-        }
-      `}</style>
-      {/* Surcharge du padding content-zone : 11% au lieu de 15% */}
-      <style>{`
-        @media (max-width: 768px) {
-          .bs-content-zone { padding-top: 19.6vw; padding-bottom: 19.6vw; }
-        }
-        @media (min-width: 769px) {
-          .bs-content-zone { padding-top: 11vh; padding-bottom: 11vh; }
+          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; }
+          .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+          }
+          .bs-content-zone {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-top: 11vh;
+            padding-bottom: 11vh;
+          }
         }
       `}</style>
       <FontOverride font={wedding.custom_font} container=".bs-container" />
@@ -148,22 +159,6 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         {/* HERO - BISMILLAH */}
         <section className="bs-hero">
           <div className="bs-content-zone">
-            <div className="bs-orn">
-              <svg viewBox="0 0 60 60">
-                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                  <path
-                    key={angle}
-                    d="M30 8 L34 26 L52 30 L34 34 L30 52 L26 34 L8 30 L26 26 Z"
-                    fill="none"
-                    stroke="#C9A84C"
-                    strokeWidth="0.5"
-                    opacity="0.4"
-                    transform={`rotate(${angle} 30 30)`}
-                  />
-                ))}
-                <circle cx="30" cy="30" r="3" fill="#C9A84C"/>
-              </svg>
-            </div>
 
             <div className="bs-bismillah">
               بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
@@ -380,19 +375,6 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         {/* FOOTER */}
         <footer className="bs-footer">
           <div className="bs-content-zone">
-            <div className="bs-orn-small">
-              <svg viewBox="0 0 40 40">
-                {[0, 45, 90, 135, 180, 225, 270, 315].map(angle => (
-                  <path
-                    key={angle}
-                    d="M20 6 L23 18 L34 20 L23 22 L20 34 L17 22 L6 20 L17 18 Z"
-                    fill="none" stroke="#C9A84C" strokeWidth="0.5"
-                    transform={`rotate(${angle} 20 20)`}
-                  />
-                ))}
-                <circle cx="20" cy="20" r="2.5" fill="#C9A84C"/>
-              </svg>
-            </div>
             <div className="bs-footer-names">{brideAr} و {groomAr}</div>
             <div className="bs-footer-date" dir="rtl">{dateAr}</div>
             <div className="bs-footer-date-fr">{dateFr}</div>
@@ -518,12 +500,12 @@ const CSS = `
   /* Bismillah */
   .bs-bismillah{
     font-family:'Aref Ruqaa',serif;
-    font-size:clamp(1.8rem,5vw,2.8rem);
-    color:var(--bs-accent);line-height:1.8;
+    font-size:clamp(1rem,4.5vw,2.2rem);
+    color:var(--bs-text);line-height:1.8;
     font-weight:700;
+    margin-top:28px;
     margin-bottom:20px;
-    letter-spacing:.02em;
-    text-shadow:0 1px 2px rgba(201,168,76,0.1);
+    white-space:nowrap;
   }
 
   /* Verset coranique */
