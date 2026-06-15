@@ -116,4 +116,6 @@ export const BISMILLAH_DECORATIONS: BismillahAsset[] = [
   { id: 'decoration2.png', name: 'Roses sculptées' },
   { id: 'decoration3.png', name: 'Arche dorée' },
   { id: 'decoration4.png', name: 'Colonnades fleuries' },
+  { id: 'decoration5.png', name: 'Dentelle & pivoines' },
+  { id: 'decoration6.png', name: 'Arche dorée & roses' },
 ]
