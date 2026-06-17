@@ -113,6 +113,7 @@ export async function PATCH(
       program,
       show_rsvp, show_guestbook, show_countdown, moderation_on,
       bismillah_palette, background_image, decoration_image,
+      template_variant,
       guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
     } = body
 
@@ -164,6 +165,7 @@ export async function PATCH(
         bismillah_palette: VALID_PALETTES.includes(bismillah_palette) ? bismillah_palette : 'or_classique',
         background_image:  background_image  || 'bg-texture.jpg',
         decoration_image:  decoration_image  || 'decoration.png',
+        template_variant:  template_variant  || null,
         guest_invite_enabled:    guest_invite_enabled    ?? false,
         guest_invite_prefix_ar:  guest_invite_prefix_ar  || null,
         guest_invite_suffix_ar:  guest_invite_suffix_ar  || null,

@@ -25,7 +25,7 @@ export interface Wedding {
   | 'bismillah' | 'al_asala' | 'al_qamar'
   | 'sceau_royal'| 'cristal_champagne'
   | 'chateau_pivoines' | 'coeur_dore' | 'viktor_paula'
-  | 'alexa_richard' | 'al_nour'
+  | 'alexa_richard' | 'al_nour' | 'ivoire_dore'
   music_url?: string
   background_image?: string
   decoration_image?: string
@@ -39,6 +39,7 @@ export interface Wedding {
   show_countdown: boolean
   moderation_on: boolean
   bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre' | 'noir_elegant'
+  template_variant?: string
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string
   guest_invite_suffix_ar?: string

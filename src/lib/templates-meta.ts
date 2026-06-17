@@ -150,6 +150,15 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
   },
   {
+    id: 'ivoire_dore',
+    name: 'Ivoire Doré',
+    description: 'Carte ivoire & feuilles d\'or. Fond décoration marbre, 3 mises en page, 4 palettes de couleur. Style occidental intemporel.',
+    tags: ['Classique', 'Or', 'Occidental', 'Carte'],
+    palette: ['#EDE9E2', '#C9A84C', '#8B6914', '#2C2416'],
+    ambiance: 'clair',
+    language: 'fr',
+  },
+  {
     id: 'viktor_paula',
     name: 'Viktor & Paula',
     description: 'Romance bordeaux & crème. Enveloppe à polygones qui s\'écartent sur une colombe. Hero avec rubis facettés, timeline à colombe animée, séparateurs déchirés. Élégance classique européenne.',

@@ -79,6 +79,15 @@ export const BG_CONFIGS: Record<string, BgConfig> = {
     h: 70,
     fallbackColor: '#B5AFA8',
   },
+  'decoration7.png': {
+    imgW: 768,
+    imgH: 1024,
+    x: 15,
+    y: 15,
+    w: 70,
+    h: 70,
+    fallbackColor: '#EDE9E2',
+  },
 }
 
 /**

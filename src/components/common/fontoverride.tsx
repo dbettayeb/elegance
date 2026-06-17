@@ -23,6 +23,8 @@ const NAME_SELECTORS = [
   '.ar-hero-names', '.ar-hero-names *', '.ar-closing-names',
   // Viktor & Paula
   '.hero-names-block', '.hero-names-block *', '.closing-names',
+  // Ivoire Doré
+  '.iv-names', '.iv-names *', '.iv-footer-names',
 ].join(',\n')
 
 export default function FontOverride({ font }: Props) {
