@@ -14,7 +14,8 @@ import CoeurDore from '@/components/templates/Coeurdore'
 import ViktorPaula from '@/components/templates/Viktorpaula'
 import AlexaRichard from '@/components/templates/AlexaRichard'
 import AlNour from '@/components/templates/AlNour'
-import IvoireDore from '@/components/templates/IvoireDore'
+import CarteSimple from '@/components/templates/CarteSimple'
+import ToileBleue from '@/components/templates/ToileBleue'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META, TemplateMeta } from '@/lib/templates-meta'
 
@@ -42,7 +43,8 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   viktor_paula: ViktorPaula,
   alexa_richard: AlexaRichard,
   al_nour: AlNour,
-  ivoire_dore: IvoireDore,
+  carte_simple: CarteSimple,
+  toile_bleue: ToileBleue,
 }
 
 export const TEMPLATES: TemplateFull[] = TEMPLATES_META.map(meta => ({

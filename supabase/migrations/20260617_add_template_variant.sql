@@ -1,2 +1,5 @@
+INSERT INTO templates (id) VALUES ('ivoire_dore')
+ON CONFLICT (id) DO NOTHING;
+
 ALTER TABLE weddings
-  ADD COLUMN template_variant text;
+  ADD COLUMN IF NOT EXISTS template_variant text;

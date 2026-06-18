@@ -7,7 +7,7 @@ import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS } from '@/lib/bismillah-palettes'
-import { IVOIRE_PALETTES, IVOIRE_BACKGROUNDS, IVOIRE_LAYOUTS } from '@/lib/ivoire-palettes'
+import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -258,87 +258,37 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               </Row>
             </>
           )}
-          {form.template_id === 'ivoire_dore' && (() => {
-            const [ivPalette, ivLayout] = form.template_variant.split('|')
-            const setVariant = (palette: string, layout: string) =>
-              set('template_variant', `${palette}|${layout}`)
-            return (
-              <>
-                <div style={{ padding: '10px 12px', background: '#fefce8', border: '1px solid #fde68a',
-                  borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#78350f' }}>
-                  Personnalisez la palette, la mise en page et le fond pour ce template.
+          {form.template_id === 'carte_simple' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {IVOIRE_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.accentSoft : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </span>
+                    </button>
+                  ))}
                 </div>
+              </Field>
+            </>
+          )}
 
-                {/* Palette */}
-                <Field label="Palette de couleurs">
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                    {IVOIRE_PALETTES.map(p => (
-                      <button key={p.id} type="button" title={p.name}
-                        onClick={() => setVariant(p.id, ivLayout ?? 'layout_a')}
-                        style={{
-                          display: 'flex', flexDirection: 'column', alignItems: 'center',
-                          gap: '6px', padding: '8px 10px', border: '2px solid',
-                          borderColor: ivPalette === p.id ? p.accent : 'var(--admin-border)',
-                          borderRadius: 'var(--admin-radius)',
-                          background: ivPalette === p.id ? p.accentSoft : '#fff',
-                          cursor: 'pointer', transition: 'all .2s',
-                          transform: ivPalette === p.id ? 'scale(1.05)' : 'scale(1)',
-                        }}>
-                        <div style={{ display: 'flex', gap: '3px' }}>
-                          {p.preview.map((c, i) => (
-                            <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
-                          ))}
-                        </div>
-                        <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                          {p.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                {/* Mise en page */}
-                <Field label="Mise en page">
-                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                    {IVOIRE_LAYOUTS.map(l => (
-                      <button key={l.id} type="button"
-                        onClick={() => setVariant(ivPalette ?? 'or_classique', l.id)}
-                        style={{
-                          padding: '10px 14px', border: '2px solid', textAlign: 'left',
-                          borderColor: ivLayout === l.id ? 'var(--admin-accent)' : 'var(--admin-border)',
-                          borderRadius: 'var(--admin-radius)',
-                          background: ivLayout === l.id ? '#eff6ff' : '#fff',
-                          cursor: 'pointer', transition: 'all .2s', minWidth: 140,
-                        }}>
-                        <div style={{ fontSize: '0.82rem', fontWeight: 600 }}>{l.name}</div>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--admin-text-muted)', marginTop: '3px' }}>{l.description}</div>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                {/* Fond */}
-                <Field label="Fond de carte">
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {IVOIRE_BACKGROUNDS.map(bg => (
-                      <button key={bg.id} type="button" title={bg.name}
-                        onClick={() => set('background_image', bg.id)}
-                        style={{
-                          border: '2px solid',
-                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
-                          borderRadius: 'var(--admin-radius)', padding: '3px',
-                          background: 'none', cursor: 'pointer', transition: 'all .2s',
-                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
-                        }}>
-                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
-                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-              </>
-            )
-          })()}
 
           <Field label="Email des mariés" required>
             <input className="admin-input" type="email" value={form.couple_email}

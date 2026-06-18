@@ -7,6 +7,7 @@ import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS } from '@/lib/bismillah-palettes'
+import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 
 export default function NewWeddingPage() {
   const router = useRouter()
@@ -41,6 +42,7 @@ export default function NewWeddingPage() {
     bismillah_palette: 'or_classique',
     background_image: 'bg-texture.jpg',
     decoration_image: 'decoration.png',
+    template_variant: 'or_classique',
     guest_invite_enabled: false,
   })
 
@@ -237,6 +239,37 @@ export default function NewWeddingPage() {
               </Row>
             </>
           )}
+          {form.template_id === 'carte_simple' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {IVOIRE_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.accentSoft : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </>
+          )}
+
           <Field label="Email des mariés" required help="Servira pour la connexion au portail couple.">
             <input className="admin-input" type="email" value={form.couple_email}
               onChange={e => set('couple_email', e.target.value)} required />
