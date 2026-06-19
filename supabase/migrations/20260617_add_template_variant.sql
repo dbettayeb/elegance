@@ -1,4 +1,4 @@
-INSERT INTO templates (id) VALUES ('ivoire_dore')
+INSERT INTO template_ids (id) VALUES ('jardin_rose')
 ON CONFLICT (id) DO NOTHING;
 
 ALTER TABLE weddings

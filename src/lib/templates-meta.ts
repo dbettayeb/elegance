@@ -168,6 +168,15 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'fr',
   },
   {
+    id: 'jardin_rose',
+    name: 'Jardin Rose',
+    description: 'Cadre floral vintage sur fond papier blush. Typographie EB Garamond italique, tons rose poudré et ivoire. Romantisme classique pour mariages printaniers.',
+    tags: ['Floral', 'Romantique', 'Vintage', 'Printemps'],
+    palette: ['#F0E5E3', '#B87070', '#9A5858', '#3D2B2B'],
+    ambiance: 'pastel',
+    language: 'fr',
+  },
+  {
     id: 'viktor_paula',
     name: 'Viktor & Paula',
     description: 'Romance bordeaux & crème. Enveloppe à polygones qui s\'écartent sur une colombe. Hero avec rubis facettés, timeline à colombe animée, séparateurs déchirés. Élégance classique européenne.',

@@ -25,7 +25,7 @@ export interface Wedding {
   | 'bismillah' | 'al_asala' | 'al_qamar'
   | 'sceau_royal'| 'cristal_champagne'
   | 'chateau_pivoines' | 'coeur_dore' | 'viktor_paula'
-  | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue'
+  | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue' | 'jardin_rose'
   music_url?: string
   background_image?: string
   decoration_image?: string

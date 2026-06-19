@@ -25,6 +25,22 @@ const NAME_SELECTORS = [
   '.hero-names-block', '.hero-names-block *', '.closing-names',
   // Ivoire Doré
   '.iv-names', '.iv-names *', '.iv-footer-names',
+  // ToileBleue
+  '.tb-names', '.tb-names *', '.tb-footer-names',
+  // CarteSimple
+  '.cs-names', '.cs-names *', '.cs-footer-names',
+  // JardinRose
+  '.jr-names', '.jr-names *', '.jr-footer-names',
+  // ChateauPivoines
+  '.cp-names', '.cp-names *', '.cp-footer-names',
+  // CristalChampagne
+  '.cc-names', '.cc-names *', '.cc-footer-names',
+  // SceauRoyal
+  '.sr-names', '.sr-names *', '.sr-footer-names',
+  // AlNour
+  '.an-names', '.an-names *', '.an-footer-names',
+  // Coeurdore
+  '.cd-env-reveal-names', '.cd-name', '.cd-footer-names',
 ].join(',\n')
 
 export default function FontOverride({ font }: Props) {

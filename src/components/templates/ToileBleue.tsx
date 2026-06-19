@@ -60,15 +60,16 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
       {/* 3. Overrides dimension — même logique Bismillah/CarteSimple */}
       <style>{`
         @media (max-width: 768px) {
-          .tb-deco-fixed { width: 100vw; height: 100vh; }
-          .tb-texture-bg { background-size: 100vw 100vh !important; min-height: 100vh; }
+          .tb-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
+          .tb-texture-bg { background-size: 100vw 100vh !important; background-size: 100vw 100dvh !important; min-height: 100vh; min-height: 100dvh; }
           .tb-hero, .tb-section, .tb-rsvp-wrap, .tb-gb-wrap, .tb-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
           .tb-content-zone {
             margin-left: 0 !important; margin-right: 0 !important;
-            padding-top: ${DECO_Y}vh; padding-bottom: ${DECO_Y}vh;
+            padding-top: ${DECO_Y}vh; padding-bottom: 13vh;
           }
+          .tb-footer .tb-content-zone { padding-top: 24px; padding-bottom: 13vh; }
         }
         @media (min-width: 769px) {
           .tb-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
@@ -78,8 +79,9 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
           }
           .tb-content-zone {
             margin-left: 0 !important; margin-right: 0 !important;
-            padding-top: ${DECO_Y}vh; padding-bottom: ${DECO_Y}vh;
+            padding-top: ${DECO_Y}vh; padding-bottom: 13vh;
           }
+          .tb-footer .tb-content-zone { padding-top: 24px; padding-bottom: 13vh; }
         }
       `}</style>
 
@@ -107,6 +109,14 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
               </div>
               <img src={ROSE_SRC} alt="" className="tb-rose" aria-hidden="true" />
               <p className="tb-time-txt">{timeFr}</p>
+              {wedding.venue_name    && <p className="tb-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_address && <p className="tb-addr-txt">{wedding.venue_address}</p>}
+              {(wedding.gps_google || wedding.gps_apple) && (
+                <div className="tb-maps-mini">
+                  {wedding.gps_google && <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="tb-map-link">Google Maps</a>}
+                  {wedding.gps_apple  && <a href={wedding.gps_apple}  target="_blank" rel="noreferrer" className="tb-map-link">Apple Maps</a>}
+                </div>
+              )}
             </div>
           </section>
 
@@ -154,27 +164,6 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
               </div>
             </section>
           )}
-
-          {/* ══ LIEU ══ */}
-          <section className="tb-section">
-            <div className="tb-content-zone">
-              <p className="tb-label">Le Lieu</p>
-              <h2 className="tb-title">{wedding.venue_name}</h2>
-              {wedding.venue_address && <p className="tb-body">{wedding.venue_address}</p>}
-              <div className="tb-btn-row">
-                {wedding.gps_google && (
-                  <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="tb-btn-map">
-                    Google Maps
-                  </a>
-                )}
-                {wedding.gps_apple && (
-                  <a href={wedding.gps_apple} target="_blank" rel="noreferrer" className="tb-btn-map tb-btn-outline">
-                    Apple Maps
-                  </a>
-                )}
-              </div>
-            </div>
-          </section>
 
           {/* ══ RSVP ══ */}
           {wedding.show_rsvp && (
@@ -320,9 +309,9 @@ function buildCSS(): string {
   /* ── HERO ── */
   .tb-intro {
     font-family: 'EB Garamond', Garamond, Georgia, serif;
-    font-size: clamp(.9rem, 2.2vw, 1.05rem); font-weight: 400; font-style: italic;
+    font-size: clamp(.58rem, 2.2vw, 1.05rem); font-weight: 400; font-style: italic;
     color: ${P.textSecondary}; line-height: 1.8; letter-spacing: .03em;
-    max-width: 300px; margin-bottom: 22px;
+    max-width: 100%; white-space: nowrap; overflow: hidden; margin-bottom: 22px;
   }
   .tb-names {
     display: flex; flex-direction: column; align-items: center;
@@ -364,7 +353,9 @@ function buildCSS(): string {
     color: ${P.textSecondary}; letter-spacing: .04em; margin-bottom: 4px;
     font-style: italic;
   }
-  .tb-addr-txt { font-size: clamp(.75rem, 2vw, .87rem); color: ${P.textMuted}; }
+  .tb-addr-txt { font-size: clamp(.75rem, 2vw, .87rem); color: ${P.textMuted}; margin-bottom: 10px; }
+  .tb-maps-mini { display: flex; gap: 16px; justify-content: center; direction: ltr; }
+  .tb-map-link { font-size: .48rem; letter-spacing: .15em; text-transform: uppercase; color: ${P.accent}; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
 
   /* ── SECTIONS ── */
   .tb-label { font-size: .55rem; letter-spacing: .4em; text-transform: uppercase; color: ${P.accent}; margin-bottom: 8px; }
@@ -408,7 +399,8 @@ function buildCSS(): string {
 
   /* ── CARD (RSVP / GUESTBOOK) ── */
   .tb-card {
-    width: 100%;
+    width: calc(100% - 32px);
+    margin: 0 16px;
     background: rgba(255,255,255,.55);
     border: 1px solid ${P.accent};
     border-radius: 4px;

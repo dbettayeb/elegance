@@ -97,6 +97,15 @@ export const BG_CONFIGS: Record<string, BgConfig> = {
     h: 79,
     fallbackColor: '#EAE0D1',
   },
+  'assets/template2/back2.png': {
+    imgW: 857,
+    imgH: 1200,
+    x: 12,
+    y: 12,
+    w: 76,
+    h: 76,
+    fallbackColor: '#F0E5E3',
+  },
 }
 
 /**

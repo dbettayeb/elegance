@@ -56,8 +56,8 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
       {/* 3. Overrides dimension — identique au bloc dynamique de Bismillah */}
       <style>{`
         @media (max-width: 768px) {
-          .cs-deco-fixed { width: 100vw; height: 100vh; }
-          .cs-texture-bg { background-size: 100vw 100vh !important; min-height: 100vh; }
+          .cs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
+          .cs-texture-bg { background-size: 100vw 100vh !important; background-size: 100vw 100dvh !important; min-height: 100vh; min-height: 100dvh; }
           .cs-hero, .cs-section, .cs-rsvp-wrap, .cs-gb-wrap, .cs-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
@@ -65,6 +65,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
             margin-left: 0 !important; margin-right: 0 !important;
             padding-top: ${bgCfg.y}vh; padding-bottom: ${bgCfg.y}vh;
           }
+          .cs-footer .cs-content-zone { padding-top: 24px; padding-bottom: ${bgCfg.y}vh; }
         }
         @media (min-width: 769px) {
           .cs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
@@ -76,6 +77,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
             margin-left: 0 !important; margin-right: 0 !important;
             padding-top: ${bgCfg.y}vh; padding-bottom: ${bgCfg.y}vh;
           }
+          .cs-footer .cs-content-zone { padding-top: 24px; padding-bottom: ${bgCfg.y}vh; }
         }
       `}</style>
 
@@ -119,9 +121,15 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
               </div>
               <div className="cs-event-info">
                 <p className="cs-date-txt">Le {dateFr}</p>
-                {wedding.venue_name && <p className="cs-venue-txt">{wedding.venue_name}</p>}
-                {wedding.venue_address && <p className="cs-addr-txt">{wedding.venue_address}</p>}
                 <p className="cs-time-txt">{timeFr}</p>
+                {wedding.venue_name    && <p className="cs-venue-txt">{wedding.venue_name}</p>}
+                {wedding.venue_address && <p className="cs-addr-txt">{wedding.venue_address}</p>}
+                {(wedding.gps_google || wedding.gps_apple) && (
+                  <div className="cs-maps-mini">
+                    {wedding.gps_google && <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="cs-map-link">Google Maps</a>}
+                    {wedding.gps_apple  && <a href={wedding.gps_apple}  target="_blank" rel="noreferrer" className="cs-map-link">Apple Maps</a>}
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -170,27 +178,6 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
               </div>
             </section>
           )}
-
-          {/* ══ LIEU ══ */}
-          <section className="cs-section">
-            <div className="cs-content-zone">
-              <p className="cs-label">Le Lieu</p>
-              <h2 className="cs-title">{wedding.venue_name}</h2>
-              {wedding.venue_address && <p className="cs-body">{wedding.venue_address}</p>}
-              <div className="cs-btn-row">
-                {wedding.gps_google && (
-                  <a href={wedding.gps_google} target="_blank" rel="noreferrer" className="cs-btn-map">
-                    Google Maps
-                  </a>
-                )}
-                {wedding.gps_apple && (
-                  <a href={wedding.gps_apple} target="_blank" rel="noreferrer" className="cs-btn-map cs-btn-outline">
-                    Apple Maps
-                  </a>
-                )}
-              </div>
-            </div>
-          </section>
 
           {/* ══ RSVP ══ */}
           {wedding.show_rsvp && (
@@ -294,9 +281,11 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
           {/* ══ FOOTER ══ */}
           <footer className="cs-footer">
             <div className="cs-content-zone">
-              <div className="cs-footer-names">{wedding.bride_name} &amp; {wedding.groom_name}</div>
-              <div className="cs-footer-date">{dateFr}</div>
-              <div className="cs-footer-credit">Élégance Digitale™</div>
+              <div className="cs-footer-inner">
+                <div className="cs-footer-names">{wedding.bride_name} &amp; {wedding.groom_name}</div>
+                <div className="cs-footer-date">{dateFr}</div>
+                <div className="cs-footer-credit">Élégance Digitale™</div>
+              </div>
             </div>
           </footer>
 
@@ -343,9 +332,9 @@ function buildCSS(p: IvoirePalette): string {
   }
   .cs-intro {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(.9rem, 2.2vw, 1.05rem); font-weight: 300;
+    font-size: clamp(.58rem, 2.2vw, 1.05rem); font-weight: 300;
     color: ${p.textSecondary}; line-height: 1.8; letter-spacing: .03em;
-    max-width: 300px; margin-bottom: 20px;
+    max-width: 100%; white-space: nowrap; overflow: hidden; margin-bottom: 20px;
   }
   .cs-names {
     display: flex; flex-direction: column; align-items: center;
@@ -365,7 +354,9 @@ function buildCSS(p: IvoirePalette): string {
   .cs-event-info { display: flex; flex-direction: column; align-items: center; gap: 5px; }
   .cs-date-txt  { font-size: clamp(.9rem, 2.4vw, 1.05rem); font-weight: 300; color: ${p.textSecondary}; letter-spacing: .04em; }
   .cs-venue-txt { font-size: clamp(.86rem, 2.2vw, 1rem); font-weight: 300; color: ${p.textSecondary}; }
-  .cs-addr-txt  { font-size: clamp(.78rem, 2vw, .9rem); color: ${p.textMuted}; }
+  .cs-addr-txt  { font-size: clamp(.78rem, 2vw, .9rem); color: ${p.textMuted}; margin-bottom: 8px; }
+  .cs-maps-mini { display: flex; gap: 16px; justify-content: center; direction: ltr; margin-bottom: 4px; }
+  .cs-map-link  { font-size: .48rem; letter-spacing: .15em; text-transform: uppercase; color: ${p.accent}; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
   .cs-time-txt  { font-size: .58rem; letter-spacing: .24em; text-transform: uppercase; color: ${p.accent}; margin-top: 4px; }
 
   /* ── SECTIONS ── */
@@ -494,6 +485,10 @@ function buildCSS(p: IvoirePalette): string {
   .cs-msg-author { margin-top: 6px; font-size: .58rem; color: ${p.accent}; letter-spacing: .1em; }
 
   /* FOOTER */
+  .cs-footer-inner {
+    width: calc(100% - 32px);
+    display: flex; flex-direction: column; align-items: center;
+  }
   .cs-footer-names  { font-family: 'Great Vibes', cursive, Georgia, serif; font-size: 2rem; color: ${p.accent}; margin-bottom: 4px; }
   .cs-footer-date   { font-style: italic; color: ${p.textSecondary}; font-size: .82rem; margin-bottom: 18px; }
   .cs-footer-credit { font-size: .48rem; letter-spacing: .2em; color: ${p.accent}; opacity: .5; text-transform: uppercase; }
