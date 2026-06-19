@@ -1,8 +1,8 @@
 'use client'
-import { useEffect } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
+import OpeningScreen from '@/components/common/OpeningScreen'
 import { getIvoirePalette, IvoirePalette } from '@/lib/ivoire-palettes'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 
@@ -19,7 +19,6 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
     countdown, eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  useEffect(() => { if (!opened) openEnvelope() }, [])
 
   const { paletteId } = parseVariant(wedding.template_variant)
   const palette = getIvoirePalette(paletteId)
@@ -37,8 +36,13 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
     hour: '2-digit', minute: '2-digit',
   })
 
+  const brideName = wedding.bride_name_ar || wedding.bride_name
+  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const ampChar   = wedding.bride_name_ar ? 'و' : '&'
+
   return (
     <>
+      {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={palette.bg} />}
       <link
         href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
         rel="stylesheet"
@@ -113,8 +117,8 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
               <span className="cs-heart">♥</span>
               <p className="cs-intro">{introText}</p>
               <div className="cs-names">
-                <span className="cs-name">{wedding.bride_name}</span>
-                <span className="cs-amp">&amp; {wedding.groom_name}</span>
+                <span className="cs-name">{brideName}</span>
+                <span className="cs-amp">{ampChar} {groomName}</span>
               </div>
               <div className="cs-divider">
                 <span /><i>✦</i><span />
@@ -282,7 +286,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
           <footer className="cs-footer">
             <div className="cs-content-zone">
               <div className="cs-footer-inner">
-                <div className="cs-footer-names">{wedding.bride_name} &amp; {wedding.groom_name}</div>
+                <div className="cs-footer-names">{brideName} {ampChar} {groomName}</div>
                 <div className="cs-footer-date">{dateFr}</div>
                 <div className="cs-footer-credit">Élégance Digitale™</div>
               </div>

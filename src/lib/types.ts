@@ -20,12 +20,8 @@ export interface Wedding {
   gps_google?: string
   gps_apple?: string
   template_id:
-  | 'blanc_dore' | 'nuit_etoilee' | 'jardin_andalou'
-  | 'minimaliste' | 'rose_poudre' | 'marbre_noir'
-  | 'bismillah' | 'al_asala' | 'al_qamar'
-  | 'sceau_royal'| 'cristal_champagne'
-  | 'chateau_pivoines' | 'coeur_dore' | 'viktor_paula'
-  | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue' | 'jardin_rose'
+  | 'bismillah' | 'coeur_dore' | 'viktor_paula'
+  | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue' | 'jardin_rose' | 'floral_arch' | 'roses_ivoire' | 'rose_bleu'
   music_url?: string
   background_image?: string
   decoration_image?: string

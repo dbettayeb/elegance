@@ -41,6 +41,12 @@ const NAME_SELECTORS = [
   '.an-names', '.an-names *', '.an-footer-names',
   // Coeurdore
   '.cd-env-reveal-names', '.cd-name', '.cd-footer-names',
+  // FloralArch
+  '.fa-names', '.fa-names *', '.fa-footer-names',
+  // RosesIvoire
+  '.ri-names', '.ri-names *', '.ri-footer-names',
+  // RoseBleu
+  '.rb-names-line', '.rb-names-line *', '.rb-footer-names',
 ].join(',\n')
 
 export default function FontOverride({ font }: Props) {

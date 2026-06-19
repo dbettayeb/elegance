@@ -1,15 +1,4 @@
-import BlancDore from '@/components/templates/BlancDore'
-import NuitEtoilee from '@/components/templates/NuitEtoilee'
-import JardinAndalou from '@/components/templates/JardinAndalou'
-import Minimaliste from '@/components/templates/Minimaliste'
-import RosePoudre from '@/components/templates/RosePoudre'
-import MarbreNoir from '@/components/templates/MarbreNoir'
 import Bismillah from '@/components/templates/Bismillah'
-import AlAsala from '@/components/templates/AlAsala'
-import AlQamar from '@/components/templates/AlQamar'
-import SceauRoyal from '@/components/templates/SceauRoyal'
-import CristalChampagne from '@/components/templates/CristalChampagne'
-import ChateauPivoines from '@/components/templates/ChateauPivoines'
 import CoeurDore from '@/components/templates/Coeurdore'
 import ViktorPaula from '@/components/templates/Viktorpaula'
 import AlexaRichard from '@/components/templates/AlexaRichard'
@@ -17,6 +6,9 @@ import AlNour from '@/components/templates/AlNour'
 import CarteSimple from '@/components/templates/CarteSimple'
 import ToileBleue from '@/components/templates/ToileBleue'
 import JardinRose from '@/components/templates/JardinRose'
+import FloralArch from '@/components/templates/FloralArch'
+import RosesIvoire from '@/components/templates/RosesIvoire'
+import RoseBleu from '@/components/templates/RoseBleu'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META, TemplateMeta } from '@/lib/templates-meta'
 
@@ -28,18 +20,7 @@ export interface TemplateFull extends TemplateMeta {
 }
 
 const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: Wedding }>> = {
-  blanc_dore: BlancDore,
-  nuit_etoilee: NuitEtoilee,
-  jardin_andalou: JardinAndalou,
-  minimaliste: Minimaliste,
-  rose_poudre: RosePoudre,
-  marbre_noir: MarbreNoir,
   bismillah: Bismillah,
-  al_asala: AlAsala,
-  al_qamar: AlQamar,
-  sceau_royal: SceauRoyal,
-  cristal_champagne: CristalChampagne,
-  chateau_pivoines: ChateauPivoines,
   coeur_dore: CoeurDore,
   viktor_paula: ViktorPaula,
   alexa_richard: AlexaRichard,
@@ -47,6 +28,9 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   carte_simple: CarteSimple,
   toile_bleue: ToileBleue,
   jardin_rose: JardinRose,
+  floral_arch: FloralArch,
+  roses_ivoire: RosesIvoire,
+  rose_bleu: RoseBleu,
 }
 
 export const TEMPLATES: TemplateFull[] = TEMPLATES_META.map(meta => ({

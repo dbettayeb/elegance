@@ -1,9 +1,9 @@
 'use client'
-import { useEffect } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
+import OpeningScreen from '@/components/common/OpeningScreen'
 
 const BG_KEY   = 'assets/template2/back2.png'
 const DECO_KEY = 'assets/template2/deco2.png'
@@ -28,7 +28,6 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
     countdown, eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  useEffect(() => { if (!opened) openEnvelope() }, [])
 
   const d  = eventDate.getDate().toString().padStart(2, '0')
   const mo = (eventDate.getMonth() + 1).toString().padStart(2, '0')
@@ -42,8 +41,13 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
     hour: '2-digit', minute: '2-digit',
   })
 
+  const brideName = wedding.bride_name_ar || wedding.bride_name
+  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const ampChar   = wedding.bride_name_ar ? 'و' : '&'
+
   return (
     <>
+      {!opened && <OpeningScreen onOpen={openEnvelope} bgColor='#F0E5E3' />}
       <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
         rel="stylesheet"
@@ -105,8 +109,8 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
             <div className="jr-content-zone">
               <p className="jr-intro">{introText}</p>
               <div className="jr-names">
-                <span className="jr-name">{wedding.bride_name}</span>
-                <span className="jr-amp">&amp; {wedding.groom_name}</span>
+                <span className="jr-name">{brideName}</span>
+                <span className="jr-amp">{ampChar} {groomName}</span>
               </div>
               <div className="jr-divider"><span /><i>✦</i><span /></div>
               <p className="jr-date-styled">{dateStyled}</p>
@@ -270,7 +274,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
           <footer className="jr-footer">
             <div className="jr-content-zone">
               <div className="jr-footer-inner">
-                <div className="jr-footer-names">{wedding.bride_name} &amp; {wedding.groom_name}</div>
+                <div className="jr-footer-names">{brideName} {ampChar} {groomName}</div>
                 <div className="jr-footer-date">{dateFr}</div>
                 <div className="jr-footer-credit">Élégance Digitale™</div>
               </div>

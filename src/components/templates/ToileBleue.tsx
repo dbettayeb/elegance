@@ -1,9 +1,9 @@
 'use client'
-import { useEffect } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
+import OpeningScreen from '@/components/common/OpeningScreen'
 
 const DECO_KEY = 'assets/template1/deco1.png'
 const ROSE_SRC = '/assets/template1/rose bleu apèrs les noms.png'
@@ -31,7 +31,6 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
     countdown, eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  useEffect(() => { if (!opened) openEnvelope() }, [])
 
   const dayName = eventDate.toLocaleDateString('fr-TN', { weekday: 'long' }).toUpperCase()
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
@@ -41,8 +40,13 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
     hour: '2-digit', minute: '2-digit',
   })
 
+  const brideName = wedding.bride_name_ar || wedding.bride_name
+  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const ampChar   = wedding.bride_name_ar ? 'و' : '&'
+
   return (
     <>
+      {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.bg} />}
       <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
         rel="stylesheet"
@@ -100,8 +104,8 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
             <div className="tb-content-zone">
               <p className="tb-intro">{introText}</p>
               <div className="tb-names">
-                <span className="tb-name">{wedding.bride_name}</span>
-                <span className="tb-amp">&amp; {wedding.groom_name}</span>
+                <span className="tb-name">{brideName}</span>
+                <span className="tb-amp">{ampChar} {groomName}</span>
               </div>
               <div className="tb-date-block">
                 <p className="tb-day-name">{dayName}</p>
@@ -267,7 +271,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
           {/* ══ FOOTER ══ */}
           <footer className="tb-footer">
             <div className="tb-content-zone">
-              <div className="tb-footer-names">{wedding.bride_name} &amp; {wedding.groom_name}</div>
+              <div className="tb-footer-names">{brideName} {ampChar} {groomName}</div>
               <div className="tb-footer-date">{dateFr}</div>
               <div className="tb-footer-credit">Élégance Digitale™</div>
             </div>

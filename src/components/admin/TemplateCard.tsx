@@ -35,77 +35,83 @@ export default function TemplateCard({ template }: { template: TemplateMeta }) {
           e.currentTarget.style.transform = 'none'
         }}
       >
-        {/* Visuel : palette + nom du template */}
+        {/* Visuel : aperçu image ou palette couleur */}
         <div style={{
-          height: '160px',
+          height: '220px',
           background: template.palette[0],
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           borderBottom: '1px solid var(--admin-border)',
+          overflow: 'hidden',
         }}>
+          {template.preview ? (
+            /* Image d'aperçu du template */
+            <img
+              src={template.preview}
+              alt={template.name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'top center',
+                display: 'block',
+              }}
+            />
+          ) : (
+            /* Fallback : nom stylé */
+            <div style={{ textAlign: 'center', padding: '0 20px' }}>
+              <div style={{
+                fontFamily: 'Georgia, serif',
+                fontSize: '1.5rem',
+                fontWeight: 300,
+                color: template.palette[2] || template.palette[1],
+                lineHeight: 1.2,
+              }}>
+                {template.name}
+              </div>
+              <div style={{
+                width: '40px', height: '1px',
+                background: template.palette[2] || template.palette[1],
+                margin: '8px auto', opacity: 0.6,
+              }} />
+            </div>
+          )}
+
+          {/* Badge ambiance */}
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            padding: '3px 9px',
+            borderRadius: '4px',
+            fontSize: '0.65rem',
+            fontWeight: 500,
+            background: 'rgba(255,255,255,0.88)',
+            color: amb.color,
+            backdropFilter: 'blur(4px)',
+          }}>
+            {amb.label}
+          </div>
+
           {/* Palette de couleurs */}
           <div style={{
             position: 'absolute',
-            top: '12px',
-            left: '12px',
+            bottom: '10px',
+            left: '10px',
             display: 'flex',
             gap: '4px',
           }}>
             {template.palette.map((color, i) => (
               <div key={i} style={{
-                width: '20px',
-                height: '20px',
+                width: '16px', height: '16px',
                 borderRadius: '50%',
                 background: color,
-                border: '1px solid rgba(0,0,0,0.08)',
+                border: '1px solid rgba(255,255,255,0.6)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
               }} />
             ))}
-          </div>
-
-          {/* Badge ambiance */}
-          <div style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            padding: '3px 9px',
-            borderRadius: '4px',
-            fontSize: '0.65rem',
-            fontWeight: 500,
-            background: amb.bg,
-            color: amb.color,
-          }}>
-            {amb.label}
-          </div>
-
-          {/* Nom stylé du template */}
-          <div style={{ textAlign: 'center', padding: '0 20px' }}>
-            <div style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '1.5rem',
-              fontWeight: 300,
-              color: template.palette[2] || template.palette[1],
-              lineHeight: 1.2,
-            }}>
-              {template.name}
-            </div>
-            <div style={{
-              width: '40px',
-              height: '1px',
-              background: template.palette[2] || template.palette[1],
-              margin: '8px auto',
-              opacity: 0.6,
-            }} />
-            <div style={{
-              fontSize: '0.55rem',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              color: template.palette[2] || template.palette[1],
-              opacity: 0.7,
-            }}>
-              Aperçu
-            </div>
           </div>
         </div>
 

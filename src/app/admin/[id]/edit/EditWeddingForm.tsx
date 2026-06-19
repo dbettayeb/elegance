@@ -96,8 +96,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
 
-  const templatesFR = TEMPLATES_META.filter(t => t.language !== 'ar')
-  const templatesAR = TEMPLATES_META.filter(t => t.language === 'ar')
+  const templatesDynamiques = TEMPLATES_META.filter(t => t.type === 'dynamique')
+  const templatesStatiques  = TEMPLATES_META.filter(t => t.type === 'statique')
 
   return (
     <>
@@ -370,17 +370,15 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               <select className="admin-select" value={form.template_id}
                 onChange={e => {
                   set('template_id', e.target.value)
-                  const newLang = TEMPLATES_META.find(t => t.id === e.target.value)?.language
-                  const newFontLang = newLang === 'ar' ? 'ar' : 'fr'
-                  if (newFontLang !== fontLanguage) set('custom_font', null)
+                  set('custom_font', null)
                 }}>
-                <optgroup label="🇫🇷 Templates français">
-                  {templatesFR.map(t => (
+                <optgroup label="✨ Dynamiques">
+                  {templatesDynamiques.map(t => (
                     <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
-                <optgroup label="🇹🇳 Templates arabes / maghrébins">
-                  {templatesAR.map(t => (
+                <optgroup label="🖼 Statiques">
+                  {templatesStatiques.map(t => (
                     <option key={t.id} value={t.id}>{t.name} — {t.description.split('.')[0]}</option>
                   ))}
                 </optgroup>
