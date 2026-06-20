@@ -9,6 +9,11 @@ import JardinRose from '@/components/templates/JardinRose'
 import FloralArch from '@/components/templates/FloralArch'
 import RosesIvoire from '@/components/templates/RosesIvoire'
 import RoseBleu from '@/components/templates/RoseBleu'
+import ToileBleueAr from '@/components/templates/ToileBleueAr'
+import JardinRoseAr from '@/components/templates/JardinRoseAr'
+import FloralArchAr from '@/components/templates/FloralArchAr'
+import RosesIvoireAr from '@/components/templates/RosesIvoireAr'
+import RoseBleuAr from '@/components/templates/RoseBleuAr'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META, TemplateMeta } from '@/lib/templates-meta'
 
@@ -31,6 +36,11 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   floral_arch: FloralArch,
   roses_ivoire: RosesIvoire,
   rose_bleu: RoseBleu,
+  toile_bleue_ar: ToileBleueAr,
+  jardin_rose_ar: JardinRoseAr,
+  floral_arch_ar: FloralArchAr,
+  roses_ivoire_ar: RosesIvoireAr,
+  rose_bleu_ar: RoseBleuAr,
 }
 
 export const TEMPLATES: TemplateFull[] = TEMPLATES_META.map(meta => ({
