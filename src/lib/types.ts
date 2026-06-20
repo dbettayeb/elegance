@@ -36,6 +36,11 @@ export interface Wedding {
   show_countdown: boolean
   moderation_on: boolean
   bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre' | 'noir_elegant'
+    | 'tb_ar_bleu' | 'tb_ar_marine' | 'tb_ar_sable' | 'tb_ar_noir'
+    | 'jr_ar_rose' | 'jr_ar_bordeaux' | 'jr_ar_poudre' | 'jr_ar_noir'
+    | 'fa_ar_vert' | 'fa_ar_foret' | 'fa_ar_sage' | 'fa_ar_noir'
+    | 'ri_ar_or' | 'ri_ar_champagne' | 'ri_ar_beige' | 'ri_ar_noir'
+    | 'rb_ar_bleu' | 'rb_ar_ciel' | 'rb_ar_ardoise' | 'rb_ar_noir'
   template_variant?: string
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string

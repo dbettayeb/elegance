@@ -59,6 +59,11 @@ export default function BismillahStyle({
   const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['assets/template1/deco1.png']
   const decoWidthVh  = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
   const decoHeightVw = (bgCfg.imgH / bgCfg.imgW * 100).toFixed(2)
+  const rHoW = bgCfg.imgH / bgCfg.imgW
+  const ptVh = bgCfg.y
+  const pbVh = Math.max(8, 100 - bgCfg.y - bgCfg.h)
+  const ptVw = (bgCfg.y * rHoW).toFixed(1)
+  const pbVw = (pbVh * rHoW).toFixed(1)
 
   return (
     <>
@@ -94,7 +99,10 @@ export default function BismillahStyle({
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
-          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; padding-top: 19.6vw; padding-bottom: 19.6vw; }
+          .bs-hero .bs-content-zone { padding-top: ${ptVw}vw; padding-bottom: 4vw; }
+          .bs-section .bs-content-zone, .bs-rsvp .bs-content-zone { padding-top: 4vw; padding-bottom: 4vw; }
+          .bs-footer .bs-content-zone { padding-top: 4vw; padding-bottom: ${pbVw}vw; }
+          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: 78vw; }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
@@ -102,7 +110,10 @@ export default function BismillahStyle({
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
-          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; padding-top: 11vh; padding-bottom: 11vh; }
+          .bs-hero .bs-content-zone { padding-top: ${ptVh}vh; padding-bottom: 4vh; }
+          .bs-section .bs-content-zone, .bs-rsvp .bs-content-zone { padding-top: 4vh; padding-bottom: 4vh; }
+          .bs-footer .bs-content-zone { padding-top: 4vh; padding-bottom: ${pbVh}vh; }
+          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: calc(${decoWidthVh}vh * 0.78); }
         }
       `}</style>
       <FontOverride font={wedding.custom_font} container=".bs-container" />
@@ -268,65 +279,96 @@ export default function BismillahStyle({
         {wedding.show_rsvp && (
           <section className="bs-rsvp">
             <div className="bs-content-zone">
-              <p className="bs-label">تأكيد الحضور</p>
-              <h2 className="bs-title">هل ستشرفوننا بحضوركم؟</h2>
-              <p className="bs-rsvp-fr">Merci de confirmer votre présence</p>
-              {rsvpStatus === 'done' ? (
-                <p className="bs-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
-              ) : (
-                <form className="bs-form" onSubmit={submitRSVP} dir="ltr">
-                  <input className="bs-input" name="name" placeholder="Prénom et nom" required />
-                  <input className="bs-input" name="phone" placeholder="Numéro WhatsApp" />
-                  <div className="bs-radios">
-                    {(['present', 'absent', 'maybe'] as const).map(s => (
-                      <button key={s} type="button"
-                        className={`bs-radio${rsvpChoice === s ? ' bs-radio-on' : ''}`}
-                        onClick={() => setRsvpChoice(s)}>
-                        {s === 'present' ? '✓ Présent(e)' : s === 'absent' ? '✗ Absent(e)' : '? À confirmer'}
-                      </button>
-                    ))}
-                  </div>
-                  <input className="bs-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-                  <textarea className="bs-input bs-textarea" name="note" placeholder="Message (optionnel)" />
-                  <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ۞'}
-                  </button>
-                </form>
-              )}
+              <div className="bs-card">
+                <div className="bs-card-divider"><span /><i>۞</i><span /></div>
+                <p className="bs-label">تأكيد الحضور</p>
+                <h2 className="bs-card-title">هل ستشرفوننا<br />بحضوركم؟</h2>
+                <p className="bs-rsvp-fr">Merci de confirmer votre présence</p>
+                <div className="bs-card-divider"><span /><i>۞</i><span /></div>
+                {rsvpStatus === 'done' ? (
+                  <p className="bs-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
+                ) : (
+                  <form className="bs-form" onSubmit={submitRSVP} dir="ltr">
+                    <div className="bs-field">
+                      <label className="bs-field-label">Nom complet</label>
+                      <input className="bs-input" name="name" placeholder="Prénom et nom..." required />
+                    </div>
+                    <div className="bs-field">
+                      <label className="bs-field-label">WhatsApp</label>
+                      <input className="bs-input" name="phone" placeholder="+216 ..." />
+                    </div>
+                    <div className="bs-field">
+                      <label className="bs-field-label">Présence</label>
+                      <div className="bs-radios">
+                        {(['present', 'absent', 'maybe'] as const).map(s => (
+                          <button key={s} type="button"
+                            className={`bs-radio${rsvpChoice === s ? ' bs-radio-on' : ''}`}
+                            onClick={() => setRsvpChoice(s)}>
+                            {s === 'present' ? 'Présent(e)' : s === 'absent' ? 'Absent(e)' : 'À confirmer'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bs-field">
+                      <label className="bs-field-label">Accompagnants</label>
+                      <input className="bs-input" name="guests" type="number" min="0" max="20" placeholder="Nombre de personnes..." />
+                    </div>
+                    <div className="bs-field">
+                      <label className="bs-field-label">Message (optionnel)</label>
+                      <textarea className="bs-input bs-textarea" name="note" placeholder="Un mot pour les mariés..." />
+                    </div>
+                    <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
+                      {rsvpStatus === 'loading' ? 'Envoi...' : '۞  Confirmer ma présence  ۞'}
+                    </button>
+                  </form>
+                )}
+                <div className="bs-card-dots">• • •</div>
+              </div>
             </div>
           </section>
         )}
 
         {wedding.show_guestbook && (
-          <section className="bs-section">
+          <section className="bs-rsvp">
             <div className="bs-content-zone">
-              <p className="bs-label">دفتر التهاني</p>
-              <h2 className="bs-title">تهانيكم ودعواتكم</h2>
-              <p className="bs-rsvp-fr">Laissez un message de vœux</p>
-              {messages.length > 0 && (
-                <div className="bs-messages">
-                  {messages.map(msg => (
-                    <div key={msg.id} className="bs-msg">
-                      <div className="bs-msg-orn">۞</div>
-                      <p className="bs-msg-text">{msg.message}</p>
-                      <p className="bs-msg-author">— {msg.author_name}</p>
+              <div className="bs-card">
+                <div className="bs-card-divider"><span /><i>۞</i><span /></div>
+                <p className="bs-label">دفتر التهاني</p>
+                <h2 className="bs-card-title">تهانيكم<br />ودعواتكم</h2>
+                <p className="bs-rsvp-fr">Laissez un message de vœux</p>
+                <div className="bs-card-divider"><span /><i>۞</i><span /></div>
+                {messages.length > 0 && (
+                  <div className="bs-messages">
+                    {messages.map(msg => (
+                      <div key={msg.id} className="bs-msg">
+                        <div className="bs-msg-orn">۞</div>
+                        <p className="bs-msg-text">{msg.message}</p>
+                        <p className="bs-msg-author">— {msg.author_name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {gbStatus === 'done' ? (
+                  <p className="bs-success">
+                    {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
+                  </p>
+                ) : (
+                  <form className="bs-form" onSubmit={submitMessage} dir="ltr">
+                    <div className="bs-field">
+                      <label className="bs-field-label">Votre prénom</label>
+                      <input className="bs-input" name="author_name" placeholder="ex. Yasmine..." required />
                     </div>
-                  ))}
-                </div>
-              )}
-              {gbStatus === 'done' ? (
-                <p className="bs-success" style={{ marginTop: '20px' }}>
-                  {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
-                </p>
-              ) : (
-                <form className="bs-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
-                  <input className="bs-input" name="author_name" placeholder="Votre prénom" required />
-                  <textarea className="bs-input bs-textarea" name="message" placeholder="Vos vœux..." required />
-                  <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    Publier ۞
-                  </button>
-                </form>
-              )}
+                    <div className="bs-field">
+                      <label className="bs-field-label">Vos vœux</label>
+                      <textarea className="bs-input bs-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                    </div>
+                    <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
+                      {gbStatus === 'loading' ? 'Envoi...' : '۞  Publier mon message  ۞'}
+                    </button>
+                  </form>
+                )}
+                <div className="bs-card-dots">• • •</div>
+              </div>
             </div>
           </section>
         )}
@@ -429,17 +471,25 @@ const CSS = `
   .bs-btn-map:hover{background:var(--bs-accent-dark);transform:translateY(-2px);box-shadow:0 8px 20px var(--bs-border);}
   .bs-btn-outline{background:transparent;color:var(--bs-accent);border:1px solid var(--bs-accent);}
   .bs-btn-outline:hover{background:var(--bs-accent);color:#FFFFFF}
-  .bs-rsvp-fr{font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bs-text-muted);margin:-10px 0 18px;}
-  .bs-form{width:100%;display:flex;flex-direction:column;gap:10px;text-align:left;direction:ltr;}
-  .bs-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bs-border);color:var(--bs-text);font-family:Georgia,serif;font-size:.95rem;outline:none;transition:border-color .3s;}
-  .bs-input::placeholder{color:rgba(26,26,26,0.4);font-style:italic}
+  .bs-card{width:100%;background:var(--bs-accent-soft);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--bs-border);border-radius:4px;padding:28px 20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .bs-card-divider{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin:10px 0;}
+  .bs-card-divider span{flex:1;height:1px;background:var(--bs-border);}
+  .bs-card-divider i{color:var(--bs-accent);font-style:normal;font-size:.65rem;}
+  .bs-card-title{font-family:'Aref Ruqaa',serif;font-size:clamp(1.6rem,4vw,2.1rem);font-weight:700;color:var(--bs-text);line-height:1.25;margin:6px 0;}
+  .bs-card-dots{margin-top:20px;letter-spacing:.35em;color:var(--bs-accent);font-size:.7rem;opacity:.55;}
+  .bs-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;text-align:left;width:100%;}
+  .bs-field-label{font-family:'Montserrat',sans-serif;font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--bs-accent);font-weight:500;}
+  .bs-rsvp-fr{font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bs-text-muted);margin:-6px 0 14px;}
+  .bs-form{width:100%;display:flex;flex-direction:column;gap:0;text-align:left;direction:ltr;margin-top:8px;}
+  .bs-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bs-border);border-radius:10px;color:var(--bs-text);font-family:'Amiri',Georgia,serif;font-size:1rem;font-style:italic;outline:none;transition:border-color .3s;}
+  .bs-input::placeholder{color:rgba(26,26,26,0.35);font-style:italic}
   .bs-input:focus{border-color:var(--bs-accent)}
-  .bs-textarea{resize:vertical;min-height:80px}
-  .bs-radios{display:flex;gap:6px;width:100%}
-  .bs-radio{flex:1;min-width:0;padding:10px 4px;background:rgba(255,255,255,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bs-border);color:var(--bs-text-2);font-family:'Montserrat',sans-serif;font-size:clamp(.38rem,2.2vw,.55rem);letter-spacing:0;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;word-break:break-word;line-height:1.3;}
+  .bs-textarea{resize:vertical;min-height:90px;font-style:italic;}
+  .bs-radios{display:flex;gap:8px;width:100%}
+  .bs-radio{flex:1;min-width:0;padding:10px 4px;background:transparent;border:1px solid var(--bs-border);border-radius:10px;color:var(--bs-text-2);font-family:'Montserrat',sans-serif;font-size:clamp(.38rem,2.2vw,.52rem);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;line-height:1.4;}
   .bs-radio-on,.bs-radio:hover{background:var(--bs-accent);border-color:var(--bs-accent);color:#FFFFFF;font-weight:600;}
-  .bs-btn-submit{padding:16px;background:var(--bs-accent);color:#FFFFFF;border:none;font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:opacity .3s;}
-  .bs-btn-submit:hover{opacity:.88}
+  .bs-btn-submit{width:100%;padding:15px;background:transparent;border:1px solid var(--bs-accent);border-radius:4px;color:var(--bs-text);font-family:'Aref Ruqaa',serif;font-size:.9rem;letter-spacing:.2em;cursor:pointer;transition:all .3s;margin-top:4px;}
+  .bs-btn-submit:hover{background:var(--bs-accent);color:#FFFFFF;}
   .bs-btn-submit:disabled{opacity:.5;cursor:not-allowed}
   .bs-success{font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:var(--bs-accent);padding:20px;font-weight:700;}
   .bs-messages{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:12px;}
