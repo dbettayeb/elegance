@@ -164,7 +164,7 @@ export default function BismillahStyle({
 
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
-        {(isFrameMode || hasDecoOverlay) && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
+        {(isFrameMode || hasDecoOverlay) && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" fetchPriority="high" decoding="async" />}
         <div className="bs-texture-bg">
 
         <section className="bs-hero">
@@ -432,14 +432,14 @@ const CSS = `
   @keyframes bsOpPulse{0%,100%{opacity:.5}50%{opacity:1}}
   .bs-invitation{opacity:0;transform:translateY(24px);transition:opacity 1s,transform 1s;font-family:'Amiri',Georgia,serif;}
   .bs-invitation.bs-visible{opacity:1;transform:none}
-  .bs-deco-fixed{position:fixed;top:0;pointer-events:none;z-index:10;object-fit:fill;}
+  .bs-deco-fixed{position:fixed;top:0;pointer-events:none;z-index:10;object-fit:fill;will-change:transform;}
   @media(max-width:768px){.bs-deco-fixed{left:0;}}
   @media(min-width:769px){.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
   .bs-hero,.bs-section,.bs-rsvp,.bs-footer{width:100%;position:relative;background:transparent;}
   .bs-orn{width:70px;height:70px;margin-bottom:22px}.bs-orn svg{width:100%;height:100%}
   .bs-orn-small{width:50px;height:50px;margin:0 auto 12px}.bs-orn-small svg{width:100%;height:100%}
   .bs-bismillah{font-family:'Aref Ruqaa',serif;font-size:clamp(1rem,4.5vw,2.2rem);color:var(--bs-text);line-height:1.8;font-weight:700;margin-top:28px;margin-bottom:20px;white-space:nowrap;}
-  .bs-verse-wrap{background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,rgba(255,255,255,0.2) 100%);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-top:1px solid var(--bs-border);border-bottom:1px solid var(--bs-border);padding:18px 24px;margin:0 0 22px;width:100%;}
+  .bs-verse-wrap{background:linear-gradient(180deg,rgba(201,168,76,0.08) 0%,rgba(255,255,255,0.35) 100%);border-top:1px solid var(--bs-border);border-bottom:1px solid var(--bs-border);padding:18px 24px;margin:0 0 22px;width:100%;}
   .bs-verse{font-family:'Amiri',serif;font-size:clamp(1rem,2.5vw,1.4rem);color:var(--bs-text-2);line-height:2.2;font-weight:400;}
   .bs-verse-ref{margin-top:12px;font-family:'Reem Kufi',sans-serif;font-size:.85rem;color:var(--bs-accent);letter-spacing:.05em;}
   .bs-divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 20px;width:100%;}
@@ -456,7 +456,7 @@ const CSS = `
   .bs-names{font-family:'Aref Ruqaa',serif;font-size:clamp(2.2rem,7vw,4rem);color:var(--bs-text);line-height:1.2;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;margin:0;}
   .bs-name{display:block}
   .bs-and{color:var(--bs-accent);font-size:clamp(1.6rem,5vw,2.8rem);font-weight:400;margin:4px 0;}
-  .bs-date-wrap{position:relative;display:flex;align-items:center;gap:18px;padding:22px 36px;margin-top:10px;background:rgba(255,255,255,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--bs-border);}
+  .bs-date-wrap{position:relative;display:flex;align-items:center;gap:18px;padding:22px 36px;margin-top:10px;background:rgba(255,255,255,0.65);border:1px solid var(--bs-border);}
   .bs-date-corner{position:absolute;width:18px;height:18px;border:1.5px solid var(--bs-gold);}
   .bs-tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
   .bs-tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
@@ -473,7 +473,7 @@ const CSS = `
   .bs-title{font-family:'Aref Ruqaa',serif;font-size:clamp(1.8rem,4.5vw,2.4rem);color:var(--bs-text);margin-bottom:16px;line-height:1.4;font-weight:700;}
   .bs-body{font-family:'Amiri',serif;font-size:1.1rem;font-style:italic;color:var(--bs-text-2);line-height:2;margin-bottom:16px;}
   .bs-countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;direction:ltr;}
-  .bs-cd{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:12px 10px;background:rgba(255,255,255,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--bs-border);position:relative;}
+  .bs-cd{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:12px 10px;background:rgba(255,255,255,0.65);border:1px solid var(--bs-border);position:relative;}
   .bs-cd::before,.bs-cd::after{content:'';position:absolute;width:10px;height:10px;border:1px solid var(--bs-gold);}
   .bs-cd::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
   .bs-cd::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
@@ -492,7 +492,7 @@ const CSS = `
   .bs-btn-map:hover{background:var(--bs-accent-dark);transform:translateY(-2px);box-shadow:0 8px 20px var(--bs-border);}
   .bs-btn-outline{background:transparent;color:var(--bs-accent);border:1px solid var(--bs-accent);}
   .bs-btn-outline:hover{background:var(--bs-accent);color:#FFFFFF}
-  .bs-card{width:100%;background:var(--bs-accent-soft);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--bs-border);border-radius:4px;padding:28px 20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .bs-card{width:100%;background:var(--bs-accent-soft);border:1px solid var(--bs-border);border-radius:4px;padding:28px 20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .bs-card-divider{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin:10px 0;}
   .bs-card-divider span{flex:1;height:1px;background:var(--bs-border);}
   .bs-card-divider i{color:var(--bs-accent);font-style:normal;font-size:.65rem;}
@@ -502,7 +502,7 @@ const CSS = `
   .bs-field-label{font-family:'Montserrat',sans-serif;font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--bs-accent);font-weight:500;}
   .bs-rsvp-fr{font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bs-text-muted);margin:-6px 0 14px;}
   .bs-form{width:100%;display:flex;flex-direction:column;gap:0;text-align:left;direction:ltr;margin-top:8px;}
-  .bs-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bs-border);border-radius:10px;color:var(--bs-text);font-family:'Amiri',Georgia,serif;font-size:1rem;font-style:italic;outline:none;transition:border-color .3s;}
+  .bs-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.8);border:1px solid var(--bs-border);border-radius:10px;color:var(--bs-text);font-family:'Amiri',Georgia,serif;font-size:1rem;font-style:italic;outline:none;transition:border-color .3s;}
   .bs-input::placeholder{color:rgba(26,26,26,0.35);font-style:italic}
   .bs-input:focus{border-color:var(--bs-accent)}
   .bs-textarea{resize:vertical;min-height:90px;font-style:italic;}
@@ -514,7 +514,7 @@ const CSS = `
   .bs-btn-submit:disabled{opacity:.5;cursor:not-allowed}
   .bs-success{font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:var(--bs-accent);padding:20px;font-weight:700;}
   .bs-messages{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:12px;}
-  .bs-msg{background:rgba(250,247,240,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(201,168,76,0.2);padding:16px 20px;position:relative;}
+  .bs-msg{background:rgba(250,247,240,0.75);border:1px solid rgba(201,168,76,0.2);padding:16px 20px;position:relative;}
   .bs-msg-orn{color:var(--bs-accent);font-size:.9rem;margin-bottom:8px;opacity:.7;}
   .bs-msg-text{font-family:'Amiri',serif;font-size:1rem;font-style:italic;color:var(--bs-text-2);line-height:1.8;}
   .bs-msg-author{margin-top:10px;font-family:'Reem Kufi',sans-serif;font-size:.75rem;color:var(--bs-accent);font-weight:500;letter-spacing:.05em;}
