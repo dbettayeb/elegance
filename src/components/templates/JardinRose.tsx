@@ -4,23 +4,18 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import { getJardinRoseVariant, JardinRoseVariant } from '@/lib/template-variants'
 
-const BG_KEY   = 'assets/template2/back2.png'
-const DECO_KEY = 'assets/template2/deco2.png'
+const DEFAULT_BG   = 'assets/template2/back2.png'
+const DEFAULT_DECO = 'assets/template2/deco2.png'
 const DECO_W = 857, DECO_H = 1200
 const DECO_Y = 15
 const decoWidthVh = (DECO_W / DECO_H * 100).toFixed(2) // "71.42"
 
-const P = {
-  accent:        '#B87070',
-  accentDark:    '#9A5858',
-  textPrimary:   '#3D2B2B',
-  textSecondary: '#6B4F4F',
-  textMuted:     '#9E7F7F',
-  border:        'rgba(184,112,112,0.25)',
-}
-
 export default function JardinRose({ wedding }: { wedding: Wedding }) {
+  const P = getJardinRoseVariant(wedding.template_variant)
+  const BG_KEY   = wedding.background_image ?? DEFAULT_BG
+  const DECO_KEY = wedding.decoration_image  ?? DEFAULT_DECO
   const {
     opened, openEnvelope, visible,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -47,7 +42,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
 
   return (
     <>
-      {!opened && <OpeningScreen onOpen={openEnvelope} bgColor='#F0E5E3' />}
+      {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.openingBg} />}
       <link
         href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
         rel="stylesheet"
@@ -93,7 +88,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       {/* 3. CSS composants */}
-      <style>{buildCSS()}</style>
+      <style>{buildCSS(P)}</style>
       <FontOverride font={wedding.custom_font} container=".jr-invitation" />
 
       <div className={`jr-invitation${visible ? ' jr-visible' : ''}`}>
@@ -287,7 +282,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
   )
 }
 
-function buildCSS(): string {
+function buildCSS(P: JardinRoseVariant): string {
   return `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'EB Garamond', Garamond, Georgia, serif; color: ${P.textPrimary}; overflow-x: hidden; }

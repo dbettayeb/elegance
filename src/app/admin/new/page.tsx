@@ -8,6 +8,13 @@ import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
+import {
+  TOILE_BLEUE_PALETTES, TOILE_BLEUE_DECORATIONS,
+  JARDIN_ROSE_PALETTES, JARDIN_ROSE_BACKGROUNDS, JARDIN_ROSE_DECORATIONS,
+  FLORAL_ARCH_PALETTES, FLORAL_ARCH_DECORATIONS,
+  ROSE_BLEU_PALETTES, ROSE_BLEU_BACKGROUNDS, ROSE_BLEU_DECORATIONS,
+  ROSES_IVOIRE_PALETTES, ROSES_IVOIRE_DECORATIONS,
+} from '@/lib/template-variants'
 
 export default function NewWeddingPage() {
   const router = useRouter()
@@ -376,6 +383,281 @@ export default function NewWeddingPage() {
                 ))}
               </div>
             </Field>
+          )}
+
+          {form.template_id === 'toile_bleue' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {TOILE_BLEUE_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.accentSoft : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label="Cadre décoratif">
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {TOILE_BLEUE_DECORATIONS.map(dec => (
+                    <button key={dec.id} type="button" title={dec.name}
+                      onClick={() => set('decoration_image', dec.id)}
+                      style={{
+                        border: '2px solid',
+                        borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)', padding: '3px',
+                        background: 'none', cursor: 'pointer', transition: 'all .2s',
+                        transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                      <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </>
+          )}
+
+          {form.template_id === 'jardin_rose' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {JARDIN_ROSE_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.accent + '22' : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Row>
+                <Field label="Texture de fond">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {JARDIN_ROSE_BACKGROUNDS.map(bg => (
+                      <button key={bg.id} type="button" title={bg.name}
+                        onClick={() => set('background_image', bg.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
+                        }}>
+                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field label="Cadre décoratif">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {JARDIN_ROSE_DECORATIONS.map(dec => (
+                      <button key={dec.id} type="button" title={dec.name}
+                        onClick={() => set('decoration_image', dec.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                        }}>
+                        <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </Row>
+            </>
+          )}
+
+          {form.template_id === 'floral_arch' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {FLORAL_ARCH_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.green : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? '#f0f4f0' : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label="Cadre décoratif">
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {FLORAL_ARCH_DECORATIONS.map(dec => (
+                    <button key={dec.id} type="button" title={dec.name}
+                      onClick={() => set('decoration_image', dec.id)}
+                      style={{
+                        border: '2px solid',
+                        borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)', padding: '3px',
+                        background: 'none', cursor: 'pointer', transition: 'all .2s',
+                        transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                      <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </>
+          )}
+
+          {form.template_id === 'rose_bleu' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {ROSE_BLEU_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.blue : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.blueLight + '33' : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Row>
+                <Field label="Texture de fond">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {ROSE_BLEU_BACKGROUNDS.map(bg => (
+                      <button key={bg.id} type="button" title={bg.name}
+                        onClick={() => set('background_image', bg.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
+                        }}>
+                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field label="Cadre décoratif">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {ROSE_BLEU_DECORATIONS.map(dec => (
+                      <button key={dec.id} type="button" title={dec.name}
+                        onClick={() => set('decoration_image', dec.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                        }}>
+                        <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </Row>
+            </>
+          )}
+
+          {form.template_id === 'roses_ivoire' && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {ROSES_IVOIRE_PALETTES.map(p => (
+                    <button key={p.id} type="button" title={p.name}
+                      onClick={() => set('template_variant', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.template_variant === p.id ? p.gold : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.template_variant === p.id ? p.goldPale + '33' : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label="Cadre décoratif">
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {ROSES_IVOIRE_DECORATIONS.map(dec => (
+                    <button key={dec.id} type="button" title={dec.name}
+                      onClick={() => set('decoration_image', dec.id)}
+                      style={{
+                        border: '2px solid',
+                        borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)', padding: '3px',
+                        background: 'none', cursor: 'pointer', transition: 'all .2s',
+                        transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                      }}>
+                      <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                      <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+            </>
           )}
         </Section>
 

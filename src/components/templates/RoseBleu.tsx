@@ -3,24 +3,20 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import { getRoseBleuVariant, RoseBleuVariant } from '@/lib/template-variants'
 
-const DECO_KEY = 'assets/template5/deco5.png'
+const DEFAULT_DECO = 'assets/template5/deco5.png'
+const DEFAULT_BG   = 'assets/template5/back5.png'
 const ROSE_KEY = 'assets/template5/rose bleu.png'
 const DECO_W = 857, DECO_H = 1200
 const RB_TOP    = 12
 const RB_BOTTOM = 10
 const decoWidthVh = (DECO_W / DECO_H * 100).toFixed(2) // "71.42"
 
-const P = {
-  blue:      '#6b8fa8',
-  blueDark:  '#4a6b82',
-  blueLight: '#8aafc8',
-  bg:        '#f5ede0',
-  border:    'rgba(107, 143, 168, 0.28)',
-  borderSoft:'rgba(107, 143, 168, 0.15)',
-}
-
 export default function RoseBleu({ wedding }: { wedding: Wedding }) {
+  const P = getRoseBleuVariant(wedding.template_variant)
+  const DECO_KEY = wedding.decoration_image  ?? DEFAULT_DECO
+  const BG_KEY   = wedding.background_image  ?? DEFAULT_BG
   const {
     opened, openEnvelope, visible,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -81,7 +77,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
         }
       `}</style>
 
-      <style>{buildCSS()}</style>
+      <style>{buildCSS(P, BG_KEY)}</style>
       <FontOverride font={wedding.custom_font} container=".rb-invitation" />
 
       <div className={`rb-invitation${visible ? ' rb-visible' : ''}`}>
@@ -283,7 +279,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
   )
 }
 
-function buildCSS(): string {
+function buildCSS(P: RoseBleuVariant, bgKey: string): string {
   return `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Raleway', sans-serif; color: ${P.blue}; overflow-x: hidden; }
@@ -298,7 +294,7 @@ function buildCSS(): string {
   .rb-bg-fixed {
     position: fixed; inset: 0; z-index: 0;
     background-color: ${P.bg};
-    background-image: url(/assets/template5/back5.png);
+    background-image: url(/${bgKey});
     background-position: center top;
     background-repeat: no-repeat;
     pointer-events: none;
