@@ -6,7 +6,7 @@ import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
-import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, AR_STYLE_PALETTES } from '@/lib/bismillah-palettes'
+import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
@@ -266,7 +266,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           {isArStyle && (
             <Field label="Palette de couleurs">
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                {AR_STYLE_PALETTES.map(p => (
+                {getArStylePalettes(form.template_id).map(p => (
                   <button
                     key={p.id}
                     type="button"
@@ -406,8 +406,12 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Field label="Template">
               <select className="admin-select" value={form.template_id}
                 onChange={e => {
-                  set('template_id', e.target.value)
+                  const tid = e.target.value
+                  set('template_id', tid)
                   set('custom_font', null)
+                  if (['toile_bleue_ar','jardin_rose_ar','floral_arch_ar','roses_ivoire_ar','rose_bleu_ar'].includes(tid)) {
+                    set('bismillah_palette', getArStylePalettes(tid)[0].id)
+                  }
                 }}>
                 <optgroup label="✨ Dynamiques">
                   {templatesDynamiques.map(t => (
