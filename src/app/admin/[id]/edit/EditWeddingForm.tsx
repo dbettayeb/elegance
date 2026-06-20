@@ -187,105 +187,6 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                     style={{ fontFamily: "'Amiri', serif" }} />
                 </Field>
               </Row>
-              <Field label="Palette de couleurs">
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                  {BISMILLAH_PALETTES.map(p => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      title={p.name}
-                      onClick={() => set('bismillah_palette', p.id)}
-                      style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center',
-                        gap: '6px', padding: '8px 10px', border: '2px solid',
-                        borderColor: form.bismillah_palette === p.id ? p.accent : 'var(--admin-border)',
-                        borderRadius: 'var(--admin-radius)', background: form.bismillah_palette === p.id ? p.accentSoft : '#fff',
-                        cursor: 'pointer', transition: 'all .2s',
-                        transform: form.bismillah_palette === p.id ? 'scale(1.05)' : 'scale(1)',
-                      }}
-                    >
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {p.preview.map((c, i) => (
-                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
-                        ))}
-                      </div>
-                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                        {p.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </Field>
-              <Row>
-                <Field label="Texture de fond">
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {BISMILLAH_BACKGROUNDS.map(bg => (
-                      <button key={bg.id} type="button" title={bg.name}
-                        onClick={() => set('background_image', bg.id)}
-                        style={{
-                          border: '2px solid',
-                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
-                          borderRadius: 'var(--admin-radius)', padding: '3px',
-                          background: 'none', cursor: 'pointer', transition: 'all .2s',
-                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
-                        }}
-                      >
-                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
-                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-                <Field label="Cadre décoratif">
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {BISMILLAH_DECORATIONS.map(dec => (
-                      <button key={dec.id} type="button" title={dec.name}
-                        onClick={() => set('decoration_image', dec.id)}
-                        style={{
-                          border: '2px solid',
-                          borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
-                          borderRadius: 'var(--admin-radius)', padding: '3px',
-                          background: 'none', cursor: 'pointer', transition: 'all .2s',
-                          transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
-                        }}
-                      >
-                        <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
-                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-              </Row>
-            </>
-          )}
-          {form.template_id === 'carte_simple' && (
-            <>
-              <Field label="Palette de couleurs">
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                  {IVOIRE_PALETTES.map(p => (
-                    <button key={p.id} type="button" title={p.name}
-                      onClick={() => set('template_variant', p.id)}
-                      style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center',
-                        gap: '6px', padding: '8px 10px', border: '2px solid',
-                        borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
-                        borderRadius: 'var(--admin-radius)',
-                        background: form.template_variant === p.id ? p.accentSoft : '#fff',
-                        cursor: 'pointer', transition: 'all .2s',
-                        transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
-                      }}>
-                      <div style={{ display: 'flex', gap: '3px' }}>
-                        {p.preview.map((c, i) => (
-                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
-                        ))}
-                      </div>
-                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                        {p.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </Field>
             </>
           )}
 
@@ -393,6 +294,109 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               </select>
             </Field>
           </Row>
+
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
+            <>
+              <Field label="Palette de couleurs">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {BISMILLAH_PALETTES.map(p => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      title={p.name}
+                      onClick={() => set('bismillah_palette', p.id)}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        gap: '6px', padding: '8px 10px', border: '2px solid',
+                        borderColor: form.bismillah_palette === p.id ? p.accent : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)', background: form.bismillah_palette === p.id ? p.accentSoft : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        transform: form.bismillah_palette === p.id ? 'scale(1.05)' : 'scale(1)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', gap: '3px' }}>
+                        {p.preview.map((c, i) => (
+                          <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Row>
+                <Field label="Texture de fond">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {BISMILLAH_BACKGROUNDS.map(bg => (
+                      <button key={bg.id} type="button" title={bg.name}
+                        onClick={() => set('background_image', bg.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.background_image === bg.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.background_image === bg.id ? 'scale(1.05)' : 'scale(1)',
+                        }}
+                      >
+                        <img src={`/${bg.id}`} alt={bg.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{bg.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field label="Cadre décoratif">
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {BISMILLAH_DECORATIONS.map(dec => (
+                      <button key={dec.id} type="button" title={dec.name}
+                        onClick={() => set('decoration_image', dec.id)}
+                        style={{
+                          border: '2px solid',
+                          borderColor: form.decoration_image === dec.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          borderRadius: 'var(--admin-radius)', padding: '3px',
+                          background: 'none', cursor: 'pointer', transition: 'all .2s',
+                          transform: form.decoration_image === dec.id ? 'scale(1.05)' : 'scale(1)',
+                        }}
+                      >
+                        <img src={`/${dec.id}`} alt={dec.name} style={{ width: 48, height: 80, objectFit: 'cover', borderRadius: '3px', display: 'block' }} />
+                        <div style={{ fontSize: '0.62rem', marginTop: '4px', textAlign: 'center', color: 'var(--admin-text-muted)' }}>{dec.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </Row>
+            </>
+          )}
+
+          {form.template_id === 'carte_simple' && (
+            <Field label="Palette de couleurs">
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                {IVOIRE_PALETTES.map(p => (
+                  <button key={p.id} type="button" title={p.name}
+                    onClick={() => set('template_variant', p.id)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      gap: '6px', padding: '8px 10px', border: '2px solid',
+                      borderColor: form.template_variant === p.id ? p.accent : 'var(--admin-border)',
+                      borderRadius: 'var(--admin-radius)',
+                      background: form.template_variant === p.id ? p.accentSoft : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      transform: form.template_variant === p.id ? 'scale(1.05)' : 'scale(1)',
+                    }}>
+                    <div style={{ display: 'flex', gap: '3px' }}>
+                      {p.preview.map((c, i) => (
+                        <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                      ))}
+                    </div>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                      {p.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+          )}
         </Section>
 
         <Section title="Police personnalisée">
