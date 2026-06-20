@@ -6,7 +6,7 @@ export default function JardinRoseAr({ wedding }: { wedding: Wedding }) {
     <BismillahStyle
       wedding={wedding}
       bgKey="assets/template2/back2.png"
-      decoKey="assets/template2/back2.png"
+      decoKey="assets/template2/deco2.png"
     />
   )
 }

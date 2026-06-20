@@ -6,7 +6,7 @@ export default function RoseBleuAr({ wedding }: { wedding: Wedding }) {
     <BismillahStyle
       wedding={wedding}
       bgKey="assets/template5/back5.png"
-      decoKey="assets/template5/back5.png"
+      decoKey="assets/template5/deco5.png"
     />
   )
 }

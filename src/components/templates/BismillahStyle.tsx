@@ -60,8 +60,9 @@ export default function BismillahStyle({
     setTimeout(() => { setPhase(4); openEnvelope() }, 3600)
   }
 
-  // back*.png = full background texture (use as CSS bg), deco*.png = transparent frame (use as fixed overlay)
+  // back*.png bgKey = full background texture (CSS bg-image); deco*.png decoKey = transparent frame overlay
   const isFrameMode = !bgKey.includes('/back')
+  const hasDecoOverlay = decoKey.includes('/deco')
   const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['assets/template1/deco1.png']
   const decoWidthVh = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
   const rHoW = bgCfg.imgH / bgCfg.imgW
@@ -102,8 +103,13 @@ export default function BismillahStyle({
         @media (max-width: 768px) {
           .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
           .bs-texture-bg {
-            ${isFrameMode ? 'background-image: none !important;' : ''}
-            min-height: 100dvh; width: 100%; overflow-x: hidden;
+            ${isFrameMode ? 'background-image: none !important;' : `
+              background-size: 100vw 100vh !important;
+              background-size: 100vw 100dvh !important;
+              background-position: top left !important;
+              background-attachment: scroll !important;
+            `}
+            min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden;
           }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
@@ -115,7 +121,13 @@ export default function BismillahStyle({
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
-          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; width: 100%; }
+          .bs-texture-bg {
+            scrollbar-gutter: stable both-edges !important; width: 100%;
+            ${!isFrameMode ? `
+              background-size: auto 100vh !important;
+              background-position: 50% 0% !important;
+            ` : ''}
+          }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
@@ -152,7 +164,7 @@ export default function BismillahStyle({
 
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
-        {isFrameMode && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
+        {(isFrameMode || hasDecoOverlay) && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
         <div className="bs-texture-bg">
 
         <section className="bs-hero">
