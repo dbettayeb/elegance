@@ -4,26 +4,18 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import { getToileBleueVariant, ToileBleueVariant } from '@/lib/template-variants'
 
-const DECO_KEY = 'assets/template1/deco1.png'
+const DEFAULT_DECO = 'assets/template1/deco1.png'
 const ROSE_SRC = '/assets/template1/rose bleu apèrs les noms.png'
 const DECO_W = 857
 const DECO_H = 1200
 const DECO_Y = 8
 const decoWidthVh = (DECO_W / DECO_H * 100).toFixed(2)
 
-const P = {
-  bg: '#EAE0D1',
-  textPrimary: '#2C2416',
-  textSecondary: '#4A3A28',
-  textMuted: '#8B7A6A',
-  accent: '#3D5A8A',
-  accentDark: '#2A4570',
-  accentSoft: '#8AAAD0',
-  border: 'rgba(61, 90, 138, 0.25)',
-}
-
 export default function ToileBleue({ wedding }: { wedding: Wedding }) {
+  const P = getToileBleueVariant(wedding.template_variant)
+  const DECO_KEY = wedding.decoration_image ?? DEFAULT_DECO
   const {
     opened, openEnvelope, visible,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -90,7 +82,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       {/* 4. CSS composants */}
-      <style>{buildCSS()}</style>
+      <style>{buildCSS(P)}</style>
       <FontOverride font={wedding.custom_font} container=".tb-invitation" />
 
       <div className={`tb-invitation${visible ? ' tb-visible' : ''}`}>
@@ -283,7 +275,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
   )
 }
 
-function buildCSS(): string {
+function buildCSS(P: ToileBleueVariant): string {
   return `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
