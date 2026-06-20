@@ -86,6 +86,7 @@ export default function NewWeddingPage() {
 
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
+  const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar'].includes(form.template_id)
 
   const templatesDynamiques = TEMPLATES_META.filter(t => t.type === 'dynamique')
   const templatesStatiques  = TEMPLATES_META.filter(t => t.type === 'statique')
@@ -127,7 +128,7 @@ export default function NewWeddingPage() {
                 style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
-          {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
             <>
               <div style={{ padding: '10px 12px', background: '#fffbeb', border: '1px solid #fde68a',
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
@@ -239,6 +240,38 @@ export default function NewWeddingPage() {
               </Row>
             </>
           )}
+          {isArStyle && (
+            <Field label="Palette de couleurs">
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                {BISMILLAH_PALETTES.map(p => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    title={p.name}
+                    onClick={() => set('bismillah_palette', p.id)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      gap: '6px', padding: '8px 10px', border: '2px solid',
+                      borderColor: form.bismillah_palette === p.id ? p.accent : 'var(--admin-border)',
+                      borderRadius: 'var(--admin-radius)', background: form.bismillah_palette === p.id ? p.accentSoft : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      transform: form.bismillah_palette === p.id ? 'scale(1.05)' : 'scale(1)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '3px' }}>
+                      {p.preview.map((c, i) => (
+                        <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                      ))}
+                    </div>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                      {p.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+          )}
+
           {form.template_id === 'carte_simple' && (
             <>
               <Field label="Palette de couleurs">
@@ -315,7 +348,7 @@ export default function NewWeddingPage() {
               onChange={e => set('intro_text', e.target.value)} />
           </Field>
           <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Cliquer sur un texte prédéfini pour l'insérer.">
-            {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
+            {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
                 {[
                   { label: 'Hadith mariage', value: 'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ' },
