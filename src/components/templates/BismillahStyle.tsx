@@ -4,7 +4,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-import { BG_CONFIGS } from '@/lib/bg-texture-system'
+import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
 
 export default function BismillahStyle({
@@ -60,6 +60,8 @@ export default function BismillahStyle({
     setTimeout(() => { setPhase(4); openEnvelope() }, 3600)
   }
 
+  // back*.png = full background texture (use as CSS bg), deco*.png = transparent frame (use as fixed overlay)
+  const isFrameMode = !bgKey.includes('/back')
   const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['assets/template1/deco1.png']
   const decoWidthVh = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
   const rHoW = bgCfg.imgH / bgCfg.imgW
@@ -94,28 +96,33 @@ export default function BismillahStyle({
         .bs-texture-bg { background-color: ${palette.bg} !important; }
         body { background-color: ${palette.bg}; }
       `}</style>
+      {/* bg-mode: use image as CSS background texture (back2/back5 are full images, not transparent frames) */}
+      {!isFrameMode && <style>{getBgCSSForKey(bgKey, 'bs')}</style>}
       <style>{`
         @media (max-width: 768px) {
           .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
-          .bs-texture-bg { background-image: none !important; min-height: 100dvh; }
+          .bs-texture-bg {
+            ${isFrameMode ? 'background-image: none !important;' : ''}
+            min-height: 100dvh; width: 100%; overflow-x: hidden;
+          }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
-            display: flex !important; flex-direction: column; align-items: center;
+            display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
           .bs-hero .bs-content-zone { padding-top: ${ptVw}vw; padding-bottom: 4vw; }
           .bs-section .bs-content-zone, .bs-rsvp .bs-content-zone { padding-top: 4vw; padding-bottom: 4vw; }
           .bs-footer .bs-content-zone { padding-top: 4vw; padding-bottom: ${pbVw}vw; }
-          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: 78vw; }
+          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: ${bgCfg.w}vw; }
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
-          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; }
+          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; width: 100%; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
-            display: flex !important; flex-direction: column; align-items: center;
+            display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
           .bs-hero .bs-content-zone { padding-top: ${ptVh}vh; padding-bottom: 4vh; }
           .bs-section .bs-content-zone, .bs-rsvp .bs-content-zone { padding-top: 4vh; padding-bottom: 4vh; }
           .bs-footer .bs-content-zone { padding-top: 4vh; padding-bottom: ${pbVh}vh; }
-          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: calc(${decoWidthVh}vh * 0.78); }
+          .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: calc(${decoWidthVh}vh * ${(bgCfg.w / 100).toFixed(2)}); }
         }
       `}</style>
       <FontOverride font={wedding.custom_font} container=".bs-container" />
@@ -145,7 +152,7 @@ export default function BismillahStyle({
 
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
-        <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />
+        {isFrameMode && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
         <div className="bs-texture-bg">
 
         <section className="bs-hero">
