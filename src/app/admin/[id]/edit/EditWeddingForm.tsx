@@ -6,7 +6,7 @@ import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
-import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS } from '@/lib/bismillah-palettes'
+import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, AR_STYLE_PALETTES } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
@@ -188,6 +188,10 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                     style={{ fontFamily: "'Amiri', serif" }} />
                 </Field>
               </Row>
+            </>
+          )}
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
+            <>
               <Field label="Palette de couleurs">
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
                   {BISMILLAH_PALETTES.map(p => (
@@ -262,7 +266,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           {isArStyle && (
             <Field label="Palette de couleurs">
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
-                {BISMILLAH_PALETTES.map(p => (
+                {AR_STYLE_PALETTES.map(p => (
                   <button
                     key={p.id}
                     type="button"

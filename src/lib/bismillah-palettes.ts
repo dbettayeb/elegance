@@ -1,5 +1,6 @@
 export interface BismillahPalette {
   id: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre' | 'noir_elegant'
+    | 'ar_or' | 'ar_bleu' | 'ar_rose' | 'ar_vert' | 'ar_bordeaux' | 'ar_noir'
   name: string
   accent: string
   accentDark: string
@@ -96,8 +97,95 @@ export const BISMILLAH_PALETTES: BismillahPalette[] = [
   },
 ]
 
+export const AR_STYLE_PALETTES: BismillahPalette[] = [
+  {
+    id: 'ar_or',
+    name: 'Or & ivoire',
+    accent: '#C9A84C',
+    accentDark: '#B8973F',
+    accentSoft: 'rgba(201,168,76,0.12)',
+    border: 'rgba(201,168,76,0.3)',
+    bg: '#FAF7F0',
+    textPrimary: '#1A1A1A',
+    textSecondary: '#6B5A3E',
+    textMuted: '#9B8A6E',
+    preview: ['#C9A84C', '#FAF7F0', '#1A1A1A', '#9B8A6E'],
+  },
+  {
+    id: 'ar_bleu',
+    name: 'Bleu saphir',
+    accent: '#1E3A5F',
+    accentDark: '#0F1B2D',
+    accentSoft: 'rgba(30,58,95,0.12)',
+    border: 'rgba(30,58,95,0.3)',
+    bg: '#F4F0E8',
+    textPrimary: '#0A1628',
+    textSecondary: '#2A4060',
+    textMuted: '#7A8FA8',
+    decorativeGold: '#D4AF37',
+    preview: ['#1E3A5F', '#D4AF37', '#F4F0E8', '#0A1628'],
+  },
+  {
+    id: 'ar_rose',
+    name: 'Rose poudré',
+    accent: '#C47A8A',
+    accentDark: '#A85E70',
+    accentSoft: 'rgba(196,122,138,0.12)',
+    border: 'rgba(196,122,138,0.3)',
+    bg: '#FDF5F6',
+    textPrimary: '#2E1A20',
+    textSecondary: '#6B3A46',
+    textMuted: '#A07888',
+    preview: ['#C47A8A', '#FDF5F6', '#2E1A20', '#A07888'],
+  },
+  {
+    id: 'ar_vert',
+    name: 'Vert émeraude',
+    accent: '#2E6B52',
+    accentDark: '#1A4A38',
+    accentSoft: 'rgba(46,107,82,0.12)',
+    border: 'rgba(46,107,82,0.3)',
+    bg: '#F4F8F5',
+    textPrimary: '#0D2218',
+    textSecondary: '#2E5040',
+    textMuted: '#7A9A88',
+    preview: ['#2E6B52', '#F4F8F5', '#0D2218', '#7A9A88'],
+  },
+  {
+    id: 'ar_bordeaux',
+    name: 'Bordeaux',
+    accent: '#7B1E2E',
+    accentDark: '#5C1422',
+    accentSoft: 'rgba(123,30,46,0.12)',
+    border: 'rgba(123,30,46,0.3)',
+    bg: '#FAF5F5',
+    textPrimary: '#2C1010',
+    textSecondary: '#5C3030',
+    textMuted: '#9A7070',
+    preview: ['#7B1E2E', '#FAF5F5', '#2C1010', '#9A7070'],
+  },
+  {
+    id: 'ar_noir',
+    name: 'Nuit noire',
+    accent: '#C9A84C',
+    accentDark: '#B8973F',
+    accentSoft: 'rgba(201,168,76,0.15)',
+    border: 'rgba(201,168,76,0.25)',
+    bg: '#111111',
+    textPrimary: '#F0E8D8',
+    textSecondary: '#D4B87A',
+    textMuted: '#8A7A5A',
+    decorativeGold: '#C9A84C',
+    preview: ['#111111', '#C9A84C', '#F0E8D8', '#8A7A5A'],
+  },
+]
+
 export function getBismillahPalette(id?: string | null): BismillahPalette {
-  return BISMILLAH_PALETTES.find(p => p.id === id) ?? BISMILLAH_PALETTES[0]
+  return (
+    BISMILLAH_PALETTES.find(p => p.id === id) ??
+    AR_STYLE_PALETTES.find(p => p.id === id) ??
+    BISMILLAH_PALETTES[0]
+  )
 }
 
 export interface BismillahAsset {
