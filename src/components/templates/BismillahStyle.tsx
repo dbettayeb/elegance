@@ -4,8 +4,8 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
-import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { BG_CONFIGS } from '@/lib/bg-texture-system'
+import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
 
 export default function BismillahStyle({
   wedding,
@@ -31,7 +31,11 @@ export default function BismillahStyle({
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })
 
-  const palette = getBismillahPalette(wedding.bismillah_palette)
+  const rawPalette = getBismillahPalette(wedding.bismillah_palette)
+  const arPalettes = AR_STYLE_PALETTES_MAP[wedding.template_id]
+  const palette = (arPalettes && !arPalettes.some(p => p.id === rawPalette.id))
+    ? arPalettes[0]
+    : rawPalette
   const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
   useEffect(() => {
@@ -57,8 +61,7 @@ export default function BismillahStyle({
   }
 
   const bgCfg = BG_CONFIGS[bgKey] ?? BG_CONFIGS['assets/template1/deco1.png']
-  const decoWidthVh  = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
-  const decoHeightVw = (bgCfg.imgH / bgCfg.imgW * 100).toFixed(2)
+  const decoWidthVh = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
   const rHoW = bgCfg.imgH / bgCfg.imgW
   const ptVh = bgCfg.y
   const pbVh = Math.max(8, 100 - bgCfg.y - bgCfg.h)
@@ -91,11 +94,10 @@ export default function BismillahStyle({
         .bs-texture-bg { background-color: ${palette.bg} !important; }
         body { background-color: ${palette.bg}; }
       `}</style>
-      <style>{getBgCSSForKey(bgKey, 'bs')}</style>
       <style>{`
         @media (max-width: 768px) {
-          .bs-deco-fixed { width: 100vw; height: ${decoHeightVw}vw; }
-          .bs-texture-bg { background-size: 100vw auto !important; min-height: ${decoHeightVw}vw; }
+          .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
+          .bs-texture-bg { background-image: none !important; min-height: 100dvh; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
