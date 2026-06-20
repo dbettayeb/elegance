@@ -3,9 +3,8 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
-import { getRosesIvoireVariant, RosesIvoireVariant } from '@/lib/template-variants'
 
-const DEFAULT_DECO = 'assets/template4/deco4.png'
+const DECO_KEY  = 'assets/template4/deco4.png'
 const RINGS_KEY = 'assets/template4/rings.png'
 const BARRE_KEY = 'assets/template4/barre entre les noms.png'
 const DECO_W = 1500, DECO_H = 2100
@@ -13,9 +12,17 @@ const RI_TOP    = 12  // vh — zone sûre haute (intérieur cadre)
 const RI_BOTTOM = 10  // vh — zone sûre basse
 const decoWidthVh = (DECO_W / DECO_H * 100).toFixed(2) // "71.43"
 
+const P = {
+  gold:      '#82674b',
+  goldMid:   '#9e8060',
+  goldPale:  '#c4a882',
+  goldDark:  '#6a5238',
+  bg:        '#FFFFFF',
+  border:    'rgba(130, 103, 75, 0.38)',
+  borderSoft:'rgba(130, 103, 75, 0.18)',
+}
+
 export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
-  const P = getRosesIvoireVariant(wedding.template_variant)
-  const DECO_KEY = wedding.decoration_image ?? DEFAULT_DECO
   const {
     opened, openEnvelope, visible,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -66,7 +73,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
         }
       `}</style>
 
-      <style>{buildCSS(P)}</style>
+      <style>{buildCSS()}</style>
       <FontOverride font={wedding.custom_font} container=".ri-invitation" />
 
       <div className={`ri-invitation${visible ? ' ri-visible' : ''}`}>
@@ -276,7 +283,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
   )
 }
 
-function buildCSS(P: RosesIvoireVariant): string {
+function buildCSS(): string {
   return `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Raleway', sans-serif; color: ${P.gold}; overflow-x: hidden; }
