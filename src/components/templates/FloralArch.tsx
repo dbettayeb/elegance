@@ -3,17 +3,25 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
-import { getFloralArchVariant, FloralArchVariant } from '@/lib/template-variants'
 
-const DEFAULT_DECO = 'assets/template3/deco3.png'
+const DECO_KEY = 'assets/template3/deco3.png'
 const DECO_W = 857, DECO_H = 1200
 const FA_TOP = 26    // vh — zone sûre haute (intérieur arche, sous la courbe)
 const FA_BOTTOM = 14 // vh — zone sûre basse
 const decoWidthVh = (DECO_W / DECO_H * 100).toFixed(2) // "71.42"
 
+const P = {
+  green:      '#497043',
+  greenDark:  '#3a5934',
+  coral:      '#e38080',
+  coralDark:  '#c86060',
+  muted:      '#7b7872',
+  mutedLight: '#a09c96',
+  bg:         '#f8f7f7',
+  border:     'rgba(73,112,67,0.18)',
+}
+
 export default function FloralArch({ wedding }: { wedding: Wedding }) {
-  const P = getFloralArchVariant(wedding.template_variant)
-  const DECO_KEY = wedding.decoration_image ?? DEFAULT_DECO
   const {
     opened, openEnvelope, visible,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -73,7 +81,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
         }
       `}</style>
 
-      <style>{buildCSS(P)}</style>
+      <style>{buildCSS()}</style>
       <FontOverride font={wedding.custom_font} container=".fa-invitation" />
 
       <div className={`fa-invitation${visible ? ' fa-visible' : ''}`}>
@@ -267,7 +275,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
   )
 }
 
-function buildCSS(P: FloralArchVariant): string {
+function buildCSS(): string {
   return `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Raleway', sans-serif; color: ${P.muted}; overflow-x: hidden; }
