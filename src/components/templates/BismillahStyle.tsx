@@ -4,7 +4,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
+import { BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
 
 export default function BismillahStyle({
@@ -94,23 +94,15 @@ export default function BismillahStyle({
         .bs-invitation .bs-orn svg circle { fill: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg path { stroke: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg circle { fill: var(--bs-gold); }
-        .bs-texture-bg { background-color: ${palette.bg} !important; }
+        ${isFrameMode
+          ? `.bs-texture-bg { background-color: ${palette.bg} !important; }`
+          : `.bs-texture-bg { background-color: transparent !important; position: relative; z-index: 1; }`}
         body { background-color: ${palette.bg}; }
       `}</style>
-      {/* bg-mode: use image as CSS background texture (back2/back5 are full images, not transparent frames) */}
-      {!isFrameMode && <style>{getBgCSSForKey(bgKey, 'bs')}</style>}
       <style>{`
         @media (max-width: 768px) {
-          .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
-          .bs-texture-bg {
-            ${isFrameMode ? 'background-image: none !important;' : `
-              background-size: 100vw 100vh !important;
-              background-size: 100vw 100dvh !important;
-              background-position: top left !important;
-              background-attachment: scroll !important;
-            `}
-            min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden;
-          }
+          .bs-deco-fixed, .bs-bg-fixed { width: 100vw; height: 100vh; height: 100dvh; }
+          .bs-texture-bg { min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
@@ -120,14 +112,8 @@ export default function BismillahStyle({
           .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: ${bgCfg.w}vw; }
         }
         @media (min-width: 769px) {
-          .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
-          .bs-texture-bg {
-            scrollbar-gutter: stable both-edges !important; width: 100%;
-            ${!isFrameMode ? `
-              background-size: auto 100vh !important;
-              background-position: 50% 0% !important;
-            ` : ''}
-          }
+          .bs-deco-fixed, .bs-bg-fixed { width: ${decoWidthVh}vh; height: 100vh; }
+          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; width: 100%; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
@@ -164,6 +150,7 @@ export default function BismillahStyle({
 
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
+        {!isFrameMode && <img src={`/${bgKey}`} alt="" className="bs-bg-fixed" aria-hidden="true" />}
         {(isFrameMode || hasDecoOverlay) && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
         <div className="bs-texture-bg">
 
@@ -432,9 +419,10 @@ const CSS = `
   @keyframes bsOpPulse{0%,100%{opacity:.5}50%{opacity:1}}
   .bs-invitation{opacity:0;transform:translateY(24px);transition:opacity 1s,transform 1s;font-family:'Amiri',Georgia,serif;}
   .bs-invitation.bs-visible{opacity:1;transform:none}
+  .bs-bg-fixed{position:fixed;top:0;pointer-events:none;z-index:0;object-fit:fill;}
   .bs-deco-fixed{position:fixed;top:0;pointer-events:none;z-index:10;object-fit:fill;}
-  @media(max-width:768px){.bs-deco-fixed{left:0;}}
-  @media(min-width:769px){.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
+  @media(max-width:768px){.bs-bg-fixed,.bs-deco-fixed{left:0;}}
+  @media(min-width:769px){.bs-bg-fixed,.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
   .bs-hero,.bs-section,.bs-rsvp,.bs-footer{width:100%;position:relative;background:transparent;}
   .bs-content-zone{display:flex;flex-direction:column;align-items:center;text-align:center;box-sizing:border-box;}
   .bs-orn{width:70px;height:70px;margin-bottom:22px}.bs-orn svg{width:100%;height:100%}
