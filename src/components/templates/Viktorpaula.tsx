@@ -818,7 +818,7 @@ const CSS = `
   .map-btn:hover { background: var(--bordeaux); color: var(--cream); }
 
   /* ========== FLOWERS DECO ========== */
-  #flowers-deco { background: var(--cream); width: 100%; overflow: hidden; position: relative; }
+  #flowers-deco { background: var(--cream); width: 100%; overflow: visible; position: relative; z-index: 4; }
   .flowers-artboard { height: 210px; }
   .flower { position: absolute; z-index: 3; pointer-events: none; }
   .flower img { width: 100%; height: auto; display: block; }
