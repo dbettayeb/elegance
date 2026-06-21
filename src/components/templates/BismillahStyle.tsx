@@ -4,7 +4,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
-import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
+import { BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
 
 export default function BismillahStyle({
@@ -94,24 +94,15 @@ export default function BismillahStyle({
         .bs-invitation .bs-orn svg circle { fill: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg path { stroke: var(--bs-gold); }
         .bs-invitation .bs-orn-small svg circle { fill: var(--bs-gold); }
-        .bs-texture-bg { background-color: ${palette.bg} !important; }
+        ${isFrameMode
+          ? `.bs-texture-bg { background-color: ${palette.bg} !important; }`
+          : `.bs-texture-bg { background-color: transparent !important; position: relative; z-index: 1; }`}
         body { background-color: ${palette.bg}; }
       `}</style>
-      {/* bg-mode: use image as CSS background texture (back2/back5 are full images, not transparent frames) */}
-      {!isFrameMode && <style>{getBgCSSForKey(bgKey, 'bs')}</style>}
       <style>{`
         @media (max-width: 768px) {
           .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
-          .bs-texture-bg {
-            ${isFrameMode ? 'background-image: none !important;' : `
-              background-size: 100vw 100vh !important;
-              background-size: 100vw 100dvh !important;
-              background-position: top left !important;
-              background-attachment: scroll !important;
-              background-repeat: repeat-y !important;
-            `}
-            min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden;
-          }
+          .bs-texture-bg { min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
@@ -122,15 +113,7 @@ export default function BismillahStyle({
         }
         @media (min-width: 769px) {
           .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
-          .bs-texture-bg {
-            scrollbar-gutter: stable both-edges !important; width: 100%;
-            ${!isFrameMode ? `
-              background-size: auto 100vh !important;
-              background-position: 50% 0% !important;
-              background-attachment: scroll !important;
-              background-repeat: repeat-y !important;
-            ` : ''}
-          }
+          .bs-texture-bg { scrollbar-gutter: stable both-edges !important; width: 100%; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
           }
@@ -167,6 +150,7 @@ export default function BismillahStyle({
 
       {/* INVITATION */}
       <div className={`bs-invitation${visible ? ' bs-visible' : ''}`} dir="rtl">
+        {!isFrameMode && <img src={`/${bgKey}`} alt="" className="bs-bg-fixed" aria-hidden="true" />}
         {(isFrameMode || hasDecoOverlay) && <img src={`/${decoKey}`} alt="" className="bs-deco-fixed" aria-hidden="true" />}
         <div className="bs-texture-bg">
 
@@ -435,6 +419,7 @@ const CSS = `
   @keyframes bsOpPulse{0%,100%{opacity:.5}50%{opacity:1}}
   .bs-invitation{opacity:0;transform:translateY(24px);transition:opacity 1s,transform 1s;font-family:'Amiri',Georgia,serif;}
   .bs-invitation.bs-visible{opacity:1;transform:none}
+  .bs-bg-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;object-fit:cover;z-index:0;pointer-events:none;}
   .bs-deco-fixed{position:fixed;top:0;pointer-events:none;z-index:10;object-fit:fill;}
   @media(max-width:768px){.bs-deco-fixed{left:0;}}
   @media(min-width:769px){.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
