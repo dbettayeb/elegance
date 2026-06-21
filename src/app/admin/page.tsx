@@ -53,14 +53,14 @@ export default async function AdminDashboard() {
               Reçues via le site public. À traiter en priorité.
             </p>
           </div>
-          <table className="admin-table" style={{ border: 'none', borderRadius: 0 }}>
+          <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table" style={{ border: 'none', borderRadius: 0, minWidth: 560 }}>
             <thead>
               <tr>
                 <th>Couple</th>
                 <th>Contact</th>
-                <th>Date demandée</th>
+                <th>Date</th>
                 <th>Pack</th>
-                <th>Reçue</th>
                 <th style={{ textAlign: 'right' }}>Action</th>
               </tr>
             </thead>
@@ -70,7 +70,7 @@ export default async function AdminDashboard() {
                   <td>
                     <div style={{ fontWeight: 500 }}>{w.bride_name} & {w.groom_name}</div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--admin-text-muted)', marginTop: '2px' }}>
-                      Design : <code style={{ fontSize: '0.72rem' }}>{w.template_id ?? '—'}</code>
+                      <code style={{ fontSize: '0.72rem' }}>{w.template_id ?? '—'}</code>
                     </div>
                   </td>
                   <td>
@@ -79,14 +79,11 @@ export default async function AdminDashboard() {
                       {w.couple_phone ?? '—'}
                     </div>
                   </td>
-                  <td>{new Date(w.event_date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{new Date(w.event_date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                   <td><span className="admin-badge admin-badge-neutral">{w.pack}</span></td>
-                  <td style={{ fontSize: '0.78rem', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                    {new Date(w.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
-                  </td>
                   <td style={{ textAlign: 'right' }}>
                     <Link href={`/admin/${w.id}`} className="admin-btn"
-                      style={{ padding: '5px 12px', fontSize: '0.8rem', background: '#ca8a04' }}>
+                      style={{ padding: '5px 12px', fontSize: '0.8rem', background: '#ca8a04', whiteSpace: 'nowrap' }}>
                       Traiter →
                     </Link>
                   </td>
@@ -94,6 +91,7 @@ export default async function AdminDashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
@@ -116,7 +114,8 @@ export default async function AdminDashboard() {
             <Link href="/admin/new" className="admin-btn" style={{ marginTop: '12px' }}>Créer le premier</Link>
           </div>
         ) : (
-          <table className="admin-table" style={{ border: 'none', borderRadius: 0 }}>
+          <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table" style={{ border: 'none', borderRadius: 0, minWidth: 480 }}>
             <thead>
               <tr>
                 <th>Couple</th>
@@ -130,6 +129,7 @@ export default async function AdminDashboard() {
               {nonLeads.map(w => <WeddingRow key={w.id} wedding={w} />)}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </>

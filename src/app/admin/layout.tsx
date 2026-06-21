@@ -1,21 +1,28 @@
 import Link from 'next/link'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')?.value
-
-  // Note: login page is excluded via the route structure
-  // (middleware already handles redirection)
-
   return (
     <div className="admin-shell">
       <style>{ADMIN_CSS}</style>
+
+      {/* Mobile top bar */}
+      <div className="admin-mobile-bar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="admin-brand-logo" style={{ width: 30, height: 30, fontSize: '0.75rem' }}>ED</div>
+          <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Admin</span>
+        </div>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <Link href="/admin" className="admin-mobile-link">Dashboard</Link>
+          <Link href="/admin/new" className="admin-mobile-link">+ Nouveau</Link>
+          <form action="/api/admin/logout" method="POST" style={{ margin: 0 }}>
+            <button type="submit" className="admin-mobile-link admin-mobile-link-muted">Déco.</button>
+          </form>
+        </div>
+      </div>
 
       <aside className="admin-sidebar">
         <div className="admin-brand">
@@ -348,15 +355,58 @@ const ADMIN_CSS = `
     color: #374151;
   }
 
+  .admin-mobile-bar {
+    display: none;
+    background: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
+    padding: 10px 16px;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .admin-mobile-link {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--admin-text);
+    text-decoration: none;
+    background: #f5f5f5;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .admin-mobile-link-muted {
+    color: var(--admin-text-muted);
+    background: transparent;
+  }
+
   @media (max-width: 768px) {
     .admin-shell {
       grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+    .admin-mobile-bar {
+      display: flex;
     }
     .admin-sidebar {
       display: none;
     }
     .admin-main {
-      padding: 20px;
+      padding: 16px;
+    }
+    .admin-page-header {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .admin-table th,
+    .admin-table td {
+      padding: 10px 10px;
+      font-size: 0.82rem;
     }
   }
 `

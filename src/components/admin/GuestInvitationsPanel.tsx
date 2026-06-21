@@ -7,15 +7,17 @@ export default function GuestInvitationsPanel({
   weddingId,
   initialInvitations,
   baseUrl,
+  isArabic = false,
 }: {
   weddingId: string
   initialInvitations: GuestInvitation[]
   baseUrl: string
+  isArabic?: boolean
 }) {
   const [invitations, setInvitations] = useState(initialInvitations)
   const [guestName, setGuestName] = useState('')
-  const [prefix, setPrefix] = useState('إلى السيد')
-  const [suffix, setSuffix] = useState('و حرمه')
+  const [prefix, setPrefix] = useState(isArabic ? 'إلى السيد' : 'Chers')
+  const [suffix, setSuffix] = useState(isArabic ? 'و حرمه' : '')
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   const [error, setError] = useState('')
@@ -60,56 +62,61 @@ export default function GuestInvitationsPanel({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* Formulaire de création */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <div style={{ flex: '0 0 160px' }}>
-            <label className="admin-label">Texte après le nom</label>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 140px' }}>
+            <label className="admin-label">Avant le nom</label>
             <input
               className="admin-input"
-              value={suffix}
-              onChange={e => setSuffix(e.target.value)}
-              dir="rtl"
-              style={{ fontFamily: "'Amiri', serif" }}
+              value={prefix}
+              onChange={e => setPrefix(e.target.value)}
+              dir={isArabic ? 'rtl' : 'ltr'}
+              style={isArabic ? { fontFamily: "'Amiri', serif" } : {}}
             />
           </div>
-          <div style={{ flex: 1 }}>
-            <label className="admin-label">Nom de l'invité (arabe)</label>
+          <div style={{ flex: '2 1 200px' }}>
+            <label className="admin-label">Nom de l'invité</label>
             <input
               className="admin-input"
               value={guestName}
               onChange={e => setGuestName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') create() }}
-              placeholder="ضياء الحق بالطيب"
-              dir="rtl"
-              style={{ fontFamily: "'Amiri', serif", fontSize: '1rem' }}
+              placeholder={isArabic ? 'ضياء الحق بالطيب' : 'Jean & Marie Dupont'}
+              dir={isArabic ? 'rtl' : 'ltr'}
+              style={isArabic ? { fontFamily: "'Amiri', serif", fontSize: '1rem' } : {}}
             />
           </div>
-          <div style={{ flex: '0 0 160px' }}>
-            <label className="admin-label">Texte avant le nom</label>
+          <div style={{ flex: '1 1 140px' }}>
+            <label className="admin-label">Après le nom</label>
             <input
               className="admin-input"
-              value={prefix}
-              onChange={e => setPrefix(e.target.value)}
-              dir="rtl"
-              style={{ fontFamily: "'Amiri', serif" }}
+              value={suffix}
+              onChange={e => setSuffix(e.target.value)}
+              dir={isArabic ? 'rtl' : 'ltr'}
+              style={isArabic ? { fontFamily: "'Amiri', serif" } : {}}
             />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch', flexWrap: 'wrap' }}>
           <div
             style={{
-              flex: 1, padding: '8px 12px', background: '#FAF7F0',
+              flex: '1 1 200px', padding: '8px 12px', background: '#FAF7F0',
               border: '1px solid var(--admin-border)', borderRadius: 'var(--admin-radius)',
-              fontFamily: "'Amiri', serif", fontSize: '1rem', direction: 'rtl',
-              color: '#5C4A14', textAlign: 'right',
+              fontFamily: isArabic ? "'Amiri', serif" : 'inherit',
+              fontSize: isArabic ? '1rem' : '0.9rem',
+              direction: isArabic ? 'rtl' : 'ltr',
+              color: '#5C4A14',
+              textAlign: isArabic ? 'right' : 'left',
             }}
           >
-            {prefix || 'إلى السيد'} {guestName || '…'} {suffix || 'و حرمه'}
+            {isArabic
+              ? `${prefix || 'إلى السيد'} ${guestName || '…'} ${suffix || 'و حرمه'}`
+              : [prefix, guestName || '…', suffix].filter(Boolean).join(' ')}
           </div>
           <button
             className="admin-btn"
             onClick={create}
             disabled={loading || !guestName.trim()}
-            style={{ whiteSpace: 'nowrap' }}
+            style={{ whiteSpace: 'nowrap', flex: '0 0 auto' }}
           >
             {loading ? '…' : '+ Créer le lien'}
           </button>
@@ -131,7 +138,7 @@ export default function GuestInvitationsPanel({
             <div
               key={inv.id}
               style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
+                display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
                 padding: '10px 12px',
                 border: '1px solid var(--admin-border)',
                 borderRadius: 'var(--admin-radius)',
@@ -139,31 +146,38 @@ export default function GuestInvitationsPanel({
               }}
             >
               <span style={{
-                flex: 1, fontFamily: "'Amiri', serif", fontSize: '1rem',
-                direction: 'rtl', textAlign: 'right',
+                flex: '1 1 160px',
+                fontFamily: isArabic ? "'Amiri', serif" : 'inherit',
+                fontSize: isArabic ? '1rem' : '0.88rem',
+                direction: isArabic ? 'rtl' : 'ltr',
+                textAlign: isArabic ? 'right' : 'left',
               }}>
-                {inv.prefix_ar || 'إلى السيد'} {inv.guest_name_ar} {inv.suffix_ar || 'و حرمه'}
+                {isArabic
+                  ? `${inv.prefix_ar || 'إلى السيد'} ${inv.guest_name_ar} ${inv.suffix_ar || 'و حرمه'}`
+                  : [inv.prefix_ar, inv.guest_name_ar, inv.suffix_ar].filter(Boolean).join(' ')}
               </span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-              </span>
-              <button
-                onClick={() => copyLink(inv.token)}
-                className="admin-btn admin-btn-secondary"
-                style={{ fontSize: '0.75rem', padding: '5px 10px', whiteSpace: 'nowrap' }}
-              >
-                {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
-              </button>
-              <button
-                onClick={() => del(inv.id)}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--admin-danger)', fontSize: '1rem', padding: '4px',
-                }}
-                title="Supprimer"
-              >
-                ×
-              </button>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flex: '0 0 auto' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                  {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                </span>
+                <button
+                  onClick={() => copyLink(inv.token)}
+                  className="admin-btn admin-btn-secondary"
+                  style={{ fontSize: '0.75rem', padding: '5px 10px', whiteSpace: 'nowrap' }}
+                >
+                  {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
+                </button>
+                <button
+                  onClick={() => del(inv.id)}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--admin-danger)', fontSize: '1rem', padding: '4px',
+                  }}
+                  title="Supprimer"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>

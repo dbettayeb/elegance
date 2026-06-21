@@ -1,9 +1,11 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { RSVP, GuestMessage, GuestInvitation } from '@/lib/types'
 import MessageCard from '@/components/couple-portal/MessageCard'
 import GuestInvitationsPanel from '@/components/couple-portal/GuestInvitationsPanel'
 import type { CoupleTheme } from '@/lib/couple-themes'
+import { TEMPLATES_META } from '@/lib/templates-meta'
 
 const NEUTRAL_THEME: CoupleTheme = {
   accent: '#2563eb', accentSoft: '#eff6ff', accentText: '#1e40af',
@@ -34,6 +36,12 @@ export default async function CouplePortal({
 
   if (!wedding) notFound()
 
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get(`couple_${slug}`)?.value
+  if (!sessionToken || sessionToken !== wedding.couple_token) {
+    redirect(`/couple/${slug}/login`)
+  }
+
   const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase
       .from('rsvps')
@@ -45,7 +53,7 @@ export default async function CouplePortal({
       .select('*')
       .eq('wedding_id', wedding.id)
       .order('created_at', { ascending: false }),
-    wedding.template_id === 'bismillah' && wedding.guest_invite_enabled
+    wedding.guest_invite_enabled
       ? supabase.from('guest_invitations').select('*').eq('wedding_id', wedding.id).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
@@ -91,7 +99,7 @@ export default async function CouplePortal({
           </div>
 
           {/* Invitations personnalisées */}
-          {wedding.template_id === 'bismillah' && wedding.guest_invite_enabled && (
+          {wedding.guest_invite_enabled && (
             <Section title="Invitations personnalisées" badge={(guestInvites ?? []).length || undefined}>
               <GuestInvitationsPanel
                 weddingId={wedding.id}
@@ -99,6 +107,7 @@ export default async function CouplePortal({
                 initialInvitations={(guestInvites ?? []) as GuestInvitation[]}
                 baseUrl={process.env.NEXT_PUBLIC_BASE_URL ?? ''}
                 accentColor="#171717"
+                isArabic={TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar'}
               />
             </Section>
           )}

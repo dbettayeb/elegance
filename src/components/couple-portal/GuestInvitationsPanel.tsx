@@ -9,17 +9,19 @@ export default function GuestInvitationsPanel({
   initialInvitations,
   baseUrl,
   accentColor,
+  isArabic = false,
 }: {
   weddingId: string
   slug: string
   initialInvitations: GuestInvitation[]
   baseUrl: string
   accentColor: string
+  isArabic?: boolean
 }) {
   const [invitations, setInvitations] = useState(initialInvitations)
   const [guestName, setGuestName] = useState('')
-  const [prefix, setPrefix] = useState('إلى السيد')
-  const [suffix, setSuffix] = useState('و حرمه')
+  const [prefix, setPrefix] = useState(isArabic ? 'إلى السيد' : 'Chers')
+  const [suffix, setSuffix] = useState(isArabic ? 'و حرمه' : '')
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   const [error, setError] = useState('')
@@ -28,7 +30,9 @@ export default function GuestInvitationsPanel({
     width: '100%', padding: '9px 12px',
     border: '1px solid #d4d4d4',
     borderRadius: '6px', background: '#ffffff',
-    color: '#171717', fontFamily: "'Amiri', serif", fontSize: '0.95rem',
+    color: '#171717',
+    fontFamily: isArabic ? "'Amiri', serif" : 'inherit',
+    fontSize: isArabic ? '0.95rem' : '0.9rem',
     outline: 'none', boxSizing: 'border-box' as const,
   }
 
@@ -74,49 +78,54 @@ export default function GuestInvitationsPanel({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <div style={{ flex: '0 0 140px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 120px' }}>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, marginBottom: '6px', color: '#171717' }}>
-              Après le nom
+              Avant le nom
             </label>
-            <input value={suffix} onChange={e => setSuffix(e.target.value)} dir="rtl" style={inputStyle} />
+            <input value={prefix} onChange={e => setPrefix(e.target.value)} dir={isArabic ? 'rtl' : 'ltr'} style={inputStyle} />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: '2 1 180px' }}>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, marginBottom: '6px', color: '#171717' }}>
-              Nom de l'invité (arabe)
+              Nom de l'invité
             </label>
             <input
               value={guestName}
               onChange={e => setGuestName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') create() }}
-              placeholder="ضياء الحق بالطيب"
-              dir="rtl"
+              placeholder={isArabic ? 'ضياء الحق بالطيب' : 'Jean & Marie Dupont'}
+              dir={isArabic ? 'rtl' : 'ltr'}
               style={inputStyle}
             />
           </div>
-          <div style={{ flex: '0 0 140px' }}>
+          <div style={{ flex: '1 1 120px' }}>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, marginBottom: '6px', color: '#171717' }}>
-              Avant le nom
+              Après le nom
             </label>
-            <input value={prefix} onChange={e => setPrefix(e.target.value)} dir="rtl" style={inputStyle} />
+            <input value={suffix} onChange={e => setSuffix(e.target.value)} dir={isArabic ? 'rtl' : 'ltr'} style={inputStyle} />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch', flexWrap: 'wrap' }}>
           <div style={{
-            flex: 1, padding: '8px 12px',
+            flex: '1 1 180px', padding: '8px 12px',
             background: '#FAF7F0',
             border: '1px solid #e5e5e5',
             borderRadius: '6px',
-            fontFamily: "'Amiri', serif", fontSize: '0.95rem',
-            direction: 'rtl', textAlign: 'right', color: '#5C4A14',
+            fontFamily: isArabic ? "'Amiri', serif" : 'inherit',
+            fontSize: isArabic ? '0.95rem' : '0.9rem',
+            direction: isArabic ? 'rtl' : 'ltr',
+            textAlign: isArabic ? 'right' : 'left',
+            color: '#5C4A14',
           }}>
-            {prefix || 'إلى السيد'} {guestName || '…'} {suffix || 'و حرمه'}
+            {isArabic
+              ? `${prefix || 'إلى السيد'} ${guestName || '…'} ${suffix || 'و حرمه'}`
+              : [prefix, guestName || '…', suffix].filter(Boolean).join(' ')}
           </div>
           <button
             onClick={create}
             disabled={loading || !guestName.trim()}
             style={{
-              padding: '9px 16px', background: '#171717', color: '#fff',
+              flex: '0 0 auto', padding: '9px 16px', background: '#171717', color: '#fff',
               border: 'none', borderRadius: '6px', cursor: 'pointer',
               fontSize: '0.85rem', fontWeight: 500, whiteSpace: 'nowrap',
               opacity: loading || !guestName.trim() ? 0.5 : 1,
@@ -141,7 +150,7 @@ export default function GuestInvitationsPanel({
             <div
               key={inv.id}
               style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
+                display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
                 padding: '10px 12px',
                 border: '1px solid #e5e5e5',
                 borderRadius: '6px',
@@ -149,36 +158,43 @@ export default function GuestInvitationsPanel({
               }}
             >
               <span style={{
-                flex: 1, fontFamily: "'Amiri', serif", fontSize: '1rem',
-                direction: 'rtl', textAlign: 'right',
+                flex: '1 1 160px',
+                fontFamily: isArabic ? "'Amiri', serif" : 'inherit',
+                fontSize: isArabic ? '1rem' : '0.9rem',
+                direction: isArabic ? 'rtl' : 'ltr',
+                textAlign: isArabic ? 'right' : 'left',
               }}>
-                {inv.prefix_ar || 'إلى السيد'} {inv.guest_name_ar} {inv.suffix_ar || 'و حرمه'}
+                {isArabic
+                  ? `${inv.prefix_ar || 'إلى السيد'} ${inv.guest_name_ar} ${inv.suffix_ar || 'و حرمه'}`
+                  : [inv.prefix_ar, inv.guest_name_ar, inv.suffix_ar].filter(Boolean).join(' ')}
               </span>
-              <span style={{ fontSize: '0.7rem', opacity: 0.5, whiteSpace: 'nowrap' }}>
-                {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-              </span>
-              <button
-                onClick={() => copyLink(inv.token)}
-                style={{
-                  padding: '5px 10px', fontSize: '0.75rem',
-                  background: copied === inv.token ? '#dcfce7' : '#ffffff',
-                  color: copied === inv.token ? '#166534' : '#404040',
-                  border: '1px solid #d4d4d4',
-                  borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap',
-                }}
-              >
-                {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
-              </button>
-              <button
-                onClick={() => del(inv.id)}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: '#dc2626', fontSize: '1rem', padding: '4px',
-                }}
-                title="Supprimer"
-              >
-                ×
-              </button>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flex: '0 0 auto' }}>
+                <span style={{ fontSize: '0.7rem', opacity: 0.5, whiteSpace: 'nowrap' }}>
+                  {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                </span>
+                <button
+                  onClick={() => copyLink(inv.token)}
+                  style={{
+                    padding: '5px 10px', fontSize: '0.75rem',
+                    background: copied === inv.token ? '#dcfce7' : '#ffffff',
+                    color: copied === inv.token ? '#166534' : '#404040',
+                    border: '1px solid #d4d4d4',
+                    borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap',
+                  }}
+                >
+                  {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
+                </button>
+                <button
+                  onClick={() => del(inv.id)}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: '#dc2626', fontSize: '1rem', padding: '4px',
+                  }}
+                  title="Supprimer"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>
