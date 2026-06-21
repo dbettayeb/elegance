@@ -250,34 +250,34 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         {/* DEAR FRIENDS */}
         <div id="dear-friends">
           <div className="dear-friends-inner">
-            <h2>Dear Friends and Family,</h2>
+            <h2>{(wedding.intro_text && !wedding.intro_text.startsWith('Vous êtes')) ? wedding.intro_text : 'Dear Friends and Family,'}</h2>
             <p>
               {wedding.custom_message ||
-                `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.
-                Your support means the world to us, and we would be honored to have you with us as we begin our life together.`}
+                `As we get ready to say "I do," we feel grateful for the wonderful people in our lives. Your support means the world to us, and we would be honored to have you with us as we begin our life together.`}
             </p>
           </div>
         </div>
 
-        <TornSeparator />
-
-        {/* COUNTDOWN */}
-        <div id="countdown-section">
-          <div className="countdown-inner">
-            <h2>The Celebration Begins In</h2>
-            <div className="countdown-timer">
-              <div className="time-block"><div className="time-number">{countdown.d}</div><div className="time-label">Days</div></div>
-              <div className="time-sep">:</div>
-              <div className="time-block"><div className="time-number">{countdown.h}</div><div className="time-label">Hours</div></div>
-              <div className="time-sep">:</div>
-              <div className="time-block"><div className="time-number">{countdown.m}</div><div className="time-label">Minutes</div></div>
-              <div className="time-sep">:</div>
-              <div className="time-block"><div className="time-number">{countdown.s}</div><div className="time-label">Seconds</div></div>
+        {wedding.show_countdown && (
+          <>
+            <TornSeparator />
+            <div id="countdown-section">
+              <div className="countdown-inner">
+                <h2>The Celebration Begins In</h2>
+                <div className="countdown-timer">
+                  <div className="time-block"><div className="time-number">{countdown.d}</div><div className="time-label">Days</div></div>
+                  <div className="time-sep">:</div>
+                  <div className="time-block"><div className="time-number">{countdown.h}</div><div className="time-label">Hours</div></div>
+                  <div className="time-sep">:</div>
+                  <div className="time-block"><div className="time-number">{countdown.m}</div><div className="time-label">Minutes</div></div>
+                  <div className="time-sep">:</div>
+                  <div className="time-block"><div className="time-number">{countdown.s}</div><div className="time-label">Seconds</div></div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <TornSeparator flip />
+            <TornSeparator flip />
+          </>
+        )}
 
         {/* SCHEDULE */}
         <div id="schedule">

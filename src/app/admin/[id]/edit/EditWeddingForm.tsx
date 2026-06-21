@@ -371,9 +371,10 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
         </Section>
 
         <Section title="Textes de l'invitation">
-          <Field label="Message d'introduction" help="Phrase d'accroche en haut de l'invitation.">
+          <Field label="Message d'introduction" help={form.template_id === 'viktor_paula' ? 'Titre de la section "Dear Friends". Ex : Dear Friends and Family,' : 'Phrase d\'accroche en haut de l\'invitation.'}>
             <input className="admin-input" value={form.intro_text}
-              onChange={e => set('intro_text', e.target.value)} />
+              onChange={e => set('intro_text', e.target.value)}
+              placeholder={form.template_id === 'viktor_paula' ? 'Dear Friends and Family,' : ''} />
           </Field>
           <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Cliquer sur un texte prédéfini pour l'insérer.">
             {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
