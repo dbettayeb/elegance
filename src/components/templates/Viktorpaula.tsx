@@ -433,7 +433,7 @@ const CSS = `
     --font: 'Cormorant Garamond', serif;
   }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     background: var(--bordeaux);
