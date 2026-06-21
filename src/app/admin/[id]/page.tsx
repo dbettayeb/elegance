@@ -28,7 +28,7 @@ export default async function AdminWeddingDetail({
   const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase.from('rsvps').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
     supabase.from('guestbook').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
-    TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled
+    wedding.guest_invite_enabled
       ? supabase.from('guest_invitations').select('*').eq('wedding_id', id).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
@@ -125,13 +125,14 @@ export default async function AdminWeddingDetail({
         />
       </Section>
 
-      {/* Invitations personnalisées (templates arabes) */}
-      {TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled && (
+      {/* Invitations personnalisées */}
+      {wedding.guest_invite_enabled && (
         <Section title="Invitations personnalisées">
           <GuestInvitationsPanel
             weddingId={id}
             initialInvitations={(guestInvites ?? []) as GuestInvitation[]}
             baseUrl={base ?? ''}
+            isArabic={TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar'}
           />
         </Section>
       )}

@@ -53,7 +53,7 @@ export default async function CouplePortal({
       .select('*')
       .eq('wedding_id', wedding.id)
       .order('created_at', { ascending: false }),
-    TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled
+    wedding.guest_invite_enabled
       ? supabase.from('guest_invitations').select('*').eq('wedding_id', wedding.id).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
@@ -99,7 +99,7 @@ export default async function CouplePortal({
           </div>
 
           {/* Invitations personnalisées */}
-          {TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled && (
+          {wedding.guest_invite_enabled && (
             <Section title="Invitations personnalisées" badge={(guestInvites ?? []).length || undefined}>
               <GuestInvitationsPanel
                 weddingId={wedding.id}
@@ -107,6 +107,7 @@ export default async function CouplePortal({
                 initialInvitations={(guestInvites ?? []) as GuestInvitation[]}
                 baseUrl={process.env.NEXT_PUBLIC_BASE_URL ?? ''}
                 accentColor="#171717"
+                isArabic={TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar'}
               />
             </Section>
           )}
