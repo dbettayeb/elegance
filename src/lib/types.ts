@@ -23,6 +23,7 @@ export interface Wedding {
   | 'bismillah' | 'coeur_dore' | 'viktor_paula'
   | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue' | 'jardin_rose' | 'floral_arch' | 'roses_ivoire' | 'rose_bleu'
   | 'toile_bleue_ar' | 'jardin_rose_ar' | 'floral_arch_ar' | 'roses_ivoire_ar' | 'rose_bleu_ar'
+  | 'template_7' | 'template_8'
   music_url?: string
   background_image?: string
   decoration_image?: string

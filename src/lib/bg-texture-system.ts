@@ -133,6 +133,24 @@ export const BG_CONFIGS: Record<string, BgConfig> = {
     h: 76,
     fallbackColor: '#f5ede0',
   },
+  'assets/template7/deco7.png': {
+    imgW: 857,
+    imgH: 1200,
+    x: 11,
+    y: 14,
+    w: 78,
+    h: 72,
+    fallbackColor: '#f8f3ef',
+  },
+  'assets/template8/deco8.png': {
+    imgW: 1500,
+    imgH: 2100,
+    x: 12,
+    y: 8,
+    w: 76,
+    h: 84,
+    fallbackColor: '#fffded',
+  },
 }
 
 /**

@@ -126,6 +126,27 @@ export const TEMPLATES_META: TemplateMeta[] = [
     type: 'statique',
   },
 
+  {
+    id: 'template_7',
+    name: 'Fleurs & Or',
+    description: 'Cadre doré multi-lignes à roses bordeaux sur fond beige nacré. Calligraphie Alex Brush pour les prénoms, roses poudre en flancs, petite rose centrale en séparateur. Style Save the Date élégant.',
+    tags: ['Floral', 'Doré', 'Classique', 'Save the Date'],
+    palette: ['#f8f3ef', '#B8924A', '#7B3A55', '#2C1A10'],
+    ambiance: 'clair',
+    preview: '/assets/template7/exemple 7.png',
+    type: 'statique',
+  },
+  {
+    id: 'template_8',
+    name: 'Anneaux Floraux',
+    description: 'Fleurs roses en coins sur fond crème doux. Double anneau floral monogramme avec initiales en Great Vibes. Prénoms en grande calligraphie rose. Style romantique contemporain.',
+    tags: ['Floral', 'Rose', 'Monogramme', 'Romantique'],
+    palette: ['#fffded', '#C06080', '#8B4070', '#3A1A2A'],
+    ambiance: 'clair',
+    preview: '/assets/template8/exemple8.png',
+    type: 'statique',
+  },
+
   // ───────── Statiques arabes ─────────
   {
     id: 'toile_bleue_ar',
