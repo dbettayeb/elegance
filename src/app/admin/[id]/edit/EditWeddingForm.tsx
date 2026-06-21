@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
@@ -57,7 +57,18 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     wedding_day_text: wedding.wedding_day_text ?? '',
     venue_photo: wedding.venue_photo ?? '',
   })
-  const [program, setProgram] = useState<ProgramItem []>((wedding.program ?? []) as ProgramItem [])
+  const VP_DEFAULT_PROGRAM: ProgramItem[] = [
+    { time: '16:00', event: 'Wedding Ceremony' },
+    { time: '17:00', event: 'Cocktail Hour' },
+    { time: '19:00', event: 'Dinner' },
+    { time: '20:00', event: 'Party' },
+  ]
+
+  const initialProgram = (wedding.program && wedding.program.length > 0)
+    ? (wedding.program as ProgramItem[])
+    : (wedding.template_id === 'viktor_paula' ? VP_DEFAULT_PROGRAM : [])
+
+  const [program, setProgram] = useState<ProgramItem []>(initialProgram)
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')

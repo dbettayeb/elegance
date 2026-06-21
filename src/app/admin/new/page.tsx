@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
@@ -50,9 +50,23 @@ export default function NewWeddingPage() {
     venue_photo: '',
   })
 
+  const VP_DEFAULT_PROGRAM: ProgramItem[] = [
+    { time: '16:00', event: 'Wedding Ceremony' },
+    { time: '17:00', event: 'Cocktail Hour' },
+    { time: '19:00', event: 'Dinner' },
+    { time: '20:00', event: 'Party' },
+  ]
+
   const [program, setProgram] = useState<ProgramItem []>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (form.template_id === 'viktor_paula' && program.length === 0) {
+      setProgram(VP_DEFAULT_PROGRAM)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.template_id])
 
   function set(key: string, value: string | boolean | null) {
     setForm(f => ({ ...f, [key]: value }))
