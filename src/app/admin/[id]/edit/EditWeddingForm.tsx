@@ -95,7 +95,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
-  const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar'].includes(form.template_id)
+  const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar', 'template_7_ar', 'template_8_ar'].includes(form.template_id)
 
   const templatesDynamiques = TEMPLATES_META.filter(t => t.type === 'dynamique')
   const templatesStatiques  = TEMPLATES_META.filter(t => t.type === 'statique')

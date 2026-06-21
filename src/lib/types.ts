@@ -24,6 +24,7 @@ export interface Wedding {
   | 'alexa_richard' | 'al_nour' | 'carte_simple' | 'toile_bleue' | 'jardin_rose' | 'floral_arch' | 'roses_ivoire' | 'rose_bleu'
   | 'toile_bleue_ar' | 'jardin_rose_ar' | 'floral_arch_ar' | 'roses_ivoire_ar' | 'rose_bleu_ar'
   | 'template_7' | 'template_8'
+  | 'template_7_ar' | 'template_8_ar'
   music_url?: string
   background_image?: string
   decoration_image?: string
@@ -42,6 +43,8 @@ export interface Wedding {
     | 'fa_ar_vert' | 'fa_ar_foret' | 'fa_ar_sage' | 'fa_ar_noir'
     | 'ri_ar_or' | 'ri_ar_champagne' | 'ri_ar_beige' | 'ri_ar_noir'
     | 'rb_ar_bleu' | 'rb_ar_ciel' | 'rb_ar_ardoise' | 'rb_ar_noir'
+    | 't7_ar_or' | 't7_ar_bordeaux' | 't7_ar_sable' | 't7_ar_noir'
+    | 't8_ar_rose' | 't8_ar_framboise' | 't8_ar_poudre' | 't8_ar_noir'
   template_variant?: string
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string

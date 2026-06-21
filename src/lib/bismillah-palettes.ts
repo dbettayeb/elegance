@@ -5,6 +5,8 @@ export interface BismillahPalette {
     | 'fa_ar_vert' | 'fa_ar_foret' | 'fa_ar_sage' | 'fa_ar_noir'
     | 'ri_ar_or' | 'ri_ar_champagne' | 'ri_ar_beige' | 'ri_ar_noir'
     | 'rb_ar_bleu' | 'rb_ar_ciel' | 'rb_ar_ardoise' | 'rb_ar_noir'
+    | 't7_ar_or' | 't7_ar_bordeaux' | 't7_ar_sable' | 't7_ar_noir'
+    | 't8_ar_rose' | 't8_ar_framboise' | 't8_ar_poudre' | 't8_ar_noir'
   name: string
   accent: string
   accentDark: string
@@ -390,12 +392,130 @@ export const ROSE_BLEU_AR_PALETTES: BismillahPalette[] = [
   },
 ]
 
+// ── Template 7 AR — or & bordeaux ───────────────────────────────────────────
+export const TEMPLATE_7_AR_PALETTES: BismillahPalette[] = [
+  {
+    id: 't7_ar_or',
+    name: 'Or & beige nacré',
+    accent: '#B8924A',
+    accentDark: '#8B6914',
+    accentSoft: 'rgba(184,146,74,0.12)',
+    border: 'rgba(184,146,74,0.25)',
+    bg: '#f8f3ef',
+    textPrimary: '#2C1A10',
+    textSecondary: '#5A3A28',
+    textMuted: '#8B6A5A',
+    preview: ['#B8924A', '#f8f3ef', '#2C1A10', '#8B6A5A'],
+  },
+  {
+    id: 't7_ar_bordeaux',
+    name: 'Bordeaux & or',
+    accent: '#7B3A55',
+    accentDark: '#5C2038',
+    accentSoft: 'rgba(123,58,85,0.12)',
+    border: 'rgba(123,58,85,0.25)',
+    bg: '#FAF0F3',
+    textPrimary: '#2C1018',
+    textSecondary: '#5A2838',
+    textMuted: '#9A6A78',
+    decorativeGold: '#B8924A',
+    preview: ['#7B3A55', '#B8924A', '#FAF0F3', '#9A6A78'],
+  },
+  {
+    id: 't7_ar_sable',
+    name: 'Sable doré',
+    accent: '#9A7A4A',
+    accentDark: '#7A5A30',
+    accentSoft: 'rgba(154,122,74,0.12)',
+    border: 'rgba(154,122,74,0.25)',
+    bg: '#F5EFE5',
+    textPrimary: '#2A1E10',
+    textSecondary: '#5A4020',
+    textMuted: '#9A8060',
+    preview: ['#9A7A4A', '#F5EFE5', '#2A1E10', '#9A8060'],
+  },
+  {
+    id: 't7_ar_noir',
+    name: 'Nuit noire',
+    accent: '#C9A84C',
+    accentDark: '#B8924A',
+    accentSoft: 'rgba(201,168,76,0.15)',
+    border: 'rgba(201,168,76,0.25)',
+    bg: '#111111',
+    textPrimary: '#F5F0EA',
+    textSecondary: '#C9A84C',
+    textMuted: '#7A6A40',
+    decorativeGold: '#C9A84C',
+    preview: ['#111111', '#C9A84C', '#F5F0EA', '#7A6A40'],
+  },
+]
+
+// ── Template 8 AR — rose & crème doux ───────────────────────────────────────
+export const TEMPLATE_8_AR_PALETTES: BismillahPalette[] = [
+  {
+    id: 't8_ar_rose',
+    name: 'Rose & crème',
+    accent: '#C06080',
+    accentDark: '#8B4070',
+    accentSoft: 'rgba(192,96,128,0.12)',
+    border: 'rgba(192,96,128,0.22)',
+    bg: '#fffded',
+    textPrimary: '#3A1A2A',
+    textSecondary: '#7B4060',
+    textMuted: '#9B6A80',
+    preview: ['#C06080', '#fffded', '#3A1A2A', '#9B6A80'],
+  },
+  {
+    id: 't8_ar_framboise',
+    name: 'Framboise & ivoire',
+    accent: '#A03060',
+    accentDark: '#782048',
+    accentSoft: 'rgba(160,48,96,0.12)',
+    border: 'rgba(160,48,96,0.25)',
+    bg: '#FFF5F5',
+    textPrimary: '#2A0818',
+    textSecondary: '#6A2040',
+    textMuted: '#9A5870',
+    decorativeGold: '#C9A84C',
+    preview: ['#A03060', '#C9A84C', '#FFF5F5', '#9A5870'],
+  },
+  {
+    id: 't8_ar_poudre',
+    name: 'Rose poudré',
+    accent: '#D48090',
+    accentDark: '#B06070',
+    accentSoft: 'rgba(212,128,144,0.12)',
+    border: 'rgba(212,128,144,0.22)',
+    bg: '#FEF9F8',
+    textPrimary: '#3A1820',
+    textSecondary: '#6A3848',
+    textMuted: '#A07888',
+    preview: ['#D48090', '#FEF9F8', '#3A1820', '#A07888'],
+  },
+  {
+    id: 't8_ar_noir',
+    name: 'Nuit noire',
+    accent: '#E8A0B8',
+    accentDark: '#C06080',
+    accentSoft: 'rgba(232,160,184,0.15)',
+    border: 'rgba(232,160,184,0.25)',
+    bg: '#111111',
+    textPrimary: '#F8F0F3',
+    textSecondary: '#E8A0B8',
+    textMuted: '#7A4860',
+    decorativeGold: '#E8A0B8',
+    preview: ['#111111', '#E8A0B8', '#F8F0F3', '#7A4860'],
+  },
+]
+
 export const AR_STYLE_PALETTES_MAP: Record<string, BismillahPalette[]> = {
   'toile_bleue_ar':  TOILE_BLEUE_AR_PALETTES,
   'jardin_rose_ar':  JARDIN_ROSE_AR_PALETTES,
   'floral_arch_ar':  FLORAL_ARCH_AR_PALETTES,
   'roses_ivoire_ar': ROSES_IVOIRE_AR_PALETTES,
   'rose_bleu_ar':    ROSE_BLEU_AR_PALETTES,
+  'template_7_ar':   TEMPLATE_7_AR_PALETTES,
+  'template_8_ar':   TEMPLATE_8_AR_PALETTES,
 }
 
 export function getArStylePalettes(templateId: string): BismillahPalette[] {

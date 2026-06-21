@@ -149,6 +149,28 @@ export const TEMPLATES_META: TemplateMeta[] = [
 
   // ───────── Statiques arabes ─────────
   {
+    id: 'template_7_ar',
+    name: 'Fleurs & Or — عربي',
+    description: 'Version arabe de Fleurs & Or. Calligraphie Aref Ruqaa, versets coraniques, animation d\'ouverture Bismillah sur fond doré floral bordeaux.',
+    tags: ['Islamique', 'Arabe', 'Floral', 'Doré'],
+    palette: ['#f8f3ef', '#B8924A', '#7B3A55', '#2C1A10'],
+    ambiance: 'clair',
+    language: 'ar',
+    preview: '/assets/template7/exemple 7.png',
+    type: 'statique',
+  },
+  {
+    id: 'template_8_ar',
+    name: 'Anneaux Floraux — عربي',
+    description: 'Version arabe de Anneaux Floraux. Calligraphie Aref Ruqaa, versets coraniques, animation d\'ouverture Bismillah sur fond floral rose doux.',
+    tags: ['Islamique', 'Arabe', 'Floral', 'Romantique'],
+    palette: ['#fffded', '#C06080', '#8B4070', '#3A1A2A'],
+    ambiance: 'clair',
+    language: 'ar',
+    preview: '/assets/template8/exemple8.png',
+    type: 'statique',
+  },
+  {
     id: 'toile_bleue_ar',
     name: 'Toile Bleue — عربي',
     description: 'Version arabe de Toile Bleue. Calligraphie Aref Ruqaa, versets coraniques, animation d\'ouverture Bismillah sur fond bleu marine floral.',
