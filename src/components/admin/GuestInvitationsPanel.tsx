@@ -60,8 +60,8 @@ export default function GuestInvitationsPanel({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* Formulaire de création */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <div style={{ flex: '0 0 160px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 140px' }}>
             <label className="admin-label">Texte après le nom</label>
             <input
               className="admin-input"
@@ -71,7 +71,7 @@ export default function GuestInvitationsPanel({
               style={{ fontFamily: "'Amiri', serif" }}
             />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: '2 1 200px' }}>
             <label className="admin-label">Nom de l'invité (arabe)</label>
             <input
               className="admin-input"
@@ -83,7 +83,7 @@ export default function GuestInvitationsPanel({
               style={{ fontFamily: "'Amiri', serif", fontSize: '1rem' }}
             />
           </div>
-          <div style={{ flex: '0 0 160px' }}>
+          <div style={{ flex: '1 1 140px' }}>
             <label className="admin-label">Texte avant le nom</label>
             <input
               className="admin-input"
@@ -94,10 +94,10 @@ export default function GuestInvitationsPanel({
             />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch', flexWrap: 'wrap' }}>
           <div
             style={{
-              flex: 1, padding: '8px 12px', background: '#FAF7F0',
+              flex: '1 1 200px', padding: '8px 12px', background: '#FAF7F0',
               border: '1px solid var(--admin-border)', borderRadius: 'var(--admin-radius)',
               fontFamily: "'Amiri', serif", fontSize: '1rem', direction: 'rtl',
               color: '#5C4A14', textAlign: 'right',
@@ -109,7 +109,7 @@ export default function GuestInvitationsPanel({
             className="admin-btn"
             onClick={create}
             disabled={loading || !guestName.trim()}
-            style={{ whiteSpace: 'nowrap' }}
+            style={{ whiteSpace: 'nowrap', flex: '0 0 auto' }}
           >
             {loading ? '…' : '+ Créer le lien'}
           </button>
@@ -131,7 +131,7 @@ export default function GuestInvitationsPanel({
             <div
               key={inv.id}
               style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
+                display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
                 padding: '10px 12px',
                 border: '1px solid var(--admin-border)',
                 borderRadius: 'var(--admin-radius)',
@@ -139,31 +139,33 @@ export default function GuestInvitationsPanel({
               }}
             >
               <span style={{
-                flex: 1, fontFamily: "'Amiri', serif", fontSize: '1rem',
+                flex: '1 1 160px', fontFamily: "'Amiri', serif", fontSize: '1rem',
                 direction: 'rtl', textAlign: 'right',
               }}>
                 {inv.prefix_ar || 'إلى السيد'} {inv.guest_name_ar} {inv.suffix_ar || 'و حرمه'}
               </span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
-                {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-              </span>
-              <button
-                onClick={() => copyLink(inv.token)}
-                className="admin-btn admin-btn-secondary"
-                style={{ fontSize: '0.75rem', padding: '5px 10px', whiteSpace: 'nowrap' }}
-              >
-                {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
-              </button>
-              <button
-                onClick={() => del(inv.id)}
-                style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--admin-danger)', fontSize: '1rem', padding: '4px',
-                }}
-                title="Supprimer"
-              >
-                ×
-              </button>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flex: '0 0 auto' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>
+                  {new Date(inv.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                </span>
+                <button
+                  onClick={() => copyLink(inv.token)}
+                  className="admin-btn admin-btn-secondary"
+                  style={{ fontSize: '0.75rem', padding: '5px 10px', whiteSpace: 'nowrap' }}
+                >
+                  {copied === inv.token ? '✓ Copié' : 'Copier le lien'}
+                </button>
+                <button
+                  onClick={() => del(inv.id)}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--admin-danger)', fontSize: '1rem', padding: '4px',
+                  }}
+                  title="Supprimer"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>

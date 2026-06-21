@@ -1,4 +1,5 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { RSVP, GuestMessage, GuestInvitation } from '@/lib/types'
 import MessageCard from '@/components/couple-portal/MessageCard'
@@ -33,6 +34,12 @@ export default async function CouplePortal({
     .single()
 
   if (!wedding) notFound()
+
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get(`couple_${slug}`)?.value
+  if (!sessionToken || sessionToken !== wedding.couple_token) {
+    redirect(`/couple/${slug}/login`)
+  }
 
   const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase
