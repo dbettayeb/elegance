@@ -839,16 +839,28 @@ const CSS = `
   #intro-video-screen {
     position: fixed; inset: 0; background: #000; z-index: 9998;
     transition: opacity 0.6s ease, visibility 0.6s ease;
+    overflow: hidden;
   }
-  #intro-video-screen video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #intro-video-screen video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
   #intro-video-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
   .video-skip-btn {
     position: absolute; bottom: 28px; right: 28px;
     background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4);
     color: #fff; font-family: var(--font); font-size: 1rem;
     padding: 8px 20px; border-radius: 2px; cursor: pointer; z-index: 1;
+    min-height: 40px; touch-action: manipulation;
   }
   .video-skip-btn:hover { background: rgba(255,255,255,0.3); }
+  @media (max-width: 768px) {
+    .video-skip-btn { bottom: 20px; right: 16px; padding: 10px 18px; min-height: 44px; }
+  }
+  @media (max-width: 480px) {
+    .video-skip-btn { bottom: 16px; right: 12px; font-size: 0.9rem; }
+  }
 
   /* ========== RSVP ========== */
   #rsvp { background: var(--bordeaux); padding: 60px 0 30px; }
