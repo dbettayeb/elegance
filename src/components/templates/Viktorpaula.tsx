@@ -1105,7 +1105,7 @@ const POS_CSS = (() => {
   // Desktop ≥ 1200px : canvas 1200 → half = 600
   let css = POS.map(([sel, d]) => `${sel}{left:calc(50% - ${600 - d}px);}`).join('')
   BREAKPOINTS.forEach(([mq, half], i) => {
-    const rules = POS.map((p) => `${p[0]}{left:calc(50% - ${half - p[i + 2]}px);}`).join('')
+    const rules = POS.map((p) => `${p[0]}{left:calc(50% - ${half - (p[i + 2] as number)}px);}`).join('')
     css += `@media (max-width:${mq}px){${rules}}`
   })
   return css
