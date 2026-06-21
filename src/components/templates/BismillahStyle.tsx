@@ -101,7 +101,7 @@ export default function BismillahStyle({
       `}</style>
       <style>{`
         @media (max-width: 768px) {
-          .bs-deco-fixed { width: 100vw; height: 100vh; height: 100dvh; }
+          .bs-deco-fixed, .bs-bg-fixed { width: 100vw; height: 100vh; height: 100dvh; }
           .bs-texture-bg { min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
@@ -112,7 +112,7 @@ export default function BismillahStyle({
           .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: ${bgCfg.w}vw; }
         }
         @media (min-width: 769px) {
-          .bs-deco-fixed { width: ${decoWidthVh}vh; height: 100vh; }
+          .bs-deco-fixed, .bs-bg-fixed { width: ${decoWidthVh}vh; height: 100vh; }
           .bs-texture-bg { scrollbar-gutter: stable both-edges !important; width: 100%; }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
             display: flex !important; flex-direction: column; align-items: center; width: 100%;
@@ -419,10 +419,10 @@ const CSS = `
   @keyframes bsOpPulse{0%,100%{opacity:.5}50%{opacity:1}}
   .bs-invitation{opacity:0;transform:translateY(24px);transition:opacity 1s,transform 1s;font-family:'Amiri',Georgia,serif;}
   .bs-invitation.bs-visible{opacity:1;transform:none}
-  .bs-bg-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;object-fit:cover;z-index:0;pointer-events:none;}
+  .bs-bg-fixed{position:fixed;top:0;pointer-events:none;z-index:0;object-fit:fill;}
   .bs-deco-fixed{position:fixed;top:0;pointer-events:none;z-index:10;object-fit:fill;}
-  @media(max-width:768px){.bs-deco-fixed{left:0;}}
-  @media(min-width:769px){.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
+  @media(max-width:768px){.bs-bg-fixed,.bs-deco-fixed{left:0;}}
+  @media(min-width:769px){.bs-bg-fixed,.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
   .bs-hero,.bs-section,.bs-rsvp,.bs-footer{width:100%;position:relative;background:transparent;}
   .bs-content-zone{display:flex;flex-direction:column;align-items:center;text-align:center;box-sizing:border-box;}
   .bs-orn{width:70px;height:70px;margin-bottom:22px}.bs-orn svg{width:100%;height:100%}
