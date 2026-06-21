@@ -5,6 +5,7 @@ import WeddingActions from './WeddingActions'
 import LinkCard from './LinkCard'
 import GuestInvitationsPanel from '@/components/admin/GuestInvitationsPanel'
 import { GuestInvitation } from '@/lib/types'
+import { TEMPLATES_META } from '@/lib/templates-meta'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,7 +28,7 @@ export default async function AdminWeddingDetail({
   const [{ data: rsvps }, { data: messages }, { data: guestInvites }] = await Promise.all([
     supabase.from('rsvps').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
     supabase.from('guestbook').select('*').eq('wedding_id', id).order('created_at', { ascending: false }),
-    (wedding.template_id === 'bismillah' || wedding.template_id === 'al_nour') && wedding.guest_invite_enabled
+    TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled
       ? supabase.from('guest_invitations').select('*').eq('wedding_id', id).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
@@ -124,8 +125,8 @@ export default async function AdminWeddingDetail({
         />
       </Section>
 
-      {/* Invitations personnalisées (Bismillah uniquement) */}
-      {(wedding.template_id === 'bismillah' || wedding.template_id === 'al_nour') && wedding.guest_invite_enabled && (
+      {/* Invitations personnalisées (templates arabes) */}
+      {TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar' && wedding.guest_invite_enabled && (
         <Section title="Invitations personnalisées">
           <GuestInvitationsPanel
             weddingId={id}
