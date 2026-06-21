@@ -975,18 +975,26 @@ const CSS = `
 
   /* ========== RESPONSIVE ========== */
 
-  /* Hero: full-width video on mobile (artboard centering doesn't work on narrow screens) */
+  /* Hero: full-width layout on mobile — artboard calc-left doesn't center reliably on narrow screens */
   @media (max-width: 767px) {
     .hero-video-wrap,
-    .hero-overlay {
-      left: 0 !important;
-      width: 100% !important;
-    }
+    .hero-overlay,
     .hero-gradient,
-    .hero-bottom-bar {
+    .hero-bottom-bar,
+    .hero-wedding-day,
+    .hero-date,
+    .hero-names-block {
       left: 0 !important;
       width: 100% !important;
     }
+    .hero-name { font-size: 64px; }
+    .hero-amp  { font-size: 38px; }
+    .hero-wedding-day { font-size: 34px; }
+    .hero-date        { font-size: 22px; }
+  }
+  @media (max-width: 480px) {
+    .hero-name { font-size: 52px; }
+    .hero-amp  { font-size: 32px; }
   }
 
   @media (max-width: 768px) {
