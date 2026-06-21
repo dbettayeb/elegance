@@ -818,22 +818,22 @@ const CSS = `
   .map-btn:hover { background: var(--bordeaux); color: var(--cream); }
 
   /* ========== FLOWERS DECO ========== */
-  #flowers-deco { background: var(--cream); width: 100%; overflow: visible; position: relative; z-index: 2; }
-  .flowers-artboard { height: 200px; }
+  #flowers-deco { background: var(--cream); width: 100%; overflow: hidden; position: relative; }
+  .flowers-artboard { height: 210px; }
   .flower { position: absolute; z-index: 3; pointer-events: none; }
   .flower img { width: 100%; height: auto; display: block; }
-  .fl-1  { bottom: 170px; left: 720px; width: 181px; }
-  .fl-2  { bottom: 144px; left: 720px; width: 55px;  }
-  .fl-3  { bottom: 33px;  left: 693px; width: 130px; }
-  .fl-4  { bottom: 113px; left: 614px; width: 164px; }
-  .fl-5  { bottom: 110px; left: 629px; width: 42px;  }
-  .fl-6  { bottom: 83px;  left: 552px; width: 129px; }
-  .fl-7  { bottom: -40px; left: 624px; width: 50px;  }
-  .fl-8  { bottom: 112px; left: 503px; width: 83px;  }
-  .fl-9  { bottom: 43px;  left: 495px; width: 118px; }
-  .fl-10 { bottom: 69px;  left: 424px; width: 118px; }
-  .fl-11 { bottom: 118px; left: 424px; width: 83px;  }
-  .fl-12 { bottom: 167px; left: 293px; width: 203px; }
+  .fl-1  { top: 10px; left: 720px; width: 181px; }
+  .fl-2  { top: 28px; left: 720px; width: 55px;  }
+  .fl-3  { top: 104px; left: 693px; width: 130px; }
+  .fl-4  { top: 49px; left: 614px; width: 164px; }
+  .fl-5  { top: 51px; left: 629px; width: 42px;  }
+  .fl-6  { top: 70px; left: 552px; width: 129px; }
+  .fl-7  { top: 154px; left: 624px; width: 50px;  }
+  .fl-8  { top: 50px; left: 503px; width: 83px;  }
+  .fl-9  { top: 97px; left: 495px; width: 118px; }
+  .fl-10 { top: 79px; left: 424px; width: 118px; }
+  .fl-11 { top: 46px; left: 424px; width: 83px;  }
+  .fl-12 { top: 12px; left: 293px; width: 203px; }
 
   /* ========== INTRO VIDEO ========== */
   #intro-video-screen {
@@ -971,7 +971,7 @@ const CSS = `
   /* ========== FIXED HEIGHTS ========== */
   #hero          { height: 763px; }
   #schedule      { height: 398px; }
-  #flowers-deco  { height: 200px; }
+  #flowers-deco  { height: 210px; }
 
   /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
