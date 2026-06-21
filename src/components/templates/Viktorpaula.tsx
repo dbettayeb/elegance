@@ -976,6 +976,21 @@ const CSS = `
   #schedule      { height: 398px; }
 
   /* ========== RESPONSIVE ========== */
+
+  /* Hero: full-width video on mobile (artboard centering doesn't work on narrow screens) */
+  @media (max-width: 767px) {
+    .hero-video-wrap,
+    .hero-overlay {
+      left: 0 !important;
+      width: 100% !important;
+    }
+    .hero-gradient,
+    .hero-bottom-bar {
+      left: 0 !important;
+      width: 100% !important;
+    }
+  }
+
   @media (max-width: 768px) {
     .dear-friends-inner h2 { font-size: 28px; }
     .dear-friends-inner p  { font-size: 17px; }
@@ -1088,9 +1103,9 @@ const BREAKPOINTS: [number, number][] = [
 
 const POS_CSS = (() => {
   // Desktop ≥ 1200px : canvas 1200 → half = 600
-  let css = POS.map(([sel, d]) => `${sel}{left:calc(50% - 600px + ${d}px);}`).join('')
+  let css = POS.map(([sel, d]) => `${sel}{left:calc(50% - ${600 - d}px);}`).join('')
   BREAKPOINTS.forEach(([mq, half], i) => {
-    const rules = POS.map((p) => `${p[0]}{left:calc(50% - ${half}px + ${p[i + 2]}px);}`).join('')
+    const rules = POS.map((p) => `${p[0]}{left:calc(50% - ${half - p[i + 2]}px);}`).join('')
     css += `@media (max-width:${mq}px){${rules}}`
   })
   return css
