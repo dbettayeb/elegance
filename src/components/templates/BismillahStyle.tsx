@@ -108,6 +108,7 @@ export default function BismillahStyle({
               background-size: 100vw 100dvh !important;
               background-position: top left !important;
               background-attachment: scroll !important;
+              background-repeat: repeat-y !important;
             `}
             min-height: 100vh; min-height: 100dvh; width: 100%; overflow-x: hidden;
           }
@@ -126,6 +127,8 @@ export default function BismillahStyle({
             ${!isFrameMode ? `
               background-size: auto 100vh !important;
               background-position: 50% 0% !important;
+              background-attachment: scroll !important;
+              background-repeat: repeat-y !important;
             ` : ''}
           }
           .bs-hero, .bs-section, .bs-rsvp, .bs-footer {
