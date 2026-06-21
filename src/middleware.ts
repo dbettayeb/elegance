@@ -4,8 +4,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    const session = request.cookies.get('admin_session')?.value
-    if (!session || session !== process.env.ADMIN_SESSION_SECRET) {
+    if (!request.cookies.get('admin_session')?.value) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin/login'
       return NextResponse.redirect(url)
