@@ -29,9 +29,8 @@ export async function POST(req: NextRequest) {
       show_rsvp, show_guestbook, show_countdown, moderation_on,
       bismillah_palette, background_image, decoration_image,
       guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
+      couple_photo, intro_video_url,
     } = body
-
-    const VALID_PALETTES = ['or_classique', 'emeraude', 'bordeaux', 'marine_dore', 'rose_cuivre', 'noir_elegant']
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
@@ -83,12 +82,14 @@ export async function POST(req: NextRequest) {
         show_guestbook,
         show_countdown:  show_countdown  ?? true,
         moderation_on,
-        bismillah_palette: VALID_PALETTES.includes(bismillah_palette) ? bismillah_palette : 'or_classique',
+        bismillah_palette: bismillah_palette || 'or_classique',
         background_image:  background_image  || 'bg-texture.jpg',
         decoration_image:  decoration_image  || 'decoration.png',
         guest_invite_enabled:    guest_invite_enabled    ?? false,
         guest_invite_prefix_ar:  guest_invite_prefix_ar  || null,
         guest_invite_suffix_ar:  guest_invite_suffix_ar  || null,
+        couple_photo:      couple_photo      || null,
+        intro_video_url:   intro_video_url   || null,
         program: Array.isArray(program) ? program : [],
       })
       .select('id, slug, access_token, couple_token')

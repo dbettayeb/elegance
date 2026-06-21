@@ -44,6 +44,8 @@ export default function NewWeddingPage() {
     decoration_image: 'decoration.png',
     template_variant: 'or_classique',
     guest_invite_enabled: false,
+    couple_photo: '',
+    intro_video_url: '',
   })
 
   const [program, setProgram] = useState<ProgramItem []>([])
@@ -423,6 +425,21 @@ export default function NewWeddingPage() {
             language={fontLanguage}
           />
         </Section>
+
+        {form.template_id === 'viktor_paula' && (
+          <Section title="Viktor &amp; Paula — médias">
+            <Field label="Photo du couple (fermeture)" help="URL d'une image JPG/PNG. Affichée en bas de l'invitation. Laissez vide pour n'afficher que le texte.">
+              <input className="admin-input" type="url" value={form.couple_photo}
+                onChange={e => set('couple_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+            <Field label="Vidéo d'introduction" help="URL d'une vidéo MP4. Se joue après l'ouverture de l'enveloppe avant d'afficher l'invitation.">
+              <input className="admin-input" type="url" value={form.intro_video_url}
+                onChange={e => set('intro_video_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+          </Section>
+        )}
 
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

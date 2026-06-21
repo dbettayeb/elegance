@@ -52,6 +52,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     decoration_image: wedding.decoration_image ?? 'decoration.png',
     template_variant: wedding.template_variant ?? 'or_classique|layout_a',
     guest_invite_enabled: wedding.guest_invite_enabled ?? false,
+    couple_photo: wedding.couple_photo ?? '',
+    intro_video_url: wedding.intro_video_url ?? '',
   })
   const [program, setProgram] = useState<ProgramItem []>((wedding.program ?? []) as ProgramItem [])
   const [loading, setLoading] = useState(false)
@@ -443,6 +445,21 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             language={fontLanguage}
           />
         </Section>
+
+        {form.template_id === 'viktor_paula' && (
+          <Section title="Viktor &amp; Paula — médias">
+            <Field label="Photo du couple (fermeture)" help="URL d'une image JPG/PNG. Affichée en bas de l'invitation. Laissez vide pour n'afficher que le texte.">
+              <input className="admin-input" type="url" value={form.couple_photo}
+                onChange={e => set('couple_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+            <Field label="Vidéo d'introduction" help="URL d'une vidéo MP4. Se joue après l'ouverture de l'enveloppe avant d'afficher l'invitation.">
+              <input className="admin-input" type="url" value={form.intro_video_url}
+                onChange={e => set('intro_video_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+          </Section>
+        )}
 
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

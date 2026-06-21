@@ -16,7 +16,9 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
   const [pigeonTop, setPigeonTop] = useState(95)
   const [audioPlaying, setAudioPlaying] = useState(false)
+  const [showIntroVideo, setShowIntroVideo] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const introVideoRef = useRef<HTMLVideoElement | null>(null)
   const scheduleRef = useRef<HTMLDivElement>(null)
   const dotRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -36,12 +38,37 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     setTimeout(() => setPhase(3), 3500)  // opening screen fades out
     setTimeout(() => {
       setPhase(4)
+      if (wedding.intro_video_url) {
+        setShowIntroVideo(true)
+        setTimeout(() => {
+          introVideoRef.current?.play().catch(() => {
+            setShowIntroVideo(false)
+            openEnvelope()
+            if (audioRef.current && !audioPlaying) {
+              audioRef.current.play().catch(() => {})
+              setAudioPlaying(true)
+            }
+          })
+        }, 50)
+      } else {
+        openEnvelope()
+        if (audioRef.current && !audioPlaying) {
+          audioRef.current.play().catch(() => {})
+          setAudioPlaying(true)
+        }
+      }
+    }, 4100)
+  }
+
+  function handleIntroVideoEnd() {
+    setShowIntroVideo(false)
+    setTimeout(() => {
       openEnvelope()
       if (audioRef.current && !audioPlaying) {
         audioRef.current.play().catch(() => {})
         setAudioPlaying(true)
       }
-    }, 4100)
+    }, 600)
   }
 
 
@@ -170,6 +197,21 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         </div>
       )}
 
+      {/* ─── INTRO VIDEO OVERLAY ─── */}
+      {wedding.intro_video_url && (
+        <div id="intro-video-screen" className={showIntroVideo ? '' : 'hidden'}>
+          <video
+            ref={introVideoRef}
+            src={wedding.intro_video_url}
+            onEnded={handleIntroVideoEnd}
+            playsInline
+          />
+          <button className="video-skip-btn" onClick={handleIntroVideoEnd} aria-label="Skip video">
+            Skip ›
+          </button>
+        </div>
+      )}
+
       {/* ─── MAIN CONTENT ─── */}
       <div id="main-content" className={visible ? 'visible' : ''}>
         <AudioControl />
@@ -283,19 +325,9 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
           </div>
         </div>
 
-        <TornSeparator flip />
-
-        <TornSeparator />
-
-        {/* DETAILS */}
-        <div id="details">
-          <div className="artboard details-artboard">
-            <div className="details-redbar"></div>
-            <div className="details-title">Details</div>
-            <div className="details-text details-text-1">For additional information or questions, please contact the wedding organizers.</div>
-            <div className="details-text details-text-2">Amelia</div>
-            <div className="details-text details-text-3">{wedding.couple_phone || '+31 6845965887'}</div>
-            <div className="details-text details-text-4">Your presence is the greatest gift to us. However, if you wish to honor us with a present, a contribution toward our future would be sincerely appreciated.</div>
+        {/* FLOWERS DECORATION */}
+        <div id="flowers-deco">
+          <div className="artboard flowers-artboard">
             {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
               <div key={num} className={`flower fl-${num}`}>
                 <img src={`/assets/details/flower-${num}.png`} alt="" />
@@ -303,6 +335,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             ))}
           </div>
         </div>
+
+        <TornSeparator flip />
 
         {/* RSVP */}
         {wedding.show_rsvp && (
@@ -373,10 +407,11 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
           <div className="closing-inner">
             <h2>Hope to see you there!</h2>
             <p className="closing-names">{wedding.bride_name} and {wedding.groom_name}</p>
-            <div className="closing-photo">
-              <img src="/assets/closing/couple-final.png" alt="The couple" />
-              <img className="closing-overlay-img" src="/assets/closing/overlay.png" alt="" />
-            </div>
+            {wedding.couple_photo && (
+              <div className="closing-photo">
+                <img src={wedding.couple_photo} alt="The couple" />
+              </div>
+            )}
           </div>
         </footer>
       </div>
@@ -782,41 +817,38 @@ const CSS = `
   }
   .map-btn:hover { background: var(--bordeaux); color: var(--cream); }
 
-  /* ========== DETAILS ========== */
-  #details { background: var(--cream); width: 100%; overflow: hidden; position: relative; }
-  .details-artboard { height: 623px; }
-  .details-redbar {
-    position: absolute;
-    top: 569px; left: -1000px; width: 3355px; height: 54px;
-    background: var(--bordeaux);
-  }
-  .details-title {
-    position: absolute; top: 80px; left: 320px; width: 560px;
-    text-align: center; font-family: var(--font); color: var(--ink);
-    font-size: 41px; font-weight: 500; line-height: 1.55;
-  }
-  .details-text {
-    position: absolute; text-align: center; color: #000;
-    font-family: var(--font); font-size: 21px; font-weight: 400; line-height: 1.25;
-  }
-  .details-text-1 { top: 158px; left: 409px; width: 383px; }
-  .details-text-2 { top: 225px; left: 407px; width: 383px; }
-  .details-text-3 { top: 256px; left: 407px; width: 383px; font-size: 25px; line-height: 1.25; }
-  .details-text-4 { top: 329px; left: 409px; width: 383px; }
+  /* ========== FLOWERS DECO ========== */
+  #flowers-deco { background: var(--cream); width: 100%; overflow: hidden; position: relative; }
+  .flowers-artboard { height: 210px; }
   .flower { position: absolute; z-index: 3; pointer-events: none; }
   .flower img { width: 100%; height: auto; display: block; }
-  .fl-1  { top: 430px; left: 720px; width: 181px; }
-  .fl-2  { top: 448px; left: 720px; width: 55px;  }
-  .fl-3  { top: 524px; left: 693px; width: 130px; }
-  .fl-4  { top: 469px; left: 614px; width: 164px; }
-  .fl-5  { top: 471px; left: 629px; width: 42px;  }
-  .fl-6  { top: 490px; left: 552px; width: 129px; }
-  .fl-7  { top: 574px; left: 624px; width: 50px;  }
-  .fl-8  { top: 470px; left: 503px; width: 83px;  }
-  .fl-9  { top: 517px; left: 495px; width: 118px; }
-  .fl-10 { top: 499px; left: 424px; width: 118px; }
-  .fl-11 { top: 466px; left: 424px; width: 83px;  }
-  .fl-12 { top: 432px; left: 293px; width: 203px; }
+  .fl-1  { top: 10px; left: 720px; width: 181px; }
+  .fl-2  { top: 28px; left: 720px; width: 55px;  }
+  .fl-3  { top: 104px; left: 693px; width: 130px; }
+  .fl-4  { top: 49px; left: 614px; width: 164px; }
+  .fl-5  { top: 51px; left: 629px; width: 42px;  }
+  .fl-6  { top: 70px; left: 552px; width: 129px; }
+  .fl-7  { top: 154px; left: 624px; width: 50px;  }
+  .fl-8  { top: 50px; left: 503px; width: 83px;  }
+  .fl-9  { top: 97px; left: 495px; width: 118px; }
+  .fl-10 { top: 79px; left: 424px; width: 118px; }
+  .fl-11 { top: 46px; left: 424px; width: 83px;  }
+  .fl-12 { top: 12px; left: 293px; width: 203px; }
+
+  /* ========== INTRO VIDEO ========== */
+  #intro-video-screen {
+    position: fixed; inset: 0; background: #000; z-index: 9998;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #intro-video-screen video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #intro-video-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .video-skip-btn {
+    position: absolute; bottom: 28px; right: 28px;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4);
+    color: #fff; font-family: var(--font); font-size: 1rem;
+    padding: 8px 20px; border-radius: 2px; cursor: pointer; z-index: 1;
+  }
+  .video-skip-btn:hover { background: rgba(255,255,255,0.3); }
 
   /* ========== RSVP ========== */
   #rsvp { background: var(--bordeaux); padding: 60px 0 30px; }
@@ -925,9 +957,9 @@ const CSS = `
   .anim-zoom    { opacity: 0; animation: zoomIn  2s ease forwards; }
 
   /* ========== FIXED HEIGHTS ========== */
-  #hero     { height: 763px; }
-  #schedule { height: 398px; }
-  #details  { height: 623px; }
+  #hero          { height: 763px; }
+  #schedule      { height: 398px; }
+  #flowers-deco  { height: 210px; }
 
   /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
@@ -1017,13 +1049,7 @@ const POS: [string, number, number, number, number, number][] = [
   ['.tl-dot-3',         596,  476,  316,  236,  156],
   ['.tl-dot-4',         596,  476,  316,  236,  156],
   ['.pigeon-timeline',  573,  453,  293,  213,  133],
-  // --- Details ---
-  ['.details-redbar', -1000, -220, -380, -460, -540],
-  ['.details-title',    320,  200,   40,  -40, -120],
-  ['.details-text-1',   409,  289,  129,   49,  -31],
-  ['.details-text-2',   407,  287,  127,   47,  -33],
-  ['.details-text-3',   407,  287,  127,   47,  -33],
-  ['.details-text-4',   409,  289,  129,   49,  -31],
+  // --- Flowers deco ---
   ['.fl-1',             720,  600,  441,  360,  280],
   ['.fl-2',             720,  600,  441,  360,  280],
   ['.fl-3',             693,  573,  414,  333,  253],
