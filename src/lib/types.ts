@@ -51,6 +51,8 @@ export interface Wedding {
   guest_invite_suffix_ar?: string
   couple_photo?: string
   intro_video_url?: string
+  wedding_day_text?: string
+  venue_photo?: string
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string

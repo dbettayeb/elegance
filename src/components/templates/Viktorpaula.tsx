@@ -228,7 +228,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             <div className="hero-gradient"></div>
             <div className="hero-bottom-bar"></div>
 
-            <div className="hero-text hero-wedding-day anim-fade-up" style={{ animationDelay: '3.2s' }}>Wedding Day</div>
+            <div className="hero-text hero-wedding-day anim-fade-up" style={{ animationDelay: '3.2s' }}>{wedding.wedding_day_text || 'Wedding Day'}</div>
             <div className="hero-text hero-date anim-fade-up" style={{ animationDelay: '3.3s' }}>{day}.{month}.{shortYear}</div>
 
             <div className="hero-names-block anim-fade-up" style={{ animationDelay: '3.4s' }}>
@@ -311,9 +311,11 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         <div id="location">
           <div className="location-inner">
             <h2>Location</h2>
-            <div className="location-photo">
-              <img src="/assets/location/chateau.png" alt="Chateau de Paon" />
-            </div>
+            {wedding.venue_photo && (
+              <div className="location-photo">
+                <img src={wedding.venue_photo} alt={wedding.venue_name} />
+              </div>
+            )}
             <p className="location-name">{wedding.venue_name || 'Chateau de Paon'}</p>
             {wedding.venue_address && <p className="location-address">{wedding.venue_address}</p>}
             {(wedding.gps_google || wedding.gps_apple) && (
@@ -634,7 +636,8 @@ const CSS = `
     left: 320px;
     width: 560px;
     font-size: 40px;
-    font-weight: 500;
+    font-weight: 300;
+    font-style: italic;
     line-height: 1;
     letter-spacing: 0.02em;
   }
@@ -818,8 +821,8 @@ const CSS = `
   .map-btn:hover { background: var(--bordeaux); color: var(--cream); }
 
   /* ========== FLOWERS DECO ========== */
-  #flowers-deco { background: var(--cream); width: 100%; overflow: visible; position: relative; z-index: 4; }
-  .flowers-artboard { height: 210px; }
+  #flowers-deco { background: var(--cream); width: 100%; overflow: visible; position: relative; z-index: 4; height: 0; }
+  .flowers-artboard { height: 0; }
   .flower { position: absolute; z-index: 3; pointer-events: none; }
   .flower img { width: 100%; height: auto; display: block; }
   .fl-1  { top: 10px; left: 720px; width: 181px; }
@@ -971,7 +974,6 @@ const CSS = `
   /* ========== FIXED HEIGHTS ========== */
   #hero          { height: 763px; }
   #schedule      { height: 398px; }
-  #flowers-deco  { height: 210px; }
 
   /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {

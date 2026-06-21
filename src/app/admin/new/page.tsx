@@ -46,6 +46,8 @@ export default function NewWeddingPage() {
     guest_invite_enabled: false,
     couple_photo: '',
     intro_video_url: '',
+    wedding_day_text: '',
+    venue_photo: '',
   })
 
   const [program, setProgram] = useState<ProgramItem []>([])
@@ -428,6 +430,16 @@ export default function NewWeddingPage() {
 
         {form.template_id === 'viktor_paula' && (
           <Section title="Viktor &amp; Paula — médias">
+            <Field label="Texte du titre principal" help='Texte affiché en haut du héros. Par défaut "Wedding Day".'>
+              <input className="admin-input" value={form.wedding_day_text}
+                onChange={e => set('wedding_day_text', e.target.value)}
+                placeholder="Wedding Day" />
+            </Field>
+            <Field label="Photo du lieu (location)" help="URL d'une image JPG/PNG du lieu de réception. Laissez vide pour ne pas afficher de photo.">
+              <input className="admin-input" type="url" value={form.venue_photo}
+                onChange={e => set('venue_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
             <Field label="Photo du couple (fermeture)" help="URL d'une image JPG/PNG. Affichée en bas de l'invitation. Laissez vide pour n'afficher que le texte.">
               <input className="admin-input" type="url" value={form.couple_photo}
                 onChange={e => set('couple_photo', e.target.value)}
