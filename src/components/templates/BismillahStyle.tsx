@@ -436,6 +436,7 @@ const CSS = `
   @media(max-width:768px){.bs-deco-fixed{left:0;}}
   @media(min-width:769px){.bs-deco-fixed{left:50%;transform:translateX(-50%);}}
   .bs-hero,.bs-section,.bs-rsvp,.bs-footer{width:100%;position:relative;background:transparent;}
+  .bs-content-zone{display:flex;flex-direction:column;align-items:center;text-align:center;box-sizing:border-box;}
   .bs-orn{width:70px;height:70px;margin-bottom:22px}.bs-orn svg{width:100%;height:100%}
   .bs-orn-small{width:50px;height:50px;margin:0 auto 12px}.bs-orn-small svg{width:100%;height:100%}
   .bs-bismillah{font-family:'Aref Ruqaa',serif;font-size:clamp(1rem,4.5vw,2.2rem);color:var(--bs-text);line-height:1.8;font-weight:700;margin-top:28px;margin-bottom:20px;white-space:nowrap;}
