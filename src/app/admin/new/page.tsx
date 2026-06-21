@@ -438,11 +438,9 @@ export default function NewWeddingPage() {
             <Toggle label="Modération des messages"
               help="Les messages sont validés par les mariés avant publication"
               checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
-            {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
-              <Toggle label="Activer les invitations personnalisées"
-                help="Permet de générer un lien unique par invité avec son nom affiché sur l'enveloppe"
-                checked={form.guest_invite_enabled} onChange={v => set('guest_invite_enabled', v)} />
-            )}
+            <Toggle label="Activer les invitations personnalisées"
+              help="Permet de générer un lien unique par invité avec son nom affiché sur l'invitation"
+              checked={form.guest_invite_enabled} onChange={v => set('guest_invite_enabled', v)} />
           </div>
         </Section>
 
