@@ -9,7 +9,7 @@ export const metadata = {
 }
 
 export default function LandingPage() {
-  const featured = ['blanc_dore', 'nuit_etoilee', 'bismillah', 'rose_poudre']
+  const featured = ['coeur_dore', 'alexa_richard', 'roses_ivoire', 'template_8']
   const featuredTemplates = TEMPLATES_META.filter(t => featured.includes(t.id))
 
   return (
@@ -33,7 +33,7 @@ export default function LandingPage() {
             <Link href="/commander" className="lp-btn-ghost">Commander →</Link>
           </div>
           <div className="lp-hero-divider"></div>
-          <p className="lp-hero-mini">9 designs · Français & arabe · Livraison sous 48h</p>
+          <p className="lp-hero-mini">20 designs · Français & arabe · Livraison sous 48h</p>
         </div>
       </section>
 
@@ -41,7 +41,7 @@ export default function LandingPage() {
         <div className="lp-section-inner">
           <div className="lp-values-grid">
             {[
-              { num: '01', title: 'Designs uniques', desc: 'Neuf univers pensés par des designers, du minimaliste parisien au zellige andalou.' },
+              { num: '01', title: 'Designs uniques', desc: 'Vingt univers pensés par des designers, du romantique floral au classique oriental.' },
               { num: '02', title: 'RSVP en direct', desc: 'Vos invités confirment en un clic. Vous suivez tout depuis votre espace mariés.' },
               { num: '03', title: 'Livre d\'or modéré', desc: 'Recevez les vœux de vos proches. Vous validez ce qui s\'affiche publiquement.' },
             ].map(v => (
@@ -58,7 +58,7 @@ export default function LandingPage() {
       <section className="lp-templates">
         <div className="lp-section-inner">
           <p className="lp-label">Notre catalogue</p>
-          <h2 className="lp-h2">Neuf univers, une signature.</h2>
+          <h2 className="lp-h2">Vingt designs, une signature.</h2>
           <p className="lp-section-sub">
             Chaque design a sa personnalité. Trouvez celui qui ressemble à votre histoire.
           </p>
@@ -87,7 +87,7 @@ export default function LandingPage() {
           </div>
 
           <div className="lp-center">
-            <Link href="/templates" className="lp-btn-ghost">Voir les 9 designs →</Link>
+            <Link href="/templates" className="lp-btn-ghost">Voir les 20 designs →</Link>
           </div>
         </div>
       </section>
