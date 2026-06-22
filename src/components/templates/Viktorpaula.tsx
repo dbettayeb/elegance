@@ -221,7 +221,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ovo&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ovo&family=Parisienne&display=swap" rel="stylesheet" />
       <style>{CSS}</style>
       <style>{POS_CSS}</style>
       <FontOverride font={wedding.custom_font} container="#main-content" />
@@ -752,16 +752,17 @@ const CSS = `
     z-index: 4;
   }
   .hero-name {
-    font-family: var(--font);
+    font-family: 'Parisienne', cursive;
     font-size: 85px;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--cream);
     text-align: center;
     line-height: 1;
   }
   .hero-amp {
-    font-family: var(--font);
+    font-family: 'Parisienne', cursive;
     font-size: 50px;
+    font-weight: 400;
     color: var(--cream);
     text-align: center;
     line-height: 1;
@@ -1068,7 +1069,7 @@ const CSS = `
   #closing { background: var(--bordeaux); padding: 60px 0 30px; text-align: center; }
   .closing-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
   .closing-inner h2 { font-size: 41px; font-weight: 500; color: var(--cream); margin-bottom: 6px; }
-  .closing-names  { font-size: 28px; color: var(--cream); margin-bottom: 24px; }
+  .closing-names  { font-family: 'Parisienne', cursive; font-size: 28px; color: var(--cream); margin-bottom: 24px; }
   .closing-photo  { position: relative; width: 450px; max-width: 100%; margin: 0 auto; }
   .closing-photo img { width: 100%; height: auto; display: block; }
   .closing-overlay-img { position: absolute; inset: 0; }

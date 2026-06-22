@@ -333,12 +333,12 @@ function buildCSS(): string {
   }
   .rb-name {
     font-family: 'Great Vibes', cursive; font-weight: 400;
-    font-size: clamp(2.6rem, 6.5vw, 4.5rem);
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
     color: ${P.blue};
   }
   .rb-amp {
     font-family: 'Great Vibes', cursive; font-weight: 400;
-    font-size: clamp(4rem, 10vw, 6.5rem);
+    font-size: clamp(2rem, 5.5vw, 3rem);
     color: ${P.blue}; line-height: .8;
     text-align: center;
   }

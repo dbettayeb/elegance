@@ -330,7 +330,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rufina:wght@400;700&family=Imperial+Script&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rufina:wght@400;700&family=Imperial+Script&family=Parisienne&display=swap" rel="stylesheet" />
       <style>{CSS}</style>
       <style>{POS_CSS}</style>
       <FontOverride font={wedding.custom_font} container="#ar-main" />
@@ -814,7 +814,8 @@ const CSS = `
   .ar-hero-names {
     top: 250px; left: 320px;
     width: 560px;
-    font-size: 45px; font-weight: 500; line-height: 1.55;
+    font-family: 'Parisienne', cursive;
+    font-size: 45px; font-weight: 400; line-height: 1.55;
   }
   .ar-hero-sub {
     top: 310px; left: 430px;
@@ -1282,7 +1283,7 @@ const CSS = `
   #ar-closing { background: var(--ar-cream); padding: 60px 0 0; text-align: center; }
   .ar-closing-inner { max-width: 600px; margin: 0 auto; padding: 0 20px; }
   .ar-closing-title { font-size: 33px; font-weight: 500; color: var(--ar-gray); margin-bottom: 8px; animation: ar-fadein 2s ease forwards; }
-  .ar-closing-names { font-size: 28px; color: var(--ar-gray); margin-bottom: 24px; animation: ar-fadein 2s ease 0.2s forwards; opacity: 0; }
+  .ar-closing-names { font-family: 'Parisienne', cursive; font-size: 28px; color: var(--ar-gray); margin-bottom: 24px; animation: ar-fadein 2s ease 0.2s forwards; opacity: 0; }
   .ar-closing-photo-wrap {
     position: relative; width: 440px; max-width: 100%;
     margin: 0 auto; border-radius: 0 0 30px 30px; overflow: hidden;

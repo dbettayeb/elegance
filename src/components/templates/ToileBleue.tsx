@@ -48,7 +48,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
     <>
       {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.bg} />}
       <link
-        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap"
         rel="stylesheet"
       />
 
@@ -319,11 +319,11 @@ function buildCSS(): string {
   }
   .tb-names {
     display: flex; flex-direction: column; align-items: center;
-    font-family: 'EB Garamond', Garamond, Georgia, serif;
+    font-family: 'Great Vibes', cursive;
     color: ${P.accent}; line-height: 1.05; margin-bottom: 16px;
   }
-  .tb-name { font-size: clamp(2.6rem, 8.5vw, 4.2rem); font-weight: 500; letter-spacing: .05em; }
-  .tb-amp  { font-size: clamp(2rem, 6.5vw, 3.2rem); font-style: italic; font-weight: 500; }
+  .tb-name { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(2.6rem, 8.5vw, 4.2rem); }
+  .tb-amp  { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(2rem, 6.5vw, 3.2rem); }
 
   .tb-date-block {
     display: flex; flex-direction: column; align-items: center;
@@ -487,7 +487,7 @@ function buildCSS(): string {
   .tb-msg-author { margin-top: 6px; font-size: .58rem; color: ${P.accent}; letter-spacing: .1em; }
 
   /* FOOTER */
-  .tb-footer-names  { font-family: 'EB Garamond', Garamond, Georgia, serif; font-size: 2.2rem; font-style: italic; color: ${P.accent}; margin-bottom: 4px; }
+  .tb-footer-names  { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 2.2rem; color: ${P.accent}; margin-bottom: 4px; }
   .tb-footer-date   { font-style: italic; color: ${P.textSecondary}; font-size: .82rem; margin-bottom: 18px; }
   .tb-footer-credit { font-size: .48rem; letter-spacing: .2em; color: ${P.accent}; opacity: .5; text-transform: uppercase; }
 
