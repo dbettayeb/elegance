@@ -34,6 +34,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   function startSequence() {
     if (phase !== 0) return
     setPhase(1)                          // dove & hint fade out
+    // Trigger intro video download NOW so it has 4s to buffer before play()
+    if (wedding.intro_video_url) introVideoRef.current?.load()
     setTimeout(() => setPhase(2), 1000)  // polygons start opening
     setTimeout(() => setPhase(3), 3500)  // opening screen fades out
     setTimeout(() => {
@@ -252,7 +254,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             src={wedding.intro_video_url}
             onEnded={handleIntroVideoEnd}
             playsInline
-            preload="auto"
+            preload="none"
           />
           <button className="video-skip-btn" onClick={handleIntroVideoEnd} aria-label="Skip video">
             Skip ›
