@@ -83,9 +83,8 @@ export default async function PublicTemplatePreview({ params }: Props) {
 }
 
 const CSS = `
-  /* Override pub-header z-index so it stays above any template overlay (e.g. #opening-screen z:9999) */
-  .pub-header { z-index: 100001 !important; }
-  /* Hide the site footer on template preview pages — it conflicts with full-screen invitation layouts */
+  /* On template preview pages the ptp-bar already provides navigation — hide the site header/footer */
+  .pub-header { display: none !important; }
   .pub-footer { display: none !important; }
 
   .ptp-bar {
@@ -115,9 +114,13 @@ const CSS = `
   }
   .ptp-cta:hover { opacity: 0.85; }
 
+  /* Offset so the sticky bar never covers the first pixels of the template content */
+  .ptp-content { padding-top: 60px; }
+
   @media (max-width: 720px) {
     .ptp-info { display: none; }
     .ptp-bar-inner { padding: 12px 18px; }
     .ptp-cta { padding: 7px 14px; font-size: 0.66rem; }
+    .ptp-content { padding-top: 46px; }
   }
 `
