@@ -129,6 +129,50 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   ]
   const program = (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
+  // --- Celebrations (multi-party weddings, e.g. Tunisia) ---
+  // The main reception comes from the core fields; additional parties from wedding.parties.
+  // All are merged and shown chronologically, with the main reception highlighted.
+  type Celebration = {
+    title: string; ts: number; venue_name: string; venue_address?: string; isMain: boolean
+  }
+  const celebrations: Celebration[] = (() => {
+    const list: Celebration[] = []
+    if (wedding.parties && wedding.parties.length > 0) {
+      wedding.parties.forEach(p => {
+        if (!p.date) return
+        const ts = new Date(`${p.date}T${p.time || '00:00'}:00`).getTime()
+        list.push({
+          title: p.title || 'Celebration',
+          ts,
+          venue_name: p.venue_name,
+          venue_address: p.venue_address,
+          isMain: false,
+        })
+      })
+    }
+    // Main reception (always present when there are extra parties)
+    list.push({
+      title: 'The Wedding Reception',
+      ts: eventDate.getTime(),
+      venue_name: wedding.venue_name,
+      venue_address: wedding.venue_address,
+      isMain: true,
+    })
+    return list.sort((a, b) => a.ts - b.ts)
+  })()
+  const hasCelebrations = (wedding.parties && wedding.parties.length > 0)
+
+  function fmtCeleb(ts: number) {
+    const d = new Date(ts)
+    return {
+      weekday: d.toLocaleDateString('en-GB', { weekday: 'long' }),
+      day: String(d.getDate()).padStart(2, '0'),
+      month: d.toLocaleDateString('en-GB', { month: 'short' }),
+      year: String(d.getFullYear()),
+      time: d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+    }
+  }
+
   // --- Torn separator ---
   const TornSeparator = ({ flip = false }: { flip?: boolean }) => (
     <div className={`sep ${flip ? 'sep--up' : 'sep--down'}`}>
@@ -255,6 +299,35 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             </p>
           </div>
         </div>
+
+        {/* CELEBRATIONS (multi-party) */}
+        {hasCelebrations && (
+          <div id="celebrations">
+            <div className="celebrations-inner">
+              <div className="celebrations-title">Our Celebrations</div>
+              <div className="celebrations-sub">We would be honored to share each of these moments with you</div>
+              {celebrations.map((c, i) => {
+                const f = fmtCeleb(c.ts)
+                return (
+                  <div key={i} className={`celebration-card${c.isMain ? ' is-main' : ''}`}>
+                    <div className="celebration-date">
+                      <div className="celebration-day">{f.day}</div>
+                      <div className="celebration-month">{f.month}</div>
+                      <div className="celebration-year">{f.year}</div>
+                    </div>
+                    <div className="celebration-body">
+                      {c.isMain && <div className="celebration-badge">Main Celebration</div>}
+                      <div className="celebration-name">{c.title}</div>
+                      <div className="celebration-meta">{f.weekday} · {f.time}</div>
+                      <div className="celebration-venue">{c.venue_name}</div>
+                      {c.venue_address && <div className="celebration-address">{c.venue_address}</div>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {wedding.show_countdown && (
           <>
@@ -713,6 +786,56 @@ const CSS = `
     margin: 0 auto;
   }
 
+  /* ========== CELEBRATIONS (multi-party) ========== */
+  #celebrations { background: var(--bordeaux); padding: 40px 0 50px; }
+  .celebrations-inner { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  .celebrations-title {
+    text-align: center; color: var(--cream);
+    font-size: 41px; font-weight: 500; line-height: 1.2; margin-bottom: 6px;
+  }
+  .celebrations-sub {
+    text-align: center; color: rgba(255,250,248,0.72);
+    font-size: 20px; font-style: italic; line-height: 1.3; margin-bottom: 34px;
+  }
+  .celebration-card {
+    display: flex; gap: 22px; align-items: stretch;
+    background: var(--cream); border-radius: 5px;
+    padding: 22px 26px; margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
+  .celebration-card.is-main {
+    border: 2px solid #c5a35a;
+    box-shadow: 0 10px 34px rgba(0,0,0,0.32);
+  }
+  .celebration-date {
+    flex: 0 0 84px; text-align: center;
+    border-right: 1px solid rgba(58,58,58,0.18); padding-right: 20px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .celebration-day {
+    font-size: 46px; font-weight: 600; color: var(--bordeaux); line-height: 1;
+  }
+  .celebration-month {
+    font-size: 17px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink); margin-top: 5px;
+  }
+  .celebration-year { font-size: 13px; color: rgba(58,58,58,0.6); margin-top: 3px; }
+  .celebration-body {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+  }
+  .celebration-badge {
+    align-self: flex-start;
+    background: #c5a35a; color: #fff;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .celebration-name {
+    font-size: 27px; font-weight: 500; color: var(--ink); line-height: 1.15;
+  }
+  .celebration-meta { font-size: 17px; color: rgba(58,58,58,0.78); margin-top: 6px; }
+  .celebration-venue { font-size: 18px; color: var(--ink); margin-top: 8px; }
+  .celebration-address { font-size: 15px; color: rgba(58,58,58,0.7); margin-top: 2px; }
+
   /* ========== COUNTDOWN ========== */
   #countdown-section {
     background: var(--cream);
@@ -1004,6 +1127,16 @@ const CSS = `
     .time-number           { font-size: 32px; }
     .time-label            { font-size: 14px; }
     .time-sep              { font-size: 36px; margin-top: -28px; }
+    .celebrations-title    { font-size: 28px; }
+    .celebrations-sub      { font-size: 16px; margin-bottom: 24px; }
+    .celebration-card      { gap: 14px; padding: 16px 18px; }
+    .celebration-date      { flex: 0 0 60px; padding-right: 14px; }
+    .celebration-day       { font-size: 34px; }
+    .celebration-month     { font-size: 14px; }
+    .celebration-name      { font-size: 21px; }
+    .celebration-meta      { font-size: 15px; }
+    .celebration-venue     { font-size: 15px; }
+    .celebration-address   { font-size: 13px; }
     .location-inner h2     { font-size: 28px; }
     .location-photo        { width: 100%; }
     .location-name         { font-size: 17px; }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
+import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
@@ -58,6 +59,7 @@ export default function NewWeddingPage() {
   ]
 
   const [program, setProgram] = useState<ProgramItem []>([])
+  const [parties, setParties] = useState<Party[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -85,7 +87,7 @@ export default function NewWeddingPage() {
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program, parties }),
     })
 
     const data = await res.json()
@@ -98,7 +100,7 @@ export default function NewWeddingPage() {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
 }
 
@@ -398,6 +400,10 @@ export default function NewWeddingPage() {
 
         <Section title="Programme de la soirée">
           <ProgramEditor initial={program} onChange={setProgram} />
+        </Section>
+
+        <Section title="Fêtes additionnelles">
+          <PartiesEditor initial={parties} onChange={setParties} />
         </Section>
 
         <Section title="Template & pack">

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
+import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
@@ -69,6 +70,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     : (wedding.template_id === 'viktor_paula' ? VP_DEFAULT_PROGRAM : [])
 
   const [program, setProgram] = useState<ProgramItem []>(initialProgram)
+  const [parties, setParties] = useState<Party[]>((wedding.parties as Party[]) ?? [])
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')
@@ -90,7 +92,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     const res = await fetch(`/api/admin/weddings/${wedding.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program, parties }),
     })
 
     const data = await res.json()
@@ -104,7 +106,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
   }
 
@@ -415,6 +417,10 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
         <Section title="Programme de la soirée">
           <ProgramEditor initial={program} onChange={setProgram} />
+        </Section>
+
+        <Section title="Fêtes additionnelles">
+          <PartiesEditor initial={parties} onChange={setParties} />
         </Section>
 
         <Section title="Template & pack">

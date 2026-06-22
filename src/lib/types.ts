@@ -53,6 +53,7 @@ export interface Wedding {
   intro_video_url?: string
   wedding_day_text?: string
   venue_photo?: string
+  parties?: Party[]
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string
@@ -62,6 +63,16 @@ export interface ProgramItem {
   time: string
   event: string
   venue?: string
+}
+
+// Une fête / célébration additionnelle (mariages multi-jours, ex : Tunisie).
+// La réception principale reste portée par event_date / venue_name.
+export interface Party {
+  title: string         // ex : "Soirée de la mariée (Outia)"
+  date: string          // YYYY-MM-DD
+  time: string          // HH:MM
+  venue_name: string
+  venue_address?: string
 }
 
 export interface RSVP {
