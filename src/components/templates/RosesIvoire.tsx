@@ -321,15 +321,15 @@ function buildCSS(): string {
   .ri-box {
     border: 1px solid ${P.gold};
     border-radius: 8px;
-    padding: 9px 22px;
+    padding: 8px 18px;
     display: flex; align-items: center; justify-content: center;
-    width: fit-content; min-width: 170px;
+    width: fit-content; min-width: 140px; max-width: 220px;
     margin: 0 auto 20px; text-align: center;
   }
   .ri-box-text {
     font-family: 'IBM Plex Serif', serif;
-    font-size: clamp(.4rem, 1.1vw, .52rem);
-    letter-spacing: .18em; text-transform: uppercase;
+    font-size: clamp(.38rem, 1vw, .48rem);
+    letter-spacing: .16em; text-transform: uppercase;
     color: ${P.gold}; line-height: 1.7; font-weight: 400;
   }
   .ri-box-bottom { margin-top: 22px; margin-bottom: 0; }
