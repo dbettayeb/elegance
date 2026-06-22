@@ -375,8 +375,8 @@ function buildCSS(): string {
     transform: translate(-50%, -50%);
     line-height: 1; pointer-events: none;
   }
-  .t8-initial-left  { left: 30.2%; top: 47.6%; }
-  .t8-initial-right { left: 70.0%; top: 60.2%; }
+  .t8-initial-left  { left: 30.2%; top: 51%; }
+  .t8-initial-right { left: 68.0%; top: 60.2%; }
 
   .t8-name {
     font-family: 'Great Vibes', cursive;
