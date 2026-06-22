@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
+import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
@@ -46,6 +47,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
     show_countdown: wedding.show_countdown ?? true,
+    show_celebrations: wedding.show_celebrations ?? true,
     moderation_on: wedding.moderation_on,
     bismillah_palette: wedding.bismillah_palette ?? 'or_classique',
     background_image: wedding.background_image ?? 'bg-texture.jpg',
@@ -69,6 +71,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     : (wedding.template_id === 'viktor_paula' ? VP_DEFAULT_PROGRAM : [])
 
   const [program, setProgram] = useState<ProgramItem []>(initialProgram)
+  const [parties, setParties] = useState<Party[]>((wedding.parties as Party[]) ?? [])
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')
@@ -90,7 +93,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     const res = await fetch(`/api/admin/weddings/${wedding.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program, parties }),
     })
 
     const data = await res.json()
@@ -104,7 +107,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
   }
 
@@ -417,6 +420,10 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           <ProgramEditor initial={program} onChange={setProgram} />
         </Section>
 
+        <Section title="Fêtes additionnelles">
+          <PartiesEditor initial={parties} onChange={setParties} />
+        </Section>
+
         <Section title="Template & pack">
           <Row>
             <Field label="Template">
@@ -490,6 +497,9 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Toggle label="Afficher le compte à rebours"
               help="Section compte à rebours jusqu'au jour J"
               checked={form.show_countdown} onChange={v => set('show_countdown', v)} />
+            <Toggle label="Afficher les fêtes / célébrations"
+              help="Affiche le bloc « Our Celebrations » avec toutes les fêtes additionnelles et la réception principale"
+              checked={form.show_celebrations} onChange={v => set('show_celebrations', v)} />
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />

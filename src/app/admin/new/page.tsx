@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
+import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
@@ -38,6 +39,7 @@ export default function NewWeddingPage() {
     show_rsvp: true,
     show_guestbook: true,
     show_countdown: true,
+    show_celebrations: true,
     moderation_on: true,
     bismillah_palette: 'or_classique',
     background_image: 'bg-texture.jpg',
@@ -58,6 +60,7 @@ export default function NewWeddingPage() {
   ]
 
   const [program, setProgram] = useState<ProgramItem []>([])
+  const [parties, setParties] = useState<Party[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -85,7 +88,7 @@ export default function NewWeddingPage() {
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program, parties }),
     })
 
     const data = await res.json()
@@ -98,7 +101,7 @@ export default function NewWeddingPage() {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
 }
 
@@ -400,6 +403,10 @@ export default function NewWeddingPage() {
           <ProgramEditor initial={program} onChange={setProgram} />
         </Section>
 
+        <Section title="Fêtes additionnelles">
+          <PartiesEditor initial={parties} onChange={setParties} />
+        </Section>
+
         <Section title="Template & pack">
           <Row>
             <Field label="Template d'invitation" required>
@@ -473,6 +480,9 @@ export default function NewWeddingPage() {
             <Toggle label="Afficher le compte à rebours"
               help="Section compte à rebours jusqu'au jour J"
               checked={form.show_countdown} onChange={v => set('show_countdown', v)} />
+            <Toggle label="Afficher les fêtes / célébrations"
+              help="Affiche le bloc « Our Celebrations » avec toutes les fêtes additionnelles et la réception principale"
+              checked={form.show_celebrations} onChange={v => set('show_celebrations', v)} />
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />

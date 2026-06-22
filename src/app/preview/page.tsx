@@ -67,6 +67,13 @@ export default function PreviewPage() {
         custom_font: parsed.custom_font || undefined,
 
         program: parsed.program || [],
+        parties: parsed.parties || [],
+        show_celebrations: parsed.show_celebrations ?? true,
+
+        wedding_day_text: parsed.wedding_day_text || undefined,
+        venue_photo:      parsed.venue_photo      || undefined,
+        couple_photo:     parsed.couple_photo     || undefined,
+        intro_video_url:  parsed.intro_video_url  || undefined,
 
         pack: (parsed.pack || 'essentiel') as Wedding['pack'],
         show_rsvp:       parsed.show_rsvp       ?? true,
