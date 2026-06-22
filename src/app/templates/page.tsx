@@ -27,19 +27,15 @@ export default function PublicTemplatesPage() {
               <Link key={t.id} href={`/templates/${t.id}`} className="tpl-card">
                 <div className="tpl-visual" style={{ background: t.palette[0] }}>
 
-                  {t.preview ? (
-                    <img
-                      src={t.preview}
-                      alt={`Aperçu ${t.name}`}
-                      className="tpl-preview-img"
-                    />
-                  ) : (
-                    <div className="tpl-name-display" style={{ color: t.palette[2] || t.palette[1] }}>
-                      <span>{t.name}</span>
-                      <div className="tpl-line" style={{ background: t.palette[2] || t.palette[1] }} />
-                      <small>Aperçu démo</small>
-                    </div>
-                  )}
+                  {/* Live mini-render of the real template */}
+                  <iframe
+                    src={`/templates/${t.id}/embed`}
+                    className="tpl-mini-frame"
+                    loading="lazy"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    scrolling="no"
+                  />
 
                   {/* Hover overlay */}
                   <div className="tpl-hover-overlay">
@@ -119,24 +115,12 @@ const CSS = `
   .tpl-card:hover .tpl-visual { box-shadow: 0 24px 56px rgba(0,0,0,0.14); }
 
   /* Preview screenshot */
-  .tpl-preview-img {
+  /* Live template mini-render */
+  .tpl-mini-frame {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    transition: transform 0.5s ease;
-  }
-  .tpl-card:hover .tpl-preview-img { transform: scale(1.04); }
-
-  /* Placeholder (no preview image) */
-  .tpl-name-display { text-align: center; padding: 0 24px; position: relative; z-index: 1; }
-  .tpl-name-display span {
-    font-family: Georgia, serif; font-size: 1.7rem; font-weight: 300; display: block;
-  }
-  .tpl-line { width: 40px; height: 1px; margin: 12px auto; opacity: 0.6; }
-  .tpl-name-display small {
-    font-size: 0.55rem; letter-spacing: 0.3em;
-    text-transform: uppercase; opacity: 0.7;
+    border: none; display: block;
+    pointer-events: none;
   }
 
   /* Hover overlay */
