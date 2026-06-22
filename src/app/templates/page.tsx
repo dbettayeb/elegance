@@ -175,14 +175,38 @@ const CSS = `
     position: relative;
     overflow: hidden;
     display: flex; align-items: center; justify-content: center;
+    container-type: inline-size;
   }
   .tpl-card:hover .tpl-visual { box-shadow: 0 24px 56px rgba(0,0,0,0.14); }
 
+  /* Iframe rendu en taille fixe (390px = mobile standard), puis réduit via container queries */
   .tpl-mini-frame {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    width: 390px;
+    height: 520px;
+    transform-origin: top left;
+    transform: scale(0.67);
     border: none; display: block;
     pointer-events: none;
+  }
+  @container (max-width: 180px) {
+    .tpl-mini-frame { transform: scale(0.41); }
+  }
+  @container (min-width: 181px) and (max-width: 220px) {
+    .tpl-mini-frame { transform: scale(0.54); }
+  }
+  @container (min-width: 221px) and (max-width: 260px) {
+    .tpl-mini-frame { transform: scale(0.62); }
+  }
+  @container (min-width: 261px) and (max-width: 310px) {
+    .tpl-mini-frame { transform: scale(0.72); }
+  }
+  @container (min-width: 311px) and (max-width: 370px) {
+    .tpl-mini-frame { transform: scale(0.85); }
+  }
+  @container (min-width: 371px) {
+    .tpl-mini-frame { transform: scale(0.97); }
   }
 
   .tpl-hover-overlay {
