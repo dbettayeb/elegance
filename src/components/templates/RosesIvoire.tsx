@@ -417,7 +417,7 @@ function buildCSS(): string {
   .ri-cd-label { font-size: .44rem; color: ${P.goldMid}; margin-top: 6px; letter-spacing: .1em; text-transform: uppercase; }
 
   /* PROGRAMME */
-  .ri-program { display: flex; flex-direction: column; width: 100%; padding: 0 4px; }
+  .ri-program { display: flex; flex-direction: column; width: calc(100% - 32px); margin: 0 auto; }
   .ri-prog-item {
     display: grid; grid-template-columns: 65px 14px 1fr; gap: 10px;
     align-items: center; padding: 10px 0;
