@@ -34,6 +34,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   function startSequence() {
     if (phase !== 0) return
     setPhase(1)                          // dove & hint fade out
+    // Trigger intro video download NOW so it has 4s to buffer before play()
+    if (wedding.intro_video_url) introVideoRef.current?.load()
     setTimeout(() => setPhase(2), 1000)  // polygons start opening
     setTimeout(() => setPhase(3), 3500)  // opening screen fades out
     setTimeout(() => {
@@ -252,6 +254,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             src={wedding.intro_video_url}
             onEnded={handleIntroVideoEnd}
             playsInline
+            preload="none"
           />
           <button className="video-skip-btn" onClick={handleIntroVideoEnd} aria-label="Skip video">
             Skip ›
@@ -267,7 +270,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         <div id="hero">
           <div className="artboard hero-artboard">
             <div className="hero-video-wrap">
-              <video autoPlay muted loop playsInline>
+              <video autoPlay muted loop playsInline preload="auto">
                 <source src="https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/video/TemplatesVideos/ViktorPaula.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvdmlkZW8vVGVtcGxhdGVzVmlkZW9zL1Zpa3RvclBhdWxhLm1wNCIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODIxMjExNDUsImV4cCI6MTkzOTgwMTE0NX0.6NSx4h_NEEezq6IJ32TiJS0Z1gHZ52QLwXb9wYeT2ss" type="video/mp4" />
               </video>
             </div>
