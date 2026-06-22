@@ -321,15 +321,15 @@ function buildCSS(): string {
   .ri-box {
     border: 1px solid ${P.gold};
     border-radius: 8px;
-    padding: 9px 22px;
+    padding: 8px 18px;
     display: flex; align-items: center; justify-content: center;
-    width: fit-content; min-width: 170px;
+    width: fit-content; min-width: 140px; max-width: 220px;
     margin: 0 auto 20px; text-align: center;
   }
   .ri-box-text {
     font-family: 'IBM Plex Serif', serif;
-    font-size: clamp(.4rem, 1.1vw, .52rem);
-    letter-spacing: .18em; text-transform: uppercase;
+    font-size: clamp(.38rem, 1vw, .48rem);
+    letter-spacing: .16em; text-transform: uppercase;
     color: ${P.gold}; line-height: 1.7; font-weight: 400;
   }
   .ri-box-bottom { margin-top: 22px; margin-bottom: 0; }
@@ -417,7 +417,7 @@ function buildCSS(): string {
   .ri-cd-label { font-size: .44rem; color: ${P.goldMid}; margin-top: 6px; letter-spacing: .1em; text-transform: uppercase; }
 
   /* PROGRAMME */
-  .ri-program { display: flex; flex-direction: column; width: 100%; padding: 0 4px; }
+  .ri-program { display: flex; flex-direction: column; width: calc(100% - 32px); margin: 0 auto; }
   .ri-prog-item {
     display: grid; grid-template-columns: 65px 14px 1fr; gap: 10px;
     align-items: center; padding: 10px 0;
