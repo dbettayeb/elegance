@@ -4,22 +4,26 @@ import { Wedding } from '@/lib/types'
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ mode?: string }>
 }
 
 /**
- * Bare template render used inside the iframe on /templates/[id].
- * No shell, no navigation — just the raw component so that position:fixed
- * elements inside the template are relative to this iframe's viewport.
+ * Bare template render used inside iframes.
+ * - Default (no params): full experience with opening screen
+ * - ?mode=card: skips the opening screen, shows the invitation card directly
+ *   Used by the catalog grid to display a live preview of the content.
  */
-export default async function TemplateEmbed({ params }: Props) {
+export default async function TemplateEmbed({ params, searchParams }: Props) {
   const { id } = await params
+  const { mode } = await searchParams
   const template = TEMPLATES.find(t => t.id === id)
   if (!template) notFound()
 
   const Component = template.component
 
   const mockWedding: Wedding = {
-    id: 'preview',
+    // 'catalog' triggers opened=true in useInvitationLogic, skipping the opening screen
+    id: mode === 'card' ? 'catalog' : 'preview',
     slug: 'preview',
     access_token: 'preview',
     couple_token: 'preview',
