@@ -63,6 +63,11 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   }
 
   function handleIntroVideoEnd() {
+    // Pause and reset the video so its audio stops immediately
+    if (introVideoRef.current) {
+      introVideoRef.current.pause()
+      introVideoRef.current.currentTime = 0
+    }
     setShowIntroVideo(false)
     setTimeout(() => {
       openEnvelope()
