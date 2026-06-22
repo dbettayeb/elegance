@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { TEMPLATES } from '@/lib/templates'
-import { Wedding } from '@/lib/types'
 import PublicShell from '@/components/public/PublicShell'
 
 interface Props {
@@ -23,41 +22,6 @@ export default async function PublicTemplatePreview({ params }: Props) {
   const template = TEMPLATES.find(t => t.id === id)
   if (!template) notFound()
 
-  const Component = template.component
-
-  const mockWedding: Wedding = {
-    id: 'preview',
-    slug: 'preview',
-    access_token: 'preview',
-    couple_token: 'preview',
-    couple_email: 'demo@example.com',
-    bride_name: 'Yasmine',
-    groom_name: 'Mehdi',
-    bride_name_ar: 'ياسمين',
-    groom_name_ar: 'مهدي',
-    event_date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-    venue_name: 'Dar El Jeld',
-    venue_address: '5 Rue Dar El Jeld, Tunis 1006, Tunisie',
-    gps_google: 'https://maps.google.com',
-    gps_apple: 'https://maps.apple.com',
-    template_id: template.id,
-    intro_text: 'Vous êtes cordialement invités au mariage de',
-    custom_message: 'Avec joie et émotion, nous vous invitons à partager ce moment unique qui scellera notre union.',
-    program: [
-      { time: '17:00', event: 'Cérémonie', venue: 'Dar El Jeld' },
-      { time: '19:00', event: 'Cocktail de bienvenue', venue: 'Patio andalou' },
-      { time: '20:30', event: 'Dîner de gala', venue: 'Salle Sultan' },
-      { time: '23:00', event: 'Ouverture du bal', venue: 'Salle Sultan' },
-    ],
-    pack: 'prestige',
-    show_rsvp: true,
-    show_guestbook: true,
-    show_countdown: true,
-    moderation_on: true,
-    status: 'active',
-    created_at: new Date().toISOString(),
-  }
-
   return (
     <PublicShell>
       <style>{CSS}</style>
@@ -75,23 +39,34 @@ export default async function PublicTemplatePreview({ params }: Props) {
         </div>
       </div>
 
-      <div className="ptp-content">
-        <Component wedding={mockWedding} />
-      </div>
+      {/*
+        The template renders inside an iframe so that position:fixed elements
+        (opening screen, decorations) are relative to the iframe's own viewport —
+        fully separated from the ptp-bar above. No CSS hacks required.
+      */}
+      <iframe
+        src={`/templates/${template.id}/embed`}
+        title={`Aperçu ${template.name}`}
+        allow="autoplay"
+        className="ptp-iframe"
+      />
     </PublicShell>
   )
 }
 
 const CSS = `
-  /* On template preview pages the ptp-bar already provides navigation — hide the site header/footer */
+  /* Constrain the whole shell to the viewport so the iframe fills exactly the remaining height */
+  .pub-shell { height: 100vh !important; overflow: hidden !important; }
   .pub-header { display: none !important; }
   .pub-footer { display: none !important; }
+  main { height: 100% !important; display: flex !important; flex-direction: column !important; }
 
   .ptp-bar {
-    position: sticky; top: 0; z-index: 100000;
+    flex-shrink: 0;
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--pub-border);
+    z-index: 10;
   }
   .ptp-bar-inner {
     max-width: 1180px; margin: 0 auto; padding: 14px 28px;
@@ -114,23 +89,18 @@ const CSS = `
   }
   .ptp-cta:hover { opacity: 0.85; }
 
-  /*
-   * transform: translateY(0) creates a new CSS "containing block" for any
-   * position:fixed children inside the template.  Instead of being fixed to
-   * the VIEWPORT they become fixed to THIS div, so they never escape into the
-   * ptp-bar area above.  The opening screen, fixed decorations, etc. all render
-   * entirely within .ptp-content — fully separated from the navigation bar.
-   */
-  .ptp-content {
-    position: relative;
-    transform: translateY(0);
-    min-height: calc(100vh - 60px);
+  /* iframe grows to fill all remaining height below the bar */
+  .ptp-iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
   }
 
   @media (max-width: 720px) {
     .ptp-info { display: none; }
     .ptp-bar-inner { padding: 12px 18px; }
     .ptp-cta { padding: 7px 14px; font-size: 0.66rem; }
-    .ptp-content { min-height: calc(100vh - 44px); }
   }
 `
