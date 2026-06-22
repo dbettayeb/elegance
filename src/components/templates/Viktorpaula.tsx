@@ -133,7 +133,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   // The main reception comes from the core fields; additional parties from wedding.parties.
   // All are merged and shown chronologically, with the main reception highlighted.
   type Celebration = {
-    title: string; ts: number; venue_name: string; venue_address?: string; isMain: boolean
+    title: string; ts: number; venue_name: string; venue_address?: string
+    gps_google?: string; gps_apple?: string; isMain: boolean
   }
   const celebrations: Celebration[] = (() => {
     const list: Celebration[] = []
@@ -146,6 +147,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
           ts,
           venue_name: p.venue_name,
           venue_address: p.venue_address,
+          gps_google: p.gps_google,
+          gps_apple: p.gps_apple,
           isMain: false,
         })
       })
@@ -156,11 +159,13 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
       ts: eventDate.getTime(),
       venue_name: wedding.venue_name,
       venue_address: wedding.venue_address,
+      gps_google: wedding.gps_google,
+      gps_apple: wedding.gps_apple,
       isMain: true,
     })
     return list.sort((a, b) => a.ts - b.ts)
   })()
-  const hasCelebrations = (wedding.parties && wedding.parties.length > 0)
+  const hasCelebrations = (wedding.show_celebrations ?? true) && !!wedding.parties && wedding.parties.length > 0
 
   function fmtCeleb(ts: number) {
     const d = new Date(ts)
@@ -321,6 +326,12 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
                       <div className="celebration-meta">{f.weekday} · {f.time}</div>
                       <div className="celebration-venue">{c.venue_name}</div>
                       {c.venue_address && <div className="celebration-address">{c.venue_address}</div>}
+                      {(c.gps_google || c.gps_apple) && (
+                        <div className="celebration-buttons">
+                          {c.gps_google && <a className="map-btn" href={c.gps_google} target="_blank" rel="noopener noreferrer">Google Maps</a>}
+                          {c.gps_apple  && <a className="map-btn" href={c.gps_apple}  target="_blank" rel="noopener noreferrer">Apple Maps</a>}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
@@ -835,6 +846,8 @@ const CSS = `
   .celebration-meta { font-size: 17px; color: rgba(58,58,58,0.78); margin-top: 6px; }
   .celebration-venue { font-size: 18px; color: var(--ink); margin-top: 8px; }
   .celebration-address { font-size: 15px; color: rgba(58,58,58,0.7); margin-top: 2px; }
+  .celebration-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .celebration-buttons .map-btn { font-size: 15px; padding: 0.4rem 1.1rem; }
 
   /* ========== COUNTDOWN ========== */
   #countdown-section {

@@ -39,6 +39,7 @@ export default function NewWeddingPage() {
     show_rsvp: true,
     show_guestbook: true,
     show_countdown: true,
+    show_celebrations: true,
     moderation_on: true,
     bismillah_palette: 'or_classique',
     background_image: 'bg-texture.jpg',
@@ -479,6 +480,9 @@ export default function NewWeddingPage() {
             <Toggle label="Afficher le compte à rebours"
               help="Section compte à rebours jusqu'au jour J"
               checked={form.show_countdown} onChange={v => set('show_countdown', v)} />
+            <Toggle label="Afficher les fêtes / célébrations"
+              help="Affiche le bloc « Our Celebrations » avec toutes les fêtes additionnelles et la réception principale"
+              checked={form.show_celebrations} onChange={v => set('show_celebrations', v)} />
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />

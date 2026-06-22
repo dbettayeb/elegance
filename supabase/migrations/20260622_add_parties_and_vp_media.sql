@@ -3,6 +3,10 @@
 ALTER TABLE weddings
   ADD COLUMN IF NOT EXISTS parties jsonb NOT NULL DEFAULT '[]'::jsonb;
 
+-- Toggle to show/hide the whole "Our Celebrations" block.
+ALTER TABLE weddings
+  ADD COLUMN IF NOT EXISTS show_celebrations boolean NOT NULL DEFAULT true;
+
 -- Viktor & Paula media fields (previously applied manually in prod).
 ALTER TABLE weddings
   ADD COLUMN IF NOT EXISTS couple_photo     text,

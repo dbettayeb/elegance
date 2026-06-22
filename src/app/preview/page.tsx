@@ -68,6 +68,7 @@ export default function PreviewPage() {
 
         program: parsed.program || [],
         parties: parsed.parties || [],
+        show_celebrations: parsed.show_celebrations ?? true,
 
         wedding_day_text: parsed.wedding_day_text || undefined,
         venue_photo:      parsed.venue_photo      || undefined,

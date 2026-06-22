@@ -7,6 +7,8 @@ export interface Party {
   time: string
   venue_name: string
   venue_address?: string
+  gps_google?: string
+  gps_apple?: string
 }
 
 export default function PartiesEditor({
@@ -24,7 +26,7 @@ export default function PartiesEditor({
   }
 
   function addItem() {
-    update([...items, { title: '', date: '', time: '19:00', venue_name: '', venue_address: '' }])
+    update([...items, { title: '', date: '', time: '19:00', venue_name: '', venue_address: '', gps_google: '', gps_apple: '' }])
   }
 
   function removeItem(index: number) {
@@ -123,6 +125,28 @@ export default function PartiesEditor({
                       placeholder="Ex : Avenue de l'Indépendance, Makthar"
                       className="admin-input"
                     />
+                  </div>
+                  <div className="party-row">
+                    <div style={{ flex: 1 }}>
+                      <label className="party-mini-label">Lien Google Maps (optionnel)</label>
+                      <input
+                        type="url"
+                        value={item.gps_google ?? ''}
+                        onChange={e => updateField(i, 'gps_google', e.target.value)}
+                        placeholder="https://maps.google.com/..."
+                        className="admin-input"
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label className="party-mini-label">Lien Apple Maps (optionnel)</label>
+                      <input
+                        type="url"
+                        value={item.gps_apple ?? ''}
+                        onChange={e => updateField(i, 'gps_apple', e.target.value)}
+                        placeholder="https://maps.apple.com/..."
+                        className="admin-input"
+                      />
+                    </div>
                   </div>
                 </div>
 
