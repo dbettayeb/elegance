@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
@@ -44,11 +44,29 @@ export default function NewWeddingPage() {
     decoration_image: 'decoration.png',
     template_variant: 'or_classique',
     guest_invite_enabled: false,
+    couple_photo: '',
+    intro_video_url: '',
+    wedding_day_text: '',
+    venue_photo: '',
   })
+
+  const VP_DEFAULT_PROGRAM: ProgramItem[] = [
+    { time: '16:00', event: 'Wedding Ceremony' },
+    { time: '17:00', event: 'Cocktail Hour' },
+    { time: '19:00', event: 'Dinner' },
+    { time: '20:00', event: 'Party' },
+  ]
 
   const [program, setProgram] = useState<ProgramItem []>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (form.template_id === 'viktor_paula' && program.length === 0) {
+      setProgram(VP_DEFAULT_PROGRAM)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.template_id])
 
   function set(key: string, value: string | boolean | null) {
     setForm(f => ({ ...f, [key]: value }))
@@ -347,9 +365,10 @@ export default function NewWeddingPage() {
         </Section>
 
         <Section title="Textes de l'invitation">
-          <Field label="Message d'introduction" help="Phrase d'accroche en haut de l'invitation.">
+          <Field label="Message d'introduction" help={form.template_id === 'viktor_paula' ? 'Titre de la section "Dear Friends". Ex : Dear Friends and Family,' : 'Phrase d\'accroche en haut de l\'invitation.'}>
             <input className="admin-input" value={form.intro_text}
-              onChange={e => set('intro_text', e.target.value)} />
+              onChange={e => set('intro_text', e.target.value)}
+              placeholder={form.template_id === 'viktor_paula' ? 'Dear Friends and Family,' : ''} />
           </Field>
           <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Cliquer sur un texte prédéfini pour l'insérer.">
             {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
@@ -423,6 +442,31 @@ export default function NewWeddingPage() {
             language={fontLanguage}
           />
         </Section>
+
+        {form.template_id === 'viktor_paula' && (
+          <Section title="Viktor &amp; Paula — médias">
+            <Field label="Texte du titre principal" help='Texte affiché en haut du héros. Par défaut "Wedding Day".'>
+              <input className="admin-input" value={form.wedding_day_text}
+                onChange={e => set('wedding_day_text', e.target.value)}
+                placeholder="Wedding Day" />
+            </Field>
+            <Field label="Photo du lieu (location)" help="URL d'une image JPG/PNG du lieu de réception. Laissez vide pour ne pas afficher de photo.">
+              <input className="admin-input" type="url" value={form.venue_photo}
+                onChange={e => set('venue_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+            <Field label="Photo du couple (fermeture)" help="URL d'une image JPG/PNG. Affichée en bas de l'invitation. Laissez vide pour n'afficher que le texte.">
+              <input className="admin-input" type="url" value={form.couple_photo}
+                onChange={e => set('couple_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+            <Field label="Vidéo d'introduction" help="URL d'une vidéo MP4. Se joue après l'ouverture de l'enveloppe avant d'afficher l'invitation.">
+              <input className="admin-input" type="url" value={form.intro_video_url}
+                onChange={e => set('intro_video_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+          </Section>
+        )}
 
         <Section title="Options">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

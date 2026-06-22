@@ -49,6 +49,10 @@ export interface Wedding {
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string
   guest_invite_suffix_ar?: string
+  couple_photo?: string
+  intro_video_url?: string
+  wedding_day_text?: string
+  venue_photo?: string
   status: 'active' | 'archived' | 'suspended' | 'lead'
   expires_at?: string
   created_at: string

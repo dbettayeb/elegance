@@ -22,7 +22,7 @@ const NAME_SELECTORS = [
   // Alexa & Richard
   '.ar-hero-names', '.ar-hero-names *', '.ar-closing-names',
   // Viktor & Paula
-  '.hero-names-block', '.hero-names-block *', '.closing-names',
+  '.hero-names-block', '.hero-names-block *', '.closing-names', '.hero-wedding-day',
   // Ivoire Doré
   '.iv-names', '.iv-names *', '.iv-footer-names',
   // ToileBleue
