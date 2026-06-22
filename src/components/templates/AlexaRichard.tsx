@@ -328,29 +328,6 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     )
   }
 
-  if (wedding.id === 'catalog') {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(160deg, #3d6e87 0%, #6fabc6 60%, #9bc9e1 100%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Cormorant Garamond', Georgia, serif",
-        color: '#fff', textAlign: 'center', padding: '40px 24px',
-      }}>
-        <p style={{ fontSize: '0.62rem', letterSpacing: '0.45em', textTransform: 'uppercase', opacity: 0.75, marginBottom: '28px' }}>You are invited</p>
-        <div style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)', fontWeight: 300, lineHeight: 1.1 }}>
-          {wedding.bride_name}
-          <br /><span style={{ fontStyle: 'italic', fontSize: '0.55em', opacity: 0.85 }}>&amp;</span><br />
-          {wedding.groom_name}
-        </div>
-        <div style={{ width: '36px', height: '1px', background: 'rgba(255,255,255,0.45)', margin: '26px auto' }} />
-        <p style={{ fontSize: '0.72rem', letterSpacing: '0.28em', opacity: 0.8, textTransform: 'uppercase' }}>
-          {day} · {month} · {year}
-        </p>
-      </div>
-    )
-  }
-
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rufina:wght@400;700&family=Imperial+Script&family=Parisienne&display=swap" rel="stylesheet" />
