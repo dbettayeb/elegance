@@ -31,7 +31,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
     countdown, eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  const monthEn = eventDate.toLocaleDateString('en-US', { month: 'long' })
+  const monthFr = eventDate.toLocaleDateString('fr-FR', { month: 'long' }).toUpperCase()
   const dayNum  = eventDate.getDate().toString().padStart(2, '0')
   const yearNum = eventDate.getFullYear()
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -96,7 +96,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
           <section className="t8-hero">
             <div className="t8-content-zone">
 
-              <p className="t8-std">Save the Date</p>
+              <p className="t8-std">Réservez cette date</p>
 
               {introText && <p className="t8-intro">{introText}</p>}
 
@@ -112,7 +112,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
               </div>
 
               <p className="t8-name">{brideName}</p>
-              <p className="t8-and">and</p>
+              <p className="t8-and">et</p>
               <p className="t8-name">{groomName}</p>
 
               <div className="t8-divider">
@@ -123,7 +123,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
 
               {/* Date — Month | Day | Year */}
               <div className="t8-date-row">
-                <span className="t8-date-part">{monthEn}</span>
+                <span className="t8-date-part">{monthFr}</span>
                 <span className="t8-date-sep">|</span>
                 <span className="t8-date-part">{dayNum}</span>
                 <span className="t8-date-sep">|</span>

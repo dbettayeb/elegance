@@ -102,7 +102,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
                 <span className="fa-name">{groomName}</span>
               </div>
               <div className="fa-save-block">
-                <p className="fa-save-label">Save the Date</p>
+                <p className="fa-save-label">Réservez cette date</p>
                 <div className="fa-thin-line" />
                 <p className="fa-date-txt">{dateFr}</p>
                 <p className="fa-time-txt">{timeFr}</p>

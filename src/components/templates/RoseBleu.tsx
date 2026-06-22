@@ -44,7 +44,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
     <>
       {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.bg} />}
       <link
-        href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Raleway:wght@300;400;500;600&display=swap"
         rel="stylesheet"
       />
 
@@ -114,7 +114,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
               {/* Date */}
               <p className="rb-date-txt">{dateFr}</p>
 
-              {/* Heure en Tangerine */}
+              {/* Heure */}
               <p className="rb-time-txt">{timeFr}</p>
 
               {/* Lieu */}
@@ -332,12 +332,12 @@ function buildCSS(): string {
     width: 100%; margin-bottom: 10px;
   }
   .rb-name {
-    font-family: 'Tangerine', cursive; font-weight: 700;
+    font-family: 'Great Vibes', cursive; font-weight: 400;
     font-size: clamp(2.6rem, 6.5vw, 4.5rem);
     color: ${P.blue};
   }
   .rb-amp {
-    font-family: 'Tangerine', cursive; font-weight: 400;
+    font-family: 'Great Vibes', cursive; font-weight: 400;
     font-size: clamp(4rem, 10vw, 6.5rem);
     color: ${P.blue}; line-height: .8;
     text-align: center;
@@ -356,7 +356,7 @@ function buildCSS(): string {
     color: ${P.blue}; text-align: center; margin-bottom: 2px;
   }
   .rb-time-txt {
-    font-family: 'Tangerine', cursive; font-weight: 700;
+    font-family: 'Great Vibes', cursive; font-weight: 400;
     font-size: clamp(2.2rem, 7vw, 3.4rem);
     color: ${P.blue}; text-align: center;
     line-height: 1; margin-bottom: 12px;
@@ -384,7 +384,7 @@ function buildCSS(): string {
     color: ${P.blue}; margin-bottom: 6px; font-weight: 600; text-align: center;
   }
   .rb-title {
-    font-family: 'Tangerine', cursive; font-weight: 700;
+    font-family: 'Great Vibes', cursive; font-weight: 400;
     font-size: clamp(2rem, 6vw, 3rem);
     color: ${P.blue}; text-align: center; margin-bottom: 16px; line-height: 1.2;
   }
@@ -423,7 +423,7 @@ function buildCSS(): string {
     display: flex; flex-direction: column; align-items: center; text-align: center;
   }
   .rb-card-title {
-    font-family: 'Tangerine', cursive; font-weight: 700;
+    font-family: 'Great Vibes', cursive; font-weight: 400;
     font-size: clamp(2rem, 6vw, 2.8rem);
     color: ${P.blue}; line-height: 1.2; margin: 6px 0 8px;
   }
@@ -472,7 +472,7 @@ function buildCSS(): string {
   /* FOOTER */
   .rb-footer-inner { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .rb-footer-names {
-    font-family: 'Tangerine', cursive; font-size: 2.4rem; font-weight: 700;
+    font-family: 'Great Vibes', cursive; font-size: 2.4rem; font-weight: 400;
     color: ${P.blue}; margin-bottom: 4px; width: 100%; text-align: center;
   }
   .rb-footer-date   { font-size: .62rem; color: ${P.blueLight}; margin-bottom: 14px; letter-spacing: .08em; width: 100%; text-align: center; }

@@ -31,7 +31,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
   } = useInvitationLogic(wedding)
 
 
-  const monthEn = eventDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
+  const monthFr = eventDate.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase()
   const dayNum  = eventDate.getDate().toString()
   const yearNum = eventDate.getFullYear().toString()
   const timeFr  = eventDate.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' })
@@ -45,7 +45,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
     <>
       {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.bg} />}
       <link
-        href="https://fonts.googleapis.com/css2?family=Parisienne&family=IBM+Plex+Serif:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=IBM+Plex+Serif:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap"
         rel="stylesheet"
       />
 
@@ -104,7 +104,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
 
               {/* Date 3 cases */}
               <div className="ri-date-row" dir="ltr">
-                <div className="ri-date-cell ri-date-month">{monthEn}</div>
+                <div className="ri-date-cell ri-date-month">{monthFr}</div>
                 <div className="ri-date-cell ri-date-day">{dayNum}</div>
                 <div className="ri-date-cell ri-date-year">{yearNum}</div>
               </div>
@@ -337,7 +337,7 @@ function buildCSS(): string {
     margin-bottom: 18px;
   }
   .ri-name {
-    font-family: 'Parisienne', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(2.4rem, 8vw, 3.8rem);
     color: ${P.gold}; line-height: 1.25; font-weight: 400;
   }
@@ -362,7 +362,7 @@ function buildCSS(): string {
     font-weight: 400; letter-spacing: .16em; text-transform: uppercase;
   }
   .ri-date-day {
-    font-family: 'Parisienne', cursive;
+    font-family: 'Great Vibes', cursive;
     padding: 6px 16px; font-size: clamp(2rem, 5.5vw, 2.8rem);
     font-weight: 400; line-height: 1;
   }
@@ -397,7 +397,7 @@ function buildCSS(): string {
     color: ${P.gold}; margin-bottom: 6px; font-weight: 600; text-align: center;
   }
   .ri-title {
-    font-family: 'Parisienne', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.8rem, 5vw, 2.5rem);
     color: ${P.gold}; font-weight: 400; text-align: center; margin-bottom: 16px;
   }
@@ -436,7 +436,7 @@ function buildCSS(): string {
     display: flex; flex-direction: column; align-items: center; text-align: center;
   }
   .ri-card-title {
-    font-family: 'Parisienne', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.8rem, 5vw, 2.4rem);
     color: ${P.gold}; font-weight: 400; line-height: 1.2; margin: 6px 0 8px;
   }
@@ -484,7 +484,7 @@ function buildCSS(): string {
   /* FOOTER */
   .ri-footer-inner { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .ri-footer-names {
-    font-family: 'Parisienne', cursive; font-size: 2.2rem;
+    font-family: 'Great Vibes', cursive; font-size: 2.2rem;
     color: ${P.gold}; margin-bottom: 4px; font-weight: 400; width: 100%; text-align: center;
   }
   .ri-footer-date   { font-size: .62rem; color: ${P.goldMid}; margin-bottom: 14px; letter-spacing: .08em; width: 100%; text-align: center; }
