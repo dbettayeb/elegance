@@ -3,10 +3,13 @@ import { useState, useEffect } from 'react'
 import { Wedding } from '@/lib/types'
 
 export function useInvitationLogic(wedding: Wedding) {
-  const isPreview = wedding.id === 'preview'
+  // Both 'preview' and 'catalog' bypass real API calls and use mock data
+  const isPreview = wedding.id === 'preview' || wedding.id === 'catalog'
+  // 'catalog' additionally skips the opening screen (card shown immediately)
+  const isCatalog = wedding.id === 'catalog'
 
-  const [opened, setOpened] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [opened, setOpened] = useState(isCatalog)
+  const [visible, setVisible] = useState(isCatalog)
   const [countdown, setCountdown] = useState({ d: '000', h: '00', m: '00', s: '00' })
   const [rsvpStatus, setRsvpStatus] = useState<'idle' | 'loading' | 'done'>('idle')
   const [rsvpChoice, setRsvpChoice] = useState<'present' | 'absent' | 'maybe'>('present')

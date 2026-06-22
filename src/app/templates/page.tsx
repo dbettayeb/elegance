@@ -29,7 +29,7 @@ export default function PublicTemplatesPage() {
 
                   {/* Live mini-render of the real template */}
                   <iframe
-                    src={`/templates/${t.id}/embed`}
+                    src={`/templates/${t.id}/embed?mode=card`}
                     className="tpl-mini-frame"
                     loading="lazy"
                     tabIndex={-1}
