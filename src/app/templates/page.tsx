@@ -253,6 +253,7 @@ const CSS = `
     .tpl-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
     .tpl-grid-section { padding: 0 16px 64px; }
     .tpl-meta-desc { display: none; }
+    .tpl-meta-tags { display: none; }
     .tpl-meta { padding: 10px 2px 0; }
     .tpl-meta-name { font-size: 0.95rem; }
   }

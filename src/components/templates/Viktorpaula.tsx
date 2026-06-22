@@ -219,6 +219,29 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     )
   }
 
+  if (wedding.id === 'catalog') {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(160deg, #4a0116 0%, #66021f 55%, #8a1030 100%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        fontFamily: "'Cormorant Garamond', Georgia, serif",
+        color: '#fffaf8', textAlign: 'center', padding: '40px 24px',
+      }}>
+        <p style={{ fontSize: '0.62rem', letterSpacing: '0.45em', textTransform: 'uppercase', opacity: 0.55, marginBottom: '28px' }}>Wedding Day</p>
+        <div style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)', fontWeight: 300, lineHeight: 1.1 }}>
+          {wedding.bride_name}
+          <br /><span style={{ fontStyle: 'italic', fontSize: '0.55em', opacity: 0.7 }}>&amp;</span><br />
+          {wedding.groom_name}
+        </div>
+        <div style={{ width: '36px', height: '1px', background: 'rgba(255,250,248,0.35)', margin: '26px auto' }} />
+        <p style={{ fontSize: '0.72rem', letterSpacing: '0.28em', opacity: 0.65, textTransform: 'uppercase' }}>
+          {day}.{month}.{year}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ovo&family=Parisienne&display=swap" rel="stylesheet" />
