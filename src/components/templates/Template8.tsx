@@ -36,8 +36,8 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
   const yearNum = eventDate.getFullYear()
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
 
   // Initiales pour le monogramme dans les anneaux
   const brideInit = brideName?.charAt(0) || ''

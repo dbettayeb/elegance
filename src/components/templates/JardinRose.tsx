@@ -41,9 +41,9 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
     hour: '2-digit', minute: '2-digit',
   })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
-  const ampChar   = wedding.bride_name_ar ? 'و' : '&'
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
+  const ampChar   = '&'
 
   return (
     <>

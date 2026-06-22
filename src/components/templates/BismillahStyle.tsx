@@ -291,7 +291,6 @@ export default function BismillahStyle({
                 <div className="bs-card-divider"><span /><i>۞</i><span /></div>
                 <p className="bs-label">تأكيد الحضور</p>
                 <h2 className="bs-card-title">هل ستشرفوننا<br />بحضوركم؟</h2>
-                <p className="bs-rsvp-fr">Merci de confirmer votre présence</p>
                 <div className="bs-card-divider"><span /><i>۞</i><span /></div>
                 {rsvpStatus === 'done' ? (
                   <p className="bs-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
@@ -343,7 +342,6 @@ export default function BismillahStyle({
                 <div className="bs-card-divider"><span /><i>۞</i><span /></div>
                 <p className="bs-label">دفتر التهاني</p>
                 <h2 className="bs-card-title">تهانيكم<br />ودعواتكم</h2>
-                <p className="bs-rsvp-fr">Laissez un message de vœux</p>
                 <div className="bs-card-divider"><span /><i>۞</i><span /></div>
                 {messages.length > 0 && (
                   <div className="bs-messages">
@@ -489,8 +487,7 @@ const CSS = `
   .bs-card-dots{margin-top:20px;letter-spacing:.35em;color:var(--bs-accent);font-size:.7rem;opacity:.55;}
   .bs-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;text-align:left;width:100%;}
   .bs-field-label{font-family:'Montserrat',sans-serif;font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--bs-accent);font-weight:500;}
-  .bs-rsvp-fr{font-family:'Montserrat',sans-serif;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bs-text-muted);margin:-6px 0 14px;}
-  .bs-form{width:100%;display:flex;flex-direction:column;gap:0;text-align:left;direction:ltr;margin-top:8px;}
+.bs-form{width:100%;display:flex;flex-direction:column;gap:0;text-align:left;direction:ltr;margin-top:8px;}
   .bs-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bs-border);border-radius:10px;color:var(--bs-text);font-family:'Amiri',Georgia,serif;font-size:1rem;font-style:italic;outline:none;transition:border-color .3s;}
   .bs-input::placeholder{color:rgba(26,26,26,0.35);font-style:italic}
   .bs-input:focus{border-color:var(--bs-accent)}

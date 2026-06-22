@@ -38,8 +38,8 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
   const timeFr  = eventDate.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' })
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
 
   return (
     <>

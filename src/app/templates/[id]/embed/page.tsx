@@ -39,7 +39,7 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     gps_apple: 'https://maps.apple.com',
     template_id: template.id as Wedding['template_id'],
     intro_text: 'Vous êtes cordialement invités au mariage de',
-    custom_message: 'Avec joie et émotion, nous vous invitons à partager ce moment unique qui scellera notre union.',
+    custom_message: undefined,
     program: [
       { time: '17:00', event: 'Cérémonie', venue: 'Dar El Jeld' },
       { time: '19:00', event: 'Cocktail de bienvenue', venue: 'Patio andalou' },
