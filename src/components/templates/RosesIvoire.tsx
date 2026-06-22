@@ -68,7 +68,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
           .ri-hero, .ri-section, .ri-rsvp-wrap, .ri-gb-wrap, .ri-footer {
             display: flex !important; flex-direction: column; align-items: center;
           }
-          .ri-content-zone { width: 82vw; padding-top: ${RI_TOP}vh; padding-bottom: ${RI_BOTTOM}vh; }
+          .ri-content-zone { width: calc(${decoWidthVh}vh * 0.80); padding-top: ${RI_TOP}vh; padding-bottom: ${RI_BOTTOM}vh; }
           .ri-footer .ri-content-zone { padding-top: 16px; padding-bottom: ${RI_BOTTOM}vh; }
         }
       `}</style>
