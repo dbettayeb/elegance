@@ -47,6 +47,10 @@ const NAME_SELECTORS = [
   '.ri-names', '.ri-names *', '.ri-footer-names',
   // RoseBleu
   '.rb-names-line', '.rb-names-line *', '.rb-footer-names',
+  // Template7
+  '.t7-name', '.t7-footer-names',
+  // Template8
+  '.t8-name', '.t8-footer-names',
 ].join(',\n')
 
 export default function FontOverride({ font }: Props) {

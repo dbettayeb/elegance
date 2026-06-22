@@ -31,13 +31,13 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
     countdown, eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  const monthEn = eventDate.toLocaleDateString('en-US', { month: 'long' })
+  const monthFr = eventDate.toLocaleDateString('fr-FR', { month: 'long' }).toUpperCase()
   const dayNum  = eventDate.getDate().toString().padStart(2, '0')
   const yearNum = eventDate.getFullYear()
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
 
   // Initiales pour le monogramme dans les anneaux
   const brideInit = brideName?.charAt(0) || ''
@@ -96,7 +96,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
           <section className="t8-hero">
             <div className="t8-content-zone">
 
-              <p className="t8-std">Save the Date</p>
+              <p className="t8-std">Réservez cette date</p>
 
               {introText && <p className="t8-intro">{introText}</p>}
 
@@ -112,7 +112,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
               </div>
 
               <p className="t8-name">{brideName}</p>
-              <p className="t8-and">and</p>
+              <p className="t8-and">et</p>
               <p className="t8-name">{groomName}</p>
 
               <div className="t8-divider">
@@ -123,7 +123,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
 
               {/* Date — Month | Day | Year */}
               <div className="t8-date-row">
-                <span className="t8-date-part">{monthEn}</span>
+                <span className="t8-date-part">{monthFr}</span>
                 <span className="t8-date-sep">|</span>
                 <span className="t8-date-part">{dayNum}</span>
                 <span className="t8-date-sep">|</span>
@@ -365,8 +365,8 @@ function buildCSS(): string {
     display: block; width: 100%; height: auto;
   }
   /* Les initiales sont positionnées en % de la largeur de .t8-ring-wrap
-     Anneau gauche : centre image ≈ x=30%, y=50%
-     Anneau droit  : centre image ≈ x=70%, y=50% */
+     Anneau gauche : centre image ≈ x=30.2%, y=49%
+     Anneau droit  : centre image ≈ x=70.4%, y=53.5% (ajusté pour recentrer le K) */
   .t8-initial {
     position: absolute;
     font-family: 'Great Vibes', cursive;
@@ -374,10 +374,9 @@ function buildCSS(): string {
     color: ${P.pinkDark};
     transform: translate(-50%, -50%);
     line-height: 1; pointer-events: none;
-    top: 50%;
   }
-  .t8-initial-left  { left: 30%; }
-  .t8-initial-right { left: 70%; }
+  .t8-initial-left  { left: 30.2%; top: 49%; }
+  .t8-initial-right { left: 70.4%; top: 53.5%; }
 
   .t8-name {
     font-family: 'Great Vibes', cursive;

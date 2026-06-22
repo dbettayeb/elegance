@@ -24,12 +24,6 @@ const P = {
   borderSoft:    'rgba(184,146,74,0.12)',
 }
 
-function ordinalSuffix(n: number): string {
-  const v = n % 100
-  const s = ['th', 'st', 'nd', 'rd']
-  return s[(v - 20) % 10] || s[v] || s[0]
-}
-
 export default function Template7({ wedding }: { wedding: Wedding }) {
   const {
     opened, openEnvelope, visible,
@@ -38,20 +32,20 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
     countdown, eventDate,
   } = useInvitationLogic(wedding)
 
-  const monthEn = eventDate.toLocaleDateString('en-US', { month: 'short' })
+  const monthFr = eventDate.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase()
   const dayNum  = eventDate.getDate()
   const yearNum = eventDate.getFullYear()
   const timeFr  = eventDate.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' })
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
 
   return (
     <>
       {!opened && <OpeningScreen onOpen={openEnvelope} bgColor={P.bg} />}
       <link
-        href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap"
         rel="stylesheet"
       />
 
@@ -100,7 +94,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
           <section className="t7-hero">
             <div className="t7-content-zone">
 
-              <p className="t7-wedding-of">The Wedding Of</p>
+              <p className="t7-wedding-of">Mariage de</p>
 
               <p className="t7-name">{brideName}</p>
 
@@ -117,11 +111,11 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
                 <div className="t7-thin-line" />
               </div>
 
-              <p className="t7-std">Save the Date</p>
+              <p className="t7-std">Réservez cette date</p>
 
               <div className="t7-date-block">
-                <span className="t7-date-month">{monthEn}</span>
-                <span className="t7-date-day">{dayNum}<sup className="t7-ordinal">{ordinalSuffix(dayNum)}</sup></span>
+                <span className="t7-date-month">{monthFr}</span>
+                <span className="t7-date-day">{dayNum}</span>
                 <span className="t7-date-year">{yearNum}</span>
               </div>
 
@@ -325,14 +319,14 @@ function buildCSS(): string {
 
   /* ── HERO ── */
   .t7-wedding-of {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.1rem, 3vw, 1.5rem);
     color: ${P.textMuted};
     letter-spacing: .12em;
     margin-bottom: 4px; text-align: center;
   }
   .t7-name {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(2.4rem, 8vw, 3.8rem);
     color: ${P.textPrimary};
     line-height: 1.1; margin: 0; text-align: center;
@@ -346,7 +340,7 @@ function buildCSS(): string {
   .t7-amp {
     position: absolute; left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.4rem, 4vw, 2.2rem);
     color: ${P.gold}; line-height: 1;
   }
@@ -359,7 +353,7 @@ function buildCSS(): string {
   .t7-rose-mini { height: 18px; width: auto; opacity: .75; }
 
   .t7-std {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     color: ${P.gold};
     letter-spacing: .08em;
@@ -375,16 +369,11 @@ function buildCSS(): string {
     color: ${P.textSecondary}; font-weight: 500;
   }
   .t7-date-day {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.8rem, 5.5vw, 2.8rem);
     color: ${P.textPrimary}; line-height: 1;
   }
-  .t7-ordinal {
-    font-family: 'Raleway', sans-serif;
-    font-size: .42em; vertical-align: super;
-    color: ${P.textSecondary};
-  }
-  .t7-time {
+.t7-time {
     font-size: clamp(.56rem, 1.6vw, .7rem);
     letter-spacing: .3em; text-transform: uppercase;
     color: ${P.gold}; margin: 4px 0; text-align: center;
@@ -412,7 +401,7 @@ function buildCSS(): string {
     color: ${P.gold}; margin-bottom: 6px; font-weight: 600; text-align: center;
   }
   .t7-title {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.8rem, 5vw, 2.6rem);
     color: ${P.textPrimary}; font-weight: 400; text-align: center; margin-bottom: 16px;
   }
@@ -450,7 +439,7 @@ function buildCSS(): string {
     display: flex; flex-direction: column; align-items: center; text-align: center;
   }
   .t7-card-title {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'Great Vibes', cursive;
     font-size: clamp(1.8rem, 5vw, 2.4rem);
     color: ${P.textPrimary}; font-weight: 400; line-height: 1.2; margin: 6px 0 8px;
   }
@@ -501,7 +490,7 @@ function buildCSS(): string {
   /* FOOTER */
   .t7-footer-inner { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .t7-footer-names {
-    font-family: 'Alex Brush', cursive; font-size: 2.2rem;
+    font-family: 'Great Vibes', cursive; font-size: 2.2rem;
     color: ${P.textPrimary}; margin-bottom: 4px; font-weight: 400; text-align: center; width: 100%;
   }
   .t7-footer-date   { font-size: .68rem; color: ${P.textMuted}; margin-bottom: 14px; text-align: center; width: 100%; }

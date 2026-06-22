@@ -41,15 +41,15 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
     hour: '2-digit', minute: '2-digit',
   })
 
-  const brideName = wedding.bride_name_ar || wedding.bride_name
-  const groomName = wedding.groom_name_ar || wedding.groom_name
-  const ampChar   = wedding.bride_name_ar ? 'و' : '&'
+  const brideName = wedding.bride_name
+  const groomName = wedding.groom_name
+  const ampChar   = '&'
 
   return (
     <>
       {!opened && <OpeningScreen onOpen={openEnvelope} bgColor='#F0E5E3' />}
       <link
-        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap"
         rel="stylesheet"
       />
 
@@ -322,10 +322,11 @@ function buildCSS(): string {
   }
   .jr-names {
     display: flex; flex-direction: column; align-items: center;
+    font-family: 'Great Vibes', cursive;
     color: ${P.accent}; line-height: 1.1; margin-bottom: 16px;
   }
-  .jr-name { font-size: clamp(2.8rem, 9vw, 4rem); font-style: italic; font-weight: 400; }
-  .jr-amp  { font-size: clamp(2.2rem, 7vw, 3.2rem); font-style: italic; font-weight: 400; }
+  .jr-name { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(2.8rem, 9vw, 4rem); }
+  .jr-amp  { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(2.2rem, 7vw, 3.2rem); }
 
   .jr-divider {
     display: flex; align-items: center; justify-content: center;
@@ -470,7 +471,7 @@ function buildCSS(): string {
 
   /* FOOTER */
   .jr-footer-inner { width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; }
-  .jr-footer-names  { font-size: 2.2rem; font-style: italic; color: ${P.accent}; margin-bottom: 4px; }
+  .jr-footer-names  { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 2.2rem; color: ${P.accent}; margin-bottom: 4px; }
   .jr-footer-date   { font-style: italic; color: ${P.textSecondary}; font-size: .82rem; margin-bottom: 18px; }
   .jr-footer-credit { font-size: .48rem; letter-spacing: .2em; color: ${P.accent}; opacity: .5; text-transform: uppercase; }
 
