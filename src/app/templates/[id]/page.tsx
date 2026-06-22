@@ -83,8 +83,13 @@ export default async function PublicTemplatePreview({ params }: Props) {
 }
 
 const CSS = `
+  /* Override pub-header z-index so it stays above any template overlay (e.g. #opening-screen z:9999) */
+  .pub-header { z-index: 100001 !important; }
+  /* Hide the site footer on template preview pages — it conflicts with full-screen invitation layouts */
+  .pub-footer { display: none !important; }
+
   .ptp-bar {
-    position: sticky; top: 0; z-index: 200;
+    position: sticky; top: 0; z-index: 100000;
     background: rgba(255,255,255,0.96);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--pub-border);
