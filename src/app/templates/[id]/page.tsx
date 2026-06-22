@@ -114,13 +114,23 @@ const CSS = `
   }
   .ptp-cta:hover { opacity: 0.85; }
 
-  /* Offset so the sticky bar never covers the first pixels of the template content */
-  .ptp-content { padding-top: 60px; }
+  /*
+   * transform: translateY(0) creates a new CSS "containing block" for any
+   * position:fixed children inside the template.  Instead of being fixed to
+   * the VIEWPORT they become fixed to THIS div, so they never escape into the
+   * ptp-bar area above.  The opening screen, fixed decorations, etc. all render
+   * entirely within .ptp-content — fully separated from the navigation bar.
+   */
+  .ptp-content {
+    position: relative;
+    transform: translateY(0);
+    min-height: calc(100vh - 60px);
+  }
 
   @media (max-width: 720px) {
     .ptp-info { display: none; }
     .ptp-bar-inner { padding: 12px 18px; }
     .ptp-cta { padding: 7px 14px; font-size: 0.66rem; }
-    .ptp-content { padding-top: 46px; }
+    .ptp-content { min-height: calc(100vh - 44px); }
   }
 `
