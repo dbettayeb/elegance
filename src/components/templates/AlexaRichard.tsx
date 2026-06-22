@@ -369,7 +369,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
           <div className="ar-artboard ar-hero-artboard">
             <div className="ar-hero-video-wrap">
               <video autoPlay muted loop playsInline>
-                <source src="/assets/alexa-richard/video/hero.mp4" type="video/mp4" />
+                <source src="https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/video/TemplatesVideos/AlexaRichard.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvdmlkZW8vVGVtcGxhdGVzVmlkZW9zL0FsZXhhUmljaGFyZC5tcDQiLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgyMTIxNDUwLCJleHAiOjE5Mzk4MDE0NTB9.iVYypMVBj6MiS455B5DfzTk0ItURgLIlt0EpRvB9Vq4" type="video/mp4" />
               </video>
             </div>
             <div className="ar-hero-overlay"></div>
