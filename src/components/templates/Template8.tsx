@@ -365,8 +365,8 @@ function buildCSS(): string {
     display: block; width: 100%; height: auto;
   }
   /* Les initiales sont positionnées en % de la largeur de .t8-ring-wrap
-     Anneau gauche : centre image ≈ x=30%, y=50%
-     Anneau droit  : centre image ≈ x=70%, y=50% */
+     Anneau gauche : centre image ≈ x=30.2%, y=49%
+     Anneau droit  : centre image ≈ x=70.4%, y=53.5% (ajusté pour recentrer le K) */
   .t8-initial {
     position: absolute;
     font-family: 'Great Vibes', cursive;
@@ -374,10 +374,9 @@ function buildCSS(): string {
     color: ${P.pinkDark};
     transform: translate(-50%, -50%);
     line-height: 1; pointer-events: none;
-    top: 50%;
   }
-  .t8-initial-left  { left: 32.2%; top: 53%; }
-  .t8-initial-right { left: 69.5%; top: 53.5%; }
+  .t8-initial-left  { left: 30.2%; top: 49%; }
+  .t8-initial-right { left: 70.4%; top: 53.5%; }
 
   .t8-name {
     font-family: 'Great Vibes', cursive;

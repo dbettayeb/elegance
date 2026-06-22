@@ -305,10 +305,12 @@ function buildCSS(): string {
   .ri-texture-bg {
     position: relative; z-index: 1;
     background-color: ${P.bg}; min-height: 100vh;
+    overflow-x: hidden;
   }
   .ri-hero, .ri-section, .ri-rsvp-wrap, .ri-gb-wrap, .ri-footer {
     width: 100%; position: relative; background: transparent;
   }
+  .ri-content-zone { margin: 0 auto; box-sizing: border-box; }
 
   /* ── HERO ── */
   .ri-rings {
@@ -415,7 +417,7 @@ function buildCSS(): string {
   .ri-cd-label { font-size: .44rem; color: ${P.goldMid}; margin-top: 6px; letter-spacing: .1em; text-transform: uppercase; }
 
   /* PROGRAMME */
-  .ri-program { display: flex; flex-direction: column; width: 100%; }
+  .ri-program { display: flex; flex-direction: column; width: 100%; padding: 0 4px; }
   .ri-prog-item {
     display: grid; grid-template-columns: 65px 14px 1fr; gap: 10px;
     align-items: center; padding: 10px 0;
