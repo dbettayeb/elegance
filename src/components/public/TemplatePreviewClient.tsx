@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import { getTemplateFields } from '@/lib/template-fields'
 
 interface Props {
   templateId: string
@@ -11,70 +12,83 @@ interface Props {
 }
 
 interface Fields {
-  bride_name: string;    groom_name: string
-  bride_name_ar: string; groom_name_ar: string
-  event_date: string;    event_time: string
-  venue_name: string;    venue_address: string
+  bride_name: string;       groom_name: string
+  bride_name_ar: string;    groom_name_ar: string
+  event_date: string;       event_time: string
+  venue_name: string;       venue_address: string
   intro_text: string
-  gps_google: string;    gps_apple: string
+  custom_message: string
+  wedding_day_text: string
+  gps_google: string;       gps_apple: string
 }
 
 interface ProgramItem { time: string; event: string; venue: string }
 
 interface Options {
-  show_countdown: boolean
-  show_rsvp:      boolean
-  show_guestbook: boolean
-  moderation_on:  boolean
+  show_countdown:       boolean
+  show_rsvp:            boolean
+  show_guestbook:       boolean
+  moderation_on:        boolean
+  show_program:         boolean
+  guest_invite_enabled: boolean
 }
 
 const EMPTY_FIELDS: Fields = {
-  bride_name: '',    groom_name: '',
-  bride_name_ar: '', groom_name_ar: '',
-  event_date: '',    event_time: '',
-  venue_name: '',    venue_address: '',
+  bride_name: '',       groom_name: '',
+  bride_name_ar: '',    groom_name_ar: '',
+  event_date: '',       event_time: '',
+  venue_name: '',       venue_address: '',
   intro_text: '',
-  gps_google: '',    gps_apple: '',
+  custom_message: '',
+  wedding_day_text: '',
+  gps_google: '',       gps_apple: '',
 }
 
 const DEFAULT_PROGRAM: ProgramItem[] = [
-  { time: '17:00', event: 'Cérémonie', venue: '' },
+  { time: '17:00', event: 'Cérémonie',          venue: '' },
   { time: '19:00', event: 'Cocktail de bienvenue', venue: '' },
-  { time: '20:30', event: 'Dîner de gala', venue: '' },
-  { time: '23:00', event: 'Ouverture du bal', venue: '' },
+  { time: '20:30', event: 'Dîner de gala',      venue: '' },
+  { time: '23:00', event: 'Ouverture du bal',   venue: '' },
 ]
 
 const DEFAULT_OPTIONS: Options = {
-  show_countdown: true,
-  show_rsvp:      true,
-  show_guestbook: true,
-  moderation_on:  true,
+  show_countdown:       true,
+  show_rsvp:            true,
+  show_guestbook:       true,
+  moderation_on:        true,
+  show_program:         true,
+  guest_invite_enabled: false,
 }
 
 function buildSrc(id: string, f: Fields, program: ProgramItem[], opts: Options) {
   const p = new URLSearchParams({ mode: 'card' })
-  if (f.bride_name)    p.set('bride',         f.bride_name)
-  if (f.groom_name)    p.set('groom',         f.groom_name)
-  if (f.bride_name_ar) p.set('bride_ar',      f.bride_name_ar)
-  if (f.groom_name_ar) p.set('groom_ar',      f.groom_name_ar)
-  if (f.event_date)    p.set('date',          f.event_date)
-  if (f.event_time)    p.set('time',          f.event_time)
-  if (f.venue_name)    p.set('venue',         f.venue_name)
-  if (f.venue_address) p.set('venue_address', f.venue_address)
-  if (f.intro_text)    p.set('intro',         f.intro_text)
-  if (f.gps_google)    p.set('maps_google',   f.gps_google)
-  if (f.gps_apple)     p.set('maps_apple',    f.gps_apple)
-  p.set('program',       encodeURIComponent(JSON.stringify(program)))
-  p.set('show_countdown', opts.show_countdown ? '1' : '0')
-  p.set('show_rsvp',      opts.show_rsvp      ? '1' : '0')
-  p.set('show_guestbook', opts.show_guestbook  ? '1' : '0')
-  p.set('moderation_on',  opts.moderation_on   ? '1' : '0')
+  if (f.bride_name)        p.set('bride',            f.bride_name)
+  if (f.groom_name)        p.set('groom',            f.groom_name)
+  if (f.bride_name_ar)     p.set('bride_ar',         f.bride_name_ar)
+  if (f.groom_name_ar)     p.set('groom_ar',         f.groom_name_ar)
+  if (f.event_date)        p.set('date',             f.event_date)
+  if (f.event_time)        p.set('time',             f.event_time)
+  if (f.venue_name)        p.set('venue',            f.venue_name)
+  if (f.venue_address)     p.set('venue_address',    f.venue_address)
+  if (f.intro_text)        p.set('intro',            f.intro_text)
+  if (f.custom_message)    p.set('custom_message',   f.custom_message)
+  if (f.wedding_day_text)  p.set('wedding_day_text', f.wedding_day_text)
+  if (f.gps_google)        p.set('maps_google',      f.gps_google)
+  if (f.gps_apple)         p.set('maps_apple',       f.gps_apple)
+  p.set('program',              encodeURIComponent(JSON.stringify(program)))
+  p.set('show_program',         opts.show_program         ? '1' : '0')
+  p.set('show_countdown',       opts.show_countdown       ? '1' : '0')
+  p.set('show_rsvp',            opts.show_rsvp            ? '1' : '0')
+  p.set('show_guestbook',       opts.show_guestbook       ? '1' : '0')
+  p.set('moderation_on',        opts.moderation_on        ? '1' : '0')
+  p.set('guest_invite_enabled', opts.guest_invite_enabled ? '1' : '0')
   return `/templates/${id}/embed?${p.toString()}`
 }
 
 export default function TemplatePreviewClient({ templateId, templateName }: Props) {
   const router   = useRouter()
   const isArabic = TEMPLATES_META.find(t => t.id === templateId)?.language === 'ar'
+  const schema   = getTemplateFields(templateId)
 
   const [fields,    setFields]    = useState<Fields>(EMPTY_FIELDS)
   const [program,   setProgram]   = useState<ProgramItem[]>(DEFAULT_PROGRAM)
@@ -99,7 +113,6 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
     setProgram(p => p.filter((_, idx) => idx !== i))
   }
 
-  // Debounced reload whenever anything changes
   useEffect(() => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
@@ -138,7 +151,6 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
       {/* ── BODY ── */}
       <div className={`ptp-body${panelOpen ? '' : ' ptp-body--full'}`}>
 
-        {/* Aperçu live */}
         <div className="ptp-preview">
           <iframe key={iframeSrc} src={iframeSrc} title={`Aperçu ${templateName}`}
             allow="autoplay" className="ptp-iframe" />
@@ -147,7 +159,6 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
           )}
         </div>
 
-        {/* Panel de personnalisation */}
         {panelOpen && (
           <div className="ptp-panel">
             <div className="ptp-panel-inner">
@@ -194,40 +205,72 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
                 </Field>
               </Group>
 
-              {/* Texte d'accueil */}
-              <Group title="Texte d'accueil">
-                <Field label="Message d'introduction">
-                  <textarea rows={2} value={fields.intro_text}
-                    onChange={e => upd('intro_text', e.target.value)}
-                    placeholder="Vous êtes cordialement invités au mariage de" />
-                </Field>
-              </Group>
+              {/* Textes spécifiques au template */}
+              {(schema.weddingDayText || schema.introText || schema.customMessage) && (
+                <Group title="Textes du template">
+                  {schema.weddingDayText && (
+                    <Field label={schema.weddingDayText.label} help={schema.weddingDayText.help}>
+                      <input value={fields.wedding_day_text}
+                        onChange={e => upd('wedding_day_text', e.target.value)}
+                        placeholder={schema.weddingDayText.placeholder} />
+                    </Field>
+                  )}
+                  {schema.introText && (
+                    <Field label={schema.introText.label} help={schema.introText.help}>
+                      {schema.introText.rows && schema.introText.rows > 1
+                        ? <textarea rows={schema.introText.rows} value={fields.intro_text}
+                            onChange={e => upd('intro_text', e.target.value)}
+                            placeholder={schema.introText.placeholder} />
+                        : <input value={fields.intro_text}
+                            onChange={e => upd('intro_text', e.target.value)}
+                            placeholder={schema.introText.placeholder} />}
+                    </Field>
+                  )}
+                  {schema.customMessage && (
+                    <Field label={schema.customMessage.label} help={schema.customMessage.help}>
+                      <textarea rows={schema.customMessage.rows ?? 3}
+                        dir={isArabic ? 'rtl' : 'ltr'}
+                        value={fields.custom_message}
+                        onChange={e => upd('custom_message', e.target.value)}
+                        placeholder={schema.customMessage.placeholder} />
+                    </Field>
+                  )}
+                </Group>
+              )}
 
               {/* Programme */}
               <Group title="Programme de la soirée">
-                {program.map((item, i) => (
-                  <div key={i} className="ptp-prog-row">
-                    <input className="ptp-prog-time" type="time" value={item.time}
-                      onChange={e => updProg(i, 'time', e.target.value)} />
-                    <input className="ptp-prog-event" value={item.event}
-                      onChange={e => updProg(i, 'event', e.target.value)}
-                      placeholder="Cérémonie" />
-                    <input className="ptp-prog-venue" value={item.venue}
-                      onChange={e => updProg(i, 'venue', e.target.value)}
-                      placeholder="Lieu (optionnel)" />
-                    <button className="ptp-prog-del" onClick={() => removeProg(i)} title="Supprimer">✕</button>
-                  </div>
-                ))}
-                <button className="ptp-prog-add" onClick={addProg}>+ Ajouter un moment</button>
+                <label className="ptp-toggle">
+                  <input type="checkbox" checked={options.show_program}
+                    onChange={e => updOpt('show_program', e.target.checked)} />
+                  <span>Afficher le programme dans l'invitation</span>
+                </label>
+                {options.show_program && <>
+                  {program.map((item, i) => (
+                    <div key={i} className="ptp-prog-row">
+                      <input className="ptp-prog-time" type="time" value={item.time}
+                        onChange={e => updProg(i, 'time', e.target.value)} />
+                      <input className="ptp-prog-event" value={item.event}
+                        onChange={e => updProg(i, 'event', e.target.value)}
+                        placeholder="Cérémonie" />
+                      <input className="ptp-prog-venue" value={item.venue}
+                        onChange={e => updProg(i, 'venue', e.target.value)}
+                        placeholder="Lieu (optionnel)" />
+                      <button className="ptp-prog-del" onClick={() => removeProg(i)} title="Supprimer">✕</button>
+                    </div>
+                  ))}
+                  <button className="ptp-prog-add" onClick={addProg}>+ Ajouter un moment</button>
+                </>}
               </Group>
 
               {/* Options */}
-              <Group title="Options">
+              <Group title="Options de l'invitation">
                 {([
-                  ['show_countdown', 'Compte à rebours'],
-                  ['show_rsvp',      'Formulaire RSVP'],
-                  ['show_guestbook', 'Livre d\'or'],
-                  ['moderation_on',  'Modération des messages'],
+                  ['show_countdown',       'Compte à rebours'],
+                  ['show_rsvp',            'Formulaire RSVP'],
+                  ['show_guestbook',       'Livre d\'or'],
+                  ['moderation_on',        'Modération des messages'],
+                  ['guest_invite_enabled', 'Invitations personnalisées (un lien par invité)'],
                 ] as [keyof Options, string][]).map(([key, label]) => (
                   <label key={key} className="ptp-toggle">
                     <input type="checkbox" checked={options[key]}
@@ -374,7 +417,7 @@ const CSS = `
     cursor: pointer; font-size: 0.85rem; color: var(--pub-text);
     padding: 6px 0; user-select: none;
   }
-  .ptp-toggle input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--pub-text); }
+  .ptp-toggle input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--pub-text); flex-shrink: 0; }
 
   /* CTA panel */
   .ptp-panel-cta {

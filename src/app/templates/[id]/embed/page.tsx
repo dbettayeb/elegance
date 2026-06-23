@@ -11,10 +11,14 @@ interface Props {
     venue?: string; venue_address?: string
     date?: string; time?: string
     intro?: string
+    custom_message?: string
+    wedding_day_text?: string
     maps_google?: string; maps_apple?: string
     program?: string
+    show_program?: string
     show_countdown?: string; show_rsvp?: string
     show_guestbook?: string; moderation_on?: string
+    guest_invite_enabled?: string
   }>
 }
 
@@ -30,9 +34,11 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
   const {
     mode, bride, groom, bride_ar, groom_ar,
     venue, venue_address, date, time,
-    intro, maps_google, maps_apple,
-    program: programParam,
+    intro, custom_message, wedding_day_text,
+    maps_google, maps_apple,
+    program: programParam, show_program,
     show_countdown, show_rsvp, show_guestbook, moderation_on,
+    guest_invite_enabled,
   } = await searchParams
 
   const template = TEMPLATES.find(t => t.id === id)
@@ -43,22 +49,32 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
   const safeName = (v: string | undefined, fallback: string) =>
     v ? String(v).replace(/[<>"'&]/g, '').slice(0, 40).trim() || fallback : fallback
   const safeText = (v: string | undefined, fallback: string) =>
-    v ? String(v).replace(/[<>"']/g, '').slice(0, 300).trim() || fallback : fallback
+    v ? String(v).replace(/[<>"']/g, '').slice(0, 600).trim() || fallback : fallback
   const safeUrl = (v: string | undefined, fallback: string) =>
     v ? String(v).replace(/[<>"']/g, '').slice(0, 500).trim() || fallback : fallback
   const bool = (v: string | undefined, fallback: boolean) =>
     v === undefined ? fallback : v !== '0'
 
+  // ── Date + heure ─────────────────────────────────────────────
+  // On NE convertit PAS via toISOString() pour préserver le fuseau
+  // local de l'utilisateur : "2026-06-23T18:00:00" reste 18 h
+  // partout (côté navigateur, c'est interprété comme heure locale).
   const timeStr = time && /^\d{2}:\d{2}$/.test(time) ? time : '19:00'
   const eventDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
-    ? new Date(`${date}T${timeStr}:00`).toISOString()
-    : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+    ? `${date}T${timeStr}:00`
+    : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19)
 
+  // ── Programme ────────────────────────────────────────────────
+  // Si show_program === '0' → tableau vide (pas de fallback)
+  // Sinon → ce que l'utilisateur a saisi (même vide), ou défaut s'il
+  // n'a jamais touché au champ (paramètre absent).
   let program: ProgramItem[] = DEFAULT_PROGRAM
-  if (programParam) {
+  if (show_program === '0') {
+    program = []
+  } else if (programParam !== undefined) {
     try {
       const parsed = JSON.parse(decodeURIComponent(programParam))
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         program = parsed.slice(0, 20).map((item: Record<string, string>) => ({
           time:  String(item.time  ?? '').slice(0, 10),
           event: String(item.event ?? '').slice(0, 100),
@@ -84,8 +100,9 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     gps_google:    safeUrl(maps_google,    'https://maps.google.com'),
     gps_apple:     safeUrl(maps_apple,     'https://maps.apple.com'),
     template_id:   template.id as Wedding['template_id'],
-    intro_text:    safeText(intro, 'Vous êtes cordialement invités au mariage de'),
-    custom_message: undefined,
+    intro_text:        intro            !== undefined ? safeText(intro, '')            : 'Vous êtes cordialement invités au mariage de',
+    custom_message:    custom_message   !== undefined ? safeText(custom_message, '')   : undefined,
+    wedding_day_text:  wedding_day_text !== undefined ? safeText(wedding_day_text, '') : undefined,
     program,
     parties: [],
     pack: 'prestige',
@@ -93,6 +110,7 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     show_rsvp:      bool(show_rsvp,      true),
     show_guestbook: bool(show_guestbook,  true),
     moderation_on:  bool(moderation_on,   true),
+    guest_invite_enabled: bool(guest_invite_enabled, false),
     status: 'active',
     created_at: new Date().toISOString(),
   }
