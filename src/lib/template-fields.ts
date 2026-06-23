@@ -20,7 +20,18 @@ export interface TemplateFieldsSchema {
   weddingDayText?: FieldDef
   /** true → ne pas afficher le champ intro_text générique dans le panneau */
   hideIntroText?:  boolean
+  /** true → afficher le bloc familles arabes (familles_intro, prefix, name) */
+  arabicFamilies?: boolean
+  /** true → afficher les boutons préréglages (Hadith, Bénédiction, إن السرور) */
+  arabicBlessingPresets?: boolean
 }
+
+export interface BlessingPreset { label: string; value: string }
+export const ARABIC_BLESSING_PRESETS: BlessingPreset[] = [
+  { label: 'Hadith mariage', value: 'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ' },
+  { label: 'Bénédiction',    value: 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ' },
+  { label: 'إن السرور',      value: 'إن السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف' },
+]
 
 const ARABIC_BLESSING: FieldDef = {
   label: 'Bénédiction (arabe)',
@@ -76,23 +87,29 @@ export const TEMPLATE_FIELDS: Record<string, TemplateFieldsSchema> = {
   },
 
   // ─── Statiques FR ───
-  bismillah:    { customMessage: ARABIC_BLESSING },
+  bismillah: {
+    customMessage: ARABIC_BLESSING,
+    arabicFamilies: true,
+    arabicBlessingPresets: true,
+  },
   al_nour: {
     introText: {
       label: 'Texte d\'introduction (FR)',
       placeholder: 'Avec la bénédiction de…',
     },
     customMessage: { ...ARABIC_BLESSING, rows: 2 },
+    arabicFamilies: true,
+    arabicBlessingPresets: true,
   },
 
   // ─── Statiques arabes (BismillahStyle) ───
-  template_7_ar:   { customMessage: ARABIC_BLESSING },
-  template_8_ar:   { customMessage: ARABIC_BLESSING },
-  toile_bleue_ar:  { customMessage: ARABIC_BLESSING },
-  jardin_rose_ar:  { customMessage: ARABIC_BLESSING },
-  floral_arch_ar:  { customMessage: ARABIC_BLESSING },
-  roses_ivoire_ar: { customMessage: ARABIC_BLESSING },
-  rose_bleu_ar:    { customMessage: ARABIC_BLESSING },
+  template_7_ar:   { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  template_8_ar:   { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  toile_bleue_ar:  { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  jardin_rose_ar:  { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  floral_arch_ar:  { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  roses_ivoire_ar: { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
+  rose_bleu_ar:    { customMessage: ARABIC_BLESSING, arabicFamilies: true, arabicBlessingPresets: true },
 }
 
 export function getTemplateFields(id: string): TemplateFieldsSchema {

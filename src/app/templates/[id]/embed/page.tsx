@@ -13,6 +13,9 @@ interface Props {
     intro?: string
     custom_message?: string
     wedding_day_text?: string
+    families_intro_ar?: string
+    groom_family_ar?: string; bride_family_ar?: string
+    groom_family_prefix_ar?: string; bride_family_prefix_ar?: string
     maps_google?: string; maps_apple?: string
     program?: string
     show_program?: string
@@ -35,6 +38,8 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     mode, bride, groom, bride_ar, groom_ar,
     venue, venue_address, date, time,
     intro, custom_message, wedding_day_text,
+    families_intro_ar, groom_family_ar, bride_family_ar,
+    groom_family_prefix_ar, bride_family_prefix_ar,
     maps_google, maps_apple,
     program: programParam, show_program,
     show_countdown, show_rsvp, show_guestbook, moderation_on,
@@ -104,6 +109,11 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     intro_text:        intro            !== undefined ? safeText(intro, '')            : 'Vous êtes cordialement invités au mariage de',
     custom_message:    custom_message   !== undefined ? safeText(custom_message, '')   : undefined,
     wedding_day_text:  wedding_day_text !== undefined ? safeText(wedding_day_text, '') : undefined,
+    families_intro_ar:       families_intro_ar       !== undefined ? safeText(families_intro_ar, '')      : undefined,
+    groom_family_ar:         groom_family_ar         !== undefined ? safeText(groom_family_ar, '')        : undefined,
+    bride_family_ar:         bride_family_ar         !== undefined ? safeText(bride_family_ar, '')        : undefined,
+    groom_family_prefix_ar:  groom_family_prefix_ar  !== undefined ? safeText(groom_family_prefix_ar, '') : undefined,
+    bride_family_prefix_ar:  bride_family_prefix_ar  !== undefined ? safeText(bride_family_prefix_ar, '') : undefined,
     program,
     parties: [],
     pack: 'prestige',

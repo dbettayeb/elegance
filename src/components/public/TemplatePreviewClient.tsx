@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { TEMPLATES_META } from '@/lib/templates-meta'
-import { getTemplateFields } from '@/lib/template-fields'
+import { getTemplateFields, ARABIC_BLESSING_PRESETS } from '@/lib/template-fields'
 
 interface Props {
   templateId: string
@@ -19,6 +19,9 @@ interface Fields {
   intro_text: string
   custom_message: string
   wedding_day_text: string
+  families_intro_ar: string
+  groom_family_ar: string;        bride_family_ar: string
+  groom_family_prefix_ar: string; bride_family_prefix_ar: string
   gps_google: string;       gps_apple: string
 }
 
@@ -41,6 +44,9 @@ const EMPTY_FIELDS: Fields = {
   intro_text: '',
   custom_message: '',
   wedding_day_text: '',
+  families_intro_ar: '',
+  groom_family_ar: '',        bride_family_ar: '',
+  groom_family_prefix_ar: '', bride_family_prefix_ar: '',
   gps_google: '',       gps_apple: '',
 }
 
@@ -71,8 +77,13 @@ function buildSrc(id: string, f: Fields, program: ProgramItem[], opts: Options) 
   if (f.venue_name)        p.set('venue',            f.venue_name)
   if (f.venue_address)     p.set('venue_address',    f.venue_address)
   p.set('intro',                                      f.intro_text)
-  if (f.custom_message)    p.set('custom_message',   f.custom_message)
-  if (f.wedding_day_text)  p.set('wedding_day_text', f.wedding_day_text)
+  if (f.custom_message)         p.set('custom_message',         f.custom_message)
+  if (f.wedding_day_text)       p.set('wedding_day_text',       f.wedding_day_text)
+  if (f.families_intro_ar)      p.set('families_intro_ar',      f.families_intro_ar)
+  if (f.groom_family_ar)        p.set('groom_family_ar',        f.groom_family_ar)
+  if (f.bride_family_ar)        p.set('bride_family_ar',        f.bride_family_ar)
+  if (f.groom_family_prefix_ar) p.set('groom_family_prefix_ar', f.groom_family_prefix_ar)
+  if (f.bride_family_prefix_ar) p.set('bride_family_prefix_ar', f.bride_family_prefix_ar)
   if (f.gps_google)        p.set('maps_google',      f.gps_google)
   if (f.gps_apple)         p.set('maps_apple',       f.gps_apple)
   p.set('program',              encodeURIComponent(JSON.stringify(program)))
@@ -239,13 +250,59 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
                   )}
                   {schema.customMessage && (
                     <Field label={schema.customMessage.label} help={schema.customMessage.help}>
+                      {schema.arabicBlessingPresets && (
+                        <div className="ptp-presets">
+                          {ARABIC_BLESSING_PRESETS.map(opt => (
+                            <button type="button" key={opt.label} className="ptp-preset"
+                              onClick={() => upd('custom_message', opt.value)}>
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                       <textarea rows={schema.customMessage.rows ?? 3}
-                        dir={isArabic ? 'rtl' : 'ltr'}
+                        dir={isArabic || schema.arabicBlessingPresets ? 'rtl' : 'ltr'}
                         value={fields.custom_message}
                         onChange={e => upd('custom_message', e.target.value)}
                         placeholder={schema.customMessage.placeholder} />
                     </Field>
                   )}
+                </Group>
+              )}
+
+              {/* Bloc familles (templates arabes) */}
+              {schema.arabicFamilies && (
+                <Group title="Familles (style maghrébin)">
+                  <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
+                    <textarea rows={2} dir="rtl"
+                      value={fields.families_intro_ar}
+                      onChange={e => upd('families_intro_ar', e.target.value)}
+                      placeholder={'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف'} />
+                  </Field>
+                  <div className="ptp-row">
+                    <Field label="Préfixe famille du marié" help="ex : عائلة الحاج, عائلة, عائلة المرحوم...">
+                      <input dir="rtl" value={fields.groom_family_prefix_ar}
+                        onChange={e => upd('groom_family_prefix_ar', e.target.value)}
+                        placeholder="عائلة الحاج" />
+                    </Field>
+                    <Field label="Préfixe famille de la mariée" help="ex : عائلة الحاج, عائلة, عائلة المرحوم...">
+                      <input dir="rtl" value={fields.bride_family_prefix_ar}
+                        onChange={e => upd('bride_family_prefix_ar', e.target.value)}
+                        placeholder="عائلة المرحوم الحاج" />
+                    </Field>
+                  </div>
+                  <div className="ptp-row">
+                    <Field label="Nom famille du marié (arabe)">
+                      <input dir="rtl" value={fields.groom_family_ar}
+                        onChange={e => upd('groom_family_ar', e.target.value)}
+                        placeholder="محمد سمير الدسوقي" />
+                    </Field>
+                    <Field label="Nom famille de la mariée (arabe)">
+                      <input dir="rtl" value={fields.bride_family_ar}
+                        onChange={e => upd('bride_family_ar', e.target.value)}
+                        placeholder="منذر سعيد شديد" />
+                    </Field>
+                  </div>
                 </Group>
               )}
 
@@ -421,6 +478,18 @@ const CSS = `
     transition: all 0.2s; letter-spacing: 0.05em;
   }
   .ptp-prog-add:hover { border-color: var(--pub-text-muted); color: var(--pub-text); }
+
+  /* Presets bénédictions arabes */
+  .ptp-presets {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .ptp-preset {
+    padding: 4px 10px; font-size: 0.72rem;
+    background: #f0f0f0; border: 1px solid #d4d4d4;
+    border-radius: 4px; cursor: pointer; font-family: inherit;
+    color: var(--pub-text); transition: all 0.15s;
+  }
+  .ptp-preset:hover { background: #e5e5e5; border-color: var(--pub-text-muted); }
 
   /* Options */
   .ptp-toggle {
