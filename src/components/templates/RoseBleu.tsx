@@ -106,9 +106,9 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
 
               {/* Noms côte à côte */}
               <p className="rb-names-line">
-                <span className="rb-name">{brideName}</span>
+                <span className="rb-name" data-ef="bride_name">{brideName}</span>
                 <span className="rb-amp">{ampChar}</span>
-                <span className="rb-name">{groomName}</span>
+                <span className="rb-name" data-ef="groom_name">{groomName}</span>
               </p>
 
               {/* Date */}
@@ -118,7 +118,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
               <p className="rb-time-txt">{timeFr}</p>
 
               {/* Lieu */}
-              {wedding.venue_name    && <p className="rb-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="rb-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="rb-addr-txt">{wedding.venue_address}</p>}
 
               {/* Maps */}

@@ -96,14 +96,14 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
 
               <p className="t7-wedding-of">Mariage de</p>
 
-              <p className="t7-name">{brideName}</p>
+              <p className="t7-name" data-ef="bride_name">{brideName}</p>
 
               <div className="t7-rose-row">
                 <img src={`/${ROSE_LR_KEY}`} alt="" className="t7-rose-lr" aria-hidden="true" />
                 <span className="t7-amp">&amp;</span>
               </div>
 
-              <p className="t7-name">{groomName}</p>
+              <p className="t7-name" data-ef="groom_name">{groomName}</p>
 
               <div className="t7-rose-mini-wrap">
                 <div className="t7-thin-line" />
@@ -121,7 +121,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
 
               <p className="t7-time">{timeFr}</p>
 
-              {wedding.venue_name    && <p className="t7-venue">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="t7-venue" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="t7-addr">{wedding.venue_address}</p>}
 
               {(wedding.gps_google || wedding.gps_apple) && (

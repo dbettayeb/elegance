@@ -104,8 +104,8 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
             <div className="tb-content-zone">
               <p className="tb-intro">{introText}</p>
               <div className="tb-names">
-                <span className="tb-name">{brideName}</span>
-                <span className="tb-amp">{ampChar} {groomName}</span>
+                <span className="tb-name" data-ef="bride_name">{brideName}</span>
+                <span className="tb-amp">{ampChar} <span data-ef="groom_name">{groomName}</span></span>
               </div>
               <div className="tb-date-block">
                 <p className="tb-day-name">{dayName}</p>
@@ -113,7 +113,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
               </div>
               <img src={ROSE_SRC} alt="" className="tb-rose" aria-hidden="true" />
               <p className="tb-time-txt">{timeFr}</p>
-              {wedding.venue_name    && <p className="tb-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="tb-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="tb-addr-txt">{wedding.venue_address}</p>}
               {(wedding.gps_google || wedding.gps_apple) && (
                 <div className="tb-maps-mini">

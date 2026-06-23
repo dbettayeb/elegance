@@ -111,9 +111,9 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
                 </div>
               </div>
 
-              <p className="t8-name">{brideName}</p>
+              <p className="t8-name" data-ef="bride_name">{brideName}</p>
               <p className="t8-and">et</p>
-              <p className="t8-name">{groomName}</p>
+              <p className="t8-name" data-ef="groom_name">{groomName}</p>
 
               <div className="t8-divider">
                 <div className="t8-thin-line" />
@@ -130,7 +130,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
                 <span className="t8-date-part">{yearNum}</span>
               </div>
 
-              {wedding.venue_name    && <p className="t8-venue">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="t8-venue" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="t8-addr">{wedding.venue_address}</p>}
 
               {(wedding.gps_google || wedding.gps_apple) && (

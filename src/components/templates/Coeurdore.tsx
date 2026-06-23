@@ -329,9 +329,9 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
               <p className="cd-card-eyebrow">{introText}</p>
 
               <h1 className="cd-card-names">
-                <span className="cd-name">{wedding.bride_name}</span>
+                <span className="cd-name" data-ef="bride_name">{wedding.bride_name}</span>
                 <span className="cd-amp">&amp;</span>
-                <span className="cd-name">{wedding.groom_name}</span>
+                <span className="cd-name" data-ef="groom_name">{wedding.groom_name}</span>
               </h1>
 
               <div className="cd-card-flourish"><GoldFlourish /></div>
@@ -362,7 +362,7 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
 
               <div className="cd-card-venue">
                 <p className="cd-venue-label">Lieu</p>
-                <p className="cd-venue-name">{wedding.venue_name}</p>
+                <p className="cd-venue-name" data-ef="venue_name">{wedding.venue_name}</p>
                 {wedding.venue_address && (
                   <p className="cd-venue-addr">{wedding.venue_address}</p>
                 )}
