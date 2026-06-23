@@ -10,6 +10,8 @@ interface Props {
     bride?: string; groom?: string
     bride_ar?: string; groom_ar?: string
     venue?: string; date?: string
+    intro?: string
+    maps_google?: string; maps_apple?: string
   }>
 }
 
@@ -21,7 +23,7 @@ interface Props {
  */
 export default async function TemplateEmbed({ params, searchParams }: Props) {
   const { id } = await params
-  const { mode, bride, groom, bride_ar, groom_ar, venue, date } = await searchParams
+  const { mode, bride, groom, bride_ar, groom_ar, venue, date, intro, maps_google, maps_apple } = await searchParams
   const template = TEMPLATES.find(t => t.id === id)
   if (!template) notFound()
 
@@ -29,12 +31,19 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
 
   const safeName = (v: string | undefined, fallback: string) =>
     v ? String(v).replace(/[<>"'&]/g, '').slice(0, 40).trim() || fallback : fallback
+  const safeText = (v: string | undefined, fallback: string) =>
+    v ? String(v).replace(/[<>"']/g, '').slice(0, 300).trim() || fallback : fallback
+  const safeUrl = (v: string | undefined, fallback: string) =>
+    v ? String(v).replace(/[<>"']/g, '').slice(0, 500).trim() || fallback : fallback
 
   const brideName   = safeName(bride,    'Yasmine')
   const groomName   = safeName(groom,    'Mehdi')
   const brideNameAr = safeName(bride_ar, 'ياسمين')
   const groomNameAr = safeName(groom_ar, 'مهدي')
   const venueName   = safeName(venue,    'Dar El Jeld')
+  const introText   = safeText(intro,    'Vous êtes cordialement invités au mariage de')
+  const mapsGoogle  = safeUrl(maps_google, 'https://maps.google.com')
+  const mapsApple   = safeUrl(maps_apple,  'https://maps.apple.com')
   const eventDate   = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
     ? new Date(`${date}T19:00:00`).toISOString()
     : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
@@ -53,10 +62,10 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     event_date: eventDate,
     venue_name: venueName,
     venue_address: '5 Rue Dar El Jeld, Tunis 1006, Tunisie',
-    gps_google: 'https://maps.google.com',
-    gps_apple: 'https://maps.apple.com',
+    gps_google: mapsGoogle,
+    gps_apple:  mapsApple,
     template_id: template.id as Wedding['template_id'],
-    intro_text: 'Vous êtes cordialement invités au mariage de',
+    intro_text: introText,
     custom_message: undefined,
     program: [
       { time: '17:00', event: 'Cérémonie', venue: 'Dar El Jeld' },
