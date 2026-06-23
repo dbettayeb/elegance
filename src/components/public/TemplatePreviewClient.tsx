@@ -14,7 +14,7 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
   const [date, setDate]   = useState('')
   const [panelOpen, setPanelOpen]   = useState(false)
   const [iframeSrc, setIframeSrc]   = useState(`/templates/${templateId}/embed`)
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     clearTimeout(timerRef.current)
