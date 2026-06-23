@@ -4,7 +4,7 @@ import { Wedding } from '@/lib/types'
 
 interface Props {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ mode?: string }>
+  searchParams: Promise<{ mode?: string; bride?: string; groom?: string; date?: string }>
 }
 
 /**
@@ -12,14 +12,25 @@ interface Props {
  * - Default (no params): full experience with opening screen
  * - ?mode=card: skips the opening screen, shows the invitation card directly
  *   Used by the catalog grid to display a live preview of the content.
+ * - ?bride=X&groom=Y&date=YYYY-MM-DD: personalised preview with custom names/date
+ *   Used by the /templates/[id] page when the visitor enters their own names.
  */
 export default async function TemplateEmbed({ params, searchParams }: Props) {
   const { id } = await params
-  const { mode } = await searchParams
+  const { mode, bride, groom, date } = await searchParams
   const template = TEMPLATES.find(t => t.id === id)
   if (!template) notFound()
 
   const Component = template.component
+
+  const safeName = (v: string | undefined, fallback: string) =>
+    v ? String(v).replace(/[<>"'&]/g, '').slice(0, 40).trim() || fallback : fallback
+
+  const brideName  = safeName(bride, 'Yasmine')
+  const groomName  = safeName(groom, 'Mehdi')
+  const eventDate  = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? new Date(`${date}T19:00:00`).toISOString()
+    : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
 
   const mockWedding: Wedding = {
     // 'catalog' triggers opened=true in useInvitationLogic, skipping the opening screen
@@ -28,11 +39,11 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     access_token: 'preview',
     couple_token: 'preview',
     couple_email: 'demo@example.com',
-    bride_name: 'Yasmine',
-    groom_name: 'Mehdi',
+    bride_name: brideName,
+    groom_name: groomName,
     bride_name_ar: 'ياسمين',
     groom_name_ar: 'مهدي',
-    event_date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    event_date: eventDate,
     venue_name: 'Dar El Jeld',
     venue_address: '5 Rue Dar El Jeld, Tunis 1006, Tunisie',
     gps_google: 'https://maps.google.com',

@@ -70,10 +70,10 @@ export async function PATCH(
         return NextResponse.json({ error: 'Statut invalide.' }, { status: 400 })
       }
 
-      // Récupérer slug+token pour invalider le cache après changement
+      // Récupérer slug+token+email pour invalider le cache et envoyer email
       const { data: wedding } = await supabase
         .from('weddings')
-        .select('slug, access_token')
+        .select('slug, access_token, couple_token, couple_email, bride_name, groom_name')
         .eq('id', id)
         .single()
 
@@ -91,6 +91,33 @@ export async function PATCH(
       // sinon les invités voient l'invitation pendant encore 1h via le cache CDN
       if (wedding) {
         revalidatePath(`/i/${wedding.slug}/${wedding.access_token}`)
+      }
+
+      // Email de livraison au couple quand l'invitation est activée
+      if (body.status === 'active' && wedding?.couple_email) {
+        try {
+          if (process.env.RESEND_API_KEY) {
+            const { Resend } = await import('resend')
+            const resend = new Resend(process.env.RESEND_API_KEY)
+            const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+            const from = process.env.RESEND_FROM_EMAIL ?? 'no-reply@elegance-digitale.com'
+            await resend.emails.send({
+              from,
+              to: wedding.couple_email,
+              replyTo: process.env.ADMIN_NOTIFY_EMAIL ?? from,
+              subject: `Votre invitation est prête — ${wedding.bride_name} & ${wedding.groom_name}`,
+              html: buildActivationEmail({
+                bride_name:   wedding.bride_name,
+                groom_name:   wedding.groom_name,
+                invite_url:   `${base}/i/${wedding.slug}/${wedding.access_token}`,
+                couple_url:   `${base}/couple/${wedding.slug}/login`,
+                couple_token: wedding.couple_token,
+              }),
+            })
+          }
+        } catch (e) {
+          console.warn('[ACTIVATE] Email failed:', e)
+        }
       }
 
       return NextResponse.json({ success: true })
@@ -244,4 +271,45 @@ export async function DELETE(
     console.error('[DELETE WEDDING]', err)
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
+}
+
+function buildActivationEmail({ bride_name, groom_name, invite_url, couple_url, couple_token }: {
+  bride_name: string; groom_name: string
+  invite_url: string; couple_url: string; couple_token: string
+}) {
+  return `<!DOCTYPE html><html lang="fr"><body style="margin:0;padding:0;background:#fafafa;font-family:Georgia,serif">
+<div style="max-width:560px;margin:40px auto;background:#fff;border:1px solid #e8e8e8">
+  <div style="padding:32px 36px;border-bottom:1px solid #f0f0f0;text-align:center">
+    <p style="margin:0;font-size:0.7rem;letter-spacing:0.45em;text-transform:uppercase;color:#B8985A;font-family:'Helvetica Neue',sans-serif">Élégance Digitale</p>
+  </div>
+  <div style="padding:40px 36px">
+    <h1 style="margin:0 0 8px;font-weight:300;font-size:1.7rem;line-height:1.2">Votre invitation est prête&nbsp;!</h1>
+    <p style="margin:0 0 32px;color:#666;font-style:italic;font-size:1rem;line-height:1.6">
+      Félicitations, ${bride_name} &amp; ${groom_name}. Votre invitation de mariage est maintenant active et prête à être partagée avec vos invités.
+    </p>
+
+    <div style="margin-bottom:24px">
+      <p style="margin:0 0 10px;font-family:'Helvetica Neue',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;color:#888">Lien à partager avec vos invités</p>
+      <a href="${invite_url}" style="display:block;padding:16px 20px;background:#0a0a0a;color:#fff;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:0.82rem;letter-spacing:0.08em;word-break:break-all">
+        ${invite_url}
+      </a>
+    </div>
+
+    <div style="background:#fafafa;border:1px solid #eee;padding:24px;margin-bottom:32px;font-family:'Helvetica Neue',sans-serif;font-size:0.88rem">
+      <p style="margin:0 0 12px;font-weight:600;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;color:#555">Votre espace mariés</p>
+      <p style="margin:0 0 6px;color:#666">URL : <a href="${couple_url}" style="color:#0a0a0a">${couple_url}</a></p>
+      <p style="margin:0;color:#666">Code d'accès : <strong style="letter-spacing:0.12em">${couple_token}</strong></p>
+      <p style="margin:12px 0 0;color:#999;font-size:0.8rem;line-height:1.5">Depuis votre espace, suivez les confirmations de présence et gérez le livre d'or.</p>
+    </div>
+
+    <p style="margin:0 0 8px;color:#555;font-size:0.9rem;line-height:1.7">Pour toute modification ou question, répondez à cet email.</p>
+    <p style="margin:0;color:#555;font-size:0.9rem;line-height:1.7;font-style:italic">Toute l'équipe vous souhaite un merveilleux mariage. ✨</p>
+  </div>
+  <div style="padding:20px 36px;border-top:1px solid #f0f0f0;text-align:center">
+    <p style="margin:0;font-size:0.72rem;color:#bbb;font-family:'Helvetica Neue',sans-serif;letter-spacing:0.15em;text-transform:uppercase">
+      © ${new Date().getFullYear()} Élégance Digitale
+    </p>
+  </div>
+</div>
+</body></html>`
 }
