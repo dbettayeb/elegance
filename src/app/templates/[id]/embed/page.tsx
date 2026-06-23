@@ -1,23 +1,27 @@
 import { notFound } from 'next/navigation'
 import { TEMPLATES } from '@/lib/templates'
 import { Wedding } from '@/lib/types'
+import EditModeProvider from '@/components/edit/EditModeProvider'
 
 interface Props {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ mode?: string; bride?: string; groom?: string; date?: string }>
+  searchParams: Promise<{
+    mode?: string
+    bride?: string; groom?: string
+    bride_ar?: string; groom_ar?: string
+    venue?: string; date?: string
+  }>
 }
 
 /**
  * Bare template render used inside iframes.
- * - Default (no params): full experience with opening screen
- * - ?mode=card: skips the opening screen, shows the invitation card directly
- *   Used by the catalog grid to display a live preview of the content.
- * - ?bride=X&groom=Y&date=YYYY-MM-DD: personalised preview with custom names/date
- *   Used by the /templates/[id] page when the visitor enters their own names.
+ * mode=card  – skips opening screen (catalog grid)
+ * mode=edit  – skips opening screen + activates inline contenteditable on [data-ef] elements
+ * bride/groom/bride_ar/groom_ar/venue/date – personalised preview values
  */
 export default async function TemplateEmbed({ params, searchParams }: Props) {
   const { id } = await params
-  const { mode, bride, groom, date } = await searchParams
+  const { mode, bride, groom, bride_ar, groom_ar, venue, date } = await searchParams
   const template = TEMPLATES.find(t => t.id === id)
   if (!template) notFound()
 
@@ -26,25 +30,28 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
   const safeName = (v: string | undefined, fallback: string) =>
     v ? String(v).replace(/[<>"'&]/g, '').slice(0, 40).trim() || fallback : fallback
 
-  const brideName  = safeName(bride, 'Yasmine')
-  const groomName  = safeName(groom, 'Mehdi')
-  const eventDate  = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
+  const brideName   = safeName(bride,    'Yasmine')
+  const groomName   = safeName(groom,    'Mehdi')
+  const brideNameAr = safeName(bride_ar, 'ياسمين')
+  const groomNameAr = safeName(groom_ar, 'مهدي')
+  const venueName   = safeName(venue,    'Dar El Jeld')
+  const eventDate   = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
     ? new Date(`${date}T19:00:00`).toISOString()
     : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
 
   const mockWedding: Wedding = {
     // 'catalog' triggers opened=true in useInvitationLogic, skipping the opening screen
-    id: mode === 'card' ? 'catalog' : 'preview',
+    id: (mode === 'card' || mode === 'edit') ? 'catalog' : 'preview',
     slug: 'preview',
     access_token: 'preview',
     couple_token: 'preview',
     couple_email: 'demo@example.com',
     bride_name: brideName,
     groom_name: groomName,
-    bride_name_ar: 'ياسمين',
-    groom_name_ar: 'مهدي',
+    bride_name_ar: brideNameAr,
+    groom_name_ar: groomNameAr,
     event_date: eventDate,
-    venue_name: 'Dar El Jeld',
+    venue_name: venueName,
     venue_address: '5 Rue Dar El Jeld, Tunis 1006, Tunisie',
     gps_google: 'https://maps.google.com',
     gps_apple: 'https://maps.apple.com',
@@ -67,5 +74,6 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     created_at: new Date().toISOString(),
   }
 
-  return <Component wedding={mockWedding} />
+  const content = <Component wedding={mockWedding} />
+  return mode === 'edit' ? <EditModeProvider>{content}</EditModeProvider> : content
 }
