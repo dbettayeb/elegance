@@ -105,11 +105,24 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
   const [program,   setProgram]   = useState<ProgramItem[]>(DEFAULT_PROGRAM)
   const [options,   setOptions]   = useState<Options>(DEFAULT_OPTIONS)
   const [panelOpen, setPanelOpen] = useState(true)
+  const [presetApplied, setPresetApplied] = useState(false)
   const [iframeSrc, setIframeSrc] = useState(() => buildSrc(templateId, EMPTY_FIELDS, DEFAULT_PROGRAM, DEFAULT_OPTIONS))
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   function upd<K extends keyof Fields>(key: K, val: string) {
     setFields(f => ({ ...f, [key]: val }))
+  }
+  function applyTunisianPreset() {
+    setFields(f => ({
+      ...f,
+      families_intro_ar:      'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف',
+      groom_family_prefix_ar: 'عائلة الحاج',
+      bride_family_prefix_ar: 'عائلة المرحوم الحاج',
+      groom_family_ar:        'محمد سمير الدسوقي',
+      bride_family_ar:        'منذر سعيد شديد',
+      custom_message:         'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ',
+    }))
+    setPresetApplied(true)
   }
   function updOpt<K extends keyof Options>(key: K, val: boolean) {
     setOptions(o => ({ ...o, [key]: val }))
@@ -273,6 +286,14 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
               {/* Bloc familles (templates arabes) */}
               {schema.arabicFamilies && (
                 <Group title="Familles (style maghrébin)">
+                  <button type="button" className="ptp-preset-btn" onClick={applyTunisianPreset}>
+                    🇹🇳 Remplir avec un style tunisien (exemple)
+                  </button>
+                  {presetApplied && (
+                    <p className="ptp-preset-warn">
+                      ⚠ Pensez à remplacer les noms d'exemple par les vôtres.
+                    </p>
+                  )}
                   <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
                     <textarea rows={2} dir="rtl"
                       value={fields.families_intro_ar}
@@ -490,6 +511,20 @@ const CSS = `
     color: var(--pub-text); transition: all 0.15s;
   }
   .ptp-preset:hover { background: #e5e5e5; border-color: var(--pub-text-muted); }
+
+  /* Bouton "préréglage tunisien" */
+  .ptp-preset-btn {
+    width: 100%; padding: 10px 12px;
+    background: #fffbeb; border: 1px dashed #d4a93b;
+    color: #92400e; font-family: inherit; font-size: 0.8rem;
+    cursor: pointer; border-radius: 4px; transition: all 0.15s;
+  }
+  .ptp-preset-btn:hover { background: #fef3c7; border-style: solid; }
+  .ptp-preset-warn {
+    margin: 0; padding: 8px 10px;
+    background: #fef9c3; border-left: 3px solid #d4a93b;
+    color: #713f12; font-size: 0.75rem; font-style: italic;
+  }
 
   /* Options */
   .ptp-toggle {
