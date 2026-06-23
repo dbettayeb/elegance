@@ -8,25 +8,48 @@ interface Props {
   templateName: string
 }
 
+const DEFAULTS = {
+  bride_name: 'Yasmine', groom_name: 'Mehdi',
+  bride_name_ar: 'ياسمين', groom_name_ar: 'مهدي',
+  venue_name: '',
+}
+
+function buildSrc(id: string, fields: Record<string, string>, date: string) {
+  const p = new URLSearchParams({ mode: 'edit' })
+  if (fields.bride_name)   p.set('bride',    fields.bride_name)
+  if (fields.groom_name)   p.set('groom',    fields.groom_name)
+  if (fields.bride_name_ar) p.set('bride_ar', fields.bride_name_ar)
+  if (fields.groom_name_ar) p.set('groom_ar', fields.groom_name_ar)
+  if (fields.venue_name)   p.set('venue',    fields.venue_name)
+  if (date)                p.set('date',     date)
+  return `/templates/${id}/embed?${p.toString()}`
+}
+
 export default function TemplatePreviewClient({ templateId, templateName }: Props) {
-  const [bride, setBride] = useState('Yasmine')
-  const [groom, setGroom] = useState('Mehdi')
-  const [date, setDate]   = useState('')
-  const [panelOpen, setPanelOpen]   = useState(false)
-  const [iframeSrc, setIframeSrc]   = useState(`/templates/${templateId}/embed?mode=card`)
+  const [date, setDate] = useState('')
+  // fieldsRef tracks inline edits received via postMessage without causing re-renders
+  const fieldsRef = useRef<Record<string, string>>(DEFAULTS)
+  const [iframeSrc, setIframeSrc] = useState(() => buildSrc(templateId, DEFAULTS, ''))
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
+  // Receive inline field edits from iframe
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type !== 'EF_CHANGE') return
+      fieldsRef.current = { ...fieldsRef.current, [e.data.field]: e.data.value }
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [])
+
+  // Reload iframe (with latest field values) only when date changes
   useEffect(() => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
-      const p = new URLSearchParams({ mode: 'card' })
-      if (bride.trim()) p.set('bride', bride.trim())
-      if (groom.trim()) p.set('groom', groom.trim())
-      if (date)         p.set('date', date)
-      setIframeSrc(`/templates/${templateId}/embed?${p.toString()}`)
-    }, 700)
+      setIframeSrc(buildSrc(templateId, fieldsRef.current, date))
+    }, 400)
     return () => clearTimeout(timerRef.current)
-  }, [bride, groom, date, templateId])
+  }, [date, templateId])
 
   return (
     <>
@@ -38,64 +61,25 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
 
           <div className="ptp-info">
             <span className="ptp-info-name">{templateName}</span>
-            <span className="ptp-info-tag">Aperçu démo</span>
+            <span className="ptp-info-hint">✏ Cliquez sur les prénoms pour modifier</span>
           </div>
 
           <div className="ptp-bar-actions">
-            <button
-              onClick={() => setPanelOpen(o => !o)}
-              className={`ptp-personalize-btn${panelOpen ? ' ptp-personalize-active' : ''}`}
-              aria-expanded={panelOpen}
-            >
-              <span className="ptp-btn-icon">{panelOpen ? '✕' : '✏'}</span>
-              <span>Personnaliser</span>
-            </button>
+            <div className="ptp-date-wrap">
+              <label htmlFor="ptp-date" className="ptp-date-lbl">Date du mariage</label>
+              <input
+                id="ptp-date"
+                type="date"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                className="ptp-date-input"
+              />
+            </div>
             <Link href={`/commander?template=${templateId}`} className="ptp-cta">
               Choisir ce design →
             </Link>
           </div>
         </div>
-
-        {panelOpen && (
-          <div className="ptp-panel">
-            <div className="ptp-panel-inner">
-              <div className="ptp-hint">Entrez vos prénoms pour voir l&apos;invitation à votre image.</div>
-              <div className="ptp-fields">
-                <div className="ptp-field">
-                  <label htmlFor="ptp-bride">Prénom mariée</label>
-                  <input
-                    id="ptp-bride"
-                    value={bride}
-                    onChange={e => setBride(e.target.value)}
-                    placeholder="ex : Yasmine"
-                    maxLength={40}
-                    autoComplete="off"
-                  />
-                </div>
-                <div className="ptp-field">
-                  <label htmlFor="ptp-groom">Prénom marié</label>
-                  <input
-                    id="ptp-groom"
-                    value={groom}
-                    onChange={e => setGroom(e.target.value)}
-                    placeholder="ex : Mehdi"
-                    maxLength={40}
-                    autoComplete="off"
-                  />
-                </div>
-                <div className="ptp-field">
-                  <label htmlFor="ptp-date">Date du mariage</label>
-                  <input
-                    id="ptp-date"
-                    type="date"
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <iframe
@@ -124,28 +108,27 @@ const CSS = `
   .ptp-back { color: var(--pub-text-muted); text-decoration: none; font-size: 0.82rem; }
   .ptp-back:hover { color: var(--pub-text); }
 
-  .ptp-info { display: flex; align-items: center; gap: 12px; }
+  .ptp-info { display: flex; align-items: center; gap: 14px; }
   .ptp-info-name { font-family: Georgia, serif; font-size: 1rem; }
-  .ptp-info-tag {
-    padding: 3px 9px; background: rgba(184,152,90,0.15);
-    color: var(--pub-gold-dark); font-size: 0.66rem;
-    letter-spacing: 0.2em; text-transform: uppercase; border-radius: 2px;
+  .ptp-info-hint {
+    font-size: 0.72rem; color: var(--pub-text-muted); font-style: italic;
+    letter-spacing: 0.02em;
   }
 
-  .ptp-bar-actions { display: flex; align-items: center; gap: 10px; }
+  .ptp-bar-actions { display: flex; align-items: center; gap: 14px; }
 
-  .ptp-personalize-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 16px;
-    background: transparent; color: var(--pub-text);
-    border: 1px solid var(--pub-border);
-    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-    cursor: pointer; font-family: inherit; transition: all 0.2s;
-    white-space: nowrap;
+  .ptp-date-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .ptp-date-lbl {
+    font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--pub-text-subtle);
   }
-  .ptp-personalize-btn:hover { border-color: var(--pub-text); }
-  .ptp-personalize-active { background: var(--pub-text); color: #fff; border-color: var(--pub-text); }
-  .ptp-btn-icon { font-size: 0.85rem; }
+  .ptp-date-input {
+    padding: 7px 10px; border: 1px solid var(--pub-border);
+    background: #fff; font-family: inherit; font-size: 0.84rem;
+    color: var(--pub-text); outline: none; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .ptp-date-input:focus { border-color: var(--pub-text); }
 
   .ptp-cta {
     padding: 9px 20px; background: var(--pub-text); color: #fff;
@@ -155,50 +138,16 @@ const CSS = `
   }
   .ptp-cta:hover { opacity: 0.85; }
 
-  /* Personnalisation panel */
-  .ptp-panel {
-    border-top: 1px solid var(--pub-border);
-    background: #fafafa;
-  }
-  .ptp-panel-inner {
-    max-width: 1180px; margin: 0 auto; padding: 18px 28px;
-  }
-  .ptp-hint {
-    font-size: 0.8rem; color: var(--pub-text-muted); font-style: italic;
-    margin-bottom: 14px;
-  }
-  .ptp-fields {
-    display: flex; gap: 16px; flex-wrap: wrap;
-  }
-  .ptp-field {
-    display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px;
-  }
-  .ptp-field label {
-    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--pub-text-subtle);
-  }
-  .ptp-field input {
-    padding: 9px 12px;
-    border: 1px solid var(--pub-border);
-    background: #fff;
-    font-family: Georgia, serif; font-size: 0.92rem;
-    color: var(--pub-text); outline: none;
-    transition: border-color 0.2s;
-  }
-  .ptp-field input:focus { border-color: var(--pub-text); }
-  .ptp-field input[type="date"] { font-family: inherit; }
-
   .ptp-iframe {
     display: block; border: none; width: 100%; flex: 1; min-height: 0;
   }
 
   @media (max-width: 720px) {
     .ptp-info { display: none; }
-    .ptp-bar-inner { padding: 12px 18px; }
+    .ptp-bar-inner { padding: 12px 18px; gap: 10px; }
     .ptp-cta { padding: 7px 14px; font-size: 0.66rem; }
-    .ptp-personalize-btn { padding: 7px 12px; font-size: 0.68rem; }
-    .ptp-btn-icon { display: none; }
-    .ptp-panel-inner { padding: 14px 18px; }
-    .ptp-fields { gap: 12px; }
+    .ptp-date-wrap { flex-direction: row; align-items: center; gap: 8px; }
+    .ptp-date-lbl { display: none; }
+    .ptp-date-input { font-size: 0.78rem; padding: 6px 8px; }
   }
 `
