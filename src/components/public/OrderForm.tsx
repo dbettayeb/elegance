@@ -11,19 +11,23 @@ type Status = 'idle' | 'loading' | 'success' | 'error'
 export default function OrderForm() {
   const searchParams = useSearchParams()
   const initialTemplate = searchParams.get('template') ?? ''
-  const initialPack = searchParams.get('pack') ?? 'prestige'
+  const initialPack     = searchParams.get('pack')      ?? 'prestige'
+  const fromPreview = !!(
+    searchParams.get('bride') || searchParams.get('groom') ||
+    searchParams.get('venue') || searchParams.get('date')
+  )
 
   const [form, setForm] = useState({
-    template_id: initialTemplate,
-    pack: initialPack,
-    bride_name: '',
-    groom_name: '',
-    bride_name_ar: '',
-    groom_name_ar: '',
+    template_id:  initialTemplate,
+    pack:         initialPack,
+    bride_name:   searchParams.get('bride')    ?? '',
+    groom_name:   searchParams.get('groom')    ?? '',
+    bride_name_ar: searchParams.get('bride_ar') ?? '',
+    groom_name_ar: searchParams.get('groom_ar') ?? '',
     couple_email: '',
     couple_phone: '',
-    event_date: '',
-    venue_name: '',
+    event_date:   searchParams.get('date')     ?? '',
+    venue_name:   searchParams.get('venue')    ?? '',
     custom_message: '',
   })
 
@@ -168,6 +172,11 @@ export default function OrderForm() {
         </div>
 
         <div className="of-fields">
+          {fromPreview && (
+            <div className="of-preview-banner">
+              ✏ Vos modifications de l&apos;aperçu ont été reportées — vérifiez et complétez.
+            </div>
+          )}
           <div className="of-row">
             <Field label="Prénom de la mariée" required>
               <input className="of-input" value={form.bride_name} onChange={e => set('bride_name', e.target.value)} required />
@@ -359,6 +368,11 @@ const CSS = `
     padding: 12px 16px; background: rgba(184,152,90,0.08);
     border-left: 2px solid var(--pub-gold);
     font-size: 0.85rem; color: var(--pub-text-muted);
+  }
+  .of-preview-banner {
+    padding: 12px 16px; background: rgba(184,152,90,0.08);
+    border-left: 2px solid var(--pub-gold);
+    font-size: 0.84rem; color: var(--pub-text-muted); font-style: italic;
   }
   .of-actions { text-align: center; padding-top: 32px; border-top: 1px solid var(--pub-border); }
   .of-btn-submit {

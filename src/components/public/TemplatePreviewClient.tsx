@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   templateId: string
@@ -26,6 +27,7 @@ function buildSrc(id: string, fields: Record<string, string>, date: string) {
 }
 
 export default function TemplatePreviewClient({ templateId, templateName }: Props) {
+  const router = useRouter()
   const [date, setDate] = useState('')
   // fieldsRef tracks inline edits received via postMessage without causing re-renders
   const fieldsRef = useRef<Record<string, string>>(DEFAULTS)
@@ -41,6 +43,18 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
     window.addEventListener('message', handler)
     return () => window.removeEventListener('message', handler)
   }, [])
+
+  function handleChoose() {
+    const f = fieldsRef.current
+    const p = new URLSearchParams({ template: templateId })
+    if (f.bride_name)    p.set('bride',    f.bride_name)
+    if (f.groom_name)    p.set('groom',    f.groom_name)
+    if (f.bride_name_ar) p.set('bride_ar', f.bride_name_ar)
+    if (f.groom_name_ar) p.set('groom_ar', f.groom_name_ar)
+    if (f.venue_name)    p.set('venue',    f.venue_name)
+    if (date)            p.set('date',     date)
+    router.push(`/commander?${p.toString()}`)
+  }
 
   // Reload iframe (with latest field values) only when date changes
   useEffect(() => {
@@ -75,9 +89,9 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
                 className="ptp-date-input"
               />
             </div>
-            <Link href={`/commander?template=${templateId}`} className="ptp-cta">
+            <button onClick={handleChoose} className="ptp-cta">
               Choisir ce design →
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -135,6 +149,7 @@ const CSS = `
     text-decoration: none; font-size: 0.72rem;
     letter-spacing: 0.2em; text-transform: uppercase;
     font-weight: 500; white-space: nowrap; transition: opacity 0.2s;
+    border: none; cursor: pointer; font-family: inherit;
   }
   .ptp-cta:hover { opacity: 0.85; }
 
