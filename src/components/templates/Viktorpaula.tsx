@@ -370,30 +370,32 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         )}
 
         {/* SCHEDULE */}
-        <div id="schedule">
-          <div className="artboard schedule-artboard" ref={scheduleRef}>
-            <div className="schedule-title">Schedule of Events</div>
-            <div className="tl-line"></div>
+        {wedding.show_program !== false && program.length > 0 && (
+          <div id="schedule">
+            <div className="artboard schedule-artboard" ref={scheduleRef}>
+              <div className="schedule-title">Schedule of Events</div>
+              <div className="tl-line"></div>
 
-            <div className="pigeon-timeline" style={{ top: `${pigeonTop}px` }}>
-              <img src="/assets/dove/dove-timeline.png" alt="" />
-            </div>
-
-            {program.slice(0, 4).map((item, idx) => (
-              <div key={idx}>
-                <div className={`tl-time tl-time-${idx + 1}`}>{item.time}</div>
-                <div
-                  className={`tl-dot tl-dot-${idx + 1}`}
-                  ref={el => { dotRefs.current[idx] = el }}
-                />
-                <div className={`tl-event tl-event-${idx + 1}`}>
-                  {item.event}
-                  {item.venue && <div className="tl-event-venue">{item.venue}</div>}
-                </div>
+              <div className="pigeon-timeline" style={{ top: `${pigeonTop}px` }}>
+                <img src="/assets/dove/dove-timeline.png" alt="" />
               </div>
-            ))}
+
+              {program.slice(0, 4).map((item, idx) => (
+                <div key={idx}>
+                  <div className={`tl-time tl-time-${idx + 1}`}>{item.time}</div>
+                  <div
+                    className={`tl-dot tl-dot-${idx + 1}`}
+                    ref={el => { dotRefs.current[idx] = el }}
+                  />
+                  <div className={`tl-event tl-event-${idx + 1}`}>
+                    {item.event}
+                    {item.venue && <div className="tl-event-venue">{item.venue}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <TornSeparator />
 
