@@ -60,9 +60,10 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
   // local de l'utilisateur : "2026-06-23T18:00:00" reste 18 h
   // partout (côté navigateur, c'est interprété comme heure locale).
   const timeStr = time && /^\d{2}:\d{2}$/.test(time) ? time : '19:00'
-  const eventDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
-    ? `${date}T${timeStr}:00`
-    : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19)
+  const dateStr = date && /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? date
+    : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  const eventDate = `${dateStr}T${timeStr}:00`
 
   // ── Programme ────────────────────────────────────────────────
   // Si show_program === '0' → tableau vide (pas de fallback)
