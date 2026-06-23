@@ -134,9 +134,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
     { time: '19:00', event: 'Dinner' },
     { time: '20:00', event: 'Party' }
   ]
-  const program = (wedding.show_program === false)
-    ? []
-    : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
+  const program = (wedding.show_program === false) ? [] : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
   // --- Celebrations (multi-party weddings, e.g. Tunisia) ---
   // The main reception comes from the core fields; additional parties from wedding.parties.
@@ -307,7 +305,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         {/* DEAR FRIENDS */}
         <div id="dear-friends">
           <div className="dear-friends-inner">
-            <h2>{(wedding.intro_text && !wedding.intro_text.startsWith('Vous êtes')) ? wedding.intro_text : 'Dear Friends and Family,'}</h2>
+            <h2>{wedding.intro_text || 'Dear Friends and Family,'}</h2>
             <p>
               {wedding.custom_message ||
                 `As we get ready to say "I do," we feel grateful for the wonderful people in our lives. Your support means the world to us, and we would be honored to have you with us as we begin our life together.`}
@@ -372,32 +370,30 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
         )}
 
         {/* SCHEDULE */}
-        {program.length > 0 && (
-          <div id="schedule">
-            <div className="artboard schedule-artboard" ref={scheduleRef}>
-              <div className="schedule-title">Schedule of Events</div>
-              <div className="tl-line"></div>
+        <div id="schedule">
+          <div className="artboard schedule-artboard" ref={scheduleRef}>
+            <div className="schedule-title">Schedule of Events</div>
+            <div className="tl-line"></div>
 
-              <div className="pigeon-timeline" style={{ top: `${pigeonTop}px` }}>
-                <img src="/assets/dove/dove-timeline.png" alt="" />
-              </div>
-
-              {program.slice(0, 4).map((item, idx) => (
-                <div key={idx}>
-                  <div className={`tl-time tl-time-${idx + 1}`}>{item.time}</div>
-                  <div
-                    className={`tl-dot tl-dot-${idx + 1}`}
-                    ref={el => { dotRefs.current[idx] = el }}
-                  />
-                  <div className={`tl-event tl-event-${idx + 1}`}>
-                    {item.event}
-                    {item.venue && <div className="tl-event-venue">{item.venue}</div>}
-                  </div>
-                </div>
-              ))}
+            <div className="pigeon-timeline" style={{ top: `${pigeonTop}px` }}>
+              <img src="/assets/dove/dove-timeline.png" alt="" />
             </div>
+
+            {program.slice(0, 4).map((item, idx) => (
+              <div key={idx}>
+                <div className={`tl-time tl-time-${idx + 1}`}>{item.time}</div>
+                <div
+                  className={`tl-dot tl-dot-${idx + 1}`}
+                  ref={el => { dotRefs.current[idx] = el }}
+                />
+                <div className={`tl-event tl-event-${idx + 1}`}>
+                  {item.event}
+                  {item.venue && <div className="tl-event-venue">{item.venue}</div>}
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
 
         <TornSeparator />
 

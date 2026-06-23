@@ -205,7 +205,18 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
                 </Field>
               </Group>
 
-              {/* Textes spécifiques au template */}
+              {/* Texte d'introduction (universel sauf arabes et templates avec champ personnalisé) */}
+              {!isArabic && !schema.hideIntroText && (
+                <Group title="Texte d'accueil">
+                  <Field label="Phrase d'introduction">
+                    <textarea rows={2} value={fields.intro_text}
+                      onChange={e => upd('intro_text', e.target.value)}
+                      placeholder="Vous êtes cordialement invités au mariage de" />
+                  </Field>
+                </Group>
+              )}
+
+              {/* Textes spécifiques au template (weddingDayText, introText, customMessage) */}
               {(schema.weddingDayText || schema.introText || schema.customMessage) && (
                 <Group title="Textes du template">
                   {schema.weddingDayText && (

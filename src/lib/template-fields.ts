@@ -18,6 +18,8 @@ export interface TemplateFieldsSchema {
   introText?:      FieldDef
   customMessage?:  FieldDef
   weddingDayText?: FieldDef
+  /** true → ne pas afficher le champ intro_text générique dans le panneau */
+  hideIntroText?:  boolean
 }
 
 const ARABIC_BLESSING: FieldDef = {
@@ -41,24 +43,34 @@ export const TEMPLATE_FIELDS: Record<string, TemplateFieldsSchema> = {
     },
   },
   alexa_richard: {
+    hideIntroText: true,
+    weddingDayText: {
+      label: 'Accroche du héro',
+      placeholder: 'are getting married!',
+    },
+    introText: {
+      label: 'Titre de la section lettre',
+      placeholder: 'Dear friends and family,',
+    },
     customMessage: {
-      label: 'Paragraphe « Dear friends and family »',
-      placeholder: `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us…`,
+      label: 'Paragraphe de la lettre',
+      placeholder: `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`,
       rows: 5,
     },
   },
   viktor_paula: {
+    hideIntroText: true,
     weddingDayText: {
       label: 'Titre du hero (vidéo)',
       placeholder: 'Wedding Day',
     },
     introText: {
-      label: 'Titre du message (Dear Friends and Family)',
+      label: 'Titre de la section lettre',
       placeholder: 'Dear Friends and Family,',
     },
     customMessage: {
-      label: 'Paragraphe d\'invitation',
-      placeholder: `As we get ready to say "I do," we feel grateful…`,
+      label: 'Paragraphe de la lettre',
+      placeholder: `As we get ready to say "I do," we feel grateful for the wonderful people in our lives. Your support means the world to us, and we would be honored to have you with us as we begin our life together.`,
       rows: 5,
     },
   },

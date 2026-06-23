@@ -106,6 +106,7 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     program,
     parties: [],
     pack: 'prestige',
+    show_program: bool(show_program, true),
     show_countdown: bool(show_countdown, true),
     show_rsvp:      bool(show_rsvp,      true),
     show_guestbook: bool(show_guestbook,  true),

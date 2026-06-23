@@ -304,9 +304,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     { time: '21:00', event: 'Party & Open Bar' },
     { time: '23:00', event: 'End of celebration' },
   ]
-  const program = (wedding.show_program === false)
-    ? []
-    : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
+  const program = (wedding.show_program === false) ? [] : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
   const AudioControl = () => {
     const [playing, setPlaying] = useState(false)
@@ -382,7 +380,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
               <span data-ef="groom_name">{wedding.groom_name}</span>
             </div>
             <div className="ar-hero-text ar-hero-sub ar-anim-up" style={{ animationDelay: '3.35s' }}>
-              are getting married!
+              {wedding.wedding_day_text || 'are getting married!'}
             </div>
           </div>
         </div>
@@ -431,7 +429,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
           <div className="ar-artboard ar-dear-artboard" ref={dearRef}>
             <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png" alt="" />
             <div className="ar-dear-box">
-              <h2 className="ar-dear-title">Dear friends and family,</h2>
+              <h2 className="ar-dear-title">{wedding.intro_text && !wedding.intro_text.startsWith('Vous êtes') ? wedding.intro_text : 'Dear friends and family,'}</h2>
               <p className="ar-dear-text">
                 {wedding.custom_message ||
                   `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
