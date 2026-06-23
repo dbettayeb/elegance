@@ -13,13 +13,13 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
   const [groom, setGroom] = useState('Mehdi')
   const [date, setDate]   = useState('')
   const [panelOpen, setPanelOpen]   = useState(false)
-  const [iframeSrc, setIframeSrc]   = useState(`/templates/${templateId}/embed`)
+  const [iframeSrc, setIframeSrc]   = useState(`/templates/${templateId}/embed?mode=card`)
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
-      const p = new URLSearchParams()
+      const p = new URLSearchParams({ mode: 'card' })
       if (bride.trim()) p.set('bride', bride.trim())
       if (groom.trim()) p.set('groom', groom.trim())
       if (date)         p.set('date', date)
