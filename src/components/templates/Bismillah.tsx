@@ -210,9 +210,9 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
             )}
 
             <h1 className="bs-names">
-              <span className="bs-name">{brideAr}</span>
+              <span className="bs-name" data-ef="bride_name">{brideAr}</span>
               <span className="bs-and">و</span>
-              <span className="bs-name">{groomAr}</span>
+              <span className="bs-name" data-ef="groom_name">{groomAr}</span>
             </h1>
 
             <div className="bs-date-wrap">
@@ -284,7 +284,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         <section className="bs-section">
           <div className="bs-content-zone">
             <p className="bs-label">مكان الحفل</p>
-            <h2 className="bs-title">{wedding.venue_name}</h2>
+            <h2 className="bs-title" data-ef="venue_name">{wedding.venue_name}</h2>
             {wedding.venue_address && <p className="bs-body">{wedding.venue_address}</p>}
             <div className="bs-btn-row" dir="ltr">
               {wedding.gps_google && (

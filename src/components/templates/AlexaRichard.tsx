@@ -377,7 +377,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
             <div className="ar-hero-overlay"></div>
             <div className="ar-hero-fade-bottom"></div>
             <div className="ar-hero-text ar-hero-names ar-anim-up" style={{ animationDelay: '3.2s' }}>
-              {wedding.bride_name} &amp; {wedding.groom_name}
+              <span data-ef="bride_name">{wedding.bride_name}</span>
+              {' & '}
+              <span data-ef="groom_name">{wedding.groom_name}</span>
             </div>
             <div className="ar-hero-text ar-hero-sub ar-anim-up" style={{ animationDelay: '3.35s' }}>
               are getting married!
@@ -487,7 +489,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                 <img src="/assets/alexa-richard/venue/pin.png" alt="" />
               </div>
               <div>
-                <p className="ar-venue-name">{wedding.venue_name || 'Villa Borghese'}</p>
+                <p className="ar-venue-name" data-ef="venue_name">{wedding.venue_name || 'Villa Borghese'}</p>
                 {wedding.venue_address && <p className="ar-venue-addr">{wedding.venue_address}</p>}
               </div>
             </div>

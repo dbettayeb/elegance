@@ -186,9 +186,9 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
 
               {/* Noms — très grands */}
               <h1 className="an-names">
-                {groomAr}
+                <span data-ef="groom_name">{groomAr}</span>
                 <span className="an-and"> و </span>
-                {brideAr}
+                <span data-ef="bride_name">{brideAr}</span>
               </h1>
 
 
@@ -214,7 +214,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                     يوم {dayName} {dayNum} {monthAr} {yearAr}
                   </p>
                   <p className="an-date-line">على الساعة {timeAr}</p>
-                  <p className="an-venue-name">{wedding.venue_name}</p>
+                  <p className="an-venue-name" data-ef="venue_name">{wedding.venue_name}</p>
                   {wedding.venue_address && (
                     <p className="an-venue-addr">« {wedding.venue_address} »</p>
                   )}

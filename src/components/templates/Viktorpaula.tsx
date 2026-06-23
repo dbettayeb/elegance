@@ -289,9 +289,9 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
             <div className="hero-text hero-date anim-fade-up" style={{ animationDelay: '3.3s' }}>{day}.{month}.{shortYear}</div>
 
             <div className="hero-names-block anim-fade-up" style={{ animationDelay: '3.4s' }}>
-              <div className="hero-name">{wedding.bride_name}</div>
+              <div className="hero-name" data-ef="bride_name">{wedding.bride_name}</div>
               <div className="hero-amp">&amp;</div>
-              <div className="hero-name">{wedding.groom_name}</div>
+              <div className="hero-name" data-ef="groom_name">{wedding.groom_name}</div>
             </div>
 
             <div className="ruby ruby-1 anim-zoom"  style={{ animationDelay: '3.0s' }}><img src="/assets/rubies/ruby-1.png"   alt="" /></div>
@@ -410,7 +410,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
                 <img src={wedding.venue_photo} alt={wedding.venue_name} />
               </div>
             )}
-            <p className="location-name">{wedding.venue_name || 'Chateau de Paon'}</p>
+            <p className="location-name" data-ef="venue_name">{wedding.venue_name || 'Chateau de Paon'}</p>
             {wedding.venue_address && <p className="location-address">{wedding.venue_address}</p>}
             {(wedding.gps_google || wedding.gps_apple) && (
               <div className="location-buttons">
