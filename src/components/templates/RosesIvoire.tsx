@@ -97,9 +97,9 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
 
               {/* Noms + barre */}
               <div className="ri-names">
-                <span className="ri-name">{brideName}</span>
+                <span className="ri-name" data-ef="bride_name">{brideName}</span>
                 <img src={`/${BARRE_KEY}`} alt="&" className="ri-barre" />
-                <span className="ri-name">{groomName}</span>
+                <span className="ri-name" data-ef="groom_name">{groomName}</span>
               </div>
 
               {/* Date 3 cases */}
@@ -113,7 +113,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
               <p className="ri-time-txt">{timeFr}</p>
 
               {/* Lieu */}
-              {wedding.venue_name    && <p className="ri-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="ri-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="ri-addr-txt">{wedding.venue_address}</p>}
 
               {/* Maps */}

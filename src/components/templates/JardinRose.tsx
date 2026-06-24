@@ -109,13 +109,13 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
             <div className="jr-content-zone">
               <p className="jr-intro">{introText}</p>
               <div className="jr-names">
-                <span className="jr-name">{brideName}</span>
-                <span className="jr-amp">{ampChar} {groomName}</span>
+                <span className="jr-name" data-ef="bride_name">{brideName}</span>
+                <span className="jr-amp">{ampChar} <span data-ef="groom_name">{groomName}</span></span>
               </div>
               <div className="jr-divider"><span /><i>✦</i><span /></div>
               <p className="jr-date-styled">{dateStyled}</p>
               <p className="jr-time-txt">{timeFr}</p>
-              {wedding.venue_name    && <p className="jr-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="jr-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="jr-addr-txt">{wedding.venue_address}</p>}
               {(wedding.gps_google || wedding.gps_apple) && (
                 <div className="jr-maps-mini">

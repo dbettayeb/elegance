@@ -9,6 +9,8 @@ import {
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { getArTypographyTheme } from '@/lib/typography-themes'
+import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
   wedding: Wedding
@@ -40,6 +42,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
   })
 
   const palette   = getBismillahPalette(wedding.bismillah_palette)
+  const arTheme   = getArTypographyTheme(wedding.ar_font_theme)
   const bgKey     = (wedding.background_image ?? 'bg-texture.jpg') as string
   const bgCfg     = BG_CONFIGS[bgKey] ?? BG_CONFIGS['bg-texture.jpg']
   const decoWidthVh  = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
@@ -48,7 +51,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
   return (
     <>
       <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600&display=swap"
+        href={`https://fonts.googleapis.com/css2?family=${arTheme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
       <style>{CSS}</style>
@@ -63,6 +66,8 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
           --an-text-2:      ${palette.textSecondary};
           --an-text-muted:  ${palette.textMuted};
           --an-gold:        ${palette.decorativeGold ?? palette.accent};
+          --an-font-display: ${arTheme.display};
+          --an-font-body:    ${arTheme.body};
         }
         .an-texture-bg { background-color: ${palette.bg} !important; }
         body { background-color: ${palette.bg}; }
@@ -165,17 +170,13 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                     </p>
                   )}
                   <p className="an-honor">تتشرف</p>
-                  <div className="an-families-row">
-                    {wedding.groom_family_ar && (
-                      <span>{wedding.groom_family_prefix_ar || 'عائلة'} {wedding.groom_family_ar}</span>
-                    )}
-                    {wedding.bride_family_ar && wedding.groom_family_ar && (
-                      <span className="an-fam-and">و</span>
-                    )}
-                    {wedding.bride_family_ar && (
-                      <span>{wedding.bride_family_prefix_ar || 'عائلة'} {wedding.bride_family_ar}</span>
-                    )}
-                  </div>
+                  <ArabicFamilies
+                    prefix="an"
+                    groomPrefix={wedding.groom_family_prefix_ar}
+                    groomName={wedding.groom_family_ar}
+                    bridePrefix={wedding.bride_family_prefix_ar}
+                    brideName={wedding.bride_family_ar}
+                  />
                   <p className="an-invite-line">بدعوتكم لحضور زفاف ابنيهما</p>
                 </>
               ) : (
@@ -186,9 +187,9 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
 
               {/* Noms — très grands */}
               <h1 className="an-names">
-                {groomAr}
+                <span data-ef="groom_name">{groomAr}</span>
                 <span className="an-and"> و </span>
-                {brideAr}
+                <span data-ef="bride_name">{brideAr}</span>
               </h1>
 
 
@@ -214,7 +215,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                     يوم {dayName} {dayNum} {monthAr} {yearAr}
                   </p>
                   <p className="an-date-line">على الساعة {timeAr}</p>
-                  <p className="an-venue-name">{wedding.venue_name}</p>
+                  <p className="an-venue-name" data-ef="venue_name">{wedding.venue_name}</p>
                   {wedding.venue_address && (
                     <p className="an-venue-addr">« {wedding.venue_address} »</p>
                   )}
@@ -241,7 +242,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
 
               {/* Bénédiction — modifiable via custom_message */}
               <p className="an-blessing">
-                {wedding.custom_message || 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ'}
+                {(wedding.custom_message || 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ').replace(/ »/g, ' »')}
               </p>
 
             </div>
@@ -353,7 +354,7 @@ const CSS = `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Amiri', Georgia, serif;
+    font-family: var(--an-font-body);
     background: #1a1108;
     color: var(--an-text);
     overflow-x: hidden;
@@ -362,7 +363,7 @@ const CSS = `
   .an-invitation {
     opacity: 0;
     transition: opacity 1s ease;
-    font-family: 'Amiri', Georgia, serif;
+    font-family: var(--an-font-body);
   }
   .an-visible { opacity: 1; }
 
@@ -399,19 +400,23 @@ const CSS = `
     font-size: .85rem; color: var(--an-text-muted); letter-spacing: .04em;
   }
   .an-guest-name {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.5rem; font-weight: 700; color: var(--an-text);
   }
 
-  /* ── Bismillah ── */
+  /* ── Bismillah — taille réduite pour tenir dans la zone vide ── */
   .an-bismillah {
-    font-family: 'Aref Ruqaa', serif;
-    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-family: var(--an-font-display);
+    font-size: clamp(1rem, 4.2vw, 1.55rem);
     font-weight: 700;
     color: var(--an-text);
     line-height: 1.8;
     margin-top: 32px;
     margin-bottom: 20px;
+    white-space: nowrap;
+  }
+  @media (min-width: 769px) {
+    .an-bismillah { font-size: clamp(0.95rem, 2.5vh, 1.55rem); }
   }
 
   /* ── Séparateur ligne fine ── */
@@ -428,7 +433,7 @@ const CSS = `
   /* ── Verset ── */
   .an-verse-wrap { width: 100%; margin: 4px 0; }
   .an-verse {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.3rem);
     line-height: 2.2; color: var(--an-text-2); font-weight: 400;
   }
@@ -440,54 +445,62 @@ const CSS = `
 
   /* ── Intro / familles ── */
   .an-intro-text {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     line-height: 2; color: var(--an-text-2);
     margin-bottom: 14px; width: 100%;
   }
   .an-families-intro {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     color: var(--an-text-2); line-height: 1.9;
     margin-bottom: 10px; width: 100%;
   }
   .an-honor {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     font-weight: 700; color: var(--an-text); margin: 10px 0;
   }
-  .an-families-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: .4em;
-    width: 100%;
-    font-family: 'Amiri', serif;
-    font-size: clamp(.75rem, 2vw, .95rem);
-    color: var(--an-text);
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 6px 0;
-    text-align: center;
+  /* Grille familles AlNour */
+  .an-fgrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    column-gap: 20px; row-gap: 4px;
+    width: 100%; margin: 6px 0 10px;
   }
-  .an-fam-and {
-    font-family: 'Aref Ruqaa', serif;
-    font-size: 1.1em;
-    color: var(--an-accent);
-    font-weight: 400;
-    flex-shrink: 0;
+  .an-fp {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: clamp(.55rem, 1.3vw, .75rem);
+    color: var(--an-text-muted); font-weight: 400;
+    letter-spacing: .05em; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .an-fn {
+    font-family: var(--an-font-display);
+    font-size: clamp(.72rem, 1.8vw, 1.05rem);
+    color: var(--an-text); font-weight: 700; line-height: 1.4;
+    text-align: center; min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .an-fn-last { display: inline-block; white-space: nowrap; }
+  .an-fgrid--wrap .an-fn-last { display: block; }
+  .an-fand {
+    font-family: var(--an-font-display);
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    color: var(--an-accent); font-weight: 400;
+    align-self: center; text-align: center;
+  }
+  .an-fsingle { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 6px 0 10px; }
+  @media(max-width: 480px) { .an-fgrid { column-gap: 12px; } }
   .an-invite-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     color: var(--an-text-2); margin-top: 6px;
   }
 
   /* ── Noms — grands ── */
   .an-names {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(2.4rem, 8vw, 4.8rem);
     font-weight: 700; color: var(--an-text);
     line-height: 1.25; letter-spacing: .02em;
@@ -496,7 +509,7 @@ const CSS = `
   .an-and { color: var(--an-accent); font-weight: 400; font-size: 75%; }
 
   .an-custom {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     font-style: italic; color: var(--an-text-2);
     line-height: 2; margin: 8px 0; width: 100%;
@@ -504,7 +517,7 @@ const CSS = `
 
   /* ── Volonté divine ── */
   .an-bismillah-will {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.3rem);
     color: var(--an-text-2);
     font-style: italic;
@@ -518,22 +531,22 @@ const CSS = `
     align-items: center; gap: 4px;
   }
   .an-date-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.2rem);
     color: var(--an-text); line-height: 2; font-weight: 700;
   }
   .an-venue-name {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.1rem, 3vw, 1.5rem);
     color: var(--an-text); font-weight: 700; margin-top: 6px;
   }
   .an-venue-addr {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     font-style: italic; color: var(--an-text-2);
   }
   .an-prog-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     color: var(--an-text); line-height: 2;
     width: 100%; text-align: center;
@@ -563,14 +576,14 @@ const CSS = `
 
   /* ── Bénédiction ── */
   .an-blessing {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1rem, 3vw, 1.4rem);
     color: var(--an-text); line-height: 1.9; font-weight: 400;
   }
 
   /* ── Sections secondaires ── */
   .an-section-label {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.3rem, 3.5vw, 1.9rem);
     color: var(--an-text); font-weight: 700; margin-bottom: 6px;
   }
@@ -591,7 +604,7 @@ const CSS = `
     border: 1px solid var(--an-border);
   }
   .an-cd-num {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.9rem; font-weight: 700;
     color: var(--an-gold); line-height: 1;
   }
@@ -641,7 +654,7 @@ const CSS = `
   .an-submit:hover { opacity: .88; }
   .an-submit:disabled { opacity: .5; cursor: not-allowed; }
   .an-success {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.2rem; color: var(--an-accent); padding: 18px;
   }
 
@@ -655,7 +668,7 @@ const CSS = `
     padding: 14px 18px; text-align: right;
   }
   .an-msg-text {
-    font-family: 'Amiri', serif; font-size: 1rem; font-style: italic;
+    font-family: var(--an-font-body); font-size: 1rem; font-style: italic;
     color: var(--an-text-2); line-height: 1.8;
   }
   .an-msg-author {
@@ -666,11 +679,11 @@ const CSS = `
 
   /* ── Footer ── */
   .an-footer-names {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.6rem; color: var(--an-accent); margin-bottom: 4px; font-weight: 700;
   }
   .an-footer-date {
-    font-family: 'Amiri', serif; font-size: .95rem;
+    font-family: var(--an-font-body); font-size: .95rem;
     color: var(--an-text-2); margin-bottom: 4px;
   }
   .an-footer-date-fr {

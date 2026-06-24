@@ -22,9 +22,10 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const galleryRef = useRef<HTMLDivElement>(null)
   const scratchDoneRef = useRef([false, false, false])
 
-  const day   = String(eventDate.getDate())
-  const month = eventDate.toLocaleDateString('en-GB', { month: 'long' })
-  const year  = String(eventDate.getFullYear())
+  const day      = String(eventDate.getDate())
+  const month    = eventDate.toLocaleDateString('en-GB', { month: 'long' })
+  const year     = String(eventDate.getFullYear())
+  const eventTime = `${String(eventDate.getHours()).padStart(2,'0')}:${String(eventDate.getMinutes()).padStart(2,'0')}`
 
   const GALLERY = [
     '/assets/alexa-richard/gallery/01.png',
@@ -304,9 +305,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     { time: '21:00', event: 'Party & Open Bar' },
     { time: '23:00', event: 'End of celebration' },
   ]
-  const program = (wedding.show_program === false)
-    ? []
-    : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
+  const program = (wedding.show_program === false) ? [] : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
   const AudioControl = () => {
     const [playing, setPlaying] = useState(false)
@@ -377,10 +376,12 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
             <div className="ar-hero-overlay"></div>
             <div className="ar-hero-fade-bottom"></div>
             <div className="ar-hero-text ar-hero-names ar-anim-up" style={{ animationDelay: '3.2s' }}>
-              {wedding.bride_name} &amp; {wedding.groom_name}
+              <span data-ef="bride_name">{wedding.bride_name}</span>
+              {' & '}
+              <span data-ef="groom_name">{wedding.groom_name}</span>
             </div>
             <div className="ar-hero-text ar-hero-sub ar-anim-up" style={{ animationDelay: '3.35s' }}>
-              are getting married!
+              {wedding.wedding_day_text || 'are getting married!'}
             </div>
           </div>
         </div>
@@ -402,6 +403,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                 </div>
               ))}
             </div>
+            <p className="ar-date-time">{eventTime}</p>
             {allScratched && (
               <div className="ar-scratch-reveal">You&apos;re invited!</div>
             )}
@@ -429,7 +431,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
           <div className="ar-artboard ar-dear-artboard" ref={dearRef}>
             <img className="ar-dear-leaves-l" src="/assets/alexa-richard/dear/leaves-left.png" alt="" />
             <div className="ar-dear-box">
-              <h2 className="ar-dear-title">Dear friends and family,</h2>
+              <h2 className="ar-dear-title">{wedding.intro_text && !wedding.intro_text.startsWith('Vous êtes') ? wedding.intro_text : 'Dear friends and family,'}</h2>
               <p className="ar-dear-text">
                 {wedding.custom_message ||
                   `As we get ready to say "I do," we feel grateful for the wonderful people in our lives.\n\nYour support means the world to us, and we would be honored to have you with us as we begin our life together.`}
@@ -487,7 +489,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                 <img src="/assets/alexa-richard/venue/pin.png" alt="" />
               </div>
               <div>
-                <p className="ar-venue-name">{wedding.venue_name || 'Villa Borghese'}</p>
+                <p className="ar-venue-name" data-ef="venue_name">{wedding.venue_name || 'Villa Borghese'}</p>
                 {wedding.venue_address && <p className="ar-venue-addr">{wedding.venue_address}</p>}
               </div>
             </div>
@@ -972,6 +974,15 @@ const CSS = `
     font-family: 'Rufina', serif;
     font-size: clamp(9px, 2vw, 11px); letter-spacing: 4px;
     color: var(--ar-blue-soft); text-transform: uppercase; text-align: center;
+  }
+  .ar-date-time {
+    font-family: 'Rufina', serif;
+    font-size: clamp(15px, 3.5vw, 19px);
+    letter-spacing: 0.28em;
+    color: var(--ar-blue-soft);
+    margin: 14px 0 4px;
+    text-align: center;
+    opacity: 0.85;
   }
   .ar-scratch-reveal {
     font-family: 'Imperial Script', cursive;

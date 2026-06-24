@@ -97,9 +97,9 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
             <div className="fa-content-zone">
               <p className="fa-intro">{introText}</p>
               <div className="fa-names">
-                <span className="fa-name">{brideName}</span>
+                <span className="fa-name" data-ef="bride_name">{brideName}</span>
                 <span className="fa-amp">{ampChar}</span>
-                <span className="fa-name">{groomName}</span>
+                <span className="fa-name" data-ef="groom_name">{groomName}</span>
               </div>
               <div className="fa-save-block">
                 <p className="fa-save-label">Réservez cette date</p>
@@ -107,7 +107,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
                 <p className="fa-date-txt">{dateFr}</p>
                 <p className="fa-time-txt">{timeFr}</p>
               </div>
-              {wedding.venue_name    && <p className="fa-venue-txt">{wedding.venue_name}</p>}
+              {wedding.venue_name    && <p className="fa-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
               {wedding.venue_address && <p className="fa-addr-txt">{wedding.venue_address}</p>}
               {(wedding.gps_google || wedding.gps_apple) && (
                 <div className="fa-maps-mini">

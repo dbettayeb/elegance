@@ -117,8 +117,8 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
               <span className="cs-heart">♥</span>
               <p className="cs-intro">{introText}</p>
               <div className="cs-names">
-                <span className="cs-name">{brideName}</span>
-                <span className="cs-amp">{ampChar} {groomName}</span>
+                <span className="cs-name" data-ef="bride_name">{brideName}</span>
+                <span className="cs-amp">{ampChar} <span data-ef="groom_name">{groomName}</span></span>
               </div>
               <div className="cs-divider">
                 <span /><i>✦</i><span />
@@ -126,7 +126,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
               <div className="cs-event-info">
                 <p className="cs-date-txt">Le {dateFr}</p>
                 <p className="cs-time-txt">{timeFr}</p>
-                {wedding.venue_name    && <p className="cs-venue-txt">{wedding.venue_name}</p>}
+                {wedding.venue_name    && <p className="cs-venue-txt" data-ef="venue_name">{wedding.venue_name}</p>}
                 {wedding.venue_address && <p className="cs-addr-txt">{wedding.venue_address}</p>}
                 {(wedding.gps_google || wedding.gps_apple) && (
                   <div className="cs-maps-mini">
