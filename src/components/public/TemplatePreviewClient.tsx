@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { TEMPLATES_META } from '@/lib/templates-meta'
-import { getTemplateFields, ARABIC_BLESSING_PRESETS } from '@/lib/template-fields'
+import { getTemplateFields, ARABIC_BLESSING_PRESETS, ARABIC_FAMILIES_INTRO_PRESETS } from '@/lib/template-fields'
 import { AR_TYPOGRAPHY_THEMES, TypographyTheme } from '@/lib/typography-themes'
 
 interface Props {
@@ -127,7 +127,7 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
     } else {
       setFields(f => ({
         ...f,
-        families_intro_ar:      'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف',
+        families_intro_ar:      'إِنَّ السُّرُورَ إِذَا تَشَارَكْنَاهُ تَضَاعَفَتْ بَسَمَاتُهُ،\nوَبِكُلِّ حُبٍّ وَوُدٍّ تَتَشَرَّفُ',
         groom_family_prefix_ar: 'عائلة الحاج',
         bride_family_prefix_ar: 'عائلة المرحوم الحاج',
         groom_family_ar:        'محمد سمير الدسوقي',
@@ -317,10 +317,18 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
               {schema.arabicFamilies && (
                 <Group title="Familles (style maghrébin)">
                   <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
+                    <div className="ptp-presets" dir="ltr">
+                      {ARABIC_FAMILIES_INTRO_PRESETS.map(opt => (
+                        <button type="button" key={opt.label} className="ptp-preset"
+                          onClick={() => upd('families_intro_ar', opt.value)}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                     <textarea rows={2} dir="rtl"
                       value={fields.families_intro_ar}
                       onChange={e => upd('families_intro_ar', e.target.value)}
-                      placeholder={'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف'} />
+                      placeholder={'إِنَّ السُّرُورَ إِذَا تَشَارَكْنَاهُ تَضَاعَفَتْ بَسَمَاتُهُ،\nوَبِكُلِّ حُبٍّ وَوُدٍّ تَتَشَرَّفُ'} />
                   </Field>
                   <div className="ptp-row">
                     <Field label="Préfixe famille du marié" help="ex : عائلة الحاج, عائلة, عائلة المرحوم...">

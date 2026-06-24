@@ -466,7 +466,7 @@ const CSS = `
   .bs-cd-num{font-family:var(--bs-font-display);font-size:2rem;color:var(--bs-gold);line-height:1;font-weight:700;}
   .bs-cd-label{font-family:'Reem Kufi',sans-serif;font-size:.72rem;color:var(--bs-text-2);margin-top:8px;}
   .bs-program{display:flex;flex-direction:column;gap:0;width:100%;}
-  .bs-prog-item{display:grid;grid-template-columns:1fr 24px 90px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(201,168,76,0.2);}
+  .bs-prog-item{display:grid;grid-template-columns:90px 24px 1fr;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(201,168,76,0.2);}
   .bs-prog-item:last-child{border-bottom:none}
   .bs-prog-time{font-family:var(--bs-font-display);font-size:1.3rem;color:var(--bs-accent);text-align:left;font-weight:700;}
   .bs-prog-star{color:var(--bs-gold);font-size:.9rem;text-align:center;}
