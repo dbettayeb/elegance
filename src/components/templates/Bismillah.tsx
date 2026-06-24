@@ -259,7 +259,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         )}
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="bs-section">
             <div className="bs-content-zone">
               <p className="bs-label">برنامج الحفل</p>

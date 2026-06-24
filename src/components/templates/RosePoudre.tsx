@@ -153,7 +153,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="rp-section">
             <p className="rp-label">Déroulement</p>
             <h2 className="rp-title">Programme de la fête</h2>

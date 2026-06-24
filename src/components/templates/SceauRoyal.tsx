@@ -268,7 +268,7 @@ export default function SceauRoyal({ wedding }: { wedding: Wedding }) {
         <div className="sr-section-divider">✦</div>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="sr-section">
             <p className="sr-label">Déroulement</p>
             <h2 className="sr-title">Programme de la soirée</h2>

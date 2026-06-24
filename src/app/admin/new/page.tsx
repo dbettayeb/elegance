@@ -39,6 +39,7 @@ export default function NewWeddingPage() {
     show_rsvp: true,
     show_guestbook: true,
     show_countdown: true,
+    show_program: true,
     show_celebrations: true,
     moderation_on: true,
     bismillah_palette: 'or_classique',
@@ -480,6 +481,9 @@ export default function NewWeddingPage() {
             <Toggle label="Afficher le compte à rebours"
               help="Section compte à rebours jusqu'au jour J"
               checked={form.show_countdown} onChange={v => set('show_countdown', v)} />
+            <Toggle label="Afficher le programme de la soirée"
+              help="Section « Programme » / Schedule of Events de l'invitation"
+              checked={form.show_program} onChange={v => set('show_program', v)} />
             <Toggle label="Afficher les fêtes / célébrations"
               help="Affiche le bloc « Our Celebrations » avec toutes les fêtes additionnelles et la réception principale"
               checked={form.show_celebrations} onChange={v => set('show_celebrations', v)} />

@@ -408,7 +408,7 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* ===== 3. PROGRAMME ===== */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="cd-program">
             <div className="cd-program-decor cd-program-decor-l" aria-hidden="true">
               <FloralCorner rotate={0} />

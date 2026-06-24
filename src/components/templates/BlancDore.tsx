@@ -126,7 +126,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
         <div className="ed-divider">✦</div>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="ed-section">
             <p className="ed-label">Déroulement</p>
             <h2 className="ed-title">Programme de la Soirée</h2>

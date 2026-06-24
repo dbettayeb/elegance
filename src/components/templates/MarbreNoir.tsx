@@ -134,7 +134,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="mb-section">
             <p className="mb-label">Déroulement</p>
             <h2 className="mb-title">Programme</h2>

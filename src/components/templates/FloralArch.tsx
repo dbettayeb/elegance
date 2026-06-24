@@ -142,7 +142,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="fa-section">
               <div className="fa-content-zone">
                 <p className="fa-label">Déroulement</p>

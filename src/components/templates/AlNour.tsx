@@ -198,7 +198,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
               <p className="an-bismillah-will">وذلك بمشيئة الله تعالى</p>
 
               {/* Date / Programme en texte coulant */}
-              {wedding.program && (wedding.program as ProgramItem[]).length > 0 ? (
+              {wedding.show_program !== false && wedding.program && (wedding.program as ProgramItem[]).length > 0 ? (
                 <div className="an-program-text">
                   {(wedding.program as ProgramItem[]).map((item, i) => (
                     <p key={i} className="an-prog-line">

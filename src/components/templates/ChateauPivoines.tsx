@@ -293,7 +293,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* ===== 4. PROGRAMME — TIMELINE STYLE VIDÉO ===== */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="cp-program">
             <h2 className="cp-program-title">Schedule of Events</h2>
 

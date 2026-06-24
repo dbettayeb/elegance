@@ -155,7 +155,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="rb-section">
               <div className="rb-content-zone">
                 <p className="rb-label">Déroulement</p>

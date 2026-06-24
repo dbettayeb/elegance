@@ -127,7 +127,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
         </div>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="ja-section">
             <p className="ja-label">Déroulement</p>
             <h2 className="ja-title">Programme de la fête</h2>
