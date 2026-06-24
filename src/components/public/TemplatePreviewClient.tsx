@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { getTemplateFields, ARABIC_BLESSING_PRESETS } from '@/lib/template-fields'
+import { AR_TYPOGRAPHY_THEMES, TypographyTheme } from '@/lib/typography-themes'
 
 interface Props {
   templateId: string
@@ -34,6 +35,7 @@ interface Options {
   moderation_on:        boolean
   show_program:         boolean
   guest_invite_enabled: boolean
+  ar_font_theme:        TypographyTheme['id']
 }
 
 const EMPTY_FIELDS: Fields = {
@@ -64,6 +66,7 @@ const DEFAULT_OPTIONS: Options = {
   moderation_on:        true,
   show_program:         true,
   guest_invite_enabled: false,
+  ar_font_theme:        'classic',
 }
 
 function buildSrc(id: string, f: Fields, program: ProgramItem[], opts: Options) {
@@ -93,6 +96,7 @@ function buildSrc(id: string, f: Fields, program: ProgramItem[], opts: Options) 
   p.set('show_guestbook',       opts.show_guestbook       ? '1' : '0')
   p.set('moderation_on',        opts.moderation_on        ? '1' : '0')
   p.set('guest_invite_enabled', opts.guest_invite_enabled ? '1' : '0')
+  p.set('ar_font_theme',        opts.ar_font_theme)
   return `/templates/${id}/embed?${p.toString()}`
 }
 
@@ -124,7 +128,7 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
     }))
     setPresetApplied(true)
   }
-  function updOpt<K extends keyof Options>(key: K, val: boolean) {
+  function updOpt<K extends keyof Options>(key: K, val: Options[K]) {
     setOptions(o => ({ ...o, [key]: val }))
   }
   function updProg(i: number, key: keyof ProgramItem, val: string) {
@@ -361,13 +365,26 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
 
               {/* Options */}
               <Group title="Options de l'invitation">
+                {isArabic && (
+                  <div className="ptp-field">
+                    <label>Style typographique</label>
+                    <select className="ptp-select"
+                      value={options.ar_font_theme}
+                      onChange={e => updOpt('ar_font_theme', e.target.value as TypographyTheme['id'])}>
+                      {AR_TYPOGRAPHY_THEMES.map(t => (
+                        <option key={t.id} value={t.id}>{t.label}</option>
+                      ))}
+                    </select>
+                    <p className="ptp-help">Paire de polices appliquées aux titres et au corps du texte.</p>
+                  </div>
+                )}
                 {([
                   ['show_countdown',       'Compte à rebours'],
                   ['show_rsvp',            'Formulaire RSVP'],
                   ['show_guestbook',       'Livre d\'or'],
                   ['moderation_on',        'Modération des messages'],
                   ['guest_invite_enabled', 'Invitations personnalisées (un lien par invité)'],
-                ] as [keyof Options, string][]).map(([key, label]) => (
+                ] as [Exclude<keyof Options, 'ar_font_theme'>, string][]).map(([key, label]) => (
                   <label key={key} className="ptp-toggle">
                     <input type="checkbox" checked={options[key]}
                       onChange={e => updOpt(key, e.target.checked)} />
@@ -539,6 +556,16 @@ const CSS = `
     background: #fef9c3; border-left: 3px solid #d4a93b;
     color: #713f12; font-size: 0.72rem; font-style: italic;
   }
+
+  /* Select (thème typo) */
+  .ptp-select {
+    padding: 8px 0; background: transparent;
+    border: none; border-bottom: 1px solid var(--pub-border);
+    font-family: Georgia, serif; font-size: 0.9rem;
+    color: var(--pub-text); outline: none; width: 100%;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .ptp-select:focus { border-bottom-color: var(--pub-text); }
 
   /* Options */
   .ptp-toggle {

@@ -22,6 +22,7 @@ interface Props {
     show_countdown?: string; show_rsvp?: string
     show_guestbook?: string; moderation_on?: string
     guest_invite_enabled?: string
+    ar_font_theme?: string
   }>
 }
 
@@ -44,6 +45,7 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     program: programParam, show_program,
     show_countdown, show_rsvp, show_guestbook, moderation_on,
     guest_invite_enabled,
+    ar_font_theme,
   } = await searchParams
 
   const template = TEMPLATES.find(t => t.id === id)
@@ -123,6 +125,7 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     show_guestbook: bool(show_guestbook,  true),
     moderation_on:  bool(moderation_on,   true),
     guest_invite_enabled: bool(guest_invite_enabled, false),
+    ar_font_theme: ar_font_theme === 'modern' ? 'modern' : 'classic',
     status: 'active',
     created_at: new Date().toISOString(),
   }

@@ -6,6 +6,7 @@ import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, fo
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { getArTypographyTheme } from '@/lib/typography-themes'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
   const {
@@ -24,6 +25,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
   })
 
   const palette = getBismillahPalette(wedding.bismillah_palette)
+  const arTheme = getArTypographyTheme(wedding.ar_font_theme)
   const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
   return (
     <>
       <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600&display=swap"
+        href={`https://fonts.googleapis.com/css2?family=${arTheme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
       <style>{CSS}</style>
@@ -72,6 +74,8 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
           --bs-text-2: ${palette.textSecondary};
           --bs-text-muted: ${palette.textMuted};
           --bs-gold: ${palette.decorativeGold ?? palette.accent};
+          --bs-font-display: ${arTheme.display};
+          --bs-font-body: ${arTheme.body};
         }
         .bs-invitation .bs-orn svg path { stroke: var(--bs-gold); }
         .bs-invitation .bs-orn svg circle { fill: var(--bs-gold); }
@@ -393,7 +397,7 @@ const CSS = `
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
   body{
-    font-family:'Amiri',Georgia,serif;
+    font-family:var(--bs-font-body);
     background:#1a1108;color:var(--bs-text);overflow-x:hidden;
   }
 
@@ -435,7 +439,7 @@ const CSS = `
     font-size:15px;letter-spacing:.04em;opacity:.85;
   }
   .bs-guest-ar{
-    display:block;font-family:'Aref Ruqaa',serif;
+    display:block;font-family:var(--bs-font-display);
     font-size:24px;font-weight:700;margin:6px 0;color:#5C4A14;
   }
   .bs-seal-btn{
@@ -449,7 +453,7 @@ const CSS = `
   .bs-opening-hint{
     position:absolute;top:526px;left:480px;width:240px;
     text-align:center;
-    color:#C9A84C;font-family:'Aref Ruqaa',serif;font-size:20px;
+    color:#C9A84C;font-family:var(--bs-font-display);font-size:20px;
     pointer-events:none;z-index:4;
     transition:opacity 1.5s ease;
     animation:bsOpPulse 2s ease-in-out infinite;
@@ -462,7 +466,7 @@ const CSS = `
   .bs-invitation{
     opacity:0;transform:translateY(24px);
     transition:opacity 1s,transform 1s;
-    font-family:'Amiri',Georgia,serif;
+    font-family:var(--bs-font-body);
   }
   .bs-invitation.bs-visible{opacity:1;transform:none}
 
@@ -499,7 +503,7 @@ const CSS = `
 
   /* Bismillah */
   .bs-bismillah{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:clamp(1rem,4.5vw,2.2rem);
     color:var(--bs-text);line-height:1.8;
     font-weight:700;
@@ -519,7 +523,7 @@ const CSS = `
     width:100%;
   }
   .bs-verse{
-    font-family:'Amiri',serif;
+    font-family:var(--bs-font-body);
     font-size:clamp(1rem,2.5vw,1.4rem);
     color:var(--bs-text-2);line-height:2.2;
     font-weight:400;
@@ -543,7 +547,7 @@ const CSS = `
 
   /* Familles intro */
   .bs-families-intro{
-    font-family:'Amiri',serif;
+    font-family:var(--bs-font-body);
     font-size:clamp(.95rem,2.2vw,1.2rem);
     color:var(--bs-text-2);line-height:1.8;
     margin-bottom:18px;width:100%;
@@ -573,14 +577,14 @@ const CSS = `
     white-space:nowrap;line-height:1.2;min-height:1.2em;
   }
   .bs-family-name{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:clamp(.78rem,1.9vw,1.15rem);
     color:var(--bs-text-2);font-weight:700;line-height:1.3;
     text-align:center;
     white-space:nowrap;
   }
   .bs-family-and{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:clamp(1rem,2.2vw,1.3rem);
     color:var(--bs-accent);font-weight:400;
     flex-shrink:0;
@@ -600,7 +604,7 @@ const CSS = `
 
   /* Noms */
   .bs-names{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:clamp(2.2rem,7vw,4rem);
     color:var(--bs-text);line-height:1.2;font-weight:700;
     display:flex;flex-direction:column;align-items:center;gap:4px;
@@ -615,7 +619,7 @@ const CSS = `
 
   /* Message custom */
   .bs-custom{
-    font-family:'Amiri',serif;font-size:1.1rem;font-style:italic;
+    font-family:var(--bs-font-body);font-size:1.1rem;font-style:italic;
     color:var(--bs-text-2);line-height:2;
     width:100%;margin:22px auto;
   }
@@ -639,7 +643,7 @@ const CSS = `
   .bs-bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
   .bs-br{bottom:-1px;right:-1px;border-left:none;border-top:none}
   .bs-date-num{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:4rem;font-weight:700;
     color:var(--bs-gold);line-height:1;
   }
@@ -649,9 +653,9 @@ const CSS = `
     font-size:1rem;color:var(--bs-text);font-weight:600;
   }
   .bs-date-line{width:30px;height:1px;background:var(--bs-gold)}
-  .bs-date-year{font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:var(--bs-text);}
+  .bs-date-year{font-family:var(--bs-font-display);font-size:1.3rem;color:var(--bs-text);}
   .bs-date-time{
-    font-family:'Aref Ruqaa',serif;font-size:1.5rem;color:var(--bs-accent);
+    font-family:var(--bs-font-display);font-size:1.5rem;color:var(--bs-accent);
     border-right:1px solid var(--bs-border);
     padding-right:24px;margin-right:-24px;
     align-self:stretch;display:flex;align-items:center;
@@ -660,7 +664,7 @@ const CSS = `
   /* Hadith */
   .bs-hadith{
     margin-top:26px;width:100%;
-    font-family:'Amiri',serif;font-style:italic;
+    font-family:var(--bs-font-body);font-style:italic;
     font-size:1.1rem;color:var(--bs-text-2);line-height:2;
   }
 
@@ -672,12 +676,12 @@ const CSS = `
     letter-spacing:.05em;
   }
   .bs-title{
-    font-family:'Aref Ruqaa',serif;
+    font-family:var(--bs-font-display);
     font-size:clamp(1.8rem,4.5vw,2.4rem);
     color:var(--bs-text);margin-bottom:16px;line-height:1.4;font-weight:700;
   }
   .bs-body{
-    font-family:'Amiri',serif;font-size:1.1rem;font-style:italic;
+    font-family:var(--bs-font-body);font-size:1.1rem;font-style:italic;
     color:var(--bs-text-2);line-height:2;margin-bottom:16px;
   }
 
@@ -702,7 +706,7 @@ const CSS = `
   .bs-cd::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
   .bs-cd::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
   .bs-cd-num{
-    font-family:'Aref Ruqaa',serif;font-size:2rem;
+    font-family:var(--bs-font-display);font-size:2rem;
     color:var(--bs-gold);line-height:1;font-weight:700;
   }
   .bs-cd-label{
@@ -722,17 +726,17 @@ const CSS = `
   }
   .bs-prog-item:last-child{border-bottom:none}
   .bs-prog-time{
-    font-family:'Aref Ruqaa',serif;font-size:1.3rem;color:var(--bs-accent);
+    font-family:var(--bs-font-display);font-size:1.3rem;color:var(--bs-accent);
     text-align:left;font-weight:700;
   }
   .bs-prog-star{color:var(--bs-gold);font-size:.9rem;text-align:center;}
   .bs-prog-content{text-align:right}
   .bs-prog-event{
-    font-family:'Aref Ruqaa',serif;font-size:1.15rem;
+    font-family:var(--bs-font-display);font-size:1.15rem;
     color:var(--bs-text);font-weight:700;
   }
   .bs-prog-venue{
-    font-family:'Amiri',serif;font-size:.95rem;font-style:italic;
+    font-family:var(--bs-font-body);font-size:.95rem;font-style:italic;
     color:var(--bs-text-2);margin-top:4px;
   }
 
@@ -805,7 +809,7 @@ const CSS = `
   .bs-btn-submit:hover{opacity:.88}
   .bs-btn-submit:disabled{opacity:.5;cursor:not-allowed}
   .bs-success{
-    font-family:'Aref Ruqaa',serif;font-size:1.3rem;
+    font-family:var(--bs-font-display);font-size:1.3rem;
     color:var(--bs-accent);padding:20px;font-weight:700;
   }
 
@@ -823,7 +827,7 @@ const CSS = `
   }
   .bs-msg-orn{color:var(--bs-accent);font-size:.9rem;margin-bottom:8px;opacity:.7;}
   .bs-msg-text{
-    font-family:'Amiri',serif;font-size:1rem;font-style:italic;
+    font-family:var(--bs-font-body);font-size:1rem;font-style:italic;
     color:var(--bs-text-2);line-height:1.8;
   }
   .bs-msg-author{
@@ -834,12 +838,12 @@ const CSS = `
 
   /* Footer */
   .bs-footer-names{
-    font-family:'Aref Ruqaa',serif;font-size:1.8rem;
+    font-family:var(--bs-font-display);font-size:1.8rem;
     color:var(--bs-accent);margin-bottom:4px;font-weight:700;
     direction:rtl;
   }
   .bs-footer-date{
-    font-family:'Amiri',serif;font-size:1rem;
+    font-family:var(--bs-font-body);font-size:1rem;
     color:var(--bs-text-2);margin-bottom:4px;
   }
   .bs-footer-date-fr{

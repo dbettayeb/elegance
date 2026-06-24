@@ -9,6 +9,7 @@ import {
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { getArTypographyTheme } from '@/lib/typography-themes'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
   wedding: Wedding
@@ -40,6 +41,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
   })
 
   const palette   = getBismillahPalette(wedding.bismillah_palette)
+  const arTheme   = getArTypographyTheme(wedding.ar_font_theme)
   const bgKey     = (wedding.background_image ?? 'bg-texture.jpg') as string
   const bgCfg     = BG_CONFIGS[bgKey] ?? BG_CONFIGS['bg-texture.jpg']
   const decoWidthVh  = (bgCfg.imgW / bgCfg.imgH * 100).toFixed(2)
@@ -48,7 +50,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
   return (
     <>
       <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;500;600&display=swap"
+        href={`https://fonts.googleapis.com/css2?family=${arTheme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
       <style>{CSS}</style>
@@ -63,6 +65,8 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
           --an-text-2:      ${palette.textSecondary};
           --an-text-muted:  ${palette.textMuted};
           --an-gold:        ${palette.decorativeGold ?? palette.accent};
+          --an-font-display: ${arTheme.display};
+          --an-font-body:    ${arTheme.body};
         }
         .an-texture-bg { background-color: ${palette.bg} !important; }
         body { background-color: ${palette.bg}; }
@@ -353,7 +357,7 @@ const CSS = `
   *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Amiri', Georgia, serif;
+    font-family: var(--an-font-body);
     background: #1a1108;
     color: var(--an-text);
     overflow-x: hidden;
@@ -362,7 +366,7 @@ const CSS = `
   .an-invitation {
     opacity: 0;
     transition: opacity 1s ease;
-    font-family: 'Amiri', Georgia, serif;
+    font-family: var(--an-font-body);
   }
   .an-visible { opacity: 1; }
 
@@ -399,13 +403,13 @@ const CSS = `
     font-size: .85rem; color: var(--an-text-muted); letter-spacing: .04em;
   }
   .an-guest-name {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.5rem; font-weight: 700; color: var(--an-text);
   }
 
   /* ── Bismillah ── */
   .an-bismillah {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.6rem, 5vw, 2.6rem);
     font-weight: 700;
     color: var(--an-text);
@@ -428,7 +432,7 @@ const CSS = `
   /* ── Verset ── */
   .an-verse-wrap { width: 100%; margin: 4px 0; }
   .an-verse {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.3rem);
     line-height: 2.2; color: var(--an-text-2); font-weight: 400;
   }
@@ -440,19 +444,19 @@ const CSS = `
 
   /* ── Intro / familles ── */
   .an-intro-text {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     line-height: 2; color: var(--an-text-2);
     margin-bottom: 14px; width: 100%;
   }
   .an-families-intro {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     color: var(--an-text-2); line-height: 1.9;
     margin-bottom: 10px; width: 100%;
   }
   .an-honor {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     font-weight: 700; color: var(--an-text); margin: 10px 0;
   }
@@ -464,7 +468,7 @@ const CSS = `
     justify-content: center;
     gap: .4em;
     width: 100%;
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.75rem, 2vw, .95rem);
     color: var(--an-text);
     font-weight: 700;
@@ -473,21 +477,21 @@ const CSS = `
     text-align: center;
   }
   .an-fam-and {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.1em;
     color: var(--an-accent);
     font-weight: 400;
     flex-shrink: 0;
   }
   .an-invite-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     color: var(--an-text-2); margin-top: 6px;
   }
 
   /* ── Noms — grands ── */
   .an-names {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(2.4rem, 8vw, 4.8rem);
     font-weight: 700; color: var(--an-text);
     line-height: 1.25; letter-spacing: .02em;
@@ -496,7 +500,7 @@ const CSS = `
   .an-and { color: var(--an-accent); font-weight: 400; font-size: 75%; }
 
   .an-custom {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     font-style: italic; color: var(--an-text-2);
     line-height: 2; margin: 8px 0; width: 100%;
@@ -504,7 +508,7 @@ const CSS = `
 
   /* ── Volonté divine ── */
   .an-bismillah-will {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.3rem);
     color: var(--an-text-2);
     font-style: italic;
@@ -518,22 +522,22 @@ const CSS = `
     align-items: center; gap: 4px;
   }
   .an-date-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(1rem, 2.8vw, 1.2rem);
     color: var(--an-text); line-height: 2; font-weight: 700;
   }
   .an-venue-name {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.1rem, 3vw, 1.5rem);
     color: var(--an-text); font-weight: 700; margin-top: 6px;
   }
   .an-venue-addr {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
     font-style: italic; color: var(--an-text-2);
   }
   .an-prog-line {
-    font-family: 'Amiri', serif;
+    font-family: var(--an-font-body);
     font-size: clamp(.95rem, 2.5vw, 1.15rem);
     color: var(--an-text); line-height: 2;
     width: 100%; text-align: center;
@@ -563,14 +567,14 @@ const CSS = `
 
   /* ── Bénédiction ── */
   .an-blessing {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1rem, 3vw, 1.4rem);
     color: var(--an-text); line-height: 1.9; font-weight: 400;
   }
 
   /* ── Sections secondaires ── */
   .an-section-label {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: clamp(1.3rem, 3.5vw, 1.9rem);
     color: var(--an-text); font-weight: 700; margin-bottom: 6px;
   }
@@ -591,7 +595,7 @@ const CSS = `
     border: 1px solid var(--an-border);
   }
   .an-cd-num {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.9rem; font-weight: 700;
     color: var(--an-gold); line-height: 1;
   }
@@ -641,7 +645,7 @@ const CSS = `
   .an-submit:hover { opacity: .88; }
   .an-submit:disabled { opacity: .5; cursor: not-allowed; }
   .an-success {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.2rem; color: var(--an-accent); padding: 18px;
   }
 
@@ -655,7 +659,7 @@ const CSS = `
     padding: 14px 18px; text-align: right;
   }
   .an-msg-text {
-    font-family: 'Amiri', serif; font-size: 1rem; font-style: italic;
+    font-family: var(--an-font-body); font-size: 1rem; font-style: italic;
     color: var(--an-text-2); line-height: 1.8;
   }
   .an-msg-author {
@@ -666,11 +670,11 @@ const CSS = `
 
   /* ── Footer ── */
   .an-footer-names {
-    font-family: 'Aref Ruqaa', serif;
+    font-family: var(--an-font-display);
     font-size: 1.6rem; color: var(--an-accent); margin-bottom: 4px; font-weight: 700;
   }
   .an-footer-date {
-    font-family: 'Amiri', serif; font-size: .95rem;
+    font-family: var(--an-font-body); font-size: .95rem;
     color: var(--an-text-2); margin-bottom: 4px;
   }
   .an-footer-date-fr {
