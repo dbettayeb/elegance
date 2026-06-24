@@ -304,7 +304,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     { time: '21:00', event: 'Party & Open Bar' },
     { time: '23:00', event: 'End of celebration' },
   ]
-  const program = (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
+  const program = (wedding.show_program === false)
+    ? []
+    : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
   const AudioControl = () => {
     const [playing, setPlaying] = useState(false)
