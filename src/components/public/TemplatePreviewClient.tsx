@@ -294,14 +294,11 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
                   {schema.customMessage && (
                     <Field label={schema.customMessage.label} help={schema.customMessage.help}>
                       {schema.arabicBlessingPresets && (
-                        <div className="ptp-presets">
-                          {ARABIC_BLESSING_PRESETS.map(opt => (
-                            <button type="button" key={opt.label} className="ptp-preset"
-                              onClick={() => upd('custom_message', opt.value)}>
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
+                        <PresetPicker
+                          presets={ARABIC_BLESSING_PRESETS}
+                          onSelect={v => upd('custom_message', v)}
+                          triggerLabel="Choisir une bénédiction"
+                        />
                       )}
                       <textarea rows={schema.customMessage.rows ?? 3}
                         dir={isArabic || schema.arabicBlessingPresets ? 'rtl' : 'ltr'}
@@ -317,14 +314,11 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
               {schema.arabicFamilies && (
                 <Group title="Familles (style maghrébin)">
                   <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
-                    <div className="ptp-presets" dir="ltr">
-                      {ARABIC_FAMILIES_INTRO_PRESETS.map(opt => (
-                        <button type="button" key={opt.label} className="ptp-preset"
-                          onClick={() => upd('families_intro_ar', opt.value)}>
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
+                    <PresetPicker
+                      presets={ARABIC_FAMILIES_INTRO_PRESETS}
+                      onSelect={v => upd('families_intro_ar', v)}
+                      triggerLabel="Choisir une phrase"
+                    />
                     <textarea rows={2} dir="rtl"
                       value={fields.families_intro_ar}
                       onChange={e => upd('families_intro_ar', e.target.value)}
@@ -443,6 +437,49 @@ function Field({ label, help, children }: { label: string; help?: string; childr
   )
 }
 
+function PresetPicker({ presets, onSelect, triggerLabel }: {
+  presets: { label: string; value: string }[]
+  onSelect: (value: string) => void
+  triggerLabel?: string
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [open])
+
+  return (
+    <div ref={ref} className="ptp-pk">
+      <button type="button" className={`ptp-pk-btn${open ? ' ptp-pk-btn--open' : ''}`}
+        onClick={() => setOpen(o => !o)}>
+        <span className="ptp-pk-icon">✦</span>
+        {triggerLabel ?? 'Choisir un exemple'}
+        <span className="ptp-pk-arrow">{open ? '▲' : '▾'}</span>
+      </button>
+      {open && (
+        <div className="ptp-pk-drop">
+          {presets.map((p, i) => {
+            const [line1, line2] = p.value.split('\n')
+            return (
+              <button type="button" key={i} className="ptp-pk-card" dir="rtl"
+                onClick={() => { onSelect(p.value); setOpen(false) }}>
+                <span className="ptp-pk-line1">{line1}</span>
+                {line2 && <span className="ptp-pk-line2">{line2}</span>}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 const CSS = `
   /* ── Bar ── */
   .ptp-bar {
@@ -543,17 +580,62 @@ const CSS = `
   }
   .ptp-prog-add:hover { border-color: var(--pub-text-muted); color: var(--pub-text); }
 
-  /* Presets bénédictions arabes */
-  .ptp-presets {
-    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;
+  /* ── Preset Picker ── */
+  .ptp-pk { position: relative; margin-bottom: 8px; }
+
+  .ptp-pk-btn {
+    display: flex; align-items: center; gap: 7px;
+    width: 100%; padding: 8px 12px;
+    background: #fafaf8; border: 1px solid var(--pub-border);
+    color: var(--pub-text-muted); font-family: inherit; font-size: 0.7rem;
+    letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s;
+    text-align: left;
   }
-  .ptp-preset {
-    padding: 4px 10px; font-size: 0.72rem;
-    background: #f0f0f0; border: 1px solid #d4d4d4;
-    border-radius: 4px; cursor: pointer; font-family: inherit;
-    color: var(--pub-text); transition: all 0.15s;
+  .ptp-pk-btn:hover,
+  .ptp-pk-btn--open {
+    border-color: var(--pub-gold-dark); color: var(--pub-gold-dark);
+    background: #fffdf6;
   }
-  .ptp-preset:hover { background: #e5e5e5; border-color: var(--pub-text-muted); }
+  .ptp-pk-icon { font-size: 0.6rem; opacity: 0.7; flex-shrink: 0; }
+  .ptp-pk-arrow { margin-left: auto; font-size: 0.55rem; flex-shrink: 0; }
+
+  .ptp-pk-drop {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30;
+    background: #fff; border: 1px solid #e8e2d6;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+    animation: pkFadeIn 0.15s ease;
+  }
+  @keyframes pkFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .ptp-pk-card {
+    display: flex; flex-direction: column; gap: 2px;
+    width: 100%; padding: 11px 14px;
+    background: transparent; border: none;
+    border-bottom: 1px solid #f0ece4;
+    cursor: pointer; text-align: right;
+    transition: background 0.12s, border-left 0.12s;
+    border-left: 3px solid transparent;
+  }
+  .ptp-pk-card:last-child { border-bottom: none; }
+  .ptp-pk-card:hover {
+    background: #fdfaf3; border-left-color: var(--pub-gold-dark);
+  }
+  .ptp-pk-line1 {
+    font-family: Georgia, serif; font-size: 0.82rem;
+    color: var(--pub-text); line-height: 1.5;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: block;
+  }
+  .ptp-pk-line2 {
+    font-family: Georgia, serif; font-size: 0.75rem;
+    color: var(--pub-text-muted); line-height: 1.4;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: block; font-style: italic;
+  }
 
   /* Bandeau "style tunisien" — sticky en haut du panel */
   .ptp-arabic-preset-bar {
