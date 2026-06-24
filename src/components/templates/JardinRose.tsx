@@ -150,7 +150,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="jr-section">
               <div className="jr-content-zone">
                 <p className="jr-label">Déroulement</p>

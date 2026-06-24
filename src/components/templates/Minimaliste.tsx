@@ -94,7 +94,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="mn-section">
             <p className="mn-label">Programme</p>
             <div className="mn-program">

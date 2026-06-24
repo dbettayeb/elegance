@@ -33,6 +33,7 @@ export interface Wedding {
   custom_message?: string
   program: ProgramItem[]
   pack: 'essentiel' | 'prestige' | 'haute_couture'
+  show_program?: boolean
   show_rsvp: boolean
   show_guestbook: boolean
   show_countdown: boolean

@@ -104,7 +104,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* PROGRAMME */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="ne-section">
             <p className="ne-label">Déroulement</p>
             <h2 className="ne-title">Programme de la soirée</h2>

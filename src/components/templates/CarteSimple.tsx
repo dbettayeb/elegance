@@ -162,7 +162,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="cs-section">
               <div className="cs-content-zone">
                 <p className="cs-label">Déroulement</p>

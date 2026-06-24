@@ -263,7 +263,7 @@ export default function CristalChampagne({ wedding }: { wedding: Wedding }) {
         </section>
 
         {/* PROGRAMME — façon menu gastronomique */}
-        {wedding.program?.length > 0 && (
+        {wedding.show_program !== false && wedding.program?.length > 0 && (
           <section className="cc-section">
             <p className="cc-label">Le déroulement</p>
             <h2 className="cc-title">Programme de la soirée</h2>

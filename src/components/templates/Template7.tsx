@@ -157,7 +157,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="t7-section">
               <div className="t7-content-zone">
                 <p className="t7-label">Déroulement</p>

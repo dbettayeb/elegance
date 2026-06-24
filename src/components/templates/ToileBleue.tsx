@@ -148,7 +148,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="tb-section">
               <div className="tb-content-zone">
                 <p className="tb-label">Déroulement</p>

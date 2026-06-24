@@ -166,7 +166,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ══ PROGRAMME ══ */}
-          {wedding.program?.length > 0 && (
+          {wedding.show_program !== false && wedding.program?.length > 0 && (
             <section className="t8-section">
               <div className="t8-content-zone">
                 <p className="t8-label">Déroulement</p>
