@@ -501,6 +501,7 @@ const CSS = `
     margin-top:28px;
     margin-bottom:20px;
     white-space:nowrap;
+    position:relative;z-index:11;
   }
 
   /* Verset coranique */

@@ -242,7 +242,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
 
               {/* Bénédiction — modifiable via custom_message */}
               <p className="an-blessing">
-                {wedding.custom_message || 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ'}
+                {(wedding.custom_message || 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ').replace(/ »/g, ' »')}
               </p>
 
             </div>
@@ -413,6 +413,9 @@ const CSS = `
     line-height: 1.8;
     margin-top: 32px;
     margin-bottom: 20px;
+    white-space: nowrap;
+    position: relative;
+    z-index: 11;
   }
 
   /* ── Séparateur ligne fine ── */

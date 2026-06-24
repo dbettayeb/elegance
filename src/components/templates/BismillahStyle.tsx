@@ -215,7 +215,7 @@ export default function BismillahStyle({
             </div>
 
             <p className="bs-hadith">
-              {wedding.custom_message || '« بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »'}
+              {(wedding.custom_message || '« بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ »').replace(/ »/g, ' »')}
             </p>
           </div>
         </section>
@@ -420,7 +420,7 @@ const CSS = `
   .bs-content-zone{display:flex;flex-direction:column;align-items:center;text-align:center;box-sizing:border-box;}
   .bs-orn{width:70px;height:70px;margin-bottom:22px}.bs-orn svg{width:100%;height:100%}
   .bs-orn-small{width:50px;height:50px;margin:0 auto 12px}.bs-orn-small svg{width:100%;height:100%}
-  .bs-bismillah{font-family:var(--bs-font-display);font-size:clamp(1rem,4.5vw,2.2rem);color:var(--bs-text);line-height:1.8;font-weight:700;margin-top:28px;margin-bottom:20px;white-space:nowrap;}
+  .bs-bismillah{font-family:var(--bs-font-display);font-size:clamp(1rem,4.5vw,2.2rem);color:var(--bs-text);line-height:1.8;font-weight:700;margin-top:28px;margin-bottom:20px;white-space:nowrap;position:relative;z-index:11;}
   .bs-verse-wrap{background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,rgba(255,255,255,0.2) 100%);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-top:1px solid var(--bs-border);border-bottom:1px solid var(--bs-border);padding:18px 24px;margin:0 0 22px;width:100%;}
   .bs-verse{font-family:var(--bs-font-body);font-size:clamp(1rem,2.5vw,1.4rem);color:var(--bs-text-2);line-height:2.2;font-weight:400;}
   .bs-verse-ref{margin-top:12px;font-family:'Reem Kufi',sans-serif;font-size:.85rem;color:var(--bs-accent);letter-spacing:.05em;}
