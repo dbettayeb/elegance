@@ -10,6 +10,7 @@ import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
 import { getArTypographyTheme } from '@/lib/typography-themes'
+import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
   wedding: Wedding
@@ -169,21 +170,13 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                     </p>
                   )}
                   <p className="an-honor">تتشرف</p>
-                  {(wedding.groom_family_ar && wedding.bride_family_ar) ? (
-                    <div className="an-fgrid">
-                      <span className="an-fp">{wedding.groom_family_prefix_ar || 'عائلة'}</span>
-                      <span/>
-                      <span className="an-fp">{wedding.bride_family_prefix_ar || 'عائلة'}</span>
-                      <span className="an-fn">{wedding.groom_family_ar}</span>
-                      <span className="an-fand">و</span>
-                      <span className="an-fn">{wedding.bride_family_ar}</span>
-                    </div>
-                  ) : (
-                    <div className="an-fsingle">
-                      <span className="an-fp">{(wedding.groom_family_ar ? wedding.groom_family_prefix_ar : wedding.bride_family_prefix_ar) || 'عائلة'}</span>
-                      <span className="an-fn">{wedding.groom_family_ar || wedding.bride_family_ar}</span>
-                    </div>
-                  )}
+                  <ArabicFamilies
+                    prefix="an"
+                    groomPrefix={wedding.groom_family_prefix_ar}
+                    groomName={wedding.groom_family_ar}
+                    bridePrefix={wedding.bride_family_prefix_ar}
+                    brideName={wedding.bride_family_ar}
+                  />
                   <p className="an-invite-line">بدعوتكم لحضور زفاف ابنيهما</p>
                 </>
               ) : (
@@ -467,7 +460,7 @@ const CSS = `
   /* Grille familles AlNour */
   .an-fgrid {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     column-gap: 20px; row-gap: 4px;
     width: 100%; margin: 6px 0 10px;
   }
@@ -475,20 +468,23 @@ const CSS = `
     font-family: 'Reem Kufi', sans-serif;
     font-size: clamp(.55rem, 1.3vw, .75rem);
     color: var(--an-text-muted); font-weight: 400;
-    letter-spacing: .05em; text-align: center; white-space: nowrap;
+    letter-spacing: .05em; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .an-fn {
     font-family: var(--an-font-display);
     font-size: clamp(.72rem, 1.8vw, 1.05rem);
-    color: var(--an-text); font-weight: 700; line-height: 1.3;
-    text-align: center;
-    overflow-wrap: break-word; word-break: break-word;
+    color: var(--an-text); font-weight: 700; line-height: 1.4;
+    text-align: center; min-width: 0;
+    overflow-wrap: break-word;
   }
+  .an-fn-last { display: inline-block; white-space: nowrap; }
+  .an-fgrid--wrap .an-fn-last { display: block; }
   .an-fand {
     font-family: var(--an-font-display);
     font-size: clamp(1rem, 2.2vw, 1.3rem);
     color: var(--an-accent); font-weight: 400;
-    align-self: center;
+    align-self: center; text-align: center;
   }
   .an-fsingle { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 6px 0 10px; }
   @media(max-width: 480px) { .an-fgrid { column-gap: 12px; } }

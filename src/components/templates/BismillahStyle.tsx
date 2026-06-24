@@ -7,6 +7,7 @@ import FontOverride from '@/components/common/fontoverride'
 import { BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
 import { getArTypographyTheme } from '@/lib/typography-themes'
+import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
 export default function BismillahStyle({
   wedding,
@@ -180,21 +181,13 @@ export default function BismillahStyle({
                     ))}
                   </p>
                 )}
-                {(wedding.groom_family_ar && wedding.bride_family_ar) ? (
-                  <div className="bs-fgrid">
-                    <span className="bs-fp">{wedding.groom_family_prefix_ar || 'عائلة'}</span>
-                    <span/>
-                    <span className="bs-fp">{wedding.bride_family_prefix_ar || 'عائلة'}</span>
-                    <span className="bs-fn">{wedding.groom_family_ar}</span>
-                    <span className="bs-fand">و</span>
-                    <span className="bs-fn">{wedding.bride_family_ar}</span>
-                  </div>
-                ) : (
-                  <div className="bs-fsingle">
-                    <span className="bs-fp">{(wedding.groom_family_ar ? wedding.groom_family_prefix_ar : wedding.bride_family_prefix_ar) || 'عائلة'}</span>
-                    <span className="bs-fn">{wedding.groom_family_ar || wedding.bride_family_ar}</span>
-                  </div>
-                )}
+                <ArabicFamilies
+                  prefix="bs"
+                  groomPrefix={wedding.groom_family_prefix_ar}
+                  groomName={wedding.groom_family_ar}
+                  bridePrefix={wedding.bride_family_prefix_ar}
+                  brideName={wedding.bride_family_ar}
+                />
                 <p className="bs-intro">بدعوتكم لحضور حفل زفاف نجليهما</p>
               </>
             ) : (
@@ -436,10 +429,12 @@ const CSS = `
   .bs-divider i{color:var(--bs-accent);font-style:normal;font-size:1.1rem;}
   .bs-families-intro{font-family:var(--bs-font-body);font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--bs-text-2);line-height:1.8;margin-bottom:18px;width:100%;font-style:italic;}
   /* Grille familles : ligne 1 = préfixes, ligne 2 = noms + و */
-  .bs-fgrid{display:grid;grid-template-columns:1fr auto 1fr;column-gap:20px;row-gap:4px;width:100%;margin-bottom:22px;}
-  .bs-fp{font-family:'Reem Kufi',sans-serif;font-size:clamp(.55rem,1.3vw,.75rem);color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;text-align:center;white-space:nowrap;}
-  .bs-fn{font-family:var(--bs-font-display);font-size:clamp(.72rem,1.8vw,1.05rem);color:var(--bs-text-2);font-weight:700;line-height:1.3;text-align:center;overflow-wrap:break-word;word-break:break-word;}
-  .bs-fand{font-family:var(--bs-font-display);font-size:clamp(1rem,2.2vw,1.3rem);color:var(--bs-accent);font-weight:400;align-self:center;}
+  .bs-fgrid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:20px;row-gap:4px;width:100%;margin-bottom:22px;}
+  .bs-fp{font-family:'Reem Kufi',sans-serif;font-size:clamp(.55rem,1.3vw,.75rem);color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bs-fn{font-family:var(--bs-font-display);font-size:clamp(.72rem,1.8vw,1.05rem);color:var(--bs-text-2);font-weight:700;line-height:1.4;text-align:center;min-width:0;overflow-wrap:break-word;}
+  .bs-fn-last{display:inline-block;white-space:nowrap;}
+  .bs-fgrid--wrap .bs-fn-last{display:block;}
+  .bs-fand{font-family:var(--bs-font-display);font-size:clamp(1rem,2.2vw,1.3rem);color:var(--bs-accent);font-weight:400;align-self:center;text-align:center;}
   .bs-fsingle{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:22px;}
   @media(max-width:480px){.bs-fgrid{column-gap:12px}}
   .bs-intro{font-family:'Reem Kufi',sans-serif;font-size:1rem;color:var(--bs-text-2);margin-bottom:18px;font-weight:500;letter-spacing:.02em;}
