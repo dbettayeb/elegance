@@ -554,7 +554,7 @@ const CSS = `
   .bs-families{
     display:flex;
     flex-direction:row;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
     gap:14px;
     margin-bottom:22px;
@@ -562,29 +562,29 @@ const CSS = `
     flex-wrap:nowrap;
   }
   .bs-family{
-    display:flex;flex-direction:column;align-items:center;gap:2px;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
     flex:1 1 0;
     min-width:0;
   }
   .bs-family-prefix{
     font-family:'Reem Kufi',sans-serif;
-    font-size:clamp(.65rem,1.6vw,.85rem);
+    font-size:clamp(.6rem,1.4vw,.78rem);
     color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;
+    white-space:nowrap;line-height:1.2;min-height:1.2em;
   }
   .bs-family-name{
     font-family:'Aref Ruqaa',serif;
-    font-size:clamp(.95rem,2.4vw,1.35rem);
+    font-size:clamp(.78rem,1.9vw,1.15rem);
     color:var(--bs-text-2);font-weight:700;line-height:1.3;
     text-align:center;
-    word-break:break-word;
+    white-space:nowrap;
   }
   .bs-family-and{
     font-family:'Aref Ruqaa',serif;
-    font-size:clamp(1.1rem,2.6vw,1.5rem);
+    font-size:clamp(1rem,2.2vw,1.3rem);
     color:var(--bs-accent);font-weight:400;
     flex-shrink:0;
-    align-self:center;
-    margin-top:14px;
+    margin-top:1.6em;
   }
   @media(max-width:480px){
     .bs-families{gap:8px}
