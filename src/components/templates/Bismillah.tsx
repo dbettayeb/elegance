@@ -190,23 +190,21 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
                     ))}
                   </p>
                 )}
-                <div className="bs-families">
-                  {wedding.groom_family_ar && (
-                    <div className="bs-family">
-                      <span className="bs-family-prefix">{wedding.groom_family_prefix_ar || 'عائلة'}</span>
-                      <span className="bs-family-name">{wedding.groom_family_ar}</span>
-                    </div>
-                  )}
-                  {wedding.bride_family_ar && wedding.groom_family_ar && (
-                    <div className="bs-family-and">و</div>
-                  )}
-                  {wedding.bride_family_ar && (
-                    <div className="bs-family">
-                      <span className="bs-family-prefix">{wedding.bride_family_prefix_ar || 'عائلة'}</span>
-                      <span className="bs-family-name">{wedding.bride_family_ar}</span>
-                    </div>
-                  )}
-                </div>
+                {(wedding.groom_family_ar && wedding.bride_family_ar) ? (
+                  <div className="bs-fgrid">
+                    <span className="bs-fp">{wedding.groom_family_prefix_ar || 'عائلة'}</span>
+                    <span/>
+                    <span className="bs-fp">{wedding.bride_family_prefix_ar || 'عائلة'}</span>
+                    <span className="bs-fn">{wedding.groom_family_ar}</span>
+                    <span className="bs-fand">و</span>
+                    <span className="bs-fn">{wedding.bride_family_ar}</span>
+                  </div>
+                ) : (
+                  <div className="bs-fsingle">
+                    <span className="bs-fp">{(wedding.groom_family_ar ? wedding.groom_family_prefix_ar : wedding.bride_family_prefix_ar) || 'عائلة'}</span>
+                    <span className="bs-fn">{wedding.groom_family_ar || wedding.bride_family_ar}</span>
+                  </div>
+                )}
                 <p className="bs-intro">بدعوتكم لحضور حفل زفاف نجليهما</p>
               </>
             ) : (
@@ -554,45 +552,34 @@ const CSS = `
     font-style:italic;
   }
 
-  /* Familles (Bismillah only) */
-  .bs-families{
-    display:flex;
-    flex-direction:row;
-    align-items:flex-start;
-    justify-content:center;
-    gap:14px;
-    margin-bottom:22px;
-    width:100%;
-    flex-wrap:nowrap;
+  /* Grille familles : ligne 1 = préfixes, ligne 2 = noms + و */
+  .bs-fgrid{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    column-gap:20px;row-gap:4px;
+    width:100%;margin-bottom:22px;
   }
-  .bs-family{
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-    flex:1 1 0;
-    min-width:0;
-  }
-  .bs-family-prefix{
+  .bs-fp{
     font-family:'Reem Kufi',sans-serif;
-    font-size:clamp(.6rem,1.4vw,.78rem);
-    color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;
-    white-space:nowrap;line-height:1.2;min-height:1.2em;
+    font-size:clamp(.55rem,1.3vw,.75rem);
+    color:var(--bs-text-muted);font-weight:400;
+    letter-spacing:.05em;text-align:center;white-space:nowrap;
   }
-  .bs-family-name{
+  .bs-fn{
     font-family:var(--bs-font-display);
-    font-size:clamp(.78rem,1.9vw,1.15rem);
+    font-size:clamp(.72rem,1.8vw,1.05rem);
     color:var(--bs-text-2);font-weight:700;line-height:1.3;
     text-align:center;
-    white-space:nowrap;
+    overflow-wrap:break-word;word-break:break-word;
   }
-  .bs-family-and{
+  .bs-fand{
     font-family:var(--bs-font-display);
     font-size:clamp(1rem,2.2vw,1.3rem);
     color:var(--bs-accent);font-weight:400;
-    flex-shrink:0;
-    margin-top:1.6em;
+    align-self:center;
   }
-  @media(max-width:480px){
-    .bs-families{gap:8px}
-  }
+  .bs-fsingle{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:22px;}
+  @media(max-width:480px){.bs-fgrid{column-gap:12px}}
 
   /* Intro */
   .bs-intro{

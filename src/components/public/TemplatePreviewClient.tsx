@@ -116,17 +116,26 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
   function upd<K extends keyof Fields>(key: K, val: string) {
     setFields(f => ({ ...f, [key]: val }))
   }
-  function applyTunisianPreset() {
-    setFields(f => ({
-      ...f,
-      families_intro_ar:      'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف',
-      groom_family_prefix_ar: 'عائلة الحاج',
-      bride_family_prefix_ar: 'عائلة المرحوم الحاج',
-      groom_family_ar:        'محمد سمير الدسوقي',
-      bride_family_ar:        'منذر سعيد شديد',
-      custom_message:         'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ',
-    }))
-    setPresetApplied(true)
+  function toggleTunisianPreset() {
+    if (presetApplied) {
+      setFields(f => ({
+        ...f,
+        families_intro_ar: '', groom_family_prefix_ar: '', bride_family_prefix_ar: '',
+        groom_family_ar: '', bride_family_ar: '', custom_message: '',
+      }))
+      setPresetApplied(false)
+    } else {
+      setFields(f => ({
+        ...f,
+        families_intro_ar:      'ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف',
+        groom_family_prefix_ar: 'عائلة الحاج',
+        bride_family_prefix_ar: 'عائلة المرحوم الحاج',
+        groom_family_ar:        'محمد سمير الدسوقي',
+        bride_family_ar:        'منذر سعيد شديد',
+        custom_message:         'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ',
+      }))
+      setPresetApplied(true)
+    }
   }
   function updOpt<K extends keyof Options>(key: K, val: Options[K]) {
     setOptions(o => ({ ...o, [key]: val }))
@@ -193,8 +202,10 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
             {/* ── Preset tunisien sticky ── */}
             {schema.arabicFamilies && (
               <div className="ptp-arabic-preset-bar">
-                <button type="button" className="ptp-arabic-preset-cta" onClick={applyTunisianPreset}>
-                  🇹🇳 Appliquer le style tunisien
+                <button type="button"
+                  className={`ptp-arabic-preset-cta${presetApplied ? ' ptp-arabic-preset-cta--on' : ''}`}
+                  onClick={toggleTunisianPreset}>
+                  {presetApplied ? '✕ Retirer le style tunisien' : '🇹🇳 Appliquer le style tunisien'}
                 </button>
                 {presetApplied && (
                   <p className="ptp-arabic-preset-warn">
@@ -551,6 +562,8 @@ const CSS = `
     transition: all 0.15s; text-align: center;
   }
   .ptp-arabic-preset-cta:hover { background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%); border-color: #b45309; }
+  .ptp-arabic-preset-cta--on { background: #fff1f2 !important; border-color: #f87171 !important; color: #b91c1c !important; }
+  .ptp-arabic-preset-cta--on:hover { background: #fee2e2 !important; border-color: #dc2626 !important; }
   .ptp-arabic-preset-warn {
     margin: 0; padding: 7px 10px;
     background: #fef9c3; border-left: 3px solid #d4a93b;

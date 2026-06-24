@@ -27,10 +27,10 @@ export const AR_TYPOGRAPHY_THEMES: TypographyTheme[] = [
   },
   {
     id: 'modern',
-    label: 'Moderne — El Messiri + Markazi Text',
-    display: `'El Messiri', serif`,
-    body:    `'Markazi Text', Georgia, serif`,
-    googleFonts: 'El+Messiri:wght@400;500;600;700&family=Markazi+Text:wght@400;500;600;700&family=Reem+Kufi:wght@400;500;600',
+    label: 'Islamique — Scheherazade + Lateef',
+    display: `'Scheherazade New', serif`,
+    body:    `'Lateef', Georgia, serif`,
+    googleFonts: 'Scheherazade+New:wght@400;500;600;700&family=Lateef:wght@400;700&family=Reem+Kufi:wght@400;500;600',
   },
 ]
 

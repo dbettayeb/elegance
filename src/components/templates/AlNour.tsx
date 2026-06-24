@@ -169,17 +169,21 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                     </p>
                   )}
                   <p className="an-honor">تتشرف</p>
-                  <div className="an-families-row">
-                    {wedding.groom_family_ar && (
-                      <span>{wedding.groom_family_prefix_ar || 'عائلة'} {wedding.groom_family_ar}</span>
-                    )}
-                    {wedding.bride_family_ar && wedding.groom_family_ar && (
-                      <span className="an-fam-and">و</span>
-                    )}
-                    {wedding.bride_family_ar && (
-                      <span>{wedding.bride_family_prefix_ar || 'عائلة'} {wedding.bride_family_ar}</span>
-                    )}
-                  </div>
+                  {(wedding.groom_family_ar && wedding.bride_family_ar) ? (
+                    <div className="an-fgrid">
+                      <span className="an-fp">{wedding.groom_family_prefix_ar || 'عائلة'}</span>
+                      <span/>
+                      <span className="an-fp">{wedding.bride_family_prefix_ar || 'عائلة'}</span>
+                      <span className="an-fn">{wedding.groom_family_ar}</span>
+                      <span className="an-fand">و</span>
+                      <span className="an-fn">{wedding.bride_family_ar}</span>
+                    </div>
+                  ) : (
+                    <div className="an-fsingle">
+                      <span className="an-fp">{(wedding.groom_family_ar ? wedding.groom_family_prefix_ar : wedding.bride_family_prefix_ar) || 'عائلة'}</span>
+                      <span className="an-fn">{wedding.groom_family_ar || wedding.bride_family_ar}</span>
+                    </div>
+                  )}
                   <p className="an-invite-line">بدعوتكم لحضور زفاف ابنيهما</p>
                 </>
               ) : (
@@ -460,29 +464,34 @@ const CSS = `
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     font-weight: 700; color: var(--an-text); margin: 10px 0;
   }
-  .an-families-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: .4em;
-    width: 100%;
-    font-family: var(--an-font-body);
-    font-size: clamp(.75rem, 2vw, .95rem);
-    color: var(--an-text);
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 6px 0;
-    text-align: center;
+  /* Grille familles AlNour */
+  .an-fgrid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: 20px; row-gap: 4px;
+    width: 100%; margin: 6px 0 10px;
   }
-  .an-fam-and {
+  .an-fp {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: clamp(.55rem, 1.3vw, .75rem);
+    color: var(--an-text-muted); font-weight: 400;
+    letter-spacing: .05em; text-align: center; white-space: nowrap;
+  }
+  .an-fn {
     font-family: var(--an-font-display);
-    font-size: 1.1em;
-    color: var(--an-accent);
-    font-weight: 400;
-    flex-shrink: 0;
+    font-size: clamp(.72rem, 1.8vw, 1.05rem);
+    color: var(--an-text); font-weight: 700; line-height: 1.3;
+    text-align: center;
+    overflow-wrap: break-word; word-break: break-word;
   }
+  .an-fand {
+    font-family: var(--an-font-display);
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    color: var(--an-accent); font-weight: 400;
+    align-self: center;
+  }
+  .an-fsingle { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 6px 0 10px; }
+  @media(max-width: 480px) { .an-fgrid { column-gap: 12px; } }
   .an-invite-line {
     font-family: var(--an-font-body);
     font-size: clamp(.9rem, 2.2vw, 1.05rem);
