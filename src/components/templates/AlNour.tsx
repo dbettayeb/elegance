@@ -404,18 +404,19 @@ const CSS = `
     font-size: 1.5rem; font-weight: 700; color: var(--an-text);
   }
 
-  /* ── Bismillah ── */
+  /* ── Bismillah — taille réduite pour tenir dans la zone vide ── */
   .an-bismillah {
     font-family: var(--an-font-display);
-    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-size: clamp(1rem, 4.2vw, 1.55rem);
     font-weight: 700;
     color: var(--an-text);
     line-height: 1.8;
     margin-top: 32px;
     margin-bottom: 20px;
     white-space: nowrap;
-    position: relative;
-    z-index: 11;
+  }
+  @media (min-width: 769px) {
+    .an-bismillah { font-size: clamp(0.95rem, 2.5vh, 1.55rem); }
   }
 
   /* ── Séparateur ligne fine ── */

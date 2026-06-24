@@ -492,16 +492,19 @@ const CSS = `
   .bs-orn-small{width:50px;height:50px;margin:0 auto 12px}
   .bs-orn-small svg{width:100%;height:100%}
 
-  /* Bismillah */
+  /* Bismillah — taille volontairement réduite pour rester dans la zone vide
+     même quand la décoration encadre le contenu (notamment desktop). */
   .bs-bismillah{
     font-family:var(--bs-font-display);
-    font-size:clamp(1rem,4.5vw,2.2rem);
+    font-size:clamp(0.95rem,4.2vw,1.45rem);
     color:var(--bs-text);line-height:1.8;
     font-weight:700;
     margin-top:28px;
     margin-bottom:20px;
     white-space:nowrap;
-    position:relative;z-index:11;
+  }
+  @media(min-width:769px){
+    .bs-bismillah{ font-size:clamp(0.9rem,2.4vh,1.45rem); }
   }
 
   /* Verset coranique */
