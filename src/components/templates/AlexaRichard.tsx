@@ -22,9 +22,10 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const galleryRef = useRef<HTMLDivElement>(null)
   const scratchDoneRef = useRef([false, false, false])
 
-  const day   = String(eventDate.getDate())
-  const month = eventDate.toLocaleDateString('en-GB', { month: 'long' })
-  const year  = String(eventDate.getFullYear())
+  const day      = String(eventDate.getDate())
+  const month    = eventDate.toLocaleDateString('en-GB', { month: 'long' })
+  const year     = String(eventDate.getFullYear())
+  const eventTime = `${String(eventDate.getHours()).padStart(2,'0')}:${String(eventDate.getMinutes()).padStart(2,'0')}`
 
   const GALLERY = [
     '/assets/alexa-richard/gallery/01.png',
@@ -402,6 +403,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                 </div>
               ))}
             </div>
+            <p className="ar-date-time">{eventTime}</p>
             {allScratched && (
               <div className="ar-scratch-reveal">You&apos;re invited!</div>
             )}
@@ -972,6 +974,15 @@ const CSS = `
     font-family: 'Rufina', serif;
     font-size: clamp(9px, 2vw, 11px); letter-spacing: 4px;
     color: var(--ar-blue-soft); text-transform: uppercase; text-align: center;
+  }
+  .ar-date-time {
+    font-family: 'Rufina', serif;
+    font-size: clamp(15px, 3.5vw, 19px);
+    letter-spacing: 0.28em;
+    color: var(--ar-blue-soft);
+    margin: 14px 0 4px;
+    text-align: center;
+    opacity: 0.85;
   }
   .ar-scratch-reveal {
     font-family: 'Imperial Script', cursive;

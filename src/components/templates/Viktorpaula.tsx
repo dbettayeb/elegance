@@ -29,6 +29,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   const month = String(eventDate.getMonth() + 1).padStart(2, '0')
   const year = String(eventDate.getFullYear())
   const shortYear = year.slice(-2)
+  const eventTime = `${String(eventDate.getHours()).padStart(2,'0')}:${String(eventDate.getMinutes()).padStart(2,'0')}`
 
   // --- Opening sequence ---
   function startSequence() {
@@ -285,6 +286,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
 
             <div className="hero-text hero-wedding-day anim-fade-up" style={{ animationDelay: '3.2s' }}>{wedding.wedding_day_text || 'Wedding Day'}</div>
             <div className="hero-text hero-date anim-fade-up" style={{ animationDelay: '3.3s' }}>{day}.{month}.{shortYear}</div>
+            <div className="hero-text hero-time anim-fade-up" style={{ animationDelay: '3.35s' }}>{eventTime}</div>
 
             <div className="hero-names-block anim-fade-up" style={{ animationDelay: '3.4s' }}>
               <div className="hero-name" data-ef="bride_name">{wedding.bride_name}</div>
@@ -742,6 +744,16 @@ const CSS = `
     line-height: 1;
     letter-spacing: 0.05em;
   }
+  .hero-time {
+    top: 165px;
+    left: 320px;
+    width: 560px;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 0.3em;
+    opacity: 0.72;
+  }
   .hero-names-block {
     position: absolute;
     top: 210px;
@@ -1130,6 +1142,7 @@ const CSS = `
     .hero-bottom-bar,
     .hero-wedding-day,
     .hero-date,
+    .hero-time,
     .hero-names-block {
       left: 0 !important;
       width: 100% !important;
@@ -1138,6 +1151,7 @@ const CSS = `
     .hero-amp  { font-size: 38px; }
     .hero-wedding-day { font-size: 34px; }
     .hero-date        { font-size: 22px; }
+    .hero-time        { font-size: 13px; }
   }
   @media (max-width: 480px) {
     .hero-name { font-size: 52px; }
@@ -1217,6 +1231,7 @@ const POS: [string, number, number, number, number, number][] = [
   ['.hero-bottom-bar',  303,  157,   -3,  -83, -137],
   ['.hero-wedding-day', 320,  200,   40,  -40, -120],
   ['.hero-date',        320,  200,   40,  -40, -120],
+  ['.hero-time',        320,  200,   40,  -40, -120],
   ['.hero-names-block', 320,  200,   40,  -40, -120],
   ['.ruby-1',           660,  540,  380,  300,  220],
   ['.ruby-2',           632,  512,  352,  272,  192],
