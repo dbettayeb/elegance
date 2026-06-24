@@ -185,6 +185,21 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
 
         {panelOpen && (
           <div className="ptp-panel">
+
+            {/* ── Preset tunisien sticky ── */}
+            {schema.arabicFamilies && (
+              <div className="ptp-arabic-preset-bar">
+                <button type="button" className="ptp-arabic-preset-cta" onClick={applyTunisianPreset}>
+                  🇹🇳 Appliquer le style tunisien
+                </button>
+                {presetApplied && (
+                  <p className="ptp-arabic-preset-warn">
+                    ⚠ Remplacez les noms d'exemple par les vôtres.
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="ptp-panel-inner">
 
               {/* Prénoms */}
@@ -286,14 +301,6 @@ export default function TemplatePreviewClient({ templateId, templateName }: Prop
               {/* Bloc familles (templates arabes) */}
               {schema.arabicFamilies && (
                 <Group title="Familles (style maghrébin)">
-                  <button type="button" className="ptp-preset-btn" onClick={applyTunisianPreset}>
-                    🇹🇳 Remplir avec un style tunisien (exemple)
-                  </button>
-                  {presetApplied && (
-                    <p className="ptp-preset-warn">
-                      ⚠ Pensez à remplacer les noms d'exemple par les vôtres.
-                    </p>
-                  )}
                   <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
                     <textarea rows={2} dir="rtl"
                       value={fields.families_intro_ar}
@@ -512,18 +519,25 @@ const CSS = `
   }
   .ptp-preset:hover { background: #e5e5e5; border-color: var(--pub-text-muted); }
 
-  /* Bouton "préréglage tunisien" */
-  .ptp-preset-btn {
-    width: 100%; padding: 10px 12px;
-    background: #fffbeb; border: 1px dashed #d4a93b;
-    color: #92400e; font-family: inherit; font-size: 0.8rem;
-    cursor: pointer; border-radius: 4px; transition: all 0.15s;
+  /* Bandeau "style tunisien" — sticky en haut du panel */
+  .ptp-arabic-preset-bar {
+    position: sticky; top: 0; z-index: 5;
+    background: #fffbeb; border-bottom: 2px solid #d4a93b;
+    padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
   }
-  .ptp-preset-btn:hover { background: #fef3c7; border-style: solid; }
-  .ptp-preset-warn {
-    margin: 0; padding: 8px 10px;
+  .ptp-arabic-preset-cta {
+    width: 100%; padding: 11px 14px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1.5px solid #d4a93b; color: #78350f;
+    font-family: inherit; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.02em;
+    transition: all 0.15s; text-align: center;
+  }
+  .ptp-arabic-preset-cta:hover { background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%); border-color: #b45309; }
+  .ptp-arabic-preset-warn {
+    margin: 0; padding: 7px 10px;
     background: #fef9c3; border-left: 3px solid #d4a93b;
-    color: #713f12; font-size: 0.75rem; font-style: italic;
+    color: #713f12; font-size: 0.72rem; font-style: italic;
   }
 
   /* Options */
