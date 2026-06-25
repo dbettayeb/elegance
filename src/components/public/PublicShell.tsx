@@ -13,7 +13,6 @@ export default function PublicShell({ children }: { children: React.ReactNode })
           </Link>
           <nav className="pub-nav">
             <Link href="/templates" className="pub-nav-link">Designs</Link>
-            <Link href="/#packs" className="pub-nav-link">Tarifs</Link>
             <Link href="/commander" className="pub-cta-mini">Commander</Link>
           </nav>
         </div>
@@ -32,7 +31,6 @@ export default function PublicShell({ children }: { children: React.ReactNode })
           </p>
           <div className="pub-footer-links">
             <Link href="/templates">Designs</Link>
-            <Link href="/#packs">Tarifs</Link>
             <Link href="/commander">Commander</Link>
           </div>
           <p className="pub-footer-credit">
