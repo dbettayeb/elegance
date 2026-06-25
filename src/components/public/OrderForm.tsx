@@ -18,9 +18,9 @@ const STEP_LABELS: Record<StepId, string> = {
 const OPTIONS_DEF = [
   { id: 'countdown',            label: 'Compte à rebours',          desc: 'Décompte animé jusqu\'au jour J',           price: 0 },
   { id: 'program',              label: 'Programme',                  desc: 'Déroulé de la cérémonie pour vos invités',  price: 0 },
-  { id: 'rsvp',                 label: 'RSVP',                       desc: 'Confirmation de présence en ligne',          price: 9.90 },
-  { id: 'guestbook',            label: 'Livre d\'or',                desc: 'Messages et vœux de vos invités',           price: 9.90 },
-  { id: 'personalised_invites', label: 'Invitations personnalisées', desc: 'Cartes nominatives envoyées par email',      price: 19.90 },
+  { id: 'rsvp',                 label: 'RSVP',                       desc: 'Confirmation de présence en ligne',          price: 29 },
+  { id: 'guestbook',            label: 'Livre d\'or',                desc: 'Messages et vœux de vos invités',           price: 29 },
+  { id: 'personalised_invites', label: 'Invitations personnalisées', desc: 'Cartes nominatives envoyées par email',      price: 59 },
 ]
 
 export default function OrderForm() {
@@ -237,7 +237,7 @@ export default function OrderForm() {
                   <div className="of-opt-price">
                     {opt.price === 0
                       ? <span className="of-opt-free">Gratuit</span>
-                      : <><span className="of-opt-amount">{opt.price.toFixed(2).replace('.', ',')}</span><span className="of-opt-cur"> €</span></>
+                      : <><span className="of-opt-amount">{opt.price}</span><span className="of-opt-cur"> DT</span></>
                     }
                   </div>
                 </button>
@@ -249,7 +249,7 @@ export default function OrderForm() {
             <span className="of-total-amount">
               {totalPrice === 0
                 ? 'Gratuit'
-                : <>{totalPrice.toFixed(2).replace('.', ',')}<span className="of-total-cur"> €</span></>
+                : <>{totalPrice}<span className="of-total-cur"> DT</span></>
               }
             </span>
           </div>
@@ -351,7 +351,7 @@ export default function OrderForm() {
             <div className="of-summary-row of-summary-row--total">
               <span className="of-summary-key">Total estimé</span>
               <span className="of-summary-val of-summary-price">
-                {totalPrice === 0 ? 'Gratuit' : `${totalPrice.toFixed(2).replace('.', ',')} €`}
+                {totalPrice === 0 ? 'Gratuit' : `${totalPrice} DT`}
               </span>
             </div>
           </div>
