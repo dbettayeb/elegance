@@ -89,28 +89,31 @@ export async function POST(req: NextRequest) {
       if (process.env.RESEND_API_KEY && process.env.ADMIN_NOTIFY_EMAIL) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
-        await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? 'no-reply@elegance-digitale.com',
+        const { error: emailErr } = await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
           to: process.env.ADMIN_NOTIFY_EMAIL,
-          subject: `🎉 Nouvelle demande : ${bride_name} & ${groom_name}`,
+          subject: `Nouvelle demande : ${bride_name} & ${groom_name}`,
           html: `
             <h2>Nouvelle demande d'invitation</h2>
             <p><strong>Référence :</strong> ${reference}</p>
             <p><strong>Couple :</strong> ${bride_name} & ${groom_name}</p>
             <p><strong>Email :</strong> ${couple_email}</p>
             <p><strong>Téléphone :</strong> ${couple_phone}</p>
-            <p><strong>Date :</strong> ${event_date}</p>
+            <p><strong>Date :</strong> ${event_date || 'non renseignée'}</p>
             <p><strong>Design :</strong> ${template_id}</p>
             <p><strong>Options :</strong> ${selectedOptions.join(', ') || 'aucune'}</p>
             ${venue_name ? `<p><strong>Lieu :</strong> ${venue_name}</p>` : ''}
-            ${custom_message ? `<p><strong>Message :</strong><br>${custom_message}</p>` : ''}
             <hr>
             <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/admin/${wedding.id}">Voir dans l'admin →</a></p>
           `,
         })
+        if (emailErr) console.error('[ORDER] Admin email error:', emailErr)
+        else console.log('[ORDER] Admin email sent OK')
+      } else {
+        console.warn('[ORDER] Admin email skipped — RESEND_API_KEY or ADMIN_NOTIFY_EMAIL missing')
       }
     } catch (e) {
-      console.warn('[ORDER] Email notification failed:', e)
+      console.error('[ORDER] Admin email exception:', e)
     }
 
     // Confirmation email au client (best effort)
@@ -118,17 +121,21 @@ export async function POST(req: NextRequest) {
       if (process.env.RESEND_API_KEY) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
-        const from = process.env.RESEND_FROM_EMAIL ?? 'no-reply@elegance-digitale.com'
-        await resend.emails.send({
+        const from = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+        const { error: emailErr } = await resend.emails.send({
           from,
           to: couple_email,
           replyTo: process.env.ADMIN_NOTIFY_EMAIL ?? from,
           subject: `Votre demande a bien été reçue — ${reference}`,
           html: buildOrderConfirmationEmail({ bride_name, groom_name, reference, template_id, options: selectedOptions, event_date }),
         })
+        if (emailErr) console.error('[ORDER] Client email error:', emailErr)
+        else console.log('[ORDER] Client email sent OK to', couple_email)
+      } else {
+        console.warn('[ORDER] Client email skipped — RESEND_API_KEY missing')
       }
     } catch (e) {
-      console.warn('[ORDER] Client confirmation email failed:', e)
+      console.error('[ORDER] Client email exception:', e)
     }
 
     return NextResponse.json({ success: true, reference })
