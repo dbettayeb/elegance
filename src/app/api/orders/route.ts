@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       options,
     } = body
 
-    if (!template_id || !bride_name || !groom_name || !couple_email || !couple_phone || !event_date) {
+    if (!template_id || !bride_name || !groom_name || !couple_email || !couple_phone) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
     }
 
@@ -45,7 +45,9 @@ export async function POST(req: NextRequest) {
     const slug = `${baseSlug}-${Date.now().toString().slice(-5)}`
     const access_token = generateAccessToken(8)
     const couple_token = generateAccessToken(8)
-    const datetime = `${event_date}T19:00:00`
+    const datetime = event_date
+      ? `${event_date}T19:00:00`
+      : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19)
 
     const { data: wedding, error } = await supabase
       .from('weddings')

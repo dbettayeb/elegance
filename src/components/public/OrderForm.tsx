@@ -15,6 +15,22 @@ const STEP_LABELS: Record<StepId, string> = {
   preview: 'Aperçu',
 }
 
+const PHONE_CODES = [
+  { code: '+216', label: '🇹🇳 +216', country: 'Tunisie' },
+  { code: '+213', label: '🇩🇿 +213', country: 'Algérie' },
+  { code: '+212', label: '🇲🇦 +212', country: 'Maroc' },
+  { code: '+218', label: '🇱🇾 +218', country: 'Libye' },
+  { code: '+33',  label: '🇫🇷 +33',  country: 'France' },
+  { code: '+32',  label: '🇧🇪 +32',  country: 'Belgique' },
+  { code: '+41',  label: '🇨🇭 +41',  country: 'Suisse' },
+  { code: '+49',  label: '🇩🇪 +49',  country: 'Allemagne' },
+  { code: '+44',  label: '🇬🇧 +44',  country: 'Royaume-Uni' },
+  { code: '+966', label: '🇸🇦 +966', country: 'Arabie Saoudite' },
+  { code: '+971', label: '🇦🇪 +971', country: 'Émirats' },
+  { code: '+974', label: '🇶🇦 +974', country: 'Qatar' },
+  { code: '+965', label: '🇰🇼 +965', country: 'Koweït' },
+]
+
 const OPTIONS_DEF = [
   { id: 'countdown',            label: 'Compte à rebours',          desc: 'Décompte animé jusqu\'au jour J',           price: 0 },
   { id: 'program',              label: 'Programme',                  desc: 'Déroulé de la cérémonie pour vos invités',  price: 0 },
@@ -48,6 +64,7 @@ export default function OrderForm() {
     venue_name:    searchParams.get('venue')    ?? '',
   })
   const [selectedOptions, setSelectedOptions] = useState<string[]>(['countdown', 'program'])
+  const [phoneCode, setPhoneCode] = useState('+216')
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
   const [reference, setReference] = useState('')
@@ -70,9 +87,7 @@ export default function OrderForm() {
   function canProceed(): boolean {
     if (currentStep === 'design')  return !!form.template_id
     if (currentStep === 'coords') {
-      if (!form.couple_email || !form.couple_phone) return false
-      if (!fromPreview && (!form.bride_name || !form.groom_name || !form.event_date)) return false
-      return true
+      return !!(form.bride_name && form.groom_name && form.couple_email && form.couple_phone)
     }
     return true
   }
@@ -101,8 +116,8 @@ export default function OrderForm() {
         bride_name_ar: form.bride_name_ar || undefined,
         groom_name_ar: form.groom_name_ar || undefined,
         couple_email:  form.couple_email,
-        couple_phone:  form.couple_phone,
-        event_date:    form.event_date,
+        couple_phone:  `${phoneCode}${form.couple_phone}`,
+        event_date:    form.event_date || undefined,
         venue_name:    form.venue_name || undefined,
         options:       selectedOptions,
       }),
@@ -262,57 +277,36 @@ export default function OrderForm() {
         <section className="of-section">
           <header className="of-section-head">
             <h2 className="of-h">Vos coordonnées</h2>
-            <p className="of-h-sub">Pour vous envoyer votre invitation et vous tenir informés.</p>
+            <p className="of-h-sub">C&apos;est tout ce dont nous avons besoin pour démarrer.</p>
           </header>
           <div className="of-fields">
-            {!fromPreview && (
-              <>
-                <div className="of-row">
-                  <Field label="Prénom de la mariée" required>
-                    <input className="of-input" value={form.bride_name}
-                      onChange={e => upd('bride_name', e.target.value)} required />
-                  </Field>
-                  <Field label="Prénom du marié" required>
-                    <input className="of-input" value={form.groom_name}
-                      onChange={e => upd('groom_name', e.target.value)} required />
-                  </Field>
-                </div>
-                {isArabicTemplate && (
-                  <div className="of-row">
-                    <Field label="Prénom de la mariée (arabe)">
-                      <input className="of-input" dir="rtl" value={form.bride_name_ar}
-                        onChange={e => upd('bride_name_ar', e.target.value)} placeholder="ياسمين"
-                        style={{ fontFamily: "'Amiri', serif", fontSize: '1.05rem' }} />
-                    </Field>
-                    <Field label="Prénom du marié (arabe)">
-                      <input className="of-input" dir="rtl" value={form.groom_name_ar}
-                        onChange={e => upd('groom_name_ar', e.target.value)} placeholder="مهدي"
-                        style={{ fontFamily: "'Amiri', serif", fontSize: '1.05rem' }} />
-                    </Field>
-                  </div>
-                )}
-                <div className="of-row">
-                  <Field label="Date du mariage" required>
-                    <input className="of-input" type="date" value={form.event_date}
-                      onChange={e => upd('event_date', e.target.value)} required />
-                  </Field>
-                  <Field label="Lieu" help="Optionnel — modifiable plus tard.">
-                    <input className="of-input" value={form.venue_name}
-                      onChange={e => upd('venue_name', e.target.value)} placeholder="Ex : Dar El Jeld" />
-                  </Field>
-                </div>
-              </>
-            )}
             <div className="of-row">
-              <Field label="Email" required help="Pour vous envoyer les liens de votre invitation.">
-                <input className="of-input" type="email" value={form.couple_email}
-                  onChange={e => upd('couple_email', e.target.value)} required />
+              <Field label="Prénom de la mariée" required>
+                <input className="of-input" value={form.bride_name}
+                  onChange={e => upd('bride_name', e.target.value)} required />
               </Field>
-              <Field label="Téléphone / WhatsApp" required help="Pour vous rappeler si besoin.">
-                <input className="of-input" type="tel" value={form.couple_phone}
-                  onChange={e => upd('couple_phone', e.target.value)} placeholder="+216 XX XXX XXX" required />
+              <Field label="Prénom du marié" required>
+                <input className="of-input" value={form.groom_name}
+                  onChange={e => upd('groom_name', e.target.value)} required />
               </Field>
             </div>
+            <Field label="Email" required>
+              <input className="of-input" type="email" value={form.couple_email}
+                onChange={e => upd('couple_email', e.target.value)} required />
+            </Field>
+            <Field label="Téléphone / WhatsApp" required>
+              <div className="of-phone">
+                <select className="of-phone-code" value={phoneCode}
+                  onChange={e => setPhoneCode(e.target.value)}>
+                  {PHONE_CODES.map(c => (
+                    <option key={c.code} value={c.code}>{c.label} {c.country}</option>
+                  ))}
+                </select>
+                <input className="of-input of-phone-num" type="tel" value={form.couple_phone}
+                  onChange={e => upd('couple_phone', e.target.value)}
+                  placeholder="XX XXX XXX" required />
+              </div>
+            </Field>
           </div>
         </section>
       )}
@@ -576,6 +570,24 @@ const CSS = `
   .of-input::placeholder { color: var(--pub-text-subtle); font-style: italic; }
   .of-input:focus { border-bottom-color: var(--pub-text); }
   .of-help { font-size: 0.73rem; color: var(--pub-text-subtle); margin-top: 6px; font-style: italic; }
+
+  /* ── Phone ──────────────────────────────────────────────────── */
+  .of-phone { display: flex; align-items: flex-end; gap: 0; }
+  .of-phone-code {
+    flex-shrink: 0; padding: 12px 10px 12px 0;
+    background: transparent; border: none;
+    border-bottom: 1px solid var(--pub-border);
+    font-family: inherit; font-size: 0.88rem; color: var(--pub-text);
+    cursor: pointer; outline: none; transition: border-color 0.2s;
+    appearance: none; -webkit-appearance: none;
+    padding-right: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 8px;
+  }
+  .of-phone-code:focus { border-bottom-color: var(--pub-text); }
+  .of-phone-num { flex: 1; margin-left: 12px; }
 
   /* ── Summary ────────────────────────────────────────────────── */
   .of-summary {
