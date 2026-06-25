@@ -10,6 +10,7 @@ export interface TemplateMeta {
   language?: 'fr' | 'ar'
   preview?: string
   type: 'statique' | 'dynamique'
+  basePrice: number
 }
 
 export const TEMPLATES_META: TemplateMeta[] = [
@@ -23,6 +24,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'fr',
     type: 'dynamique',
+    basePrice: 59,
   },
   {
     id: 'alexa_richard',
@@ -33,6 +35,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'fr',
     type: 'dynamique',
+    basePrice: 79,
   },
   {
     id: 'viktor_paula',
@@ -43,6 +46,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'sombre',
     language: 'fr',
     type: 'dynamique',
+    basePrice: 79,
   },
 
   // ───────── Statiques ─────────
@@ -55,6 +59,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'ar',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'al_nour',
@@ -65,6 +70,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     language: 'ar',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'carte_simple',
@@ -74,6 +80,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     palette: ['#EDE9E2', '#FAFAF8', '#C9A84C', '#2C2416'],
     ambiance: 'clair',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'toile_bleue',
@@ -84,6 +91,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     preview: '/assets/template1/exemple1.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'jardin_rose',
@@ -94,6 +102,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'pastel',
     preview: '/assets/template2/exemple2.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'floral_arch',
@@ -104,6 +113,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'pastel',
     preview: '/assets/template3/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'rose_bleu',
@@ -114,6 +124,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     preview: '/assets/template5/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'roses_ivoire',
@@ -124,6 +135,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     preview: '/assets/template4/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
 
   {
@@ -135,6 +147,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     preview: '/assets/template7/exemple 7.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'template_8',
@@ -145,6 +158,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     preview: '/assets/template8/exemple8.png',
     type: 'statique',
+    basePrice: 59,
   },
 
   // ───────── Statiques arabes ─────────
@@ -158,6 +172,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template7/exemple 7.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'template_8_ar',
@@ -169,6 +184,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template8/exemple8.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'toile_bleue_ar',
@@ -180,6 +196,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template1/exemple1.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'jardin_rose_ar',
@@ -191,6 +208,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template2/exemple2.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'floral_arch_ar',
@@ -202,6 +220,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template3/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'roses_ivoire_ar',
@@ -213,6 +232,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template4/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
   {
     id: 'rose_bleu_ar',
@@ -224,5 +244,6 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     preview: '/assets/template5/exemple.png',
     type: 'statique',
+    basePrice: 59,
   },
 ]

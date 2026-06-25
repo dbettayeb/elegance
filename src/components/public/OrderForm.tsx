@@ -72,9 +72,11 @@ export default function OrderForm() {
   const selectedTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const isArabicTemplate = selectedTemplate?.language === 'ar'
   const stepIndex = STEPS.indexOf(currentStep)
-  const totalPrice = OPTIONS_DEF
+  const basePrice = selectedTemplate?.basePrice ?? 59
+  const optionsPrice = OPTIONS_DEF
     .filter(o => selectedOptions.includes(o.id))
     .reduce((s, o) => s + o.price, 0)
+  const totalPrice = basePrice + optionsPrice
 
   function upd<K extends keyof typeof form>(k: K, v: typeof form[K]) {
     setForm(f => ({ ...f, [k]: v }))
@@ -225,6 +227,7 @@ export default function OrderForm() {
                   {t.name}
                   {t.language === 'ar' && <span className="of-tpl-ar"> · عربي</span>}
                 </div>
+                <div className="of-tpl-price">{t.basePrice} DT</div>
               </button>
             ))}
           </div>
@@ -260,13 +263,14 @@ export default function OrderForm() {
             })}
           </div>
           <div className="of-total">
-            <span className="of-total-label">Total estimé</span>
-            <span className="of-total-amount">
-              {totalPrice === 0
-                ? 'Gratuit'
-                : <>{totalPrice}<span className="of-total-cur"> DT</span></>
-              }
-            </span>
+            <div className="of-total-breakdown">
+              <span className="of-total-line">Invitation de base <strong>{basePrice} DT</strong></span>
+              {optionsPrice > 0 && <span className="of-total-line">Options <strong>+{optionsPrice} DT</strong></span>}
+            </div>
+            <div className="of-total-right">
+              <span className="of-total-label">Total estimé</span>
+              <span className="of-total-amount">{totalPrice}<span className="of-total-cur"> DT</span></span>
+            </div>
           </div>
           <p className="of-total-note">Le paiement intervient après validation de votre invitation.</p>
         </section>
@@ -342,11 +346,13 @@ export default function OrderForm() {
                 {OPTIONS_DEF.filter(o => selectedOptions.includes(o.id)).map(o => o.label).join(', ') || 'Aucune'}
               </span>
             </div>
+            <div className="of-summary-row">
+              <span className="of-summary-key">Base</span>
+              <span className="of-summary-val">{basePrice} DT</span>
+            </div>
             <div className="of-summary-row of-summary-row--total">
               <span className="of-summary-key">Total estimé</span>
-              <span className="of-summary-val of-summary-price">
-                {totalPrice === 0 ? 'Gratuit' : `${totalPrice} DT`}
-              </span>
+              <span className="of-summary-val of-summary-price">{totalPrice} DT</span>
             </div>
           </div>
 
@@ -506,6 +512,10 @@ const CSS = `
   }
   .of-tpl-label { margin-top: 8px; font-size: 0.76rem; font-weight: 500; }
   .of-tpl-ar { color: var(--pub-text-muted); font-family: 'Amiri', serif; }
+  .of-tpl-price {
+    font-family: Georgia, serif; font-size: 0.82rem; font-weight: 300;
+    color: var(--pub-gold-dark, #8C7042); margin-top: 2px;
+  }
 
   /* ── Options ────────────────────────────────────────────────── */
   .of-options { display: flex; flex-direction: column; gap: 10px; }
@@ -538,12 +548,20 @@ const CSS = `
   .of-opt-cur { font-size: 0.75rem; color: var(--pub-text-muted); }
 
   .of-total {
-    display: flex; justify-content: flex-end; align-items: baseline; gap: 12px;
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;
     margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--pub-border);
   }
+  .of-total-breakdown {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .of-total-line {
+    font-size: 0.8rem; color: var(--pub-text-muted);
+  }
+  .of-total-line strong { color: var(--pub-text); font-weight: 500; }
+  .of-total-right { text-align: right; }
   .of-total-label {
-    font-size: 0.75rem; text-transform: uppercase;
-    letter-spacing: 0.15em; color: var(--pub-text-muted);
+    display: block; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--pub-text-muted); margin-bottom: 2px;
   }
   .of-total-amount { font-family: Georgia, serif; font-size: 2rem; font-weight: 300; }
   .of-total-cur { font-size: 0.8rem; color: var(--pub-text-muted); }
