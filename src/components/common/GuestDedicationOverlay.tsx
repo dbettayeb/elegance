@@ -9,7 +9,7 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
 
     const fontLink = document.createElement('link')
     fontLink.rel = 'stylesheet'
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@1&family=Great+Vibes&family=Amiri&display=swap'
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Amiri&display=swap'
     document.head.appendChild(fontLink)
 
     function findStage() {
@@ -43,25 +43,25 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
       const label = document.createElement('span')
       label.textContent = isArabic ? 'إلى' : 'Pour'
       label.style.cssText = [
-        `font-family:${isArabic ? "'Amiri',Georgia,serif" : "'Cormorant Garamond',Georgia,serif"}`,
+        "font-family:'Cormorant Garamond',Georgia,serif",
         'font-style:italic',
-        'font-size:16px',
-        `letter-spacing:${isArabic ? '0.04em' : '0.45em'}`,
-        `text-transform:${isArabic ? 'none' : 'uppercase'}`,
-        'color:rgba(190,152,82,0.95)',
-        'text-shadow:0 1px 6px rgba(0,0,0,0.4)',
-        `direction:${isArabic ? 'rtl' : 'ltr'}`,
+        'font-size:11px',
+        'letter-spacing:0.4em',
+        'text-transform:uppercase',
+        'color:rgba(185,148,72,0.88)',
+        'text-shadow:0 1px 4px rgba(0,0,0,0.35)',
         'display:block',
       ].join(';')
 
       const name = document.createElement('span')
       name.textContent = dedication
       name.style.cssText = [
-        `font-family:${isArabic ? "'Amiri',Georgia,serif" : "'Great Vibes',cursive"}`,
-        `font-size:${isArabic ? '38px' : '52px'}`,
-        'font-weight:400',
-        'color:rgba(210,170,90,0.97)',
-        'text-shadow:0 2px 12px rgba(0,0,0,0.45),0 1px 3px rgba(0,0,0,0.3)',
+        `font-family:${isArabic ? "'Amiri',Georgia,serif" : "'Cormorant Garamond',Georgia,serif"}`,
+        `font-size:${isArabic ? '22px' : '28px'}`,
+        'font-weight:500',
+        'font-style:italic',
+        'color:rgba(200,162,78,0.97)',
+        'text-shadow:0 1px 8px rgba(0,0,0,0.4)',
         'line-height:1.3',
         `direction:${isArabic ? 'rtl' : 'ltr'}`,
         'display:block',
