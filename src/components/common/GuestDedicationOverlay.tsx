@@ -56,7 +56,7 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: '11%',
+          top: '3%',
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 10000,
