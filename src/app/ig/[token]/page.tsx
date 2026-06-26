@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import Bismillah from '@/components/templates/Bismillah'
+import GuestDedicationOverlay from '@/components/common/GuestDedicationOverlay'
 import { Wedding } from '@/lib/types'
 import { getTemplate } from '@/lib/templates'
 
@@ -67,29 +68,8 @@ export default async function GuestInvitationPage({
 
   return (
     <>
-      {dedication && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999,
-          background: 'rgba(255,255,255,0.92)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(0,0,0,0.08)',
-          padding: '10px 20px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: '6px',
-          fontSize: '0.85rem',
-          fontFamily: 'Georgia, "Times New Roman", serif',
-          color: '#2a2a2a',
-          letterSpacing: '0.04em',
-        }}>
-          <span style={{ opacity: 0.5, fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            Invitation personnalisée ·
-          </span>
-          <span style={{ fontStyle: 'italic' }}>{dedication}</span>
-        </div>
-      )}
-      <div style={{ paddingTop: dedication ? '42px' : undefined }}>
-        <Template wedding={wedding as Wedding} />
-      </div>
+      <GuestDedicationOverlay dedication={dedication} />
+      <Template wedding={wedding as Wedding} />
     </>
   )
 }
