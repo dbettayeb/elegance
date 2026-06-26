@@ -56,7 +56,7 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: '60%',
+          top: '11%',
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 10000,
@@ -64,34 +64,25 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '10px',
+          gap: '6px',
           width: '100%',
-          maxWidth: '520px',
+          maxWidth: '440px',
           padding: '0 24px',
           opacity,
           transition: 'opacity 0.75s ease',
           textAlign: 'center',
         }}
       >
-        {/* Thin gold rule */}
-        <div style={{
-          width: '48px',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(212,183,120,0.75), transparent)',
-          marginBottom: '2px',
-        }} />
-
         {/* "Pour" / "إلى" */}
         <span style={{
           fontFamily: isArabic
             ? "'Amiri', Georgia, serif"
             : "'Cormorant Garamond', Georgia, serif",
           fontStyle: 'italic',
-          fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
-          letterSpacing: isArabic ? '0.04em' : '0.42em',
+          fontSize: 'clamp(0.55rem, 1.4vw, 0.7rem)',
+          letterSpacing: isArabic ? '0.04em' : '0.45em',
           textTransform: isArabic ? 'none' : 'uppercase',
-          color: 'rgba(218, 190, 128, 0.92)',
-          textShadow: '0 1px 10px rgba(0,0,0,0.65)',
+          color: 'rgba(160, 128, 72, 0.85)',
           direction: isArabic ? 'rtl' : 'ltr',
           display: 'block',
         }}>
@@ -104,11 +95,10 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
             ? "'Amiri', Georgia, serif"
             : "'Great Vibes', 'Cormorant Garamond', cursive",
           fontSize: isArabic
-            ? 'clamp(1.7rem, 6vw, 2.9rem)'
-            : 'clamp(2rem, 7vw, 3.5rem)',
+            ? 'clamp(1.1rem, 3.5vw, 1.6rem)'
+            : 'clamp(1.3rem, 4vw, 2rem)',
           fontWeight: 400,
-          color: 'rgba(255, 250, 228, 0.97)',
-          textShadow: '0 2px 32px rgba(0,0,0,0.55), 0 0 80px rgba(0,0,0,0.2)',
+          color: 'rgba(80, 58, 28, 0.88)',
           lineHeight: 1.3,
           direction: isArabic ? 'rtl' : 'ltr',
           display: 'block',
@@ -118,9 +108,9 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
 
         {/* Thin gold rule */}
         <div style={{
-          width: '48px',
+          width: '36px',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(212,183,120,0.75), transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(184,146,74,0.6), transparent)',
           marginTop: '2px',
         }} />
       </div>
