@@ -11,6 +11,7 @@ export interface TemplateMeta {
   preview?: string
   type: 'statique' | 'dynamique'
   basePrice: number
+  hidden?: boolean
 }
 
 export const TEMPLATES_META: TemplateMeta[] = [
@@ -25,6 +26,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'fr',
     type: 'dynamique',
     basePrice: 59,
+    hidden: true,
   },
   {
     id: 'alexa_richard',
@@ -60,6 +62,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     type: 'statique',
     basePrice: 59,
+    hidden: true,
   },
   {
     id: 'al_nour',
@@ -81,6 +84,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     ambiance: 'clair',
     type: 'statique',
     basePrice: 59,
+    hidden: true,
   },
   {
     id: 'toile_bleue',

@@ -212,7 +212,7 @@ export default function OrderForm() {
             <p className="of-h-sub">Sélectionnez l&apos;univers qui vous ressemble.</p>
           </header>
           <div className="of-tpl-grid">
-            {TEMPLATES_META.map(t => (
+            {TEMPLATES_META.filter(t => !t.hidden).map(t => (
               <button key={t.id} type="button" onClick={() => upd('template_id', t.id)}
                 className={`of-tpl${form.template_id === t.id ? ' of-tpl-on' : ''}`}>
                 <div className="of-tpl-visual" style={{ background: t.palette[0] }}>

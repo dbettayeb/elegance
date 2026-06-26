@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import Bismillah from '@/components/templates/Bismillah'
 import { Wedding } from '@/lib/types'
-import { getTemplate, TEMPLATES_META } from '@/lib/templates'
+import { getTemplate } from '@/lib/templates'
 
 export const revalidate = 3600
 
@@ -48,9 +48,7 @@ export default async function GuestInvitationPage({
   if (wedding.status === 'suspended') redirect('/expired')
   if (wedding.status === 'archived') redirect(`/expired/${wedding.slug}`)
 
-  const isAr = TEMPLATES_META.find(t => t.id === wedding.template_id)?.language === 'ar'
-
-  if (isAr) {
+  if (wedding.template_id === 'bismillah') {
     return (
       <Bismillah
         wedding={wedding as Wedding}
