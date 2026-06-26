@@ -27,7 +27,7 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
       wrap.id = 'guest-dedication'
       wrap.style.cssText = [
         'position:absolute',
-        'top:44px',
+        'top:160px',
         'left:600px',
         'transform:translateX(-50%)',
         'z-index:10',
@@ -35,8 +35,8 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         'display:flex',
         'flex-direction:column',
         'align-items:center',
-        'gap:5px',
-        'width:500px',
+        'gap:6px',
+        'width:600px',
         'text-align:center',
       ].join(';')
 
@@ -45,11 +45,11 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
       label.style.cssText = [
         `font-family:${isArabic ? "'Amiri',Georgia,serif" : "'Cormorant Garamond',Georgia,serif"}`,
         'font-style:italic',
-        'font-size:13px',
+        'font-size:16px',
         `letter-spacing:${isArabic ? '0.04em' : '0.45em'}`,
         `text-transform:${isArabic ? 'none' : 'uppercase'}`,
-        'color:rgba(220,190,130,0.92)',
-        'text-shadow:0 1px 6px rgba(0,0,0,0.5)',
+        'color:rgba(190,152,82,0.95)',
+        'text-shadow:0 1px 6px rgba(0,0,0,0.4)',
         `direction:${isArabic ? 'rtl' : 'ltr'}`,
         'display:block',
       ].join(';')
@@ -58,10 +58,10 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
       name.textContent = dedication
       name.style.cssText = [
         `font-family:${isArabic ? "'Amiri',Georgia,serif" : "'Great Vibes',cursive"}`,
-        `font-size:${isArabic ? '26px' : '36px'}`,
+        `font-size:${isArabic ? '38px' : '52px'}`,
         'font-weight:400',
-        'color:rgba(255,248,225,0.97)',
-        'text-shadow:0 1px 10px rgba(0,0,0,0.55),0 2px 30px rgba(0,0,0,0.25)',
+        'color:rgba(210,170,90,0.97)',
+        'text-shadow:0 2px 12px rgba(0,0,0,0.45),0 1px 3px rgba(0,0,0,0.3)',
         'line-height:1.3',
         `direction:${isArabic ? 'rtl' : 'ltr'}`,
         'display:block',
