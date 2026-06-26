@@ -1,6 +1,8 @@
 'use client'
 import { useEffect } from 'react'
 
+// Injects dedication into the opening stage so it physically moves
+// with the poly-top (top flap) when the envelope opens.
 export default function GuestDedicationOverlay({ dedication }: { dedication: string }) {
   useEffect(() => {
     if (!dedication) return
@@ -25,9 +27,11 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
 
       const wrap = document.createElement('div')
       wrap.id = 'guest-dedication'
+      // top:44px places the text on the poly-top (top flap) area of the 1200×850 stage.
+      // transition matches poly-top: transform 2.5s ease, plus opacity fade-out.
       wrap.style.cssText = [
         'position:absolute',
-        'top:160px',
+        'top:44px',
         'left:600px',
         'transform:translateX(-50%)',
         'z-index:10',
@@ -35,9 +39,10 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         'display:flex',
         'flex-direction:column',
         'align-items:center',
-        'gap:6px',
+        'gap:5px',
         'width:600px',
         'text-align:center',
+        'transition:transform 2.5s ease,opacity 0.6s ease',
       ].join(';')
 
       const label = document.createElement('span')
@@ -70,9 +75,9 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
 
       const rule = document.createElement('div')
       rule.style.cssText = [
-        'width:36px',
+        'width:32px',
         'height:1px',
-        'background:linear-gradient(90deg,transparent,rgba(174,138,70,0.5),transparent)',
+        'background:linear-gradient(90deg,transparent,rgba(185,148,72,0.5),transparent)',
         'margin-top:2px',
       ].join(';')
 
@@ -80,13 +85,28 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
       wrap.appendChild(name)
       wrap.appendChild(rule)
       stage.appendChild(wrap)
+
+      // Sync movement with poly-top: when the stage gets its animating class,
+      // apply the same translateY(-430px) so the text flies up with the flap.
+      const animObs = new MutationObserver(() => {
+        const cls = stage.className
+        const isAnimating =
+          cls.includes('animating') ||  // covers: animating, os-animating, ar-animating, bs-animating
+          cls.includes('bs-animating')
+
+        if (isAnimating) {
+          wrap.style.transform = 'translateX(-50%) translateY(-430px)'
+          wrap.style.opacity = '0'
+          animObs.disconnect()
+        }
+      })
+      animObs.observe(stage, { attributes: true, attributeFilter: ['class'] })
     }
 
     const stage = findStage()
     if (stage) {
       inject(stage)
     } else {
-      // Stage not in DOM yet — watch for it
       const obs = new MutationObserver(() => {
         const s = findStage()
         if (s) { inject(s); obs.disconnect() }
