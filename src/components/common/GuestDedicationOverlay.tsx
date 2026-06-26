@@ -1,119 +1,108 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
+// Injects the guest dedication directly into the opening-stage DOM element
+// so the text moves with the envelope animation (polygons, scale, etc.)
 export default function GuestDedicationOverlay({ dedication }: { dedication: string }) {
-  const [opacity, setOpacity] = useState(1)
-  const [gone, setGone] = useState(false)
-
   useEffect(() => {
     if (!dedication) return
 
-    function isOpeningDone() {
-      // FR templates — OpeningScreen component
-      const os = document.getElementById('opening-screen')
-      if (os?.classList.contains('os-hidden') || os?.classList.contains('hidden')) return true
-      // AR templates — BismillahStyle
-      const bs = document.querySelector('.bs-opening')
-      if (bs?.classList.contains('bs-op-hidden')) return true
-      // AlexaRichard dynamic template
-      const ar = document.getElementById('ar-opening')
-      if (ar?.classList.contains('ar-hidden')) return true
-      // No opening screen at all → already open
-      if (!os && !bs && !ar) return true
-      return false
+    const isArabic = /[؀-ۿ]/.test(dedication)
+    let el: HTMLElement | null = null
+    let fontLink: HTMLLinkElement | null = null
+
+    // Load fonts
+    fontLink = document.createElement('link')
+    fontLink.rel = 'stylesheet'
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@1&family=Great+Vibes&family=Amiri&display=swap'
+    document.head.appendChild(fontLink)
+
+    function buildDedication(): HTMLElement {
+      // Outer wrapper — positioned in the 1200×850 stage coordinate system
+      const wrap = document.createElement('div')
+      wrap.id = 'guest-dedication'
+      Object.assign(wrap.style, {
+        position: 'absolute',
+        top: '44px',
+        left: '600px',
+        transform: 'translateX(-50%)',
+        zIndex: '10',
+        pointerEvents: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '5px',
+        width: '500px',
+        textAlign: 'center',
+      })
+
+      // "Pour" / "إلى" label
+      const label = document.createElement('span')
+      label.textContent = isArabic ? 'إلى' : 'Pour'
+      Object.assign(label.style, {
+        fontFamily: isArabic ? "'Amiri', Georgia, serif" : "'Cormorant Garamond', Georgia, serif",
+        fontStyle: 'italic',
+        fontSize: '12px',
+        letterSpacing: isArabic ? '0.04em' : '0.48em',
+        textTransform: isArabic ? 'none' : 'uppercase',
+        color: 'rgba(140, 108, 55, 0.82)',
+        direction: isArabic ? 'rtl' : 'ltr',
+        display: 'block',
+      })
+
+      // Guest name
+      const name = document.createElement('span')
+      name.textContent = dedication
+      Object.assign(name.style, {
+        fontFamily: isArabic ? "'Amiri', Georgia, serif" : "'Great Vibes', cursive",
+        fontSize: isArabic ? '24px' : '34px',
+        fontWeight: '400',
+        color: 'rgba(72, 52, 22, 0.86)',
+        lineHeight: '1.3',
+        direction: isArabic ? 'rtl' : 'ltr',
+        display: 'block',
+      })
+
+      // Thin rule
+      const rule = document.createElement('div')
+      Object.assign(rule.style, {
+        width: '36px',
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(174,138,70,0.55), transparent)',
+        marginTop: '2px',
+      })
+
+      wrap.appendChild(label)
+      wrap.appendChild(name)
+      wrap.appendChild(rule)
+      return wrap
     }
 
-    function checkAndHide() {
-      if (isOpeningDone()) {
-        setOpacity(0)
-        setTimeout(() => setGone(true), 750)
-        obs.disconnect()
+    let attempts = 0
+    function tryInject() {
+      if (document.getElementById('guest-dedication')) return
+
+      const stage =
+        document.querySelector<HTMLElement>('.opening-stage') ||
+        document.querySelector<HTMLElement>('.bs-opening-stage') ||
+        document.querySelector<HTMLElement>('.ar-opening-stage')
+
+      if (!stage) {
+        if (++attempts < 60) setTimeout(tryInject, 100)
+        return
       }
+
+      el = buildDedication()
+      stage.appendChild(el)
     }
 
-    const obs = new MutationObserver(checkAndHide)
-    obs.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-      subtree: true,
-      childList: true,
-    })
+    tryInject()
 
-    return () => obs.disconnect()
+    return () => {
+      if (el?.parentNode) el.parentNode.removeChild(el)
+      if (fontLink?.parentNode) fontLink.parentNode.removeChild(fontLink)
+    }
   }, [dedication])
 
-  if (gone || !dedication) return null
-
-  const isArabic = /[؀-ۿ]/.test(dedication)
-
-  return (
-    <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@1&family=Great+Vibes&family=Amiri&display=swap"
-        rel="stylesheet"
-      />
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          top: '3%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 10000,
-          pointerEvents: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '6px',
-          width: '100%',
-          maxWidth: '440px',
-          padding: '0 24px',
-          opacity,
-          transition: 'opacity 0.75s ease',
-          textAlign: 'center',
-        }}
-      >
-        {/* "Pour" / "إلى" */}
-        <span style={{
-          fontFamily: isArabic
-            ? "'Amiri', Georgia, serif"
-            : "'Cormorant Garamond', Georgia, serif",
-          fontStyle: 'italic',
-          fontSize: 'clamp(0.55rem, 1.4vw, 0.7rem)',
-          letterSpacing: isArabic ? '0.04em' : '0.45em',
-          textTransform: isArabic ? 'none' : 'uppercase',
-          color: 'rgba(160, 128, 72, 0.85)',
-          direction: isArabic ? 'rtl' : 'ltr',
-          display: 'block',
-        }}>
-          {isArabic ? 'إلى' : 'Pour'}
-        </span>
-
-        {/* Guest name */}
-        <span style={{
-          fontFamily: isArabic
-            ? "'Amiri', Georgia, serif"
-            : "'Great Vibes', 'Cormorant Garamond', cursive",
-          fontSize: isArabic
-            ? 'clamp(1.1rem, 3.5vw, 1.6rem)'
-            : 'clamp(1.3rem, 4vw, 2rem)',
-          fontWeight: 400,
-          color: 'rgba(80, 58, 28, 0.88)',
-          lineHeight: 1.3,
-          direction: isArabic ? 'rtl' : 'ltr',
-          display: 'block',
-        }}>
-          {dedication}
-        </span>
-
-        {/* Thin gold rule */}
-        <div style={{
-          width: '36px',
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(184,146,74,0.6), transparent)',
-          marginTop: '2px',
-        }} />
-      </div>
-    </>
-  )
+  return null
 }
