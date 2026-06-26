@@ -74,6 +74,7 @@ export const TEMPLATES_META: TemplateMeta[] = [
     language: 'ar',
     type: 'statique',
     basePrice: 59,
+    hidden: true,
   },
   {
     id: 'carte_simple',
