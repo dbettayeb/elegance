@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
             <p><strong>Couple :</strong> ${bride_name} & ${groom_name}</p>
             <p><strong>Email :</strong> ${couple_email}</p>
             <p><strong>Téléphone :</strong> ${couple_phone}</p>
+<<<<<<< HEAD
             <p><strong>Date :</strong> ${event_date || 'non renseignée'}</p>
             <p><strong>Design :</strong> ${template_id}</p>
             <p><strong>Options :</strong> ${selectedOptions.join(', ') || 'aucune'}</p>
