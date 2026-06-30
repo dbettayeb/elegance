@@ -16,6 +16,8 @@ const FILTER_TABS: { id: Filter; label: string }[] = [
   { id: 'ar',    label: 'عربي' },
 ]
 
+const VISIBLE = TEMPLATES_META.filter(t => !t.hidden)
+
 function filterTemplates(all: typeof TEMPLATES_META, f: Filter) {
   if (f === 'video') return all.filter(t => t.type === 'dynamique')
   if (f === 'fr')    return all.filter(t => t.language !== 'ar' && t.type !== 'dynamique')
@@ -30,13 +32,13 @@ export default async function PublicTemplatesPage({
 }) {
   const sp    = await searchParams
   const filter = (sp.filter || 'tous') as Filter
-  const shown = filterTemplates(TEMPLATES_META, filter)
+  const shown = filterTemplates(VISIBLE, filter)
 
   const counts: Record<Filter, number> = {
-    tous:  TEMPLATES_META.length,
-    video: filterTemplates(TEMPLATES_META, 'video').length,
-    fr:    filterTemplates(TEMPLATES_META, 'fr').length,
-    ar:    filterTemplates(TEMPLATES_META, 'ar').length,
+    tous:  VISIBLE.length,
+    video: filterTemplates(VISIBLE, 'video').length,
+    fr:    filterTemplates(VISIBLE, 'fr').length,
+    ar:    filterTemplates(VISIBLE, 'ar').length,
   }
 
   return (

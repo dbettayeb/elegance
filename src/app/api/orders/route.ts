@@ -7,18 +7,31 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const {
-      template_id, pack,
+      template_id,
       bride_name, groom_name,
       bride_name_ar, groom_name_ar,
       couple_email, couple_phone,
       event_date,
       venue_name,
       custom_message,
+      options,
     } = body
 
-    if (!template_id || !pack || !bride_name || !groom_name || !couple_email || !couple_phone || !event_date) {
+    if (!template_id || !bride_name || !groom_name || !couple_email || !couple_phone) {
       return NextResponse.json({ error: 'Champs obligatoires manquants.' }, { status: 400 })
     }
+
+    const selectedOptions: string[] = Array.isArray(options) ? options : []
+    const show_countdown = selectedOptions.includes('countdown')
+    const show_rsvp      = selectedOptions.includes('rsvp')
+    const show_guestbook = selectedOptions.includes('guestbook')
+
+    // Derive a pack value for backward compatibility with the schema
+    const pack = selectedOptions.includes('personalised_invites')
+      ? 'haute_couture'
+      : selectedOptions.some(o => ['rsvp', 'guestbook'].includes(o))
+        ? 'prestige'
+        : 'essentiel'
 
     const supabase = createServiceSupabaseClient()
 
@@ -32,7 +45,9 @@ export async function POST(req: NextRequest) {
     const slug = `${baseSlug}-${Date.now().toString().slice(-5)}`
     const access_token = generateAccessToken(8)
     const couple_token = generateAccessToken(8)
-    const datetime = `${event_date}T19:00:00`
+    const datetime = event_date
+      ? `${event_date}T19:00:00`
+      : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19)
 
     const { data: wedding, error } = await supabase
       .from('weddings')
@@ -53,8 +68,9 @@ export async function POST(req: NextRequest) {
         pack,
         intro_text: 'Vous êtes cordialement invités au mariage de',
         custom_message: custom_message ? sanitizeText(custom_message, 500) : null,
-        show_rsvp: true,
-        show_guestbook: true,
+        show_countdown,
+        show_rsvp,
+        show_guestbook,
         moderation_on: true,
         program: [],
       })
@@ -73,27 +89,31 @@ export async function POST(req: NextRequest) {
       if (process.env.RESEND_API_KEY && process.env.ADMIN_NOTIFY_EMAIL) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
-        await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? 'no-reply@elegance-digitale.com',
+        const { error: emailErr } = await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
           to: process.env.ADMIN_NOTIFY_EMAIL,
-          subject: `🎉 Nouvelle demande : ${bride_name} & ${groom_name}`,
+          subject: `Nouvelle demande : ${bride_name} & ${groom_name}`,
           html: `
             <h2>Nouvelle demande d'invitation</h2>
             <p><strong>Référence :</strong> ${reference}</p>
             <p><strong>Couple :</strong> ${bride_name} & ${groom_name}</p>
             <p><strong>Email :</strong> ${couple_email}</p>
             <p><strong>Téléphone :</strong> ${couple_phone}</p>
-            <p><strong>Date :</strong> ${event_date}</p>
-            <p><strong>Design :</strong> ${template_id} · Pack ${pack}</p>
+            <p><strong>Date :</strong> ${event_date || 'non renseignée'}</p>
+            <p><strong>Design :</strong> ${template_id}</p>
+            <p><strong>Options :</strong> ${selectedOptions.join(', ') || 'aucune'}</p>
             ${venue_name ? `<p><strong>Lieu :</strong> ${venue_name}</p>` : ''}
-            ${custom_message ? `<p><strong>Message :</strong><br>${custom_message}</p>` : ''}
             <hr>
             <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/admin/${wedding.id}">Voir dans l'admin →</a></p>
           `,
         })
+        if (emailErr) console.error('[ORDER] Admin email error:', emailErr)
+        else console.log('[ORDER] Admin email sent OK')
+      } else {
+        console.warn('[ORDER] Admin email skipped — RESEND_API_KEY or ADMIN_NOTIFY_EMAIL missing')
       }
     } catch (e) {
-      console.warn('[ORDER] Email notification failed:', e)
+      console.error('[ORDER] Admin email exception:', e)
     }
 
     // Confirmation email au client (best effort)
@@ -101,17 +121,21 @@ export async function POST(req: NextRequest) {
       if (process.env.RESEND_API_KEY) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
-        const from = process.env.RESEND_FROM_EMAIL ?? 'no-reply@elegance-digitale.com'
-        await resend.emails.send({
+        const from = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+        const { error: emailErr } = await resend.emails.send({
           from,
           to: couple_email,
           replyTo: process.env.ADMIN_NOTIFY_EMAIL ?? from,
           subject: `Votre demande a bien été reçue — ${reference}`,
-          html: buildOrderConfirmationEmail({ bride_name, groom_name, reference, template_id, pack, event_date }),
+          html: buildOrderConfirmationEmail({ bride_name, groom_name, reference, template_id, options: selectedOptions, event_date }),
         })
+        if (emailErr) console.error('[ORDER] Client email error:', emailErr)
+        else console.log('[ORDER] Client email sent OK to', couple_email)
+      } else {
+        console.warn('[ORDER] Client email skipped — RESEND_API_KEY missing')
       }
     } catch (e) {
-      console.warn('[ORDER] Client confirmation email failed:', e)
+      console.error('[ORDER] Client email exception:', e)
     }
 
     return NextResponse.json({ success: true, reference })
@@ -122,13 +146,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function buildOrderConfirmationEmail({ bride_name, groom_name, reference, template_id, pack, event_date }: {
+function buildOrderConfirmationEmail({ bride_name, groom_name, reference, template_id, options, event_date }: {
   bride_name: string; groom_name: string; reference: string
-  template_id: string; pack: string; event_date: string
+  template_id: string; options: string[]; event_date: string
 }) {
-  const packLabels: Record<string, string> = {
-    essentiel: 'Essentiel', prestige: 'Prestige', haute_couture: 'Haute Couture',
+  const optionLabels: Record<string, string> = {
+    countdown:            'Compte à rebours',
+    program:              'Programme',
+    rsvp:                 'RSVP',
+    guestbook:            'Livre d\'or',
+    personalised_invites: 'Invitations personnalisées',
   }
+  const optionsList = options
+    .filter(o => optionLabels[o])
+    .map(o => optionLabels[o])
+    .join(', ') || 'Aucune option payante'
+
   return `<!DOCTYPE html><html lang="fr"><body style="margin:0;padding:0;background:#fafafa;font-family:Georgia,serif">
 <div style="max-width:560px;margin:40px auto;background:#fff;border:1px solid #e8e8e8">
   <div style="padding:32px 36px;border-bottom:1px solid #f0f0f0;text-align:center">
@@ -143,7 +176,7 @@ function buildOrderConfirmationEmail({ bride_name, groom_name, reference, templa
       <table style="width:100%;border-collapse:collapse">
         <tr><td style="padding:6px 0;color:#888;width:140px">Référence</td><td style="padding:6px 0;font-weight:600;letter-spacing:0.05em">${reference}</td></tr>
         <tr><td style="padding:6px 0;color:#888">Design</td><td style="padding:6px 0">${template_id.replace(/_/g, ' ')}</td></tr>
-        <tr><td style="padding:6px 0;color:#888">Pack</td><td style="padding:6px 0">${packLabels[pack] ?? pack}</td></tr>
+        <tr><td style="padding:6px 0;color:#888">Options</td><td style="padding:6px 0">${optionsList}</td></tr>
         ${event_date ? `<tr><td style="padding:6px 0;color:#888">Date du mariage</td><td style="padding:6px 0">${event_date}</td></tr>` : ''}
       </table>
     </div>
