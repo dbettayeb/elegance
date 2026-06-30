@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 
-// Injects dedication into the opening stage so it physically moves
+// Injects guest dedication into the opening stage so it physically moves
 // with the poly-top (top flap) when the envelope opens.
 export default function GuestDedicationOverlay({ dedication }: { dedication: string }) {
   useEffect(() => {
