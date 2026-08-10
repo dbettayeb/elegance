@@ -19,7 +19,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".mb-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".mb-container" />
 
       {/* Texture marbre SVG en background */}
       <svg className="mb-marble" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">

@@ -55,6 +55,8 @@ export interface Wedding {
   intro_video_url?: string
   wedding_day_text?: string
   venue_photo?: string
+  custom_font_size?: number
+  verse_ar?: string
   parties?: Party[]
   show_celebrations?: boolean
   status: 'active' | 'archived' | 'suspended' | 'lead'

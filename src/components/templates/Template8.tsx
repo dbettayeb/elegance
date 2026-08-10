@@ -83,7 +83,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".t8-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".t8-invitation" />
 
       <div className={`t8-invitation${visible ? ' t8-visible' : ''}`}>
 

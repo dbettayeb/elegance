@@ -191,7 +191,7 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".cd-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".cd-container" />
 
       {/* === ÉCRAN D'OUVERTURE — ENVELOPPE À RABATS LATÉRAUX === */}
       {!opened && (

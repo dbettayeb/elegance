@@ -19,7 +19,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".rp-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".rp-container" />
 
       {/* Aquarelles décoratives */}
       <svg className="rp-watercolor rp-wc-top" viewBox="0 0 200 200">

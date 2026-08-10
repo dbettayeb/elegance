@@ -82,7 +82,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".rb-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".rb-invitation" />
 
       <div className={`rb-invitation${visible ? ' rb-visible' : ''}`}>
 

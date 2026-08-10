@@ -19,7 +19,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".ne-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".ne-container" />
 
       {/* Étoiles animées sur tout l'écran */}
       <div className="ne-stars">

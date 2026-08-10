@@ -225,7 +225,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ovo&family=Parisienne&display=swap" rel="stylesheet" />
       <style>{CSS}</style>
       <style>{POS_CSS}</style>
-      <FontOverride font={wedding.custom_font} container="#main-content" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container="#main-content" />
 
       <audio ref={audioRef} loop src="/assets/audio/music.mp3" preload="auto" />
 

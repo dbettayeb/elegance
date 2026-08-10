@@ -91,7 +91,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
 
       {/* 4. CSS composants */}
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".tb-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".tb-invitation" />
 
       <div className={`tb-invitation${visible ? ' tb-visible' : ''}`}>
 

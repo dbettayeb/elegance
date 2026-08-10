@@ -105,7 +105,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
           }
         }
       `}</style>
-      <FontOverride font={wedding.custom_font} container=".an-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".an-invitation" />
 
       <div className={`an-invitation${visible ? ' an-visible' : ''}`} dir="rtl">
 
@@ -470,10 +470,10 @@ const CSS = `
   }
   .an-fp {
     font-family: 'Reem Kufi', sans-serif;
-    font-size: clamp(.55rem, 1.3vw, .75rem);
+    font-size: clamp(.85rem, 2vw, 1rem);
     color: var(--an-text-muted); font-weight: 400;
     letter-spacing: .05em; text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    white-space: normal; overflow: visible;
   }
   .an-fn {
     font-family: var(--an-font-display);
