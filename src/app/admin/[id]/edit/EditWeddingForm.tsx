@@ -78,7 +78,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [error, setError] = useState('')
 
-  function set(key: string, value: string | boolean | null) {
+  function set(key: string, value: string | boolean | number | null) {
     setForm(f => ({ ...f, [key]: value }))
   }
 
