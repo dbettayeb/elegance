@@ -57,8 +57,16 @@ const NAME_SELECTORS = [
 // Sélecteurs pour les noms de famille (bloc familles en arabe).
 // La taille de police (custom_font_size) s'applique UNIQUEMENT à ce groupe.
 const FAMILY_SELECTORS = [
-  '.bs-family-name', '.bs-family-prefix', '.bs-families-intro',
-  '.an-families-row *', '.an-families-intro',
+  // Bismillah + BismillahStyle
+  '.bs-families-intro',
+  '.bs-fp',
+  '.bs-fn',
+  '.bs-fand',
+  // AlNour
+  '.an-families-intro',
+  '.an-fp',
+  '.an-fn',
+  '.an-fand',
 ].join(',\n')
 
 export default function FontOverride({ font, fontSize }: Props) {
