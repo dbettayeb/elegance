@@ -5,11 +5,13 @@ import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
+import PresetPicker from '@/components/admin/PresetPicker'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
-import { VERSE_PRESETS, INTRO_PRESETS, getVersePreset } from '@/lib/arabic-presets'
+import { VERSE_PRESETS, getVersePreset } from '@/lib/arabic-presets'
+import { ARABIC_FAMILIES_INTRO_PRESETS, ARABIC_BLESSING_PRESETS } from '@/lib/template-fields'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -194,21 +196,15 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               </Field>
 
               <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Choisir un modèle ou saisir un texte personnalisé.">
-                <select className="admin-input" style={{ marginBottom: 8 }}
-                  value=""
-                  onChange={e => {
-                    const preset = INTRO_PRESETS.find(p => p.key === e.target.value)
-                    if (preset) set('families_intro_ar', preset.text)
-                  }}>
-                  <option value="">— Choisir un modèle —</option>
-                  {INTRO_PRESETS.map(p => (
-                    <option key={p.key} value={p.key}>{p.label}</option>
-                  ))}
-                </select>
+                <PresetPicker
+                  presets={ARABIC_FAMILIES_INTRO_PRESETS}
+                  onSelect={v => set('families_intro_ar', v)}
+                  triggerLabel="Choisir une phrase d'introduction"
+                />
                 <textarea className="admin-textarea" rows={2}
                   value={form.families_intro_ar}
                   onChange={e => set('families_intro_ar', e.target.value)}
-                  placeholder={"ان السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف"}
+                  placeholder={"إِنَّ السُّرُورَ إِذَا تَشَارَكْنَاهُ\nوَبِكُلِّ حُبٍّ وَوُدٍّ تَتَشَرَّفُ"}
                   dir="rtl" style={{ fontFamily: "'Amiri', serif" }} />
               </Field>
               <Row>
@@ -423,21 +419,13 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               onChange={e => set('intro_text', e.target.value)}
               placeholder={form.template_id === 'viktor_paula' ? 'Dear Friends and Family,' : ''} />
           </Field>
-          <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Cliquer sur un texte prédéfini pour l'insérer.">
+          <Field label="Message / bénédiction finale" help="Affiché en bas de l'invitation. Choisir un modèle ou saisir un texte personnalisé.">
             {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
-                {[
-                  { label: 'Hadith mariage', value: 'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ' },
-                  { label: 'Bénédiction', value: 'وَلَكُمُ العَاقِبَةُ فِي الأَفْرَاحِ وَالمَسَرَّاتِ' },
-                  { label: 'إن السرور', value: 'إن السرور إذا تشارك ضوعفت بسماته\nبكل حب وود تتشرف' },
-                ].map(opt => (
-                  <button key={opt.label} type="button"
-                    onClick={() => set('custom_message', opt.value)}
-                    style={{ padding: '4px 10px', fontSize: '.75rem', background: '#f0f0f0', border: '1px solid #d4d4d4', borderRadius: 4, cursor: 'pointer', fontFamily: 'inherit' }}>
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
+              <PresetPicker
+                presets={ARABIC_BLESSING_PRESETS}
+                onSelect={v => set('custom_message', v)}
+                triggerLabel="Choisir une bénédiction"
+              />
             )}
             <textarea className="admin-textarea" rows={3} value={form.custom_message}
               onChange={e => set('custom_message', e.target.value)} />
