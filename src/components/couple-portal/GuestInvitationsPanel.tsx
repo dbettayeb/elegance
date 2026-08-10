@@ -93,7 +93,7 @@ export default function GuestInvitationsPanel({
               value={guestName}
               onChange={e => setGuestName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') create() }}
-              placeholder={isArabic ? 'ضياء الحق بالطيب' : 'Jean & Marie Dupont'}
+              placeholder={isArabic ? 'محمد بن علي' : 'Jean & Marie Dupont'}
               dir={isArabic ? 'rtl' : 'ltr'}
               style={inputStyle}
             />
