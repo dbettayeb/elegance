@@ -27,11 +27,12 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
 
       const wrap = document.createElement('div')
       wrap.id = 'guest-dedication'
-      // top:44px places the text on the poly-top (top flap) area of the 1200×850 stage.
-      // transition matches poly-top: transform 2.5s ease, plus opacity fade-out.
+      // Arabic: top:195px centres the text in the envelope body (matching Bismillah's bs-guest-name).
+      // Latin: top:44px keeps the text on the poly-top flap area.
+      const topPx = isArabic ? '195px' : '44px'
       wrap.style.cssText = [
         'position:absolute',
-        'top:44px',
+        `top:${topPx}`,
         'left:600px',
         'transform:translateX(-50%)',
         'z-index:10',
@@ -43,19 +44,6 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         'width:600px',
         'text-align:center',
         'transition:transform 2.5s ease,opacity 0.6s ease',
-      ].join(';')
-
-      const label = document.createElement('span')
-      label.textContent = isArabic ? 'إلى' : 'Pour'
-      label.style.cssText = [
-        "font-family:'Cormorant Garamond',Georgia,serif",
-        'font-style:italic',
-        'font-size:11px',
-        'letter-spacing:0.4em',
-        'text-transform:uppercase',
-        'color:rgba(185,148,72,0.88)',
-        'text-shadow:0 1px 4px rgba(0,0,0,0.35)',
-        'display:block',
       ].join(';')
 
       const name = document.createElement('span')
@@ -81,7 +69,6 @@ export default function GuestDedicationOverlay({ dedication }: { dedication: str
         'margin-top:2px',
       ].join(';')
 
-      wrap.appendChild(label)
       wrap.appendChild(name)
       wrap.appendChild(rule)
       stage.appendChild(wrap)

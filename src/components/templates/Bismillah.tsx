@@ -139,7 +139,6 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
             <img className="bs-poly bs-poly-bot"   src="/assets/alexa-richard/polygons/polygon-bottom.png" alt="" />
             {guestNameAr && (
               <div className="bs-guest-name">
-                <span className="bs-guest-to">{guestPrefixAr || 'إلى السيد'}</span>
                 <span className="bs-guest-ar">{guestNameAr}</span>
                 <span className="bs-guest-suffix">{guestSuffixAr || 'و حرمه'}</span>
               </div>
@@ -419,13 +418,13 @@ const CSS = `
   .bs-opening-stage.bs-animating .bs-poly-top  {transform:translateY(-430px)}
   .bs-opening-stage.bs-animating .bs-poly-bot  {transform:translateY(566px)}
   .bs-guest-name{
-    position:absolute;top:195px;left:400px;width:400px;
+    position:absolute;top:130px;left:400px;width:400px;
     text-align:center;direction:rtl;z-index:3;
     color:#8B6914;
     transition:transform 2s ease;
   }
   .bs-opening-stage.bs-animating .bs-guest-name{transform:translateY(-430px)}
-  .bs-guest-to,.bs-guest-suffix{
+  .bs-guest-suffix{
     display:block;font-family:'Reem Kufi',sans-serif;
     font-size:15px;letter-spacing:.04em;opacity:.85;
   }
