@@ -129,7 +129,14 @@ export default async function CouplePortal({
                   <tbody>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
-                        <td style={{ fontWeight: 500 }}>{r.name}</td>
+                        <td style={{ fontWeight: 500 }}>
+                          {r.name}
+                          {r.note && (
+                            <div style={{ fontSize: '0.78rem', color: 'var(--cp-muted)', fontWeight: 400, marginTop: 2, fontStyle: 'italic' }}>
+                              {r.note}
+                            </div>
+                          )}
+                        </td>
                         <td>
                           <span className={`cp-badge ${
                             r.status === 'present' ? 'cp-badge-success' :
