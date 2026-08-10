@@ -55,15 +55,17 @@ const NAME_SELECTORS = [
 ].join(',\n')
 
 // Sélecteurs pour les noms de famille (bloc familles en arabe).
-// La taille (custom_font_size) s'applique UNIQUEMENT aux noms et au connecteur و.
+// La TAILLE (custom_font_size) s'applique uniquement aux noms et au connecteur و.
 // Les préfixes (عائلة السيد) ont une taille fixe pour ne jamais être tronqués.
 const FAMILY_SELECTORS = [
-  // Bismillah + BismillahStyle — noms et connecteur uniquement
-  '.bs-fn',
-  '.bs-fand',
-  // AlNour — noms et connecteur uniquement
-  '.an-fn',
-  '.an-fand',
+  '.bs-fn', '.bs-fand',
+  '.an-fn', '.an-fand',
+].join(',\n')
+
+// Tous les éléments du bloc familles — la POLICE (custom_font) s'applique à tous.
+const FAMILY_FONT_SELECTORS = [
+  '.bs-fn', '.bs-fp', '.bs-fand', '.bs-families-intro',
+  '.an-fn', '.an-fp', '.an-fand', '.an-families-intro',
 ].join(',\n')
 
 export default function FontOverride({ font, fontSize }: Props) {
@@ -84,7 +86,7 @@ export default function FontOverride({ font, fontSize }: Props) {
         />
       )}
       <style>{`
-        ${hasFontFamily && fontOption ? `${NAME_SELECTORS} {
+        ${hasFontFamily && fontOption ? `${NAME_SELECTORS},\n${FAMILY_FONT_SELECTORS} {
           font-family: ${fontOption.family} !important;
         }` : ''}
         ${hasFontSize ? `${FAMILY_SELECTORS} {
