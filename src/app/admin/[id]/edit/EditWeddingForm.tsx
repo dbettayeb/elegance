@@ -467,21 +467,20 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             onChange={font => set('custom_font', font)}
             language={fontLanguage}
           />
-          <Field label="Taille pour les noms de famille (noms de famille arabes uniquement)" help="Ajuste la taille des textes de famille (ex: عائلة السيد). En pourcentage de la taille par défaut. S'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.">
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <input
-                type="range"
-                min="50"
-                max="200"
-                step="10"
-                value={form.custom_font_size}
-                onChange={e => set('custom_font_size', parseInt(e.target.value, 10))}
-                style={{ flex: 1 }}
-              />
-              <span style={{ minWidth: '60px', textAlign: 'center', fontWeight: 'bold' }}>
-                {form.custom_font_size}%
-              </span>
-            </div>
+          <Field label="Taille pour les noms de famille (noms de famille arabes uniquement)" help="Ajuste la taille des textes de famille (ex: عائلة السيد). S'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.">
+            <select
+              className="admin-input"
+              value={form.custom_font_size}
+              onChange={e => set('custom_font_size', parseInt(e.target.value, 10))}
+            >
+              <option value={80}>Très petit (80%)</option>
+              <option value={90}>Petit (90%)</option>
+              <option value={100}>Normal (100%)</option>
+              <option value={110}>Légèrement plus grand (110%)</option>
+              <option value={120}>Plus grand (120%)</option>
+              <option value={130}>Très grand (130%)</option>
+              <option value={140}>Extra grand (140%)</option>
+            </select>
           </Field>
         </Section>
 
