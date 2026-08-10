@@ -128,7 +128,7 @@ export default function BismillahStyle({
           .bs-content-zone { margin-left: 0 !important; margin-right: 0 !important; width: calc(${decoWidthVh}vh * ${(bgCfg.w / 100).toFixed(2)}); }
         }
       `}</style>
-      <FontOverride font={wedding.custom_font} container=".bs-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".bs-container" />
 
       {/* OPENING */}
       {!opened && (

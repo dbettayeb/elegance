@@ -44,6 +44,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     custom_message: wedding.custom_message ?? '',
     music_url: wedding.music_url ?? '',
     custom_font: (wedding.custom_font ?? '') as string | null,
+    custom_font_size: wedding.custom_font_size ?? 100,
     show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
     show_countdown: wedding.show_countdown ?? true,
@@ -466,6 +467,22 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             onChange={font => set('custom_font', font)}
             language={fontLanguage}
           />
+          <Field label="Taille pour les noms de famille (noms de famille arabes uniquement)" help="Ajuste la taille des textes de famille (ex: عائلة السيد). En pourcentage de la taille par défaut. S'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.">
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input
+                type="range"
+                min="50"
+                max="200"
+                step="10"
+                value={form.custom_font_size}
+                onChange={e => set('custom_font_size', parseInt(e.target.value, 10))}
+                style={{ flex: 1 }}
+              />
+              <span style={{ minWidth: '60px', textAlign: 'center', fontWeight: 'bold' }}>
+                {form.custom_font_size}%
+              </span>
+            </div>
+          </Field>
         </Section>
 
         {form.template_id === 'viktor_paula' && (

@@ -120,7 +120,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
           }
         }
       `}</style>
-      <FontOverride font={wedding.custom_font} container=".bs-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".bs-container" />
 
       {/* OPENING */}
       {!opened && (

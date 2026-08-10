@@ -4,6 +4,7 @@ import { getFontByName } from '@/lib/fonts'
 
 interface Props {
   font?: string | null
+  fontSize?: number | null
   container?: string  // ignoré, gardé pour compat
 }
 
@@ -53,21 +54,37 @@ const NAME_SELECTORS = [
   '.t8-name', '.t8-footer-names',
 ].join(',\n')
 
-export default function FontOverride({ font }: Props) {
-  if (!font) return null
-  const fontOption = getFontByName(font)
-  if (!fontOption) return null
+// Sélecteurs pour les noms de famille (bloc familles en arabe).
+// La taille de police (custom_font_size) s'applique UNIQUEMENT à ce groupe.
+const FAMILY_SELECTORS = [
+  '.bs-family-name', '.bs-family-prefix', '.bs-families-intro',
+  '.an-families-row *', '.an-families-intro',
+].join(',\n')
+
+export default function FontOverride({ font, fontSize }: Props) {
+  const hasFontFamily = font && getFontByName(font)
+  const hasFontSize = fontSize && fontSize !== 100
+
+  if (!hasFontFamily && !hasFontSize) return null
+
+  const fontOption = hasFontFamily ? getFontByName(font!) : null
+  const fontSizePercent = fontSize ?? 100
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href={`https://fonts.googleapis.com/css2?family=${fontOption.googleFont}&display=swap`}
-      />
+      {fontOption && (
+        <link
+          rel="stylesheet"
+          href={`https://fonts.googleapis.com/css2?family=${fontOption.googleFont}&display=swap`}
+        />
+      )}
       <style>{`
-        ${NAME_SELECTORS} {
+        ${hasFontFamily && fontOption ? `${NAME_SELECTORS} {
           font-family: ${fontOption.family} !important;
-        }
+        }` : ''}
+        ${hasFontSize ? `${FAMILY_SELECTORS} {
+          font-size: ${fontSizePercent}% !important;
+        }` : ''}
       `}</style>
     </>
   )

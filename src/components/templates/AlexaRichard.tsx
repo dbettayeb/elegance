@@ -334,7 +334,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rufina:wght@400;700&family=Imperial+Script&family=Parisienne&display=swap" rel="stylesheet" />
       <style>{CSS}</style>
       <style>{POS_CSS}</style>
-      <FontOverride font={wedding.custom_font} container="#ar-main" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container="#ar-main" />
 
       <audio ref={audioRef} loop src="/assets/alexa-richard/audio/music.mp3" preload="auto" />
 

@@ -27,7 +27,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".aa-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".aa-container" />
 
       {/* Motif zellige en fond */}
       <svg className="aa-zellige" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">

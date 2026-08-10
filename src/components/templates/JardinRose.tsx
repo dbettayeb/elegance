@@ -94,7 +94,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
 
       {/* 3. CSS composants */}
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".jr-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".jr-invitation" />
 
       <div className={`jr-invitation${visible ? ' jr-visible' : ''}`}>
 

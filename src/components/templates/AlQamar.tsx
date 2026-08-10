@@ -37,7 +37,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".aq-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".aq-container" />
 
       {/* Ciel étoilé en fond fixe */}
       <div className="aq-sky">

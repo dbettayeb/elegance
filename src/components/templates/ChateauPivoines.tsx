@@ -55,7 +55,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".cp-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".cp-container" />
 
       {/* === ÉCRAN D'OUVERTURE — ENVELOPPE & SCEAU === */}
       {!opened && (

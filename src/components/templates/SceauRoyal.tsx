@@ -53,7 +53,7 @@ export default function SceauRoyal({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".sr-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sr-container" />
 
       {/* ─────────── ENVELOPPE + SÉQUENCE ─────────── */}
       {!opened && (

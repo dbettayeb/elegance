@@ -105,7 +105,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
           }
         }
       `}</style>
-      <FontOverride font={wedding.custom_font} container=".an-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".an-invitation" />
 
       <div className={`an-invitation${visible ? ' an-visible' : ''}`} dir="rtl">
 

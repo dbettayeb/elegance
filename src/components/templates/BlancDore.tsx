@@ -53,7 +53,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".ed-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".ed-container" />
 
       {/* ── ENVELOPPE ── */}
       {!opened && (

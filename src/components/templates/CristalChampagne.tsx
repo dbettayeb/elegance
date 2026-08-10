@@ -79,7 +79,7 @@ export default function CristalChampagne({ wedding }: { wedding: Wedding }) {
         rel="stylesheet"
       />
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".cc-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".cc-container" />
 
       {/* ─────────── ÉCRAN D'OUVERTURE ─────────── */}
       {!opened && (

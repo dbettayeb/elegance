@@ -82,7 +82,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".fa-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".fa-invitation" />
 
       <div className={`fa-invitation${visible ? ' fa-visible' : ''}`}>
 

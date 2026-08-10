@@ -87,7 +87,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
 
       {/* 4. CSS composants */}
       <style>{buildCSS(palette)}</style>
-      <FontOverride font={wedding.custom_font} container=".cs-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".cs-invitation" />
 
       {/* ═══════════════════════════════════════════════════════
           STRUCTURE IDENTIQUE À BISMILLAH :

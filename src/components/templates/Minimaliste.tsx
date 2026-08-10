@@ -19,7 +19,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
   return (
     <>
       <style>{CSS}</style>
-      <FontOverride font={wedding.custom_font} container=".mn-container" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".mn-container" />
 
       {/* ENVELOPPE */}
       {!opened && (

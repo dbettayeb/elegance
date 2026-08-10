@@ -74,7 +74,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
       `}</style>
 
       <style>{buildCSS()}</style>
-      <FontOverride font={wedding.custom_font} container=".ri-invitation" />
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".ri-invitation" />
 
       <div className={`ri-invitation${visible ? ' ri-visible' : ''}`}>
 
