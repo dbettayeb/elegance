@@ -9,6 +9,7 @@ import { Wedding } from '@/lib/types'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
+import { VERSE_PRESETS, INTRO_PRESETS, getVersePreset } from '@/lib/arabic-presets'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -55,6 +56,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     background_image: wedding.background_image ?? 'bg-texture.jpg',
     decoration_image: wedding.decoration_image ?? 'decoration.png',
     template_variant: wedding.template_variant ?? 'or_classique|layout_a',
+    verse_ar: wedding.verse_ar ?? 'roum_21',
     guest_invite_enabled: wedding.guest_invite_enabled ?? false,
     couple_photo: wedding.couple_photo ?? '',
     intro_video_url: wedding.intro_video_url ?? '',
@@ -173,7 +175,36 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
                 Renseignez les familles pour afficher le bloc familial en tête d'invitation (tradition maghrébine). Le préfixe est libre — laissez vide pour le mot par défaut.
               </div>
-              <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
+
+              <Field label="Bénédiction (verset coranique)" help="Verset affiché en haut de l'invitation.">
+                <select className="admin-input" value={form.verse_ar}
+                  onChange={e => set('verse_ar', e.target.value)}>
+                  {VERSE_PRESETS.map(p => (
+                    <option key={p.key} value={p.key}>{p.label}</option>
+                  ))}
+                </select>
+                <div dir="rtl" style={{ marginTop: 8, padding: '8px 12px', background: '#fafaf5',
+                  border: '1px solid #e8e0d0', borderRadius: 4, fontFamily: "'Amiri', serif",
+                  fontSize: '0.92rem', color: '#5C4A14', lineHeight: 2 }}>
+                  {getVersePreset(form.verse_ar).verse}
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#8B6914', opacity: 0.8 }}>
+                    {getVersePreset(form.verse_ar).ref_bs}
+                  </span>
+                </div>
+              </Field>
+
+              <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Choisir un modèle ou saisir un texte personnalisé.">
+                <select className="admin-input" style={{ marginBottom: 8 }}
+                  value=""
+                  onChange={e => {
+                    const preset = INTRO_PRESETS.find(p => p.key === e.target.value)
+                    if (preset) set('families_intro_ar', preset.text)
+                  }}>
+                  <option value="">— Choisir un modèle —</option>
+                  {INTRO_PRESETS.map(p => (
+                    <option key={p.key} value={p.key}>{p.label}</option>
+                  ))}
+                </select>
                 <textarea className="admin-textarea" rows={2}
                   value={form.families_intro_ar}
                   onChange={e => set('families_intro_ar', e.target.value)}

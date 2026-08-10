@@ -6,6 +6,7 @@ import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, fo
 import FontOverride from '@/components/common/fontoverride'
 import { BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-palettes'
+import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
@@ -164,10 +165,8 @@ export default function BismillahStyle({
             <div className="bs-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
 
             <div className="bs-verse-wrap">
-              <p className="bs-verse">
-                وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
-              </p>
-              <p className="bs-verse-ref">﴿ سورة الروم - الآية ٢١ ﴾</p>
+              <p className="bs-verse">{getVersePreset(wedding.verse_ar).verse}</p>
+              <p className="bs-verse-ref">{getVersePreset(wedding.verse_ar).ref_bs}</p>
             </div>
 
             <div className="bs-divider"><span></span><i>۞</i><span></span></div>

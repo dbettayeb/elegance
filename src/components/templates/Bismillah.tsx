@@ -7,6 +7,7 @@ import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
 import { getArTypographyTheme } from '@/lib/typography-themes'
+import { getVersePreset } from '@/lib/arabic-presets'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
@@ -169,10 +170,8 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
             </div>
 
             <div className="bs-verse-wrap">
-              <p className="bs-verse">
-                وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
-              </p>
-              <p className="bs-verse-ref">﴿ سورة الروم - الآية ٢١ ﴾</p>
+              <p className="bs-verse">{getVersePreset(wedding.verse_ar).verse}</p>
+              <p className="bs-verse-ref">{getVersePreset(wedding.verse_ar).ref_bs}</p>
             </div>
 
             <div className="bs-divider">

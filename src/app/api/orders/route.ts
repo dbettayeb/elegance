@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
       event_date,
       venue_name,
       custom_message,
+      verse_ar,
+      families_intro_ar,
       options,
     } = body
 
@@ -67,7 +69,9 @@ export async function POST(req: NextRequest) {
         template_id,
         pack,
         intro_text: 'Vous êtes cordialement invités au mariage de',
-        custom_message: custom_message ? sanitizeText(custom_message, 500) : null,
+        custom_message:    custom_message    ? sanitizeText(custom_message, 500) : null,
+        verse_ar:          verse_ar          || null,
+        families_intro_ar: families_intro_ar ? sanitizeText(families_intro_ar, 300) : null,
         show_countdown,
         show_rsvp,
         show_guestbook,
@@ -102,6 +106,8 @@ export async function POST(req: NextRequest) {
             <p><strong>Date :</strong> ${event_date || 'non renseignée'}</p>
             <p><strong>Design :</strong> ${template_id}</p>
             <p><strong>Options :</strong> ${selectedOptions.join(', ') || 'aucune'}</p>
+            ${verse_ar ? `<p><strong>Bénédiction :</strong> ${verse_ar}</p>` : ''}
+            ${families_intro_ar ? `<p><strong>Intro arabe :</strong> ${families_intro_ar}</p>` : ''}
             ${venue_name ? `<p><strong>Lieu :</strong> ${venue_name}</p>` : ''}
             <hr>
             <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/admin/${wedding.id}">Voir dans l'admin →</a></p>

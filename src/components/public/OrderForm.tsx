@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import { VERSE_PRESETS, INTRO_PRESETS } from '@/lib/arabic-presets'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 type StepId = 'design' | 'options' | 'coords' | 'preview'
@@ -56,12 +57,14 @@ export default function OrderForm() {
     template_id:   initialTemplate,
     bride_name:    searchParams.get('bride')    ?? '',
     groom_name:    searchParams.get('groom')    ?? '',
-    bride_name_ar: searchParams.get('bride_ar') ?? '',
-    groom_name_ar: searchParams.get('groom_ar') ?? '',
-    couple_email:  '',
-    couple_phone:  '',
-    event_date:    searchParams.get('date')     ?? '',
-    venue_name:    searchParams.get('venue')    ?? '',
+    bride_name_ar:     searchParams.get('bride_ar') ?? '',
+    groom_name_ar:     searchParams.get('groom_ar') ?? '',
+    couple_email:      '',
+    couple_phone:      '',
+    event_date:        searchParams.get('date')     ?? '',
+    venue_name:        searchParams.get('venue')    ?? '',
+    verse_ar:          'roum_21',
+    families_intro_ar: '',
   })
   const [selectedOptions, setSelectedOptions] = useState<string[]>(['countdown', 'program'])
   const [phoneCode, setPhoneCode] = useState('+216')
@@ -112,16 +115,18 @@ export default function OrderForm() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        template_id:   form.template_id,
-        bride_name:    form.bride_name,
-        groom_name:    form.groom_name,
-        bride_name_ar: form.bride_name_ar || undefined,
-        groom_name_ar: form.groom_name_ar || undefined,
-        couple_email:  form.couple_email,
-        couple_phone:  `${phoneCode}${form.couple_phone}`,
-        event_date:    form.event_date || undefined,
-        venue_name:    form.venue_name || undefined,
-        options:       selectedOptions,
+        template_id:       form.template_id,
+        bride_name:        form.bride_name,
+        groom_name:        form.groom_name,
+        bride_name_ar:     form.bride_name_ar || undefined,
+        groom_name_ar:     form.groom_name_ar || undefined,
+        couple_email:      form.couple_email,
+        couple_phone:      `${phoneCode}${form.couple_phone}`,
+        event_date:        form.event_date || undefined,
+        venue_name:        form.venue_name || undefined,
+        verse_ar:          isArabicTemplate ? form.verse_ar : undefined,
+        families_intro_ar: isArabicTemplate && form.families_intro_ar ? form.families_intro_ar : undefined,
+        options:           selectedOptions,
       }),
     })
 
@@ -311,6 +316,31 @@ export default function OrderForm() {
                   placeholder="XX XXX XXX" required />
               </div>
             </Field>
+
+            {isArabicTemplate && (
+              <>
+                <div className="of-ar-divider">
+                  <span>تفاصيل الدعوة العربية</span>
+                </div>
+                <Field label="البنيدقة (الآية القرآنية)" help="Verset coranique affiché en haut de l'invitation">
+                  <select className="of-input of-select" value={form.verse_ar}
+                    onChange={e => upd('verse_ar', e.target.value)}>
+                    {VERSE_PRESETS.map(p => (
+                      <option key={p.key} value={p.key}>{p.label}</option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="عبارة التقديم" help="Phrase d'introduction affichée au-dessus des familles (optionnel)">
+                  <select className="of-input of-select" value={form.families_intro_ar}
+                    onChange={e => upd('families_intro_ar', e.target.value)}>
+                    <option value="">— aucune —</option>
+                    {INTRO_PRESETS.map(p => (
+                      <option key={p.key} value={p.text}>{p.label}</option>
+                    ))}
+                  </select>
+                </Field>
+              </>
+            )}
           </div>
         </section>
       )}
@@ -706,6 +736,25 @@ const CSS = `
     background: var(--pub-text); color: #fff; text-decoration: none;
     font-size: 0.75rem; letter-spacing: 0.3em;
     text-transform: uppercase; font-weight: 500;
+  }
+
+  /* ── Arabic divider ────────────────────────────────────────── */
+  .of-ar-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 8px 0 4px; color: var(--pub-gold);
+    font-size: 0.72rem; letter-spacing: 0.15em;
+  }
+  .of-ar-divider::before, .of-ar-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--pub-border);
+  }
+  .of-select {
+    appearance: none; -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 2px center;
+    background-size: 8px;
+    padding-right: 20px;
   }
 
   /* ── Responsive ─────────────────────────────────────────────── */

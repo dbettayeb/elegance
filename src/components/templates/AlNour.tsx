@@ -9,6 +9,7 @@ import {
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 
@@ -140,12 +141,8 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
 
               {/* Verset */}
               <div className="an-verse-wrap">
-                <p className="an-verse">
-                  وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا
-                  وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
-                  إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ
-                </p>
-                <p className="an-verse-ref">[ الروم: ٢١ ]</p>
+                <p className="an-verse">{getVersePreset(wedding.verse_ar).verse}</p>
+                <p className="an-verse-ref">{getVersePreset(wedding.verse_ar).ref_an}</p>
               </div>
 
               <div className="an-line-divider"><span/></div>
