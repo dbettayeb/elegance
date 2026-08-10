@@ -431,7 +431,7 @@ const CSS = `
   .bs-families-intro{font-family:var(--bs-font-body);font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--bs-text-2);line-height:1.8;margin-bottom:18px;width:100%;font-style:italic;}
   /* Grille familles : ligne 1 = préfixes, ligne 2 = noms + و */
   .bs-fgrid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:20px;row-gap:4px;width:100%;margin-bottom:22px;}
-  .bs-fp{font-family:'Reem Kufi',sans-serif;font-size:clamp(.55rem,1.3vw,.75rem);color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;text-align:center;white-space:normal;overflow:visible;}
+  .bs-fp{font-family:'Reem Kufi',sans-serif;font-size:clamp(.85rem,2vw,1rem);color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;text-align:center;white-space:normal;overflow:visible;}
   .bs-fn{font-family:var(--bs-font-display);font-size:clamp(.72rem,1.8vw,1.05rem);color:var(--bs-text-2);font-weight:700;line-height:1.4;text-align:center;min-width:0;overflow-wrap:break-word;}
   .bs-fn-last{display:inline-block;white-space:nowrap;}
   .bs-fgrid--wrap .bs-fn-last{display:block;}

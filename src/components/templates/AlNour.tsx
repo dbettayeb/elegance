@@ -470,7 +470,7 @@ const CSS = `
   }
   .an-fp {
     font-family: 'Reem Kufi', sans-serif;
-    font-size: clamp(.55rem, 1.3vw, .75rem);
+    font-size: clamp(.85rem, 2vw, 1rem);
     color: var(--an-text-muted); font-weight: 400;
     letter-spacing: .05em; text-align: center;
     white-space: normal; overflow: visible;
