@@ -561,7 +561,7 @@ const CSS = `
     font-size:clamp(.55rem,1.3vw,.75rem);
     color:var(--bs-text-muted);font-weight:400;
     letter-spacing:.05em;text-align:center;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    white-space:normal;overflow:visible;
   }
   .bs-fn{
     font-family:var(--bs-font-display);

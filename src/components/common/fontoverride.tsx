@@ -55,16 +55,13 @@ const NAME_SELECTORS = [
 ].join(',\n')
 
 // Sélecteurs pour les noms de famille (bloc familles en arabe).
-// La taille de police (custom_font_size) s'applique UNIQUEMENT à ce groupe.
+// La taille (custom_font_size) s'applique UNIQUEMENT aux noms et au connecteur و.
+// Les préfixes (عائلة السيد) ont une taille fixe pour ne jamais être tronqués.
 const FAMILY_SELECTORS = [
-  // Bismillah + BismillahStyle
-  '.bs-families-intro',
-  '.bs-fp',
+  // Bismillah + BismillahStyle — noms et connecteur uniquement
   '.bs-fn',
   '.bs-fand',
-  // AlNour
-  '.an-families-intro',
-  '.an-fp',
+  // AlNour — noms et connecteur uniquement
   '.an-fn',
   '.an-fand',
 ].join(',\n')
