@@ -1,14 +1,6 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
-
-function getBgDataUrl(): string | null {
-  try {
-    const data = readFileSync(join(process.cwd(), 'public', 'og-background.jpg'))
-    return `data:image/jpeg;base64,${data.toString('base64')}`
-  } catch {
-    return null
-  }
-}
+// Background image hosted on Supabase storage (expires 2101)
+const BG_URL =
+  'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0MDg4MDgsImV4cCI6MjEwMTc2ODgwOH0.AquDTy-h9ssz7Ar8reobpm0ffyzqmX6II66UxyHdFn8'
 
 interface OgWeddingProps {
   brideName: string
@@ -17,7 +9,6 @@ interface OgWeddingProps {
 }
 
 export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingProps) {
-  const bg = getBgDataUrl()
   const combinedLength = brideName.length + groomName.length
   const nameFontSize = combinedLength > 28 ? 58 : combinedLength > 20 ? 66 : 76
 
@@ -30,39 +21,30 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: bg ? 'transparent' : '#faf8f5',
         position: 'relative',
+        background: '#faf8f5',
       }}
     >
-      {/* Background image */}
-      {bg && (
-        <img
-          src={bg}
-          style={{
-            position: 'absolute',
-            top: 0, left: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover',
-          }}
-        />
-      )}
+      {/* Floral background */}
+      <img
+        src={BG_URL}
+        style={{
+          position: 'absolute',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover',
+        }}
+      />
 
-      {/* Fallback: black overlay when no bg */}
-      {!bg && (
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: '#0a0a0a', display: 'flex',
-        }} />
-      )}
-
-      {/* Text content */}
+      {/* Text overlay */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          position: 'relative',
           zIndex: 1,
-          padding: '0 80px',
+          padding: '0 100px',
         }}
       >
         {/* "INVITATION AU MARIAGE DE" */}
@@ -70,9 +52,9 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
           style={{
             fontSize: 15,
             letterSpacing: 6,
-            color: bg ? '#B8985A' : '#C9A84C',
+            color: '#B8985A',
             fontFamily: 'Georgia, serif',
-            marginBottom: 20,
+            marginBottom: 18,
             display: 'flex',
           }}
         >
@@ -84,7 +66,7 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
           style={{
             fontSize: nameFontSize,
             fontWeight: 400,
-            color: bg ? '#2D2926' : '#FFFFFF',
+            color: '#2D2926',
             fontStyle: 'italic',
             fontFamily: 'Georgia, serif',
             lineHeight: 1.1,
@@ -99,11 +81,11 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
           style={{
             fontSize: Math.round(nameFontSize * 0.6),
             fontWeight: 400,
-            color: bg ? '#B8985A' : '#C9A84C',
+            color: '#B8985A',
             fontStyle: 'italic',
             fontFamily: 'Georgia, serif',
-            marginTop: 4,
-            marginBottom: 4,
+            marginTop: 2,
+            marginBottom: 2,
             display: 'flex',
           }}
         >
@@ -115,7 +97,7 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
           style={{
             fontSize: nameFontSize,
             fontWeight: 400,
-            color: bg ? '#2D2926' : '#FFFFFF',
+            color: '#2D2926',
             fontStyle: 'italic',
             fontFamily: 'Georgia, serif',
             lineHeight: 1.1,
@@ -130,9 +112,9 @@ export function buildOgWeddingImage({ brideName, groomName, date }: OgWeddingPro
           style={{
             fontSize: 15,
             letterSpacing: 5,
-            color: bg ? '#8B7355' : '#888888',
+            color: '#8B7355',
             fontFamily: 'Georgia, serif',
-            marginTop: 24,
+            marginTop: 22,
             display: 'flex',
           }}
         >
