@@ -3,7 +3,8 @@ import { ImageResponse } from 'next/og'
 const BG_URL =
   'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0MDg4MDgsImV4cCI6MjEwMTc2ODgwOH0.AquDTy-h9ssz7Ar8reobpm0ffyzqmX6II66UxyHdFn8'
 
-export const OG_SIZE = { width: 1200, height: 630 }
+// 800×420 keeps WhatsApp's ~1 MB image limit (1200×630 PNG was ~1.94 MB)
+export const OG_SIZE = { width: 800, height: 420 }
 
 interface OgWeddingProps {
   brideName: string
@@ -13,7 +14,7 @@ interface OgWeddingProps {
 
 export async function createOgWeddingImageResponse({ brideName, groomName, date }: OgWeddingProps) {
   const combinedLength = brideName.length + groomName.length
-  const nameFontSize = combinedLength > 28 ? 58 : combinedLength > 20 ? 66 : 76
+  const nameFontSize = combinedLength > 28 ? 38 : combinedLength > 20 ? 44 : 50
 
   return new ImageResponse(
     (
@@ -28,7 +29,6 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
           background: '#faf8f5',
         }}
       >
-        {/* Background — satori fetches the URL directly */}
         <img
           src={BG_URL}
           style={{
@@ -41,16 +41,15 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
           }}
         />
 
-        {/* Text overlay */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: '0 100px',
+            padding: '0 60px',
           }}
         >
-          <div style={{ fontSize: 15, letterSpacing: 6, color: '#B8985A', fontFamily: 'serif', marginBottom: 16, display: 'flex' }}>
+          <div style={{ fontSize: 10, letterSpacing: 4, color: '#B8985A', fontFamily: 'serif', marginBottom: 10, display: 'flex' }}>
             INVITATION AU MARIAGE DE
           </div>
 
@@ -66,7 +65,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
             {groomName}
           </div>
 
-          <div style={{ fontSize: 15, letterSpacing: 5, color: '#8B7355', fontFamily: 'serif', marginTop: 20, display: 'flex' }}>
+          <div style={{ fontSize: 10, letterSpacing: 3, color: '#8B7355', fontFamily: 'serif', marginTop: 12, display: 'flex' }}>
             {date.toUpperCase()}
           </div>
         </div>
