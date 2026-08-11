@@ -7,6 +7,7 @@ import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import { AR_TYPOGRAPHY_THEMES } from '@/lib/typography-themes'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 
@@ -36,6 +37,7 @@ export default function NewWeddingPage() {
     custom_message: '',
     music_url: '',
     custom_font: '' as string | null,
+    ar_font_theme: 'classic' as string,
     show_rsvp: true,
     show_guestbook: true,
     show_countdown: true,
@@ -192,6 +194,30 @@ export default function NewWeddingPage() {
                 </Field>
               </Row>
             </>
+          )}
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
+            <Field label="Thème typographique arabe" help="Police utilisée pour tous les titres, prénoms, date et corps de texte de l'invitation.">
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                {AR_TYPOGRAPHY_THEMES.map(theme => (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    onClick={() => set('ar_font_theme', theme.id)}
+                    style={{
+                      padding: '10px 14px', border: '2px solid',
+                      borderColor: form.ar_font_theme === theme.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                      borderRadius: 'var(--admin-radius)',
+                      background: form.ar_font_theme === theme.id ? '#fdf6e3' : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.1rem', fontFamily: theme.display, direction: 'rtl' }}>بِسْمِ ٱللَّٰهِ</span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--admin-text-muted)', fontWeight: 500 }}>{theme.label}</span>
+                  </button>
+                ))}
+              </div>
+            </Field>
           )}
           {(form.template_id === 'bismillah' || form.template_id === 'al_nour') && (
             <>
