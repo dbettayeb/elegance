@@ -1,8 +1,7 @@
-import { ImageResponse } from 'next/og'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
-import { buildOgWeddingImage } from '@/lib/og-wedding-image'
+import { createOgWeddingImageResponse, OG_SIZE } from '@/lib/og-wedding-image'
 
-export const size = { width: 1200, height: 630 }
+export const size = OG_SIZE
 export const contentType = 'image/png'
 export const revalidate = 3600
 
@@ -17,16 +16,13 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
     .eq('access_token', token)
     .single()
 
-  const brideName = data?.bride_name ?? ''
-  const groomName = data?.groom_name ?? ''
-  const date = data
-    ? new Date(data.event_date).toLocaleDateString('fr-FR', {
-        day: 'numeric', month: 'long', year: 'numeric',
-      })
-    : ''
-
-  return new ImageResponse(
-    buildOgWeddingImage({ brideName, groomName, date }),
-    { ...size }
-  )
+  return createOgWeddingImageResponse({
+    brideName: data?.bride_name ?? '',
+    groomName: data?.groom_name ?? '',
+    date: data
+      ? new Date(data.event_date).toLocaleDateString('fr-FR', {
+          day: 'numeric', month: 'long', year: 'numeric',
+        })
+      : '',
+  })
 }
