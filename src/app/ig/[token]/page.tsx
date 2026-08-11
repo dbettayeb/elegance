@@ -24,9 +24,6 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     : ''
   const title = `${w?.bride_name ?? ''} & ${w?.groom_name ?? ''} · ${date}`
   const description = `Vous êtes cordialement invités au mariage de ${w?.bride_name ?? ''} et ${w?.groom_name ?? ''}.`
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://elegance-digitale.vercel.app'
-
-  const imageUrl = `${base}/ig/${token}/opengraph-image`
 
   return {
     title,
@@ -34,15 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     openGraph: {
       title,
       description,
-      url: `${base}/ig/${token}`,
-      type: 'website',
-      images: [{ url: imageUrl, width: 1200, height: 630, alt: title }],
+      type: 'website' as const,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary_large_image' as const,
       title,
       description,
-      images: [imageUrl],
     },
   }
 }

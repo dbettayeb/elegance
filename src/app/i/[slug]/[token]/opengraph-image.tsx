@@ -1,6 +1,7 @@
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { createOgWeddingImageResponse, OG_SIZE } from '@/lib/og-wedding-image'
 
+export const runtime = 'nodejs'
 export const size = OG_SIZE
 export const contentType = 'image/png'
 export const revalidate = 3600
