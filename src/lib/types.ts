@@ -48,6 +48,7 @@ export interface Wedding {
     | 't8_ar_rose' | 't8_ar_framboise' | 't8_ar_poudre' | 't8_ar_noir'
   template_variant?: string
   ar_font_theme?: 'classic' | 'modern' | 'andalous' | 'naskh'
+  guestbook_private?: boolean
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string
   guest_invite_suffix_ar?: string

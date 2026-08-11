@@ -40,6 +40,7 @@ export default function NewWeddingPage() {
     ar_font_theme: 'classic' as string,
     show_rsvp: true,
     show_guestbook: true,
+    guestbook_private: false,
     show_countdown: true,
     show_program: true,
     show_celebrations: true,
@@ -519,9 +520,27 @@ export default function NewWeddingPage() {
             <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
               checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />
-            <Toggle label="Modération des messages"
-              help="Les messages sont validés par les mariés avant publication"
-              checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
+            {form.show_guestbook && (
+              <Toggle
+                label="Livre d'or privé"
+                help="Les messages restent uniquement visibles dans le portail des mariés — les invités peuvent écrire mais ne voient pas les autres messages."
+                checked={form.guestbook_private}
+                onChange={v => {
+                  set('guestbook_private', v)
+                  if (v) set('moderation_on', false)
+                }}
+              />
+            )}
+            {!form.guestbook_private ? (
+              <Toggle label="Modération des messages"
+                help="Les messages sont validés par les mariés avant publication"
+                checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
+            ) : (
+              <div style={{ padding: '10px 12px', background: '#f5f5f5', border: '1px solid var(--admin-border)',
+                borderRadius: 'var(--admin-radius)', fontSize: '0.8rem', color: 'var(--admin-text-muted)' }}>
+                Modération désactivée — inutile en mode livre d'or privé.
+              </div>
+            )}
             <Toggle label="Activer les invitations personnalisées"
               help="Permet de générer un lien unique par invité avec son nom affiché sur l'invitation"
               checked={form.guest_invite_enabled} onChange={v => set('guest_invite_enabled', v)} />
