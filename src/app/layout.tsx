@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'https://elegance-digitale.vercel.app'),
   title: 'Élégance Digitale',
   description: 'Invitations de mariage digitales haut de gamme',
 }

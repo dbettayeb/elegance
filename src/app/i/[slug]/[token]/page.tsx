@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props) {
 
   const title = `${data.bride_name} & ${data.groom_name} · ${date}`
   const description = `Vous êtes cordialement invités au mariage de ${data.bride_name} et ${data.groom_name}.`
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://elegance-digitale.vercel.app'
   const imageUrl = `${base}/i/${slug}/${token}/opengraph-image`
 
   return {
