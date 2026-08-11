@@ -13,14 +13,14 @@ const MUTED = '#8A7A66'
 
 // Read once per lambda instance — the files ship in assets/ so there is no
 // network call during rendering.
-let fontsPromise: Promise<{ regular: Buffer; italic: Buffer }> | null = null
+let fontsPromise: Promise<{ bold: Buffer; boldItalic: Buffer }> | null = null
 
 function loadFonts() {
   if (!fontsPromise) {
     fontsPromise = Promise.all([
-      readFile(join(process.cwd(), 'assets/CormorantGaramond-Regular.ttf')),
-      readFile(join(process.cwd(), 'assets/CormorantGaramond-Italic.ttf')),
-    ]).then(([regular, italic]) => ({ regular, italic }))
+      readFile(join(process.cwd(), 'assets/CormorantGaramond-Bold.ttf')),
+      readFile(join(process.cwd(), 'assets/CormorantGaramond-BoldItalic.ttf')),
+    ]).then(([bold, boldItalic]) => ({ bold, boldItalic }))
   }
   return fontsPromise
 }
@@ -46,7 +46,7 @@ interface OgWeddingProps {
 }
 
 export async function createOgWeddingImageResponse({ brideName, groomName, date }: OgWeddingProps) {
-  const { regular, italic } = await loadFonts()
+  const { bold, boldItalic } = await loadFonts()
 
   // Names stack vertically, so the longer of the two drives the size.
   const longest = Math.max(brideName.length, groomName.length)
@@ -64,6 +64,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
           justifyContent: 'center',
           background: '#FDFBF7',
           fontFamily: 'Cormorant',
+          fontWeight: 700,
         }}
       >
         {/* Double frame */}
@@ -111,8 +112,8 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
     {
       ...OG_SIZE,
       fonts: [
-        { name: 'Cormorant', data: regular, weight: 400, style: 'normal' },
-        { name: 'Cormorant', data: italic, weight: 400, style: 'italic' },
+        { name: 'Cormorant', data: bold, weight: 700, style: 'normal' },
+        { name: 'Cormorant', data: boldItalic, weight: 700, style: 'italic' },
       ],
     }
   )
