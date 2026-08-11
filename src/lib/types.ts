@@ -47,7 +47,7 @@ export interface Wedding {
     | 't7_ar_or' | 't7_ar_bordeaux' | 't7_ar_sable' | 't7_ar_noir'
     | 't8_ar_rose' | 't8_ar_framboise' | 't8_ar_poudre' | 't8_ar_noir'
   template_variant?: string
-  ar_font_theme?: 'classic' | 'modern' | 'calligraphique' | 'contemporain'
+  ar_font_theme?: 'classic' | 'modern' | 'andalous' | 'naskh'
   guest_invite_enabled?: boolean
   guest_invite_prefix_ar?: string
   guest_invite_suffix_ar?: string

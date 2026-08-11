@@ -422,12 +422,12 @@ const CSS = `
   .bs-bismillah{font-family:var(--bs-font-display);font-size:clamp(0.95rem,4.2vw,1.45rem);color:var(--bs-text);line-height:1.8;font-weight:700;margin-top:28px;margin-bottom:20px;white-space:nowrap;}
   @media(min-width:769px){.bs-bismillah{font-size:clamp(0.9rem,2.4vh,1.45rem);}}
   .bs-verse-wrap{background:linear-gradient(180deg,rgba(201,168,76,0.05) 0%,rgba(255,255,255,0.2) 100%);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-top:1px solid var(--bs-border);border-bottom:1px solid var(--bs-border);padding:18px 24px;margin:0 0 22px;width:100%;}
-  .bs-verse{font-family:var(--bs-font-body);font-size:clamp(1rem,2.5vw,1.4rem);color:var(--bs-text-2);line-height:2.2;font-weight:400;}
+  .bs-verse{font-family:var(--bs-font-display);font-size:clamp(1rem,2.5vw,1.4rem);color:var(--bs-text-2);line-height:2.2;font-weight:400;}
   .bs-verse-ref{margin-top:12px;font-family:var(--bs-font-body);font-size:.85rem;color:var(--bs-accent);letter-spacing:.05em;}
   .bs-divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 20px;width:100%;}
   .bs-divider span{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--bs-accent),transparent);}
   .bs-divider i{color:var(--bs-accent);font-style:normal;font-size:1.1rem;}
-  .bs-families-intro{font-family:var(--bs-font-body);font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--bs-text-2);line-height:1.8;margin-bottom:18px;width:100%;font-style:italic;}
+  .bs-families-intro{font-family:var(--bs-font-display);font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--bs-text-2);line-height:1.8;margin-bottom:18px;width:100%;font-style:italic;}
   /* Grille familles : ligne 1 = préfixes, ligne 2 = noms + و */
   .bs-fgrid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);column-gap:20px;row-gap:4px;width:100%;margin-bottom:22px;}
   .bs-fp{font-family:var(--bs-font-body);font-size:clamp(.85rem,2vw,1rem);color:var(--bs-text-muted);font-weight:400;letter-spacing:.05em;text-align:center;white-space:normal;overflow:visible;}
@@ -453,7 +453,7 @@ const CSS = `
   .bs-date-line{width:30px;height:1px;background:var(--bs-gold)}
   .bs-date-year{font-family:var(--bs-font-display);font-size:1.3rem;color:var(--bs-text);}
   .bs-date-time{font-family:var(--bs-font-display);font-size:1.5rem;color:var(--bs-accent);border-right:1px solid var(--bs-border);padding-right:24px;margin-right:-24px;align-self:stretch;display:flex;align-items:center;}
-  .bs-hadith{margin-top:26px;width:100%;font-family:var(--bs-font-body);font-style:italic;font-size:1.1rem;color:var(--bs-text-2);line-height:2;}
+  .bs-hadith{margin-top:26px;width:100%;font-family:var(--bs-font-display);font-style:italic;font-size:1.1rem;color:var(--bs-text-2);line-height:2;}
   .bs-label{font-family:var(--bs-font-body);font-size:.95rem;color:var(--bs-accent);margin-bottom:8px;font-weight:500;letter-spacing:.05em;}
   .bs-title{font-family:var(--bs-font-display);font-size:clamp(1.8rem,4.5vw,2.4rem);color:var(--bs-text);margin-bottom:16px;line-height:1.4;font-weight:700;}
   .bs-body{font-family:var(--bs-font-body);font-size:1.1rem;font-style:italic;color:var(--bs-text-2);line-height:2;margin-bottom:16px;}
