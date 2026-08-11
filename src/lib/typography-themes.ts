@@ -6,11 +6,11 @@
  * charger les fichiers nécessaires.
  *
  * Utilisé par BismillahStyle, Bismillah et AlNour via les
- * variables CSS `--ar-font-display` et `--ar-font-body`.
+ * variables CSS `--bs-font-display` et `--bs-font-body`.
  */
 
 export interface TypographyTheme {
-  id: 'classic' | 'modern'
+  id: 'classic' | 'modern' | 'calligraphique' | 'contemporain'
   label: string
   display: string   // CSS font-family pour titres / prénoms
   body: string      // CSS font-family pour corps / versets
@@ -31,6 +31,20 @@ export const AR_TYPOGRAPHY_THEMES: TypographyTheme[] = [
     display: `'Scheherazade New', serif`,
     body:    `'Lateef', Georgia, serif`,
     googleFonts: 'Scheherazade+New:wght@400;500;600;700&family=Lateef:wght@400;700&family=Reem+Kufi:wght@400;500;600',
+  },
+  {
+    id: 'calligraphique',
+    label: 'Calligraphique — Mirza + El Messiri',
+    display: `'Mirza', serif`,
+    body:    `'El Messiri', sans-serif`,
+    googleFonts: 'Mirza:wght@400;500;600;700&family=El+Messiri:wght@400;500;600;700&family=Reem+Kufi:wght@400;500;600',
+  },
+  {
+    id: 'contemporain',
+    label: 'Contemporain — Tajawal + Almarai',
+    display: `'Tajawal', sans-serif`,
+    body:    `'Almarai', sans-serif`,
+    googleFonts: 'Tajawal:wght@400;500;700;800&family=Almarai:wght@400;700;800&family=Reem+Kufi:wght@400;500;600',
   },
 ]
 
