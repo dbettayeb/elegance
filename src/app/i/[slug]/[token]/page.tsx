@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: Props) {
   const title = `${data.bride_name} & ${data.groom_name} · ${date}`
   const description = `Vous êtes cordialement invités au mariage de ${data.bride_name} et ${data.groom_name}.`
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+  const imageUrl = `${base}/i/${slug}/${token}/opengraph-image`
 
   return {
     title,
@@ -41,6 +42,7 @@ export async function generateMetadata({ params }: Props) {
       description,
       url: `${base}/i/${slug}/${token}`,
       type: 'website',
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: title }],
     },
   }
 }
