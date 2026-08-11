@@ -44,6 +44,12 @@ export async function generateMetadata({ params }: Props) {
       type: 'website',
       images: [{ url: imageUrl, width: 1200, height: 630, alt: title }],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+    },
   }
 }
 

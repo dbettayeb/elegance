@@ -26,6 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const description = `Vous êtes cordialement invités au mariage de ${w?.bride_name ?? ''} et ${w?.groom_name ?? ''}.`
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
 
+  const imageUrl = `${base}/ig/${token}/opengraph-image`
+
   return {
     title,
     description,
@@ -34,7 +36,13 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       description,
       url: `${base}/ig/${token}`,
       type: 'website',
-      images: [{ url: `${base}/ig/${token}/opengraph-image`, width: 1200, height: 630, alt: title }],
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
     },
   }
 }
