@@ -7,11 +7,13 @@ export default function MessageCard({
   message,
   weddingId,
   theme,
+  guestbookPrivate = false,
 }: {
   message: GuestMessage
   weddingId: string
   coupleToken: string
   theme: CoupleTheme
+  guestbookPrivate?: boolean
 }) {
   const [approved, setApproved] = useState(message.approved)
   const [loading, setLoading] = useState(false)
@@ -94,7 +96,7 @@ export default function MessageCard({
         </p>
       </div>
 
-      <button
+      {!guestbookPrivate && <button
         onClick={toggle}
         disabled={loading}
         style={{
@@ -115,7 +117,7 @@ export default function MessageCard({
         }}
       >
         {loading ? '...' : approved ? 'Masquer' : '✓ Approuver'}
-      </button>
+      </button>}
     </div>
   )
 }
