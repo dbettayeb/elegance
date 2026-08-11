@@ -15,7 +15,7 @@ export default async function OgImage({ params }: { params: Promise<{ token: str
     .eq('token', token)
     .single()
 
-  const w = invite?.weddings as { bride_name: string; groom_name: string; event_date: string } | null
+  const w = invite?.weddings as unknown as { bride_name: string; groom_name: string; event_date: string } | null
 
   const brideName = w?.bride_name ?? ''
   const groomName = w?.groom_name ?? ''
