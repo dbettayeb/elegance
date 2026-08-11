@@ -18,8 +18,17 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
 
   if (!invite) return { title: 'Invitation' }
   const w = invite.weddings as unknown as { bride_name: string; groom_name: string } | null
+  const title = `Invitation — ${w?.bride_name ?? ''} & ${w?.groom_name ?? ''}`
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+
   return {
-    title: `Invitation — ${w?.bride_name ?? ''} & ${w?.groom_name ?? ''}`,
+    title,
+    openGraph: {
+      title,
+      url: `${base}/ig/${token}`,
+      type: 'website',
+      images: [{ url: `${base}/ig/${token}/opengraph-image`, width: 1200, height: 630, alt: title }],
+    },
   }
 }
 
