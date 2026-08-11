@@ -29,9 +29,6 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
   const theme = getArTypographyTheme(wedding.ar_font_theme)
 
-  const brideAr = wedding.bride_name_ar || wedding.bride_name
-  const groomAr = wedding.groom_name_ar || wedding.groom_name
-
   // ar-TN gives Arabic month names with Western digits, which is what Tunisian
   // invitations use. The time is forced to 24h: the locale default would print
   // "07:00 م" for a 19:00 reception.
@@ -70,7 +67,6 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             <div className="sa-opening-frame">
               <div className="sa-opening-orn">✦</div>
               <div className="sa-opening-title">{heroTitle}</div>
-              <div className="sa-opening-names">{brideAr} &amp; {groomAr}</div>
               <button className="sa-opening-btn" type="button">افتح الدعوة</button>
             </div>
           </div>
@@ -103,21 +99,16 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                 <div className="sa-hero-title sa-anim" style={{ animationDelay: '0.3s' }}>
                   {heroTitle}
                 </div>
-                <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.45s' }}>
-                  {formattedDate}
-                </div>
-                <div className="sa-hero-time sa-anim" style={{ animationDelay: '0.55s' }}>
-                  {eventTime}
-                </div>
 
-                <div className="sa-hero-rule sa-anim" style={{ animationDelay: '0.65s' }}>
+                <div className="sa-hero-rule sa-anim" style={{ animationDelay: '0.5s' }}>
                   <span /><i>✦</i><span />
                 </div>
 
-                <div className="sa-hero-names sa-anim" style={{ animationDelay: '0.75s' }}>
-                  <div className="sa-hero-name" data-ef="bride_name">{brideAr}</div>
-                  <div className="sa-hero-amp">و</div>
-                  <div className="sa-hero-name" data-ef="groom_name">{groomAr}</div>
+                <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.65s' }}>
+                  {formattedDate}
+                </div>
+                <div className="sa-hero-time sa-anim" style={{ animationDelay: '0.75s' }}>
+                  {eventTime}
                 </div>
               </div>
             </div>
@@ -273,7 +264,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
           <footer className="sa-footer">
             <div className="sa-footer-orn">✦</div>
-            <div className="sa-footer-names">{brideAr} &amp; {groomAr}</div>
+            <div className="sa-footer-title">{heroTitle}</div>
           </footer>
         </div>
       </div>
@@ -316,8 +307,7 @@ const CSS = (display: string, body: string) => `
   border: 1px solid var(--sa-gold-dim);
 }
 .sa-opening-orn   { color: var(--sa-gold); font-size: 15px; margin-bottom: 18px; }
-.sa-opening-title { font-family: var(--sa-display); font-size: 27px; color: var(--sa-gold); margin-bottom: 14px; }
-.sa-opening-names { font-family: var(--sa-display); font-size: 34px; margin-bottom: 30px; line-height: 1.5; }
+.sa-opening-title { font-family: var(--sa-display); font-size: 33px; color: var(--sa-gold); line-height: 1.5; margin-bottom: 30px; }
 .sa-opening-btn {
   padding: 12px 30px;
   background: transparent;
@@ -386,12 +376,12 @@ const CSS = (display: string, body: string) => `
   text-align: center;
   padding: 0 26px;
 }
+/* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
   font-family: var(--sa-display);
-  font-size: 34px;
+  font-size: 52px;
   color: var(--sa-gold);
-  line-height: 1.4;
-  margin-bottom: 14px;
+  line-height: 1.45;
 }
 .sa-hero-date {
   font-size: 21px;
@@ -412,18 +402,6 @@ const CSS = (display: string, body: string) => `
 }
 .sa-hero-rule span { width: 62px; height: 1px; background: var(--sa-gold-dim); }
 .sa-hero-rule i    { color: var(--sa-gold); font-size: 11px; font-style: normal; }
-.sa-hero-names {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.sa-hero-name {
-  font-family: var(--sa-display);
-  font-size: 54px;
-  line-height: 1.35;
-}
-.sa-hero-amp { font-family: var(--sa-display); font-size: 28px; color: var(--sa-gold); }
 
 .sa-anim { opacity: 0; animation: saFadeUp 1.1s ease forwards; }
 @keyframes saFadeUp {
@@ -548,20 +526,18 @@ const CSS = (display: string, body: string) => `
 /* ── Pied de page ── */
 .sa-footer { padding: 44px 20px 56px; text-align: center; }
 .sa-footer-orn   { color: var(--sa-gold); font-size: 13px; margin-bottom: 14px; }
-.sa-footer-names { font-family: var(--sa-display); font-size: 26px; }
+.sa-footer-title { font-family: var(--sa-display); font-size: 26px; color: var(--sa-gold); }
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .sa-hero-panel { max-width: 100%; height: 84vh; min-height: 460px; }
-  .sa-hero-title { font-size: 28px; }
-  .sa-hero-name  { font-size: 42px; }
+  .sa-hero-title { font-size: 40px; }
   .sa-hero-date  { font-size: 19px; }
   .sa-section    { padding: 44px 20px; }
-  .sa-opening-names { font-size: 28px; }
+  .sa-opening-title { font-size: 28px; }
 }
 @media (max-width: 380px) {
-  .sa-hero-title { font-size: 24px; }
-  .sa-hero-name  { font-size: 35px; }
+  .sa-hero-title { font-size: 33px; }
   .sa-hero-rule span { width: 44px; }
   .sa-cd-cell { min-width: 64px; }
 }
