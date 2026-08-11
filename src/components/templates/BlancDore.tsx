@@ -3,6 +3,7 @@ import { useState, useRef } from 'react'
 import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 export default function BlancDore({ wedding }: { wedding: Wedding }) {
   const {
@@ -206,6 +207,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
               </button>
             </form>
           )}
+          <AddToCalendar wedding={wedding} />
         </div>
         )}
 

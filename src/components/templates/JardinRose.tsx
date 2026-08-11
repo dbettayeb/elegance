@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const BG_KEY   = 'assets/template2/back2.png'
 const DECO_KEY = 'assets/template2/deco2.png'
@@ -223,6 +224,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
                   <div className="jr-card-dots">• • •</div>
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

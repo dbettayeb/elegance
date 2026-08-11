@@ -3,6 +3,7 @@ import { useState, useRef } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 /**
  * Template "Cristal & Champagne" — Ouverture cinématique en 4 phases :
@@ -336,6 +337,7 @@ export default function CristalChampagne({ wedding }: { wedding: Wedding }) {
                 </button>
               </form>
             )}
+            <AddToCalendar wedding={wedding} />
           </section>
         )}
 

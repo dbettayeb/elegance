@@ -3,6 +3,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const DECO_KEY      = 'assets/template7/deco7.png'
 const ROSE_LR_KEY   = 'assets/template7/rose gauche et droite.png'
@@ -226,6 +227,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
                   )}
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

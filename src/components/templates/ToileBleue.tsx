@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const DECO_KEY = 'assets/template1/deco1.png'
 const ROSE_SRC = '/assets/template1/rose bleu apèrs les noms.png'
@@ -221,6 +222,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
                   <div className="tb-card-dots">• • •</div>
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 
