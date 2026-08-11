@@ -18,6 +18,7 @@ import Template7 from '@/components/templates/Template7'
 import Template8 from '@/components/templates/Template8'
 import Template7Ar from '@/components/templates/Template7Ar'
 import Template8Ar from '@/components/templates/Template8Ar'
+import SoireeAr from '@/components/templates/SoireeAr'
 import { Wedding } from '@/lib/types'
 import { TEMPLATES_META, TemplateMeta } from '@/lib/templates-meta'
 
@@ -49,6 +50,7 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   template_8: Template8,
   template_7_ar: Template7Ar,
   template_8_ar: Template8Ar,
+  soiree_ar: SoireeAr,
 }
 
 export const TEMPLATES: TemplateFull[] = TEMPLATES_META.map(meta => ({

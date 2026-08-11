@@ -192,6 +192,18 @@ export const TEMPLATES_META: TemplateMeta[] = [
     basePrice: 59,
   },
   {
+    id: 'soiree_ar',
+    name: 'Soirée — عربي',
+    description: 'Template arabe pensé pour une soirée : la vidéo du couple occupe le hero et le titre au-dessus de la date est libre (henné, fiançailles, réception). Fond nuit et or, mise en page RTL.',
+    tags: ['Arabe', 'Vidéo', 'Soirée', 'Moderne'],
+    palette: ['#0E0B12', '#16111C', '#C8A24E', '#F3ECE0'],
+    ambiance: 'sombre',
+    language: 'ar',
+    preview: '/assets/template8/exemple8.png',
+    type: 'dynamique',
+    basePrice: 79,
+  },
+  {
     id: 'toile_bleue_ar',
     name: 'Toile Bleue — عربي',
     description: 'Version arabe de Toile Bleue. Calligraphie Aref Ruqaa, versets coraniques, animation d\'ouverture Bismillah sur fond bleu marine floral.',

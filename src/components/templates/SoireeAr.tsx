@@ -1,0 +1,568 @@
+'use client'
+
+import { useState, useRef, useEffect } from 'react'
+import { Wedding, ProgramItem } from '@/lib/types'
+import { useInvitationLogic } from '@/lib/use-invitation'
+import { getArTypographyTheme } from '@/lib/typography-themes'
+import FontOverride from '@/components/common/fontoverride'
+import AddToCalendar from '@/components/common/AddToCalendar'
+
+/**
+ * Arabic template built for a single evening (henna, engagement, reception).
+ *
+ * Two things set it apart from the other templates:
+ *  - the hero video is the couple's own, taken from intro_video_url, instead
+ *    of artwork baked into the template
+ *  - the line above the date is free text (wedding_day_text), so the evening
+ *    names itself rather than always reading "Wedding Day"
+ */
+export default function SoireeAr({ wedding }: { wedding: Wedding }) {
+  const {
+    opened, visible, openEnvelope, countdown,
+    rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
+    gbStatus, gbPending, messages, submitMessage,
+    eventDate,
+  } = useInvitationLogic(wedding)
+
+  const [videoFailed, setVideoFailed] = useState(false)
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null)
+
+  const theme = getArTypographyTheme(wedding.ar_font_theme)
+
+  const brideAr = wedding.bride_name_ar || wedding.bride_name
+  const groomAr = wedding.groom_name_ar || wedding.groom_name
+
+  // ar-TN gives Arabic month names with Western digits, which is what Tunisian
+  // invitations use. The time is forced to 24h: the locale default would print
+  // "07:00 م" for a 19:00 reception.
+  const formattedDate = eventDate.toLocaleDateString('ar-TN', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  })
+  const eventTime = eventDate.toLocaleTimeString('ar-TN', {
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  })
+
+  const heroTitle = wedding.wedding_day_text || 'ليلة العمر'
+  const hasVideo = !!wedding.intro_video_url && !videoFailed
+
+  // Autoplay needs muted; some browsers still refuse, so failure is silent.
+  useEffect(() => {
+    if (!opened || !hasVideo) return
+    heroVideoRef.current?.play().catch(() => {})
+  }, [opened, hasVideo])
+
+  const program: ProgramItem[] = Array.isArray(wedding.program) ? wedding.program : []
+  const parties = (wedding.show_celebrations ?? true) ? (wedding.parties ?? []) : []
+
+  return (
+    <>
+      <link
+        href={`https://fonts.googleapis.com/css2?family=${theme.googleFonts}&display=swap`}
+        rel="stylesheet"
+      />
+      <style>{CSS(theme.display, theme.body)}</style>
+      <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
+
+      <div className="sa-root" dir="rtl" lang="ar">
+        {/* ─── ÉCRAN D'OUVERTURE ─── */}
+        {!opened && (
+          <div className="sa-opening" onClick={openEnvelope}>
+            <div className="sa-opening-frame">
+              <div className="sa-opening-orn">✦</div>
+              <div className="sa-opening-title">{heroTitle}</div>
+              <div className="sa-opening-names">{brideAr} &amp; {groomAr}</div>
+              <button className="sa-opening-btn" type="button">افتح الدعوة</button>
+            </div>
+          </div>
+        )}
+
+        <div className={`sa-main${visible ? ' sa-visible' : ''}`}>
+          {/* ─── HERO VIDÉO ─── */}
+          <header className="sa-hero">
+            <div className="sa-hero-panel">
+              {hasVideo ? (
+                <video
+                  ref={heroVideoRef}
+                  className="sa-hero-video"
+                  src={wedding.intro_video_url}
+                  onError={() => setVideoFailed(true)}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                />
+              ) : (
+                <div className="sa-hero-fallback" />
+              )}
+
+              <div className="sa-hero-veil" />
+              <div className="sa-hero-fade" />
+
+              <div className="sa-hero-content">
+                <div className="sa-hero-title sa-anim" style={{ animationDelay: '0.3s' }}>
+                  {heroTitle}
+                </div>
+                <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.45s' }}>
+                  {formattedDate}
+                </div>
+                <div className="sa-hero-time sa-anim" style={{ animationDelay: '0.55s' }}>
+                  {eventTime}
+                </div>
+
+                <div className="sa-hero-rule sa-anim" style={{ animationDelay: '0.65s' }}>
+                  <span /><i>✦</i><span />
+                </div>
+
+                <div className="sa-hero-names sa-anim" style={{ animationDelay: '0.75s' }}>
+                  <div className="sa-hero-name" data-ef="bride_name">{brideAr}</div>
+                  <div className="sa-hero-amp">و</div>
+                  <div className="sa-hero-name" data-ef="groom_name">{groomAr}</div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* ─── MOT D'ACCUEIL ─── */}
+          {(wedding.families_intro_ar || wedding.custom_message) && (
+            <section className="sa-section sa-welcome">
+              {wedding.families_intro_ar && (
+                <h2 className="sa-welcome-intro">{wedding.families_intro_ar}</h2>
+              )}
+              {wedding.custom_message && (
+                <p className="sa-welcome-text">{wedding.custom_message}</p>
+              )}
+            </section>
+          )}
+
+          {/* ─── COMPTE À REBOURS ─── */}
+          {wedding.show_countdown && (
+            <section className="sa-section sa-countdown-wrap">
+              <p className="sa-label">في انتظار اللقاء</p>
+              <div className="sa-countdown">
+                {([['أيام', countdown.d], ['ساعات', countdown.h], ['دقائق', countdown.m], ['ثوان', countdown.s]] as const).map(([label, value]) => (
+                  <div className="sa-cd-cell" key={label}>
+                    <div className="sa-cd-num">{value}</div>
+                    <div className="sa-cd-label">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ─── CÉLÉBRATIONS ─── */}
+          {parties.length > 0 && (
+            <section className="sa-section">
+              <p className="sa-label">الاحتفالات</p>
+              <div className="sa-parties">
+                {parties.map((party, i) => (
+                  <div className="sa-party" key={i}>
+                    <div className="sa-party-title">{party.title}</div>
+                    <div className="sa-party-meta">{party.date} · {party.time}</div>
+                    <div className="sa-party-venue">{party.venue_name}</div>
+                    {party.venue_address && (
+                      <div className="sa-party-address">{party.venue_address}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ─── PROGRAMME ─── */}
+          {wedding.show_program && program.length > 0 && (
+            <section className="sa-section">
+              <p className="sa-label">البرنامج</p>
+              <div className="sa-program">
+                {program.map((item, i) => (
+                  <div className="sa-program-row" key={i}>
+                    <div className="sa-program-time">{item.time}</div>
+                    <div className="sa-program-event">
+                      {item.event}
+                      {item.venue && <span className="sa-program-venue">{item.venue}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ─── LIEU ─── */}
+          <section className="sa-section">
+            <p className="sa-label">المكان</p>
+            <div className="sa-venue-name">{wedding.venue_name}</div>
+            {wedding.venue_address && (
+              <div className="sa-venue-address">{wedding.venue_address}</div>
+            )}
+            {(wedding.gps_google || wedding.gps_apple) && (
+              <div className="sa-maps">
+                {wedding.gps_google && (
+                  <a className="sa-map-link" href={wedding.gps_google} target="_blank" rel="noopener noreferrer">
+                    خرائط جوجل
+                  </a>
+                )}
+                {wedding.gps_apple && (
+                  <a className="sa-map-link" href={wedding.gps_apple} target="_blank" rel="noopener noreferrer">
+                    خرائط آبل
+                  </a>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/* ─── RSVP ─── */}
+          {wedding.show_rsvp && (
+            <section className="sa-section sa-rsvp">
+              <p className="sa-label">تأكيد الحضور</p>
+              {rsvpStatus === 'done' ? (
+                <p className="sa-success">تم تسجيل ردّكم. شكراً لكم.</p>
+              ) : (
+                <form className="sa-form" onSubmit={submitRSVP}>
+                  <input className="sa-input" name="name" placeholder="الاسم واللقب" required />
+                  <input className="sa-input" name="phone" placeholder="رقم الواتساب" />
+                  <div className="sa-choices">
+                    {(['present', 'absent', 'maybe'] as const).map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        className={`sa-choice${rsvpChoice === s ? ' sa-choice-on' : ''}`}
+                        onClick={() => setRsvpChoice(s)}
+                      >
+                        {s === 'present' ? 'سأحضر' : s === 'absent' ? 'لن أتمكن' : 'لم أتأكد بعد'}
+                      </button>
+                    ))}
+                  </div>
+                  <input className="sa-input" name="guests" type="number" min="0" max="20" placeholder="عدد المرافقين" />
+                  <textarea className="sa-input sa-textarea" name="note" placeholder="رسالة (اختياري)" />
+                  <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
+                    {rsvpStatus === 'loading' ? '...جارٍ الإرسال' : 'تأكيد'}
+                  </button>
+                </form>
+              )}
+              <AddToCalendar wedding={wedding} />
+            </section>
+          )}
+
+          {/* ─── LIVRE D'OR ─── */}
+          {wedding.show_guestbook && (
+            <section className="sa-section">
+              <p className="sa-label">سجل التهاني</p>
+              {messages.length > 0 && (
+                <div className="sa-messages">
+                  {messages.map(msg => (
+                    <div className="sa-message" key={msg.id}>
+                      <div className="sa-message-text">{msg.message}</div>
+                      <div className="sa-message-author">— {msg.author_name}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {gbStatus === 'done' ? (
+                <p className="sa-success">{gbPending ? 'في انتظار المصادقة.' : 'تم النشر.'}</p>
+              ) : (
+                <form className="sa-form" onSubmit={submitMessage}>
+                  <input className="sa-input" name="author_name" placeholder="اسمكم" required />
+                  <textarea className="sa-input sa-textarea" name="message" placeholder="...رسالتكم" required />
+                  <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
+                    نشر
+                  </button>
+                </form>
+              )}
+            </section>
+          )}
+
+          <footer className="sa-footer">
+            <div className="sa-footer-orn">✦</div>
+            <div className="sa-footer-names">{brideAr} &amp; {groomAr}</div>
+          </footer>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const CSS = (display: string, body: string) => `
+.sa-root {
+  --sa-night:   #0E0B12;
+  --sa-deep:    #16111C;
+  --sa-gold:    #C8A24E;
+  --sa-gold-dim: rgba(200, 162, 78, 0.45);
+  --sa-cream:   #F3ECE0;
+  --sa-muted:   rgba(243, 236, 224, 0.62);
+  --sa-display: ${display};
+  --sa-body:    ${body};
+
+  background: var(--sa-night);
+  color: var(--sa-cream);
+  font-family: var(--sa-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Écran d'ouverture ── */
+.sa-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, var(--sa-deep) 0%, var(--sa-night) 70%);
+  cursor: pointer;
+}
+.sa-opening-frame {
+  text-align: center;
+  padding: 46px 34px;
+  border: 1px solid var(--sa-gold-dim);
+}
+.sa-opening-orn   { color: var(--sa-gold); font-size: 15px; margin-bottom: 18px; }
+.sa-opening-title { font-family: var(--sa-display); font-size: 27px; color: var(--sa-gold); margin-bottom: 14px; }
+.sa-opening-names { font-family: var(--sa-display); font-size: 34px; margin-bottom: 30px; line-height: 1.5; }
+.sa-opening-btn {
+  padding: 12px 30px;
+  background: transparent;
+  border: 1px solid var(--sa-gold);
+  color: var(--sa-gold);
+  font-family: var(--sa-body);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.sa-opening-btn:hover { background: var(--sa-gold); color: var(--sa-night); }
+
+/* ── Corps ── */
+.sa-main { opacity: 0; transition: opacity 1s ease; }
+.sa-main.sa-visible { opacity: 1; }
+
+/* ── Hero vidéo ──
+   Panneau centré sur grand écran, pleine largeur sur mobile : même intention
+   que Viktor & Paula, sans le calcul d'artboard. */
+.sa-hero {
+  display: flex;
+  justify-content: center;
+  background: var(--sa-night);
+}
+.sa-hero-panel {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  height: 88vh;
+  min-height: 520px;
+  max-height: 780px;
+  overflow: hidden;
+}
+.sa-hero-video,
+.sa-hero-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.sa-hero-fallback {
+  background: linear-gradient(160deg, var(--sa-deep) 0%, var(--sa-night) 60%, #241A2E 100%);
+}
+.sa-hero-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 14, 0.46);
+}
+.sa-hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 190px;
+  background: linear-gradient(0deg, var(--sa-night) 0%, rgba(14, 11, 18, 0) 100%);
+}
+.sa-hero-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 26px;
+}
+.sa-hero-title {
+  font-family: var(--sa-display);
+  font-size: 34px;
+  color: var(--sa-gold);
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.sa-hero-date {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.sa-hero-time {
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: var(--sa-muted);
+  margin-top: 6px;
+}
+.sa-hero-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+}
+.sa-hero-rule span { width: 62px; height: 1px; background: var(--sa-gold-dim); }
+.sa-hero-rule i    { color: var(--sa-gold); font-size: 11px; font-style: normal; }
+.sa-hero-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.sa-hero-name {
+  font-family: var(--sa-display);
+  font-size: 54px;
+  line-height: 1.35;
+}
+.sa-hero-amp { font-family: var(--sa-display); font-size: 28px; color: var(--sa-gold); }
+
+.sa-anim { opacity: 0; animation: saFadeUp 1.1s ease forwards; }
+@keyframes saFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Sections ── */
+.sa-section {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 54px 26px;
+  text-align: center;
+  border-bottom: 1px solid rgba(200, 162, 78, 0.14);
+}
+.sa-label {
+  font-family: var(--sa-display);
+  font-size: 22px;
+  color: var(--sa-gold);
+  margin-bottom: 26px;
+}
+.sa-welcome-intro { font-family: var(--sa-display); font-size: 25px; line-height: 1.9; margin-bottom: 16px; font-weight: 400; }
+.sa-welcome-text  { font-size: 17px; line-height: 2.1; color: var(--sa-muted); }
+
+/* ── Compte à rebours ── */
+.sa-countdown { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.sa-cd-cell {
+  min-width: 74px;
+  padding: 14px 8px;
+  border: 1px solid var(--sa-gold-dim);
+}
+.sa-cd-num   { font-size: 27px; font-weight: 700; color: var(--sa-gold); line-height: 1; }
+.sa-cd-label { font-size: 12px; color: var(--sa-muted); margin-top: 7px; }
+
+/* ── Célébrations ── */
+.sa-parties { display: flex; flex-direction: column; gap: 16px; }
+.sa-party { padding: 20px; border: 1px solid rgba(200, 162, 78, 0.2); }
+.sa-party-title   { font-family: var(--sa-display); font-size: 22px; color: var(--sa-gold); margin-bottom: 8px; }
+.sa-party-meta    { font-size: 14px; color: var(--sa-muted); margin-bottom: 8px; }
+.sa-party-venue   { font-size: 17px; }
+.sa-party-address { font-size: 14px; color: var(--sa-muted); margin-top: 4px; }
+
+/* ── Programme ── */
+.sa-program { display: flex; flex-direction: column; gap: 2px; }
+.sa-program-row {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 15px 4px;
+  border-bottom: 1px solid rgba(200, 162, 78, 0.12);
+  text-align: right;
+}
+.sa-program-row:last-child { border-bottom: none; }
+.sa-program-time  { min-width: 62px; color: var(--sa-gold); font-weight: 700; font-size: 16px; }
+.sa-program-event { font-size: 17px; }
+.sa-program-venue { display: block; font-size: 13px; color: var(--sa-muted); margin-top: 3px; }
+
+/* ── Lieu ── */
+.sa-venue-name    { font-family: var(--sa-display); font-size: 26px; margin-bottom: 8px; }
+.sa-venue-address { font-size: 15px; color: var(--sa-muted); line-height: 1.8; }
+.sa-maps { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.sa-map-link {
+  padding: 10px 20px;
+  border: 1px solid var(--sa-gold-dim);
+  color: var(--sa-cream);
+  font-size: 13px;
+  text-decoration: none;
+  transition: border-color 0.3s ease;
+}
+.sa-map-link:hover { border-color: var(--sa-gold); }
+
+/* ── Formulaires ── */
+.sa-form { display: flex; flex-direction: column; gap: 11px; text-align: right; }
+.sa-input {
+  width: 100%;
+  padding: 13px 15px;
+  background: rgba(243, 236, 224, 0.04);
+  border: 1px solid rgba(200, 162, 78, 0.26);
+  color: var(--sa-cream);
+  font-family: var(--sa-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+.sa-input::placeholder { color: rgba(243, 236, 224, 0.38); }
+.sa-input:focus { border-color: var(--sa-gold); }
+.sa-textarea { min-height: 96px; resize: vertical; }
+.sa-choices { display: flex; gap: 8px; flex-wrap: wrap; }
+.sa-choice {
+  flex: 1;
+  min-width: 96px;
+  padding: 11px 8px;
+  background: transparent;
+  border: 1px solid rgba(200, 162, 78, 0.26);
+  color: var(--sa-muted);
+  font-family: var(--sa-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.sa-choice-on { border-color: var(--sa-gold); color: var(--sa-gold); background: rgba(200, 162, 78, 0.09); }
+.sa-submit {
+  padding: 14px;
+  margin-top: 4px;
+  background: var(--sa-gold);
+  border: none;
+  color: var(--sa-night);
+  font-family: var(--sa-body);
+  font-size: 16px;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+.sa-submit:disabled { opacity: 0.55; cursor: default; }
+.sa-success { font-family: var(--sa-display); font-size: 20px; color: var(--sa-gold); }
+
+/* ── Livre d'or ── */
+.sa-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
+.sa-message { padding: 17px; border: 1px solid rgba(200, 162, 78, 0.16); }
+.sa-message-text   { font-size: 16px; line-height: 1.9; }
+.sa-message-author { font-size: 13px; color: var(--sa-gold); margin-top: 9px; }
+
+/* ── Pied de page ── */
+.sa-footer { padding: 44px 20px 56px; text-align: center; }
+.sa-footer-orn   { color: var(--sa-gold); font-size: 13px; margin-bottom: 14px; }
+.sa-footer-names { font-family: var(--sa-display); font-size: 26px; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .sa-hero-panel { max-width: 100%; height: 84vh; min-height: 460px; }
+  .sa-hero-title { font-size: 28px; }
+  .sa-hero-name  { font-size: 42px; }
+  .sa-hero-date  { font-size: 19px; }
+  .sa-section    { padding: 44px 20px; }
+  .sa-opening-names { font-size: 28px; }
+}
+@media (max-width: 380px) {
+  .sa-hero-title { font-size: 24px; }
+  .sa-hero-name  { font-size: 35px; }
+  .sa-hero-rule span { width: 44px; }
+  .sa-cd-cell { min-width: 64px; }
+}
+`
