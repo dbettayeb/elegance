@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 const BG_URL =
-  'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0MDg4MDgsImV4cCI6MjEwMTc2ODgwOH0.AquDTy-h9ssz7Ar8reobpm0ffyzqmX6II66UxyHdFn8'
+  'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0NTM5NDIsImV4cCI6MjEwMTgxMzk0Mn0.iJ8w3fozAvPNPCAqfLXh0tghi7t9LID0FsTurqNKAYs'
 
 // 800×420 keeps WhatsApp's ~1 MB image limit (1200×630 PNG was ~1.94 MB)
 export const OG_SIZE = { width: 800, height: 420 }
