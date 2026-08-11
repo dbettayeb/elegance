@@ -529,6 +529,21 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
           </Field>
         </Section>
 
+        {form.template_id === 'soiree_ar' && (
+          <Section title="Soir&eacute;e — m&eacute;dias">
+            <Field label="Titre de la soirée" help='Texte affiché en grand sur la vidéo, au-dessus de la date. Ex : ليلة الحناء. Par défaut "ليلة العمر".'>
+              <input className="admin-input" value={form.wedding_day_text}
+                onChange={e => set('wedding_day_text', e.target.value)}
+                placeholder="ليلة العمر" dir="rtl" />
+            </Field>
+            <Field label="Vidéo du héros" help="URL d'une vidéo MP4. Elle occupe tout le haut de l'invitation, en fond du titre et de la date. Laissez vide pour un fond dégradé.">
+              <input className="admin-input" type="url" value={form.intro_video_url}
+                onChange={e => set('intro_video_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+          </Section>
+        )}
+
         {form.template_id === 'viktor_paula' && (
           <Section title="Viktor &amp; Paula — médias">
             <Field label="Texte du titre principal" help='Texte affiché en haut du héros. Par défaut "Wedding Day".'>
