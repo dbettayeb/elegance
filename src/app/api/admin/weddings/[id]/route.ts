@@ -196,7 +196,6 @@ export async function PATCH(
         moderation_on:     guestbook_private ? false : (moderation_on ?? false),
         show_countdown: show_countdown ?? true,
         show_program:   show_program   ?? true,
-        moderation_on,
         bismillah_palette: bismillah_palette || 'or_classique',
         background_image:  background_image  || 'bg-texture.jpg',
         decoration_image:  decoration_image  || 'decoration.png',
