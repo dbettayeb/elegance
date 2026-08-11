@@ -164,7 +164,7 @@ export default async function CouplePortal({
             <Section title="En attente d'approbation" badge={pending.length}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {pending.map(msg => (
-                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} />
+                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
               </div>
             </Section>
@@ -179,7 +179,7 @@ export default async function CouplePortal({
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {approved.map(msg => (
-                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} />
+                  <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
               </div>
             )}

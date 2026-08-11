@@ -125,7 +125,9 @@ export default async function TemplateEmbed({ params, searchParams }: Props) {
     show_guestbook: bool(show_guestbook,  true),
     moderation_on:  bool(moderation_on,   true),
     guest_invite_enabled: bool(guest_invite_enabled, false),
-    ar_font_theme: ar_font_theme === 'modern' ? 'modern' : 'classic',
+    ar_font_theme: (['classic', 'modern', 'andalous', 'naskh'] as const).includes(ar_font_theme as never)
+      ? (ar_font_theme as 'classic' | 'modern' | 'andalous' | 'naskh')
+      : 'classic',
     status: 'active',
     created_at: new Date().toISOString(),
   }

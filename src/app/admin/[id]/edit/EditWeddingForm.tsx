@@ -12,6 +12,7 @@ import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getAr
 import { IVOIRE_PALETTES } from '@/lib/ivoire-palettes'
 import { VERSE_PRESETS, getVersePreset } from '@/lib/arabic-presets'
 import { ARABIC_FAMILIES_INTRO_PRESETS, ARABIC_BLESSING_PRESETS } from '@/lib/template-fields'
+import { AR_TYPOGRAPHY_THEMES } from '@/lib/typography-themes'
 
 export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   const router = useRouter()
@@ -48,8 +49,10 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     music_url: wedding.music_url ?? '',
     custom_font: (wedding.custom_font ?? '') as string | null,
     custom_font_size: wedding.custom_font_size ?? 100,
+    ar_font_theme: wedding.ar_font_theme ?? 'classic',
     show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
+    guestbook_private: wedding.guestbook_private ?? false,
     show_countdown: wedding.show_countdown ?? true,
     show_program: wedding.show_program ?? true,
     show_celebrations: wedding.show_celebrations ?? true,
@@ -177,6 +180,29 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
                 Renseignez les familles pour afficher le bloc familial en tête d'invitation (tradition maghrébine). Le préfixe est libre — laissez vide pour le mot par défaut.
               </div>
+
+              <Field label="Thème typographique arabe" help="Police utilisée pour tous les titres, prénoms, date et corps de texte de l'invitation.">
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  {AR_TYPOGRAPHY_THEMES.map(theme => (
+                    <button
+                      key={theme.id}
+                      type="button"
+                      onClick={() => set('ar_font_theme', theme.id)}
+                      style={{
+                        padding: '10px 14px', border: '2px solid',
+                        borderColor: form.ar_font_theme === theme.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                        borderRadius: 'var(--admin-radius)',
+                        background: form.ar_font_theme === theme.id ? '#fdf6e3' : '#fff',
+                        cursor: 'pointer', transition: 'all .2s',
+                        display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                      }}
+                    >
+                      <span style={{ fontSize: '1.1rem', fontFamily: theme.display, direction: 'rtl' }}>بِسْمِ ٱللَّٰهِ</span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--admin-text-muted)', fontWeight: 500 }}>{theme.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
 
               <Field label="Bénédiction (verset coranique)" help="Verset affiché en haut de l'invitation.">
                 <select className="admin-input" value={form.verse_ar}
@@ -545,9 +571,27 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
               checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />
-            <Toggle label="Modération des messages"
-              help="Les messages sont validés par les mariés avant publication"
-              checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
+            {form.show_guestbook && (
+              <Toggle
+                label="Livre d'or privé"
+                help="Les messages restent uniquement visibles dans le portail des mariés — les invités peuvent écrire mais ne voient pas les autres messages."
+                checked={form.guestbook_private}
+                onChange={v => {
+                  set('guestbook_private', v)
+                  if (v) set('moderation_on', false)
+                }}
+              />
+            )}
+            {!form.guestbook_private ? (
+              <Toggle label="Modération des messages"
+                help="Les messages sont validés par les mariés avant publication"
+                checked={form.moderation_on} onChange={v => set('moderation_on', v)} />
+            ) : (
+              <div style={{ padding: '10px 12px', background: '#f5f5f5', border: '1px solid var(--admin-border)',
+                borderRadius: 'var(--admin-radius)', fontSize: '0.8rem', color: 'var(--admin-text-muted)' }}>
+                Modération désactivée — inutile en mode livre d'or privé.
+              </div>
+            )}
             <Toggle label="Activer les invitations personnalisées"
               help="Permet de générer un lien unique par invité avec son nom affiché sur l'invitation"
               checked={form.guest_invite_enabled} onChange={v => set('guest_invite_enabled', v)} />
