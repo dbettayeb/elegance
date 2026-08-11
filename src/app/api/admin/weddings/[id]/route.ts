@@ -120,6 +120,20 @@ export async function PATCH(
         }
       }
 
+      // Best-effort: force Facebook/Messenger to re-crawl the OG preview immediately
+      if (body.status === 'active' && wedding) {
+        try {
+          const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+          const inviteUrl = `${base}/i/${wedding.slug}/${wedding.access_token}`
+          await fetch(
+            `https://graph.facebook.com/?id=${encodeURIComponent(inviteUrl)}&scrape=true`,
+            { method: 'POST' },
+          )
+        } catch (e) {
+          console.warn('[ACTIVATE] Facebook OG scrape failed:', e)
+        }
+      }
+
       return NextResponse.json({ success: true })
     }
 
