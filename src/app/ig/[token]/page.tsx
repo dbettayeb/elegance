@@ -12,19 +12,26 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const supabase = createServiceSupabaseClient()
   const { data: invite } = await supabase
     .from('guest_invitations')
-    .select('guest_name_ar, weddings(bride_name, groom_name)')
+    .select('guest_name_ar, weddings(bride_name, groom_name, event_date)')
     .eq('token', token)
     .single()
 
   if (!invite) return { title: 'Invitation' }
-  const w = invite.weddings as unknown as { bride_name: string; groom_name: string } | null
-  const title = `Invitation — ${w?.bride_name ?? ''} & ${w?.groom_name ?? ''}`
+  const w = invite.weddings as unknown as { bride_name: string; groom_name: string; event_date: string } | null
+
+  const date = w?.event_date
+    ? new Date(w.event_date).toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
+    : ''
+  const title = `${w?.bride_name ?? ''} & ${w?.groom_name ?? ''} · ${date}`
+  const description = `Vous êtes cordialement invités au mariage de ${w?.bride_name ?? ''} et ${w?.groom_name ?? ''}.`
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
 
   return {
     title,
+    description,
     openGraph: {
       title,
+      description,
       url: `${base}/ig/${token}`,
       type: 'website',
       images: [{ url: `${base}/ig/${token}/opengraph-image`, width: 1200, height: 630, alt: title }],
