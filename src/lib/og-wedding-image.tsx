@@ -3,6 +3,22 @@ import { ImageResponse } from 'next/og'
 const BG_URL =
   'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0NTM5NDIsImV4cCI6MjEwMTgxMzk0Mn0.iJ8w3fozAvPNPCAqfLXh0tghi7t9LID0FsTurqNKAYs'
 
+// Cached in-process so warm invocations skip the fetch entirely
+let bgDataUrl: string | null = null
+
+async function getBgDataUrl(): Promise<string> {
+  if (bgDataUrl) return bgDataUrl
+  try {
+    const res = await fetch(BG_URL, { signal: AbortSignal.timeout(4000) })
+    if (res.ok) {
+      const buf = Buffer.from(await res.arrayBuffer())
+      bgDataUrl = `data:image/png;base64,${buf.toString('base64')}`
+      return bgDataUrl
+    }
+  } catch { /* fall back to remote URL */ }
+  return BG_URL
+}
+
 // 800×420 keeps WhatsApp's ~1 MB image limit (1200×630 PNG was ~1.94 MB)
 export const OG_SIZE = { width: 800, height: 420 }
 
@@ -15,6 +31,7 @@ interface OgWeddingProps {
 export async function createOgWeddingImageResponse({ brideName, groomName, date }: OgWeddingProps) {
   const combinedLength = brideName.length + groomName.length
   const nameFontSize = combinedLength > 28 ? 38 : combinedLength > 20 ? 44 : 50
+  const bg = await getBgDataUrl()
 
   return new ImageResponse(
     (
@@ -30,7 +47,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
         }}
       >
         <img
-          src={BG_URL}
+          src={bg}
           style={{
             position: 'absolute',
             top: 0,
