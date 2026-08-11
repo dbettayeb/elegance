@@ -1,19 +1,19 @@
 /**
  * Thèmes typographiques pour les invitations arabes.
  *
- * Chaque thème définit une paire "display" (titres, prénoms) +
- * "body" (corps, versets) ainsi que la query Google Fonts pour
- * charger les fichiers nécessaires.
+ * Chaque thème définit une paire "display" (titres, prénoms, verset, hadith) +
+ * "body" (champs de formulaire, adresse, messages) ainsi que la query
+ * Google Fonts pour charger les fichiers nécessaires.
  *
  * Utilisé par BismillahStyle, Bismillah et AlNour via les
- * variables CSS `--ar-font-display` et `--ar-font-body`.
+ * variables CSS `--bs-font-display` et `--bs-font-body`.
  */
 
 export interface TypographyTheme {
-  id: 'classic' | 'modern'
+  id: 'classic' | 'modern' | 'andalous' | 'naskh'
   label: string
-  display: string   // CSS font-family pour titres / prénoms
-  body: string      // CSS font-family pour corps / versets
+  display: string   // CSS font-family pour titres / prénoms / verset / hadith
+  body: string      // CSS font-family pour formulaires / adresse / messages
   googleFonts: string  // segment "family=..." pour l'URL Google Fonts
 }
 
@@ -31,6 +31,20 @@ export const AR_TYPOGRAPHY_THEMES: TypographyTheme[] = [
     display: `'Scheherazade New', serif`,
     body:    `'Lateef', Georgia, serif`,
     googleFonts: 'Scheherazade+New:wght@400;500;600;700&family=Lateef:wght@400;700&family=Reem+Kufi:wght@400;500;600',
+  },
+  {
+    id: 'andalous',
+    label: 'Andalous — Katibeh + Noto Naskh',
+    display: `'Katibeh', serif`,
+    body:    `'Noto Naskh Arabic', serif`,
+    googleFonts: 'Katibeh&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@400;500;600',
+  },
+  {
+    id: 'naskh',
+    label: 'Coranique — Amiri Quran + Amiri',
+    display: `'Amiri Quran', serif`,
+    body:    `'Amiri', Georgia, serif`,
+    googleFonts: 'Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@400;500;600',
   },
 ]
 

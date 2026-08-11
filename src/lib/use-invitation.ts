@@ -45,7 +45,7 @@ export function useInvitationLogic(wedding: Wedding) {
 
   // Load approved messages
   useEffect(() => {
-    if (!visible || !wedding.show_guestbook) return
+    if (!visible || !wedding.show_guestbook || wedding.guestbook_private) return
     if (isPreview) {
       // Données fictives pour la preview
       setMessages([
@@ -74,7 +74,7 @@ export function useInvitationLogic(wedding: Wedding) {
       .then(r => r.json())
       .then(d => { if (d.messages) setMessages(d.messages) })
       .catch(() => {})
-  }, [visible, wedding.id, wedding.show_guestbook, isPreview])
+  }, [visible, wedding.id, wedding.show_guestbook, wedding.guestbook_private, isPreview])
 
   async function submitRSVP(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
