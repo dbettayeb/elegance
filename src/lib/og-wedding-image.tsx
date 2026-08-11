@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og'
+import sharp from 'sharp'
 
 const BG_URL =
   'https://udpjrnetdxfzdetcfljm.supabase.co/storage/v1/object/sign/assets/images/URLPreviewBackGround.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jYzMxY2Q0Ni03ZThkLTQ2YmItYjljMS02ZTNlYjYwNWQ2NTMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvaW1hZ2VzL1VSTFByZXZpZXdCYWNrR3JvdW5kLnBuZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY0NTM5NDIsImV4cCI6MjEwMTgxMzk0Mn0.iJ8w3fozAvPNPCAqfLXh0tghi7t9LID0FsTurqNKAYs'
@@ -19,8 +20,12 @@ async function getBgDataUrl(): Promise<string> {
   return BG_URL
 }
 
-// 800×420 keeps WhatsApp's ~1 MB image limit (1200×630 PNG was ~1.94 MB)
-export const OG_SIZE = { width: 800, height: 420 }
+export const OG_SIZE = { width: 1200, height: 630 }
+
+// JPEG, not PNG: next/og only emits PNG, and a PNG of a watercolor floral
+// weighs ~1.9 MB — far above what WhatsApp accepts for a link preview.
+// The same image as JPEG lands around 100 KB.
+export const OG_CONTENT_TYPE = 'image/jpeg'
 
 interface OgWeddingProps {
   brideName: string
@@ -30,10 +35,10 @@ interface OgWeddingProps {
 
 export async function createOgWeddingImageResponse({ brideName, groomName, date }: OgWeddingProps) {
   const combinedLength = brideName.length + groomName.length
-  const nameFontSize = combinedLength > 28 ? 38 : combinedLength > 20 ? 44 : 50
+  const nameFontSize = combinedLength > 28 ? 58 : combinedLength > 20 ? 66 : 76
   const bg = await getBgDataUrl()
 
-  return new ImageResponse(
+  const png = new ImageResponse(
     (
       <div
         style={{
@@ -63,10 +68,10 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: '0 60px',
+            padding: '0 100px',
           }}
         >
-          <div style={{ fontSize: 10, letterSpacing: 4, color: '#B8985A', fontFamily: 'serif', marginBottom: 10, display: 'flex' }}>
+          <div style={{ fontSize: 15, letterSpacing: 6, color: '#B8985A', fontFamily: 'serif', marginBottom: 16, display: 'flex' }}>
             INVITATION AU MARIAGE DE
           </div>
 
@@ -82,7 +87,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
             {groomName}
           </div>
 
-          <div style={{ fontSize: 10, letterSpacing: 3, color: '#8B7355', fontFamily: 'serif', marginTop: 12, display: 'flex' }}>
+          <div style={{ fontSize: 15, letterSpacing: 5, color: '#8B7355', fontFamily: 'serif', marginTop: 20, display: 'flex' }}>
             {date.toUpperCase()}
           </div>
         </div>
@@ -90,4 +95,21 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
     ),
     { ...OG_SIZE }
   )
+
+  try {
+    const jpeg = await sharp(Buffer.from(await png.arrayBuffer()))
+      .jpeg({ quality: 80 })
+      .toBuffer()
+
+    // Crawlers need an explicit Content-Length; ImageResponse streams without one.
+    return new Response(new Uint8Array(jpeg), {
+      headers: {
+        'Content-Type': OG_CONTENT_TYPE,
+        'Content-Length': String(jpeg.byteLength),
+        'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+      },
+    })
+  } catch {
+    return png
+  }
 }

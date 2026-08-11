@@ -120,11 +120,20 @@ export async function PATCH(
         }
       }
 
-      // Best-effort: force Facebook/Messenger to re-crawl the OG preview immediately
+      // Best-effort: warm the OG image, then ask Facebook/Messenger to re-crawl.
+      // Crawlers time out after a few seconds, so the image must already be
+      // cached at the edge before the first share — not generated on demand.
       if (body.status === 'active' && wedding) {
+        const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://elegance-digitale.vercel.app'
+        const inviteUrl = `${base}/i/${wedding.slug}/${wedding.access_token}`
+
         try {
-          const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
-          const inviteUrl = `${base}/i/${wedding.slug}/${wedding.access_token}`
+          await fetch(`${inviteUrl}/opengraph-image`, { signal: AbortSignal.timeout(15000) })
+        } catch (e) {
+          console.warn('[ACTIVATE] OG image warmup failed:', e)
+        }
+
+        try {
           await fetch(
             `https://graph.facebook.com/?id=${encodeURIComponent(inviteUrl)}&scrape=true`,
             { method: 'POST' },

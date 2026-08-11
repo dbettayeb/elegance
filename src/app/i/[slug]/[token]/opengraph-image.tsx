@@ -1,9 +1,9 @@
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
-import { createOgWeddingImageResponse, OG_SIZE } from '@/lib/og-wedding-image'
+import { createOgWeddingImageResponse, OG_SIZE, OG_CONTENT_TYPE } from '@/lib/og-wedding-image'
 
 export const runtime = 'nodejs'
 export const size = OG_SIZE
-export const contentType = 'image/png'
+export const contentType = OG_CONTENT_TYPE
 export const revalidate = 3600
 
 export default async function OgImage({ params }: { params: Promise<{ slug: string; token: string }> }) {
