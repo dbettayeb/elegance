@@ -29,9 +29,19 @@ export async function generateMetadata({ params }: Props) {
     day: 'numeric', month: 'long', year: 'numeric',
   })
 
+  const title = `${data.bride_name} & ${data.groom_name} · ${date}`
+  const description = `Vous êtes cordialement invités au mariage de ${data.bride_name} et ${data.groom_name}.`
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+
   return {
-    title: `${data.bride_name} & ${data.groom_name} · ${date}`,
-    description: `Vous êtes cordialement invités au mariage de ${data.bride_name} et ${data.groom_name}.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${base}/i/${slug}/${token}`,
+      type: 'website',
+    },
   }
 }
 
