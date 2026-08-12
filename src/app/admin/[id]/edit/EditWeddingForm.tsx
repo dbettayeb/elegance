@@ -221,7 +221,9 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 </div>
               </Field>
 
-              <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Choisir un modèle ou saisir un texte personnalisé.">
+              <Field label="Phrase d'introduction (arabe)" help={form.template_id === 'soiree_ar'
+                ? 'Optionnel — affichée juste sous la vidéo, en tête de l\'invitation. Choisir un modèle ou saisir un texte personnalisé.'
+                : 'Optionnel — affichée au-dessus des familles. Choisir un modèle ou saisir un texte personnalisé.'}>
                 <PresetPicker
                   presets={ARABIC_FAMILIES_INTRO_PRESETS}
                   onSelect={v => set('families_intro_ar', v)}

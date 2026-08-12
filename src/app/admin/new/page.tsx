@@ -160,7 +160,9 @@ export default function NewWeddingPage() {
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
                 Renseignez les familles pour afficher le bloc familial en tête d'invitation (tradition maghrébine). Le préfixe est libre — laissez vide pour le mot par défaut.
               </div>
-              <Field label="Phrase d'introduction (arabe)" help="Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.">
+              <Field label="Phrase d'introduction (arabe)" help={form.template_id === 'soiree_ar'
+                ? 'Optionnel — affichée juste sous la vidéo, en tête de l\'invitation. Utilisez Entrée pour les retours à la ligne.'
+                : 'Optionnel — affichée au-dessus des familles. Utilisez Entrée pour les retours à la ligne.'}>
                 <textarea className="admin-textarea" rows={2}
                   value={form.families_intro_ar}
                   onChange={e => set('families_intro_ar', e.target.value)}

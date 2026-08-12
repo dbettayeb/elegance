@@ -437,7 +437,8 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   line-height: 1.4;
   margin-bottom: 26px;
 }
-.sa-welcome-intro { font-family: var(--sa-display); font-size: 25px; line-height: 1.9; margin-bottom: 16px; font-weight: 400; }
+/* pre-line : la phrase d'introduction est saisie sur plusieurs lignes. */
+.sa-welcome-intro { font-family: var(--sa-display); font-size: 25px; line-height: 1.9; margin-bottom: 16px; font-weight: 400; white-space: pre-line; }
 .sa-welcome-text  { font-size: 17px; line-height: 2.1; color: var(--sa-muted); }
 
 /* ── Compte à rebours ── */
