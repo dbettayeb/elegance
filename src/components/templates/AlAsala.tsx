@@ -228,7 +228,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="aa-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="aa-input aa-textarea" name="note" placeholder="Message (optionnel)" />
+              <textarea className="aa-input aa-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
               <button className="aa-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ◆'}
               </button>
@@ -261,7 +261,7 @@ export default function AlAsala({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="aa-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
                 <input className="aa-input-light" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="aa-input-light aa-textarea" name="message" placeholder="Vos vœux..." required />
+                <textarea className="aa-input-light aa-textarea" name="message" maxLength={3000} placeholder="Vos vœux..." required />
                 <button className="aa-btn-light" type="submit" disabled={gbStatus === 'loading'}>
                   Publier ◆
                 </button>

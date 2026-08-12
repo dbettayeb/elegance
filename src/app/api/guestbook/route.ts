@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from('guestbook').insert({
       wedding_id,
       author_name: sanitizeName(author_name),
-      message:     sanitizeText(message, 500),
+      message:     sanitizeText(message, 3000),
       // Si modération désactivée → approuvé directement
       approved:    !wedding.moderation_on,
       ip_hash:     ipHash,

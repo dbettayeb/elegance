@@ -291,7 +291,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                       ))}
                     </div>
                     <input className="an-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-                    <textarea className="an-input an-textarea" name="note" placeholder="Message (optionnel)" />
+                    <textarea className="an-input an-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
                     <button className="an-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                       {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
                     </button>
@@ -323,7 +323,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                 ) : (
                   <form className="an-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '20px' }}>
                     <input className="an-input" name="author_name" placeholder="Votre prénom" required />
-                    <textarea className="an-input an-textarea" name="message" placeholder="Vos vœux..." required />
+                    <textarea className="an-input an-textarea" name="message" maxLength={3000} placeholder="Vos vœux..." required />
                     <button className="an-submit" type="submit" disabled={gbStatus === 'loading'}>
                       Publier
                     </button>

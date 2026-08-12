@@ -218,7 +218,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="t7-field">
                         <label className="t7-field-label">Message optionnel</label>
-                        <textarea className="t7-input t7-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="t7-input t7-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="t7-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
@@ -261,7 +261,7 @@ export default function Template7({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="t7-field">
                         <label className="t7-field-label">Vos vœux</label>
-                        <textarea className="t7-input t7-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="t7-input t7-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="t7-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : 'Publier mon message'}

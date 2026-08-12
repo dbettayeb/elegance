@@ -331,7 +331,7 @@ export default function CristalChampagne({ wedding }: { wedding: Wedding }) {
                 </div>
                 <input className="cc-input" name="guests" type="number" min="0" max="20"
                   placeholder="Nombre d'accompagnants" />
-                <textarea className="cc-input cc-textarea" name="note" placeholder="Message (optionnel)" />
+                <textarea className="cc-input cc-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
                 <button className="cc-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                   {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
                 </button>
@@ -365,7 +365,7 @@ export default function CristalChampagne({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="cc-gb-form" onSubmit={submitMessage}>
                 <input className="cc-gb-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="cc-gb-input cc-gb-textarea" name="message" placeholder="Votre message..." required />
+                <textarea className="cc-gb-input cc-gb-textarea" name="message" maxLength={3000} placeholder="Votre message..." required />
                 <button className="cc-btn-gb" type="submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi...' : 'Envoyer'}
                 </button>

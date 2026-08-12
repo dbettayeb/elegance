@@ -215,7 +215,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="ri-field">
                         <label className="ri-field-label">Message optionnel</label>
-                        <textarea className="ri-input ri-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="ri-input ri-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="ri-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
@@ -256,7 +256,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="ri-field">
                         <label className="ri-field-label">Vos vœux</label>
-                        <textarea className="ri-input ri-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="ri-input ri-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="ri-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : 'Publier mon message'}

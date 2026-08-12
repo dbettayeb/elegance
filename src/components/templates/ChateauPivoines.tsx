@@ -454,7 +454,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
                     <input className="cp-input" name="name" placeholder="Prénom et nom" required />
                     <input className="cp-input" name="phone" placeholder="WhatsApp (facultatif)" />
                     <input className="cp-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-                    <textarea className="cp-input cp-textarea" name="note" placeholder="Un mot pour les mariés (facultatif)" />
+                    <textarea className="cp-input cp-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés (facultatif)" />
                   </div>
 
                   <button
@@ -497,7 +497,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="cp-gb-form" onSubmit={submitMessage}>
                 <input className="cp-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="cp-input cp-textarea" name="message" placeholder="Laissez un mot doux aux mariés…" required />
+                <textarea className="cp-input cp-textarea" name="message" maxLength={3000} placeholder="Laissez un mot doux aux mariés…" required />
                 <button type="submit" className="cp-gb-submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi…' : 'Déposer mon mot'}
                 </button>

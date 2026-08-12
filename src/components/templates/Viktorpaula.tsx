@@ -457,7 +457,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
                     <input className="rsvp-input" name="phone"  placeholder="WhatsApp (optional)" />
                     <input className="rsvp-input" name="guests" type="number" min="0" max="20" placeholder="Number of guests" />
                     <input className="rsvp-input" name="food"   placeholder="Food intolerances (optional)" />
-                    <textarea className="rsvp-input rsvp-textarea" name="note" placeholder="A word for the couple (optional)" />
+                    <textarea className="rsvp-input rsvp-textarea" name="note" maxLength={1500} placeholder="A word for the couple (optional)" />
                   </div>
                   <button type="submit" className="rsvp-submit" disabled={rsvpStatus === 'loading'}>
                     {rsvpStatus === 'loading' ? 'Submitting…' : 'RSVP'}
@@ -490,7 +490,7 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
               ) : (
                 <form className="guestbook-form" onSubmit={submitMessage}>
                   <input    className="guestbook-input"              name="author_name" placeholder="Your first name"                       required />
-                  <textarea className="guestbook-input guestbook-textarea" name="message"     placeholder="Leave a sweet note for the couple…" required />
+                  <textarea className="guestbook-input guestbook-textarea" name="message" maxLength={3000}     placeholder="Leave a sweet note for the couple…" required />
                   <button type="submit" className="guestbook-submit" disabled={gbStatus === 'loading'}>
                     {gbStatus === 'loading' ? 'Sending…' : 'Send my message'}
                   </button>

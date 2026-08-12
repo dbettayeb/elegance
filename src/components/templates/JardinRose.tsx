@@ -214,7 +214,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="jr-field">
                         <label className="jr-field-label">Message optionnel</label>
-                        <textarea className="jr-input jr-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="jr-input jr-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="jr-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : '✦  Confirmer ma présence  ✦'}
@@ -259,7 +259,7 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="jr-field">
                         <label className="jr-field-label">Vos vœux</label>
-                        <textarea className="jr-input jr-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="jr-input jr-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="jr-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : '✦  Publier mon message  ✦'}

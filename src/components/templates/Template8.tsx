@@ -231,7 +231,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="t8-field">
                         <label className="t8-field-label">Message optionnel</label>
-                        <textarea className="t8-input t8-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="t8-input t8-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="t8-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
@@ -278,7 +278,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="t8-field">
                         <label className="t8-field-label">Vos vœux</label>
-                        <textarea className="t8-input t8-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="t8-input t8-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="t8-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : 'Publier mon message'}

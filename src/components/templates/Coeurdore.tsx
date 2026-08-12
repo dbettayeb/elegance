@@ -508,7 +508,7 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
                     <input className="cd-input" name="name" placeholder="Prénom et nom" required />
                     <input className="cd-input" name="phone" placeholder="WhatsApp (facultatif)" />
                     <input className="cd-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-                    <textarea className="cd-input cd-textarea" name="note" placeholder="Un mot pour les mariés (facultatif)" />
+                    <textarea className="cd-input cd-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés (facultatif)" />
                   </div>
 
                   <button
@@ -552,7 +552,7 @@ export default function CoeurDore({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="cd-gb-form" onSubmit={submitMessage}>
                 <input className="cd-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="cd-input cd-textarea" name="message" placeholder="Laissez un mot doux aux mariés…" required />
+                <textarea className="cd-input cd-textarea" name="message" maxLength={3000} placeholder="Laissez un mot doux aux mariés…" required />
                 <button type="submit" className="cd-gb-submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi…' : 'Déposer mon mot'}
                 </button>

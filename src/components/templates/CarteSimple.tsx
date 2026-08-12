@@ -226,7 +226,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="cs-field">
                         <label className="cs-field-label">Message optionnel</label>
-                        <textarea className="cs-input cs-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="cs-input cs-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="cs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : '◆  Confirmer ma présence  ◆'}
@@ -271,7 +271,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="cs-field">
                         <label className="cs-field-label">Vos vœux</label>
-                        <textarea className="cs-input cs-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="cs-input cs-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="cs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : '◆  Publier mon message  ◆'}

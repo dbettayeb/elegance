@@ -267,7 +267,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="aq-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="aq-input aq-textarea" name="note" placeholder="Message (optionnel)" />
+              <textarea className="aq-input aq-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
               <button className="aq-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ☾'}
               </button>
@@ -304,7 +304,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="aq-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
                 <input className="aq-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="aq-input aq-textarea" name="message" placeholder="Vos vœux..." required />
+                <textarea className="aq-input aq-textarea" name="message" maxLength={3000} placeholder="Vos vœux..." required />
                 <button className="aq-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                   Publier ☾
                 </button>
