@@ -3,6 +3,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const DECO_KEY = 'assets/template3/deco3.png'
 const DECO_W = 857, DECO_H = 1200
@@ -213,6 +214,7 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
                   )}
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

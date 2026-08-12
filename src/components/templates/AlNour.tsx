@@ -12,6 +12,7 @@ import { getBismillahPalette } from '@/lib/bismillah-palettes'
 import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
   wedding: Wedding
@@ -297,6 +298,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
                   </form>
                 )}
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

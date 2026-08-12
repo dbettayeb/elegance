@@ -5,6 +5,7 @@ import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import { getIvoirePalette, IvoirePalette } from '@/lib/ivoire-palettes'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 function parseVariant(v?: string | null) {
   const [paletteId = 'or_classique'] = (v ?? '').split('|')
@@ -235,6 +236,7 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
                   <div className="cs-card-dots">• • •</div>
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

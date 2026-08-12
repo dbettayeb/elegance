@@ -3,6 +3,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const DECO_KEY = 'assets/template8/deco8.png'
 const RING_KEY = 'assets/template8/Anneau floral qui contient la 1ere lettres des prenoms.png'
@@ -239,6 +240,7 @@ export default function Template8({ wedding }: { wedding: Wedding }) {
                   )}
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

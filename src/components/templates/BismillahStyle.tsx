@@ -9,6 +9,7 @@ import { getBismillahPalette, AR_STYLE_PALETTES_MAP } from '@/lib/bismillah-pale
 import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 export default function BismillahStyle({
   wedding,
@@ -326,6 +327,7 @@ export default function BismillahStyle({
                 <div className="bs-card-dots">• • •</div>
               </div>
             </div>
+            <AddToCalendar wedding={wedding} />
           </section>
         )}
 

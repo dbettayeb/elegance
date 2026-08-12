@@ -3,6 +3,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 const DECO_KEY  = 'assets/template4/deco4.png'
 const RINGS_KEY = 'assets/template4/rings.png'
@@ -223,6 +224,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
                   )}
                 </div>
               </div>
+              <AddToCalendar wedding={wedding} />
             </section>
           )}
 

@@ -25,6 +25,7 @@ export interface Wedding {
   | 'toile_bleue_ar' | 'jardin_rose_ar' | 'floral_arch_ar' | 'roses_ivoire_ar' | 'rose_bleu_ar'
   | 'template_7' | 'template_8'
   | 'template_7_ar' | 'template_8_ar'
+  | 'soiree_ar'
   music_url?: string
   background_image?: string
   decoration_image?: string
@@ -57,6 +58,8 @@ export interface Wedding {
   wedding_day_text?: string
   venue_photo?: string
   custom_font_size?: number
+  /** Accompagnants max par invité au RSVP. null/undefined = illimité. */
+  max_guests?: number | null
   verse_ar?: string
   parties?: Party[]
   show_celebrations?: boolean

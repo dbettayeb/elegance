@@ -65,6 +65,8 @@ export default function PreviewPage() {
         custom_message: parsed.custom_message || undefined,
         music_url: parsed.music_url || undefined,
         custom_font: parsed.custom_font || undefined,
+        custom_font_size: parsed.custom_font_size ?? 100,
+        max_guests: parsed.max_guests ?? null,
 
         program: parsed.program || [],
         parties: parsed.parties || [],
@@ -81,6 +83,7 @@ export default function PreviewPage() {
         show_countdown:  parsed.show_countdown  ?? true,
         moderation_on:   parsed.moderation_on   ?? true,
         bismillah_palette: parsed.bismillah_palette || undefined,
+        ar_font_theme: parsed.ar_font_theme || undefined,
         background_image:  parsed.background_image  || 'bg-texture.jpg',
         decoration_image:  parsed.decoration_image  || 'decoration.png',
         guest_invite_enabled:   parsed.guest_invite_enabled   ?? false,

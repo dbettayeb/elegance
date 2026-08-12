@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
   const {
@@ -466,6 +467,7 @@ export default function ChateauPivoines({ wedding }: { wedding: Wedding }) {
                 </form>
               )}
             </div>
+            <AddToCalendar wedding={wedding} />
           </section>
         )}
 

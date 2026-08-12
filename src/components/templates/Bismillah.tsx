@@ -9,6 +9,7 @@ import { getBismillahPalette } from '@/lib/bismillah-palettes'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import { getVersePreset } from '@/lib/arabic-presets'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
+import AddToCalendar from '@/components/common/AddToCalendar'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
   const {
@@ -327,6 +328,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
                 </form>
               )}
             </div>
+            <AddToCalendar wedding={wedding} />
           </section>
         )}
 

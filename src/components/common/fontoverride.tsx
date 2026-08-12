@@ -62,6 +62,15 @@ const FAMILY_SELECTORS = [
   '.an-fn', '.an-fand',
 ].join(',\n')
 
+// Titres libres portés par le template lui-même (et non par des prénoms).
+// Seule la POLICE est posée ici : une taille en % se calculerait sur le parent
+// et écraserait l'échelle du titre. Soirée applique custom_font_size lui-même,
+// comme un facteur sur sa taille de base.
+const TITLE_SELECTORS = [
+  // Soirée
+  '.sa-hero-title', '.sa-footer-title',
+].join(',\n')
+
 // Tous les éléments du bloc familles — la POLICE (custom_font) s'applique à tous.
 const FAMILY_FONT_SELECTORS = [
   '.bs-fn', '.bs-fp', '.bs-fand', '.bs-families-intro',
@@ -86,7 +95,7 @@ export default function FontOverride({ font, fontSize }: Props) {
         />
       )}
       <style>{`
-        ${hasFontFamily && fontOption ? `${NAME_SELECTORS},\n${FAMILY_FONT_SELECTORS} {
+        ${hasFontFamily && fontOption ? `${NAME_SELECTORS},\n${FAMILY_FONT_SELECTORS},\n${TITLE_SELECTORS} {
           font-family: ${fontOption.family} !important;
         }` : ''}
         ${hasFontSize ? `${FAMILY_SELECTORS} {

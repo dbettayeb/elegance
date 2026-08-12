@@ -49,6 +49,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     music_url: wedding.music_url ?? '',
     custom_font: (wedding.custom_font ?? '') as string | null,
     custom_font_size: wedding.custom_font_size ?? 100,
+    max_guests: wedding.max_guests ?? null,
     ar_font_theme: wedding.ar_font_theme ?? 'classic',
     show_rsvp: wedding.show_rsvp ?? true,
     show_guestbook: wedding.show_guestbook,
@@ -122,7 +123,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
-  const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar', 'template_7_ar', 'template_8_ar'].includes(form.template_id)
+  const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar', 'template_7_ar', 'template_8_ar', 'soiree_ar'].includes(form.template_id)
 
   const templatesDynamiques = TEMPLATES_META.filter(t => t.type === 'dynamique')
   const templatesStatiques  = TEMPLATES_META.filter(t => t.type === 'statique')
@@ -174,7 +175,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
-          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && (
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && form.template_id !== 'soiree_ar' && (
             <>
               <div style={{ padding: '10px 12px', background: '#fffbeb', border: '1px solid #fde68a',
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
@@ -512,7 +513,14 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             onChange={font => set('custom_font', font)}
             language={fontLanguage}
           />
-          <Field label="Taille pour les noms de famille (noms de famille arabes uniquement)" help="Ajuste la taille des textes de famille (ex: عائلة السيد). S'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.">
+          <Field
+            label={form.template_id === 'soiree_ar'
+              ? 'Taille du titre de la soirée'
+              : 'Taille pour les noms de famille (noms de famille arabes uniquement)'}
+            help={form.template_id === 'soiree_ar'
+              ? 'Ajuste la taille du titre affiché sur la vidéo, et du même titre repris en bas de l\'invitation.'
+              : 'Ajuste la taille des textes de famille (ex: عائلة السيد). S\'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.'}
+          >
             <select
               className="admin-input"
               value={form.custom_font_size}
@@ -528,6 +536,21 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             </select>
           </Field>
         </Section>
+
+        {form.template_id === 'soiree_ar' && (
+          <Section title="Soir&eacute;e — m&eacute;dias">
+            <Field label="Titre de la soirée" help='Texte affiché en grand sur la vidéo, au-dessus de la date. Ex : ليلة الحناء. Par défaut "ليلة العمر".'>
+              <input className="admin-input" value={form.wedding_day_text}
+                onChange={e => set('wedding_day_text', e.target.value)}
+                placeholder="ليلة العمر" dir="rtl" />
+            </Field>
+            <Field label="Vidéo du héros" help="URL d'une vidéo MP4. Elle occupe tout le haut de l'invitation, en fond du titre et de la date. Laissez vide pour un fond dégradé.">
+              <input className="admin-input" type="url" value={form.intro_video_url}
+                onChange={e => set('intro_video_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+          </Section>
+        )}
 
         {form.template_id === 'viktor_paula' && (
           <Section title="Viktor &amp; Paula — médias">
@@ -568,6 +591,37 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />
+            {form.show_rsvp && (
+              <div style={{ padding: '10px', border: '1px solid var(--admin-border)',
+                borderRadius: 'var(--admin-radius)', background: '#fafafa',
+                display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={form.max_guests === null}
+                    onChange={e => set('max_guests', e.target.checked ? null : 2)}
+                    style={{ accentColor: 'var(--admin-accent)' }}
+                  />
+                  <span style={{ fontSize: '0.88rem', fontWeight: 500 }}>Accompagnants illimités</span>
+                </label>
+                {form.max_guests !== null && (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-muted)' }}>
+                      Maximum par invité
+                    </span>
+                    <input
+                      className="admin-input"
+                      type="number"
+                      min={0}
+                      max={20}
+                      value={form.max_guests}
+                      onChange={e => set('max_guests', Math.min(20, Math.max(0, parseInt(e.target.value, 10) || 0)))}
+                      style={{ width: '90px' }}
+                    />
+                  </label>
+                )}
+              </div>
+            )}
             <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
               checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />
