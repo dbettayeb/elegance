@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Wedding, ProgramItem } from '@/lib/types'
+import type { BismillahPalette } from '@/lib/bismillah-palettes'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { getArTypographyTheme } from '@/lib/typography-themes'
+import { getBismillahPalette } from '@/lib/bismillah-palettes'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
 
@@ -28,6 +30,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
 
   const theme = getArTypographyTheme(wedding.ar_font_theme)
+  const palette = getBismillahPalette(wedding.bismillah_palette)
 
   // ar-TN gives Arabic month names with Western digits, which is what Tunisian
   // invitations use. The time is forced to 24h: the locale default would print
@@ -67,7 +70,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
         href={`https://fonts.googleapis.com/css2?family=${theme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
-      <style>{CSS(theme.display, theme.body, titleScale)}</style>
+      <style>{CSS(theme.display, theme.body, titleScale, palette)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
 
       <div className="sa-root" dir="rtl" lang="ar">
@@ -298,14 +301,15 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   )
 }
 
-const CSS = (display: string, body: string, titleScale: number) => `
+const CSS = (display: string, body: string, titleScale: number, p: BismillahPalette) => `
 .sa-root {
-  --sa-night:   #0E0B12;
-  --sa-deep:    #16111C;
-  --sa-gold:    #C8A24E;
-  --sa-gold-dim: rgba(200, 162, 78, 0.45);
-  --sa-cream:   #F3ECE0;
-  --sa-muted:   rgba(243, 236, 224, 0.62);
+  --sa-night:    ${p.bg};
+  --sa-gold:     ${p.accent};
+  --sa-gold-dim: ${p.border};
+  --sa-soft:     ${p.accentSoft};
+  --sa-cream:    ${p.textPrimary};
+  --sa-second:   ${p.textSecondary};
+  --sa-muted:    ${p.textMuted};
   --sa-title-scale: ${titleScale};
   --sa-display: ${display};
   --sa-body:    ${body};
@@ -348,12 +352,12 @@ const CSS = (display: string, body: string, titleScale: number) => `
   display: block;
 }
 .sa-hero-fallback {
-  background: linear-gradient(160deg, var(--sa-deep) 0%, var(--sa-night) 60%, #241A2E 100%);
+  background: linear-gradient(160deg, var(--sa-soft) 0%, var(--sa-night) 55%, var(--sa-soft) 100%);
 }
 .sa-hero-veil {
   position: absolute;
   inset: 0;
-  background: rgba(10, 8, 14, 0.46);
+  background: color-mix(in srgb, var(--sa-night) 62%, transparent);
 }
 .sa-hero-fade {
   position: absolute;
@@ -361,7 +365,7 @@ const CSS = (display: string, body: string, titleScale: number) => `
   right: 0;
   bottom: 0;
   height: 190px;
-  background: linear-gradient(0deg, var(--sa-night) 0%, rgba(14, 11, 18, 0) 100%);
+  background: linear-gradient(0deg, var(--sa-night) 0%, transparent 100%);
 }
 /* Ancré vers le haut du panneau, pas centré : le bas de la vidéo reste
    visible sous le texte. */
@@ -414,7 +418,7 @@ const CSS = (display: string, body: string, titleScale: number) => `
   margin: 0 auto;
   padding: 54px 26px;
   text-align: center;
-  border-bottom: 1px solid rgba(200, 162, 78, 0.14);
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 14%, transparent);
 }
 /* Paire surtitre + titre, reprise de Bismillah. */
 .sa-label {
@@ -448,7 +452,7 @@ const CSS = (display: string, body: string, titleScale: number) => `
 
 /* ── Célébrations ── */
 .sa-parties { display: flex; flex-direction: column; gap: 16px; }
-.sa-party { padding: 20px; border: 1px solid rgba(200, 162, 78, 0.2); }
+.sa-party { padding: 20px; border: 1px solid color-mix(in srgb, var(--sa-gold) 20%, transparent); }
 .sa-party-title   { font-family: var(--sa-display); font-size: 22px; color: var(--sa-gold); margin-bottom: 8px; }
 .sa-party-meta    { font-size: 14px; color: var(--sa-muted); margin-bottom: 8px; }
 .sa-party-venue   { font-size: 17px; }
@@ -461,7 +465,7 @@ const CSS = (display: string, body: string, titleScale: number) => `
   align-items: baseline;
   gap: 18px;
   padding: 15px 4px;
-  border-bottom: 1px solid rgba(200, 162, 78, 0.12);
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 12%, transparent);
   text-align: right;
 }
 .sa-program-row:last-child { border-bottom: none; }
@@ -494,15 +498,15 @@ const CSS = (display: string, body: string, titleScale: number) => `
 .sa-input {
   width: 100%;
   padding: 13px 15px;
-  background: rgba(243, 236, 224, 0.04);
-  border: 1px solid rgba(200, 162, 78, 0.26);
+  background: var(--sa-soft);
+  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
   color: var(--sa-cream);
   font-family: var(--sa-body);
   font-size: 15px;
   outline: none;
   transition: border-color 0.25s ease;
 }
-.sa-input::placeholder { color: rgba(243, 236, 224, 0.38); }
+.sa-input::placeholder { color: var(--sa-muted); opacity: 0.7; }
 .sa-input:focus { border-color: var(--sa-gold); }
 .sa-textarea { min-height: 96px; resize: vertical; }
 .sa-choices { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -511,14 +515,14 @@ const CSS = (display: string, body: string, titleScale: number) => `
   min-width: 96px;
   padding: 11px 8px;
   background: transparent;
-  border: 1px solid rgba(200, 162, 78, 0.26);
+  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
   color: var(--sa-muted);
   font-family: var(--sa-body);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.25s ease;
 }
-.sa-choice-on { border-color: var(--sa-gold); color: var(--sa-gold); background: rgba(200, 162, 78, 0.09); }
+.sa-choice-on { border-color: var(--sa-gold); color: var(--sa-gold); background: color-mix(in srgb, var(--sa-gold) 9%, transparent); }
 .sa-submit {
   padding: 14px;
   margin-top: 4px;
@@ -535,7 +539,7 @@ const CSS = (display: string, body: string, titleScale: number) => `
 
 /* ── Livre d'or ── */
 .sa-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
-.sa-message { padding: 17px; border: 1px solid rgba(200, 162, 78, 0.16); }
+.sa-message { padding: 17px; border: 1px solid color-mix(in srgb, var(--sa-gold) 16%, transparent); }
 .sa-message-text   { font-size: 16px; line-height: 1.9; }
 .sa-message-author { font-size: 13px; color: var(--sa-gold); margin-top: 9px; }
 

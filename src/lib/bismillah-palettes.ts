@@ -7,6 +7,7 @@ export interface BismillahPalette {
     | 'rb_ar_bleu' | 'rb_ar_ciel' | 'rb_ar_ardoise' | 'rb_ar_noir'
     | 't7_ar_or' | 't7_ar_bordeaux' | 't7_ar_sable' | 't7_ar_noir'
     | 't8_ar_rose' | 't8_ar_framboise' | 't8_ar_poudre' | 't8_ar_noir'
+    | 'sa_ar_nuit' | 'sa_ar_bordeaux' | 'sa_ar_emeraude' | 'sa_ar_ardoise'
   name: string
   accent: string
   accentDark: string
@@ -508,6 +509,61 @@ export const TEMPLATE_8_AR_PALETTES: BismillahPalette[] = [
   },
 ]
 
+export const SOIREE_AR_PALETTES: BismillahPalette[] = [
+  {
+    id: 'sa_ar_nuit',
+    name: 'Nuit & or',
+    accent: '#C8A24E',
+    accentDark: '#9B7C34',
+    accentSoft: 'rgba(200,162,78,0.12)',
+    border: 'rgba(200,162,78,0.45)',
+    bg: '#0E0B12',
+    textPrimary: '#F3ECE0',
+    textSecondary: 'rgba(243,236,224,0.78)',
+    textMuted: 'rgba(243,236,224,0.62)',
+    preview: ['#0E0B12', '#C8A24E', '#F3ECE0', '#16111C'],
+  },
+  {
+    id: 'sa_ar_bordeaux',
+    name: 'Bordeaux & or',
+    accent: '#D4A857',
+    accentDark: '#A37F35',
+    accentSoft: 'rgba(212,168,87,0.12)',
+    border: 'rgba(212,168,87,0.45)',
+    bg: '#26060F',
+    textPrimary: '#F6ECE4',
+    textSecondary: 'rgba(246,236,228,0.78)',
+    textMuted: 'rgba(246,236,228,0.62)',
+    preview: ['#26060F', '#D4A857', '#F6ECE4', '#3A0C18'],
+  },
+  {
+    id: 'sa_ar_emeraude',
+    name: 'Émeraude & or',
+    accent: '#C9AE63',
+    accentDark: '#96803F',
+    accentSoft: 'rgba(201,174,99,0.12)',
+    border: 'rgba(201,174,99,0.45)',
+    bg: '#07211A',
+    textPrimary: '#EFEDE2',
+    textSecondary: 'rgba(239,237,226,0.78)',
+    textMuted: 'rgba(239,237,226,0.62)',
+    preview: ['#07211A', '#C9AE63', '#EFEDE2', '#0C3128'],
+  },
+  {
+    id: 'sa_ar_ardoise',
+    name: 'Ardoise & argent',
+    accent: '#B7C1CC',
+    accentDark: '#8A94A0',
+    accentSoft: 'rgba(183,193,204,0.12)',
+    border: 'rgba(183,193,204,0.42)',
+    bg: '#14181D',
+    textPrimary: '#EDF1F5',
+    textSecondary: 'rgba(237,241,245,0.78)',
+    textMuted: 'rgba(237,241,245,0.6)',
+    preview: ['#14181D', '#B7C1CC', '#EDF1F5', '#1D232A'],
+  },
+]
+
 export const AR_STYLE_PALETTES_MAP: Record<string, BismillahPalette[]> = {
   'toile_bleue_ar':  TOILE_BLEUE_AR_PALETTES,
   'jardin_rose_ar':  JARDIN_ROSE_AR_PALETTES,
@@ -516,6 +572,7 @@ export const AR_STYLE_PALETTES_MAP: Record<string, BismillahPalette[]> = {
   'rose_bleu_ar':    ROSE_BLEU_AR_PALETTES,
   'template_7_ar':   TEMPLATE_7_AR_PALETTES,
   'template_8_ar':   TEMPLATE_8_AR_PALETTES,
+  'soiree_ar':       SOIREE_AR_PALETTES,
 }
 
 export function getArStylePalettes(templateId: string): BismillahPalette[] {
