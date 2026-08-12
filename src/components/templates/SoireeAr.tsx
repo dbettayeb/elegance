@@ -40,8 +40,8 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [musicOn, setMusicOn] = useState(false)
-  // Enveloppe reprise de Viktor & Paula : 0 inerte, 1 colombe qui s'efface,
-  // 2 panneaux qui s'écartent, 3 écran qui disparaît, 4 invitation ouverte.
+  // Phases d'ouverture : 0 inerte, 1 le sceau s'efface, 2 les pans s'écartent,
+  // 3 l'écran disparaît, 4 invitation ouverte.
   const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
   const theme = lang === 'fr' ? SOIREE_FR_THEME : getArTypographyTheme(wedding.ar_font_theme)
@@ -73,32 +73,14 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
   // autorise le son : sans lui, tout navigateur refuse de lancer la musique.
   function startSequence() {
     if (phase !== 0) return
-    setPhase(1)                          // la colombe et l'invite s'effacent
-    setTimeout(() => setPhase(2), 1000)  // les panneaux s'écartent
+    setPhase(1)                          // le sceau et l'invite s'effacent
+    setTimeout(() => setPhase(2), 1000)  // les pans s'écartent
     setTimeout(() => setPhase(3), 3500)  // l'écran s'efface
     setTimeout(() => {
       setPhase(4)
       openEnvelope()
     }, 4100)
   }
-
-  // Met l'enveloppe à l'échelle de l'écran. Reprise telle quelle de Viktor &
-  // Paula : le papier fait 580px de haut dans une scène de 1200×850.
-  useEffect(() => {
-    if (phase >= 3) return
-    function scaleOpening() {
-      const stage = document.querySelector<HTMLElement>('.sa-stage')
-      if (!stage) return
-      const PAPER_H = 580
-      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
-        ? 1
-        : Math.min(window.innerHeight / PAPER_H, 1.5)
-      stage.style.setProperty('--os-scale', scale.toFixed(4))
-    }
-    scaleOpening()
-    window.addEventListener('resize', scaleOpening)
-    return () => window.removeEventListener('resize', scaleOpening)
-  }, [phase])
 
   // Autoplay needs muted; some browsers still refuse, so failure is silent.
   useEffect(() => {
@@ -152,6 +134,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
   const dressWomen = wedding.dress_code_women?.trim()
   const dressMen = wedding.dress_code_men?.trim()
   const dressColors = Array.isArray(wedding.dress_code_colors) ? wedding.dress_code_colors : []
+  const dressImages = (Array.isArray(wedding.dress_code_images) ? wedding.dress_code_images : []).filter(Boolean)
 
   return (
     <>
@@ -172,13 +155,11 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
             tabIndex={0}
             aria-label={t.openAria}
           >
-            <img className="sa-poly sa-poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
-            <img className="sa-poly sa-poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
-            <img className="sa-poly sa-poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
-            <img className="sa-poly sa-poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
-            <span className="sa-dove" aria-hidden="true">
-              <img src="/assets/dove/dove-open.webp" alt="" />
-            </span>
+            <span className="sa-flap sa-flap-l" />
+            <span className="sa-flap sa-flap-r" />
+            <span className="sa-flap sa-flap-b" />
+            <span className="sa-flap sa-flap-t" />
+            <span className="sa-seal" aria-hidden="true">{t.ornament}</span>
             <span className="sa-hint">{t.hint}</span>
           </div>
         </div>
@@ -312,7 +293,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
           </section>
 
           {/* ─── DRESS CODE ─── */}
-          {wedding.show_dress_code && (dressWomen || dressMen || dressColors.length > 0) && (
+          {wedding.show_dress_code && (dressWomen || dressMen || dressColors.length > 0 || dressImages.length > 0) && (
             <section className="sa-section">
               <p className="sa-label">{t.dressLabel}</p>
               <h2 className="sa-title">{t.dressTitle}</h2>
@@ -334,6 +315,14 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                 <div className="sa-dress-colors">
                   {dressColors.map((color, i) => (
                     <span className="sa-dress-dot" key={i} style={{ background: color }} />
+                  ))}
+                </div>
+              )}
+              {dressImages.length > 0 && (
+                <div className="sa-dress-gallery" dir="ltr">
+                  {dressImages.map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className="sa-dress-photo" key={i} src={src} alt="" loading="lazy" draggable={false} />
                   ))}
                 </div>
               )}
@@ -755,64 +744,119 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   box-shadow: 0 2px 8px rgba(0,0,0,0.28);
 }
 
+/* Galerie d'inspiration. Défilement natif avec accroche plutôt qu'un carrousel
+   scripté : le geste tactile et le trackpad fonctionnent sans code, et une
+   image qui ne charge pas ne casse pas la rangée. */
+.sa-dress-gallery {
+  display: flex; gap: 14px;
+  margin-top: 32px; padding-bottom: 10px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sa-gold-dim) transparent;
+  justify-content: flex-start;
+}
+.sa-dress-photo {
+  flex: 0 0 auto;
+  width: 190px; height: 260px; object-fit: cover;
+  border-radius: 3px; border: 1px solid var(--sa-gold-dim);
+  scroll-snap-align: center;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+}
+
 @media (max-width: 640px) {
   .sa-dress     { gap: 26px; margin-top: 22px; }
   .sa-dress-col { flex: 1 1 100%; max-width: none; }
-  .sa-dress-dot { width: 26px; height: 26px; }
+  .sa-dress-dot   { width: 26px; height: 26px; }
+  .sa-dress-photo { width: 150px; height: 206px; }
 }
 
 /* ── ENVELOPPE D'OUVERTURE ──
-   Reprise de Viktor & Paula : même scène de 1200×850, mêmes décalages, mêmes
-   durées. Le fond garde le bordeaux de ses illustrations, qui sont peintes
-   dans cette teinte et jureraient sur la palette nuit du template. */
+   Même chorégraphie que Viktor & Paula, mais dessinée plutôt qu'illustrée :
+   ses images sont peintes en bordeaux et ne pouvaient pas suivre la palette
+   que le marié choisit. Ici chaque pan est un triangle découpé au clip-path,
+   donc toutes les teintes viennent de la palette. */
 .sa-opening {
   position: fixed; inset: 0;
-  background: #66021f;
+  background: radial-gradient(ellipse at 50% 42%, ${p.bg} 0%, #000 130%);
   z-index: 10000; overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 30px;
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 .sa-opening-gone { opacity: 0; visibility: hidden; pointer-events: none; }
 
 .sa-stage {
-  position: absolute; top: 50%; left: 50%;
-  width: 1200px; height: 850px;
+  position: relative;
+  width: min(86vw, 440px);
+  aspect-ratio: 1 / 0.7;
   cursor: pointer;
-  --os-scale: 1;
-  transform: translate(-50%, -50%) scale(var(--os-scale));
-  transform-origin: center center;
+  filter: drop-shadow(0 24px 48px rgba(0,0,0,0.55));
 }
-.sa-poly {
-  position: absolute; pointer-events: none;
+
+/* Les quatre pans. Chacun couvre toute la scène et n'en garde qu'un triangle,
+   les quatre pointes se rejoignant au centre. */
+.sa-flap {
+  position: absolute; inset: 0;
   transition: transform 2.5s ease, opacity 0.5s ease;
 }
-.sa-poly-left  { top: -13px; left: 98px;  width: 467px;  height: auto; z-index: 1; }
-.sa-poly-right { top: -13px; left: 635px; width: 467px;  height: auto; z-index: 1; }
-.sa-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
-.sa-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
+.sa-flap-l {
+  clip-path: polygon(0 0, 50% 50%, 0 100%);
+  background: linear-gradient(90deg, rgba(0,0,0,0.09), rgba(0,0,0,0.01)), ${p.textPrimary};
+}
+.sa-flap-r {
+  clip-path: polygon(100% 0, 50% 50%, 100% 100%);
+  background: linear-gradient(270deg, rgba(0,0,0,0.09), rgba(0,0,0,0.01)), ${p.textPrimary};
+}
+.sa-flap-b {
+  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0)), ${p.textPrimary};
+}
+.sa-flap-t {
+  clip-path: polygon(0 0, 50% 50%, 100% 0);
+  /* Le pan rabattu par-dessus les autres : plus sombre, avec une ombre portée
+     le long de ses deux arêtes pour marquer l'épaisseur du papier. */
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.13)), ${p.textPrimary};
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.28));
+  z-index: 2;
+}
 
-.sa-animating .sa-poly-left  { transform: translateX(-560px); opacity: 0; }
-.sa-animating .sa-poly-right { transform: translateX(560px);  opacity: 0; }
-.sa-animating .sa-poly-top   { transform: translateY(-430px); }
-.sa-animating .sa-poly-bot   { transform: translateY(566px); }
+.sa-animating .sa-flap-l { transform: translateX(-115%); opacity: 0; }
+.sa-animating .sa-flap-r { transform: translateX(115%);  opacity: 0; }
+.sa-animating .sa-flap-t { transform: translateY(-115%); }
+.sa-animating .sa-flap-b { transform: translateY(115%); }
 
-.sa-dove {
-  position: absolute; top: 318px; left: 515px;
-  width: 170px; height: 170px; z-index: 3;
+/* Le sceau de cire, en couleur d'accent plutôt qu'en image dorée figée. */
+.sa-seal {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 84px; height: 84px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 35% 30%, ${p.accent}, ${p.accentDark});
+  color: ${p.bg}; font-family: ${display}; font-size: 34px; line-height: 1;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 -2px 6px rgba(0,0,0,0.25);
+  z-index: 3;
   transition: transform 1.5s ease, opacity 1.5s ease;
 }
-.sa-dove img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.sa-seal-out .sa-dove, .sa-animating .sa-dove { transform: scale(1.22); opacity: 0; }
+.sa-seal-out .sa-seal, .sa-animating .sa-seal {
+  transform: translate(-50%, -50%) scale(1.25); opacity: 0;
+}
 
 .sa-hint {
-  position: absolute; top: 540px; left: 535px;
-  width: 130px; text-align: center;
-  color: #66021f; font-family: ${body};
-  font-size: 20px; pointer-events: none; z-index: 1;
-  white-space: nowrap;
+  position: absolute; top: calc(100% + 26px); left: 50%;
+  transform: translateX(-50%); white-space: nowrap;
+  font-family: ${body};
+  font-size: 13px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: ${p.accent};
   transition: opacity 1.5s ease;
 }
 .sa-seal-out .sa-hint, .sa-animating .sa-hint {
   opacity: 0; transition: opacity 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .sa-opening { gap: 22px; }
+  .sa-seal    { width: 68px; height: 68px; font-size: 28px; }
+  .sa-hint    { font-size: 11px; }
 }
 
 /* ── CONTRÔLE MUSIQUE ──

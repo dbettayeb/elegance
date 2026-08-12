@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { RSVP, GuestMessage, GuestInvitation } from '@/lib/types'
 import MessageCard from '@/components/couple-portal/MessageCard'
+import Paginated from '@/components/couple-portal/Paginated'
 import GuestInvitationsPanel from '@/components/couple-portal/GuestInvitationsPanel'
 import type { CoupleTheme } from '@/lib/couple-themes'
 import { TEMPLATES_META } from '@/lib/templates-meta'
@@ -126,7 +127,7 @@ export default async function CouplePortal({
                       <th>Date</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <Paginated as="tbody" columns={5} pageSize={15}>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
                         <td style={{ fontWeight: 500 }}>
@@ -153,7 +154,7 @@ export default async function CouplePortal({
                         </td>
                       </tr>
                     ))}
-                  </tbody>
+                  </Paginated>
                 </table>
               </div>
             </Section>
@@ -162,11 +163,11 @@ export default async function CouplePortal({
           {/* Messages en attente */}
           {wedding.moderation_on && pending.length > 0 && (
             <Section title="En attente d'approbation" badge={pending.length}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Paginated pageSize={8}>
                 {pending.map(msg => (
                   <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
-              </div>
+              </Paginated>
             </Section>
           )}
 
@@ -177,11 +178,11 @@ export default async function CouplePortal({
                 Aucun message publié pour l'instant.
               </p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Paginated pageSize={8}>
                 {approved.map(msg => (
                   <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
-              </div>
+              </Paginated>
             )}
           </Section>
 

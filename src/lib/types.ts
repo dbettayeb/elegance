@@ -33,6 +33,8 @@ export interface Wedding {
   dress_code_men?: string
   /** Codes hexadécimaux affichés en pastilles sous les consignes. */
   dress_code_colors?: string[]
+  /** Liens de photos d'inspiration, hébergés par le marié. */
+  dress_code_images?: string[]
   music_url?: string
   background_image?: string
   decoration_image?: string

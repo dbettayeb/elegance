@@ -77,6 +77,7 @@ export default function PreviewPage() {
         dress_code_women:  parsed.dress_code_women || undefined,
         dress_code_men:    parsed.dress_code_men || undefined,
         dress_code_colors: parsed.dress_code_colors ?? [],
+        dress_code_images: parsed.dress_code_images ?? [],
 
         wedding_day_text: parsed.wedding_day_text || undefined,
         venue_photo:      parsed.venue_photo      || undefined,

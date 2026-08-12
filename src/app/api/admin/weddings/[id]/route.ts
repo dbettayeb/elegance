@@ -170,7 +170,7 @@ export async function PATCH(
       couple_photo, intro_video_url,
       wedding_day_text, venue_photo,
       parties, show_celebrations,
-      show_dress_code, dress_code_women, dress_code_men, dress_code_colors,
+      show_dress_code, dress_code_women, dress_code_men, dress_code_colors, dress_code_images,
     } = body
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
@@ -240,6 +240,7 @@ export async function PATCH(
         dress_code_women:  dress_code_women || null,
         dress_code_men:    dress_code_men || null,
         dress_code_colors: Array.isArray(dress_code_colors) ? dress_code_colors : [],
+        dress_code_images: Array.isArray(dress_code_images) ? dress_code_images : [],
         program: Array.isArray(program) ? program : [],
       })
       .eq('id', id)

@@ -88,6 +88,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
 
   const [program, setProgram] = useState<ProgramItem []>(initialProgram)
   const [parties, setParties] = useState<Party[]>((wedding.parties as Party[]) ?? [])
+  const [dressImages, setDressImages] = useState<string[]>(wedding.dress_code_images ?? [])
   const [dressColors, setDressColors] = useState<string[]>(wedding.dress_code_colors ?? [])
   const [loading, setLoading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
@@ -113,7 +114,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     const res = await fetch(`/api/admin/weddings/${wedding.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, event_end_date, program, parties, dress_code_colors: dressColors }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, event_end_date, program, parties, dress_code_colors: dressColors, dress_code_images: dressImages.filter(Boolean) }),
     })
 
     const data = await res.json()
@@ -127,7 +128,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties, dress_code_colors: dressColors }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties, dress_code_colors: dressColors, dress_code_images: dressImages.filter(Boolean) }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
   }
 
@@ -349,7 +350,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
               </Row>
             </>
           )}
-          {isArStyle && (
+          {(isArStyle || isSoiree) && (
             <Field label="Palette de couleurs">
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
                 {getArStylePalettes(form.template_id).map(p => (
@@ -496,7 +497,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                   const tid = e.target.value
                   set('template_id', tid)
                   set('custom_font', null)
-                  if (['toile_bleue_ar','jardin_rose_ar','floral_arch_ar','roses_ivoire_ar','rose_bleu_ar'].includes(tid)) {
+                  if (['toile_bleue_ar','jardin_rose_ar','floral_arch_ar','roses_ivoire_ar','rose_bleu_ar','soiree_ar','soiree_fr'].includes(tid)) {
                     set('bismillah_palette', getArStylePalettes(tid)[0].id)
                   }
                 }}>
@@ -586,9 +587,9 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                     onChange={e => set('dress_code_men', e.target.value)}
                     placeholder="Costume sombre" />
                 </Field>
-                <Field label="Palette de couleurs" help="Pastilles affichées sous les consignes. Six au maximum.">
-                  <DressCodeEditor colors={dressColors} onChange={setDressColors} />
-                </Field>
+                <DressCodeEditor
+                  colors={dressColors} onColorsChange={setDressColors}
+                  images={dressImages} onImagesChange={setDressImages} />
               </>
             )}
           </Section>
