@@ -142,7 +142,6 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {parties.length > 0 && (
             <section className="sa-section">
               <p className="sa-label">الاحتفالات</p>
-              <h2 className="sa-title">مواعيد الأفراح</h2>
               <div className="sa-parties">
                 {parties.map((party, i) => (
                   <div className="sa-party" key={i}>
@@ -206,7 +205,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
               <p className="sa-label">تأكيد الحضور</p>
               <h2 className="sa-title">هل ستشرفوننا<br />بحضوركم؟</h2>
               {rsvpStatus === 'done' ? (
-                <p className="sa-success">جزاكم الله خيراً • Merci pour votre réponse ✦</p>
+                <p className="sa-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
               ) : (
                 <form className="sa-form" onSubmit={submitRSVP} dir="ltr">
                   <div className="sa-field">
@@ -241,7 +240,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="note" placeholder="Un mot pour les mariés..." />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? 'Envoi...' : '✦  Confirmer ma présence  ✦'}
+                    {rsvpStatus === 'loading' ? 'Envoi...' : '۞  Confirmer ma présence  ۞'}
                   </button>
                 </form>
               )}
@@ -266,7 +265,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
               )}
               {gbStatus === 'done' ? (
                 <p className="sa-success">
-                  {gbPending ? 'En attente de validation ✦' : 'Message publié ✦'}
+                  {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
                 </p>
               ) : (
                 <form className="sa-form" onSubmit={submitMessage} dir="ltr">
@@ -279,7 +278,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    {gbStatus === 'loading' ? 'Envoi...' : '✦  Publier mon message  ✦'}
+                    {gbStatus === 'loading' ? 'Envoi...' : '۞  Publier mon message  ۞'}
                   </button>
                 </form>
               )}
