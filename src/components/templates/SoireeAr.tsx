@@ -28,6 +28,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
   const [videoFailed, setVideoFailed] = useState(false)
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [musicOn, setMusicOn] = useState(false)
 
   const theme = getArTypographyTheme(wedding.ar_font_theme)
   // Restreint aux palettes de ce template : le défaut global est 'or_classique',
@@ -50,6 +52,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
   const titleScale = (wedding.custom_font_size ?? 100) / 100
   const hasVideo = !!wedding.intro_video_url && !videoFailed
+  const hasMusic = !!wedding.music_url
   // null = illimité. Le serveur applique la même limite, le max HTML étant contournable.
   const maxGuests = wedding.max_guests ?? null
 
@@ -65,6 +68,43 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     if (!opened || !hasVideo) return
     heroVideoRef.current?.play().catch(() => {})
   }, [opened, hasVideo])
+
+  // La musique démarre seule quand le navigateur l'accepte. La plupart la
+  // refusent tant que l'invité n'a rien touché — et ce template n'a pas
+  // d'enveloppe à ouvrir, donc aucun clic ne vient l'autoriser. On réessaie
+  // alors au premier geste, quel qu'il soit, et le bouton reste là pour couper.
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !hasMusic) return
+
+    let armed = true
+    const start = () => {
+      if (!armed) return
+      audio.play().then(() => {
+        armed = false
+        setMusicOn(true)
+        detach()
+      }).catch(() => {})
+    }
+    const events = ['pointerdown', 'keydown', 'touchstart', 'scroll'] as const
+    const detach = () =>
+      events.forEach(e => window.removeEventListener(e, start))
+
+    start()
+    events.forEach(e => window.addEventListener(e, start, { passive: true }))
+    return () => { armed = false; detach() }
+  }, [hasMusic])
+
+  const toggleMusic = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (musicOn) {
+      audio.pause()
+      setMusicOn(false)
+    } else {
+      audio.play().then(() => setMusicOn(true)).catch(() => {})
+    }
+  }
 
   const program: ProgramItem[] = Array.isArray(wedding.program) ? wedding.program : []
   const parties = (wedding.show_celebrations ?? true) ? (wedding.parties ?? []) : []
@@ -309,6 +349,29 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           </footer>
         </div>
       </div>
+
+      {hasMusic && (
+        <>
+          <audio ref={audioRef} loop preload="auto" src={wedding.music_url} />
+          <button
+            type="button"
+            className="sa-audio-control"
+            onClick={toggleMusic}
+            aria-label={musicOn ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
+          >
+            {musicOn ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
+            )}
+          </button>
+        </>
+      )}
     </>
   )
 }
@@ -570,6 +633,28 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
+/* ── CONTRÔLE MUSIQUE ──
+   Placé hors de .sa-root pour qu'aucun conteneur transformé ne détourne le
+   position:fixed, donc hors de portée des variables --sa-* : les couleurs de
+   la palette sont écrites en dur ici. */
+.sa-audio-control {
+  position: fixed; bottom: 20px; left: 20px;
+  width: 54px; height: 54px;
+  border: 1px solid ${p.border}; border-radius: 50%;
+  background: ${p.bg}; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.sa-audio-control:hover { transform: scale(1.06); border-color: ${p.accent}; }
+.sa-audio-control svg { width: 20px; height: 20px; fill: ${p.accent}; }
+
+@media (max-width: 640px) {
+  .sa-audio-control     { width: 46px; height: 46px; bottom: 14px; left: 14px; }
+  .sa-audio-control svg { width: 17px; height: 17px; }
+}
+
 @media (max-width: 640px) {
   .sa-hero-panel   { max-width: 100%; height: 84vh; min-height: 460px; }
   .sa-hero-content { padding-top: 5vh; }
