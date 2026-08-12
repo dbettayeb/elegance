@@ -38,6 +38,7 @@ export default function NewWeddingPage() {
     music_url: '',
     custom_font: '' as string | null,
     custom_font_size: 100,
+    max_guests: null as number | null,
     ar_font_theme: 'classic' as string,
     show_rsvp: true,
     show_guestbook: true,
@@ -555,6 +556,37 @@ export default function NewWeddingPage() {
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />
+            {form.show_rsvp && (
+              <div style={{ padding: '10px', border: '1px solid var(--admin-border)',
+                borderRadius: 'var(--admin-radius)', background: '#fafafa',
+                display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={form.max_guests === null}
+                    onChange={e => set('max_guests', e.target.checked ? null : 2)}
+                    style={{ accentColor: 'var(--admin-accent)' }}
+                  />
+                  <span style={{ fontSize: '0.88rem', fontWeight: 500 }}>Accompagnants illimités</span>
+                </label>
+                {form.max_guests !== null && (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--admin-text-muted)' }}>
+                      Maximum par invité
+                    </span>
+                    <input
+                      className="admin-input"
+                      type="number"
+                      min={0}
+                      max={20}
+                      value={form.max_guests}
+                      onChange={e => set('max_guests', Math.min(20, Math.max(0, parseInt(e.target.value, 10) || 0)))}
+                      style={{ width: '90px' }}
+                    />
+                  </label>
+                )}
+              </div>
+            )}
             <Toggle label="Activer le livre d'or"
               help="Les invités peuvent laisser des messages"
               checked={form.show_guestbook} onChange={v => set('show_guestbook', v)} />

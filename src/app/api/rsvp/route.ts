@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     // Vérifier que le mariage est actif
     const { data: wedding } = await supabase
       .from('weddings')
-      .select('id')
+      .select('id, max_guests')
       .eq('id', wedding_id)
       .eq('status', 'active')
       .single()
@@ -64,7 +64,8 @@ export async function POST(req: NextRequest) {
       name:    sanitizeName(name),
       phone:   phone ? sanitizePhone(phone) : null,
       status,
-      guests:  Math.min(Math.max(0, parseInt(guests) || 0), 20),
+      // Plafond configuré par mariage ; 20 reste la borne dure quand c'est illimité.
+      guests:  Math.min(Math.max(0, parseInt(guests) || 0), wedding.max_guests ?? 20),
       note:    note ? sanitizeText(note, 300) : null,
       ip_hash: ipHash,
     })

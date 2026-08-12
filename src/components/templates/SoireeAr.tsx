@@ -5,7 +5,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import type { BismillahPalette } from '@/lib/bismillah-palettes'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import { getArTypographyTheme } from '@/lib/typography-themes'
-import { getBismillahPalette } from '@/lib/bismillah-palettes'
+import { SOIREE_AR_PALETTES } from '@/lib/bismillah-palettes'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
 
@@ -30,7 +30,10 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
 
   const theme = getArTypographyTheme(wedding.ar_font_theme)
-  const palette = getBismillahPalette(wedding.bismillah_palette)
+  // Restreint aux palettes de ce template : le défaut global est 'or_classique',
+  // une palette claire qui rendrait le texte illisible sur la vidéo.
+  const palette =
+    SOIREE_AR_PALETTES.find(pal => pal.id === wedding.bismillah_palette) ?? SOIREE_AR_PALETTES[0]
 
   // ar-TN gives Arabic month names with Western digits, which is what Tunisian
   // invitations use. The time is forced to 24h: the locale default would print
@@ -47,6 +50,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
   const titleScale = (wedding.custom_font_size ?? 100) / 100
   const hasVideo = !!wedding.intro_video_url && !videoFailed
+  // null = illimité. Le serveur applique la même limite, le max HTML étant contournable.
+  const maxGuests = wedding.max_guests ?? null
 
   // No envelope to open: the invitation shows straight away. The shared hook
   // starts closed for every other template, so it is opened here on mount.
@@ -233,8 +238,20 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     </div>
                   </div>
                   <div className="sa-field">
-                    <label className="sa-field-label">Accompagnants</label>
-                    <input className="sa-input" name="guests" type="number" min="0" max="20" placeholder="Nombre de personnes..." />
+                    <label className="sa-field-label">
+                      Accompagnants
+                      {maxGuests !== null && (
+                        <span className="sa-field-hint"> — {maxGuests} maximum</span>
+                      )}
+                    </label>
+                    <input
+                      className="sa-input"
+                      name="guests"
+                      type="number"
+                      min="0"
+                      max={maxGuests ?? 20}
+                      placeholder={maxGuests !== null ? `Jusqu'à ${maxGuests}...` : 'Nombre de personnes...'}
+                    />
                   </div>
                   <div className="sa-field">
                     <label className="sa-field-label">Message (optionnel)</label>
@@ -489,6 +506,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   letter-spacing: 0.04em;
   color: var(--sa-muted);
 }
+.sa-field-hint { opacity: 0.75; }
 .sa-input {
   width: 100%;
   padding: 13px 15px;

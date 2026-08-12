@@ -58,6 +58,8 @@ export interface Wedding {
   wedding_day_text?: string
   venue_photo?: string
   custom_font_size?: number
+  /** Accompagnants max par invité au RSVP. null/undefined = illimité. */
+  max_guests?: number | null
   verse_ar?: string
   parties?: Party[]
   show_celebrations?: boolean
