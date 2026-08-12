@@ -42,6 +42,13 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   const heroTitle = wedding.wedding_day_text || 'ليلة العمر'
   const hasVideo = !!wedding.intro_video_url && !videoFailed
 
+  // No envelope to open: the invitation shows straight away. The shared hook
+  // starts closed for every other template, so it is opened here on mount.
+  useEffect(() => {
+    openEnvelope()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Autoplay needs muted; some browsers still refuse, so failure is silent.
   useEffect(() => {
     if (!opened || !hasVideo) return
@@ -61,17 +68,6 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
 
       <div className="sa-root" dir="rtl" lang="ar">
-        {/* ─── ÉCRAN D'OUVERTURE ─── */}
-        {!opened && (
-          <div className="sa-opening" onClick={openEnvelope}>
-            <div className="sa-opening-frame">
-              <div className="sa-opening-orn">✦</div>
-              <div className="sa-opening-title">{heroTitle}</div>
-              <button className="sa-opening-btn" type="button">افتح الدعوة</button>
-            </div>
-          </div>
-        )}
-
         <div className={`sa-main${visible ? ' sa-visible' : ''}`}>
           {/* ─── HERO VIDÉO ─── */}
           <header className="sa-hero">
@@ -290,36 +286,6 @@ const CSS = (display: string, body: string) => `
   overflow-x: hidden;
 }
 
-/* ── Écran d'ouverture ── */
-.sa-opening {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 50% 40%, var(--sa-deep) 0%, var(--sa-night) 70%);
-  cursor: pointer;
-}
-.sa-opening-frame {
-  text-align: center;
-  padding: 46px 34px;
-  border: 1px solid var(--sa-gold-dim);
-}
-.sa-opening-orn   { color: var(--sa-gold); font-size: 15px; margin-bottom: 18px; }
-.sa-opening-title { font-family: var(--sa-display); font-size: 33px; color: var(--sa-gold); line-height: 1.5; margin-bottom: 30px; }
-.sa-opening-btn {
-  padding: 12px 30px;
-  background: transparent;
-  border: 1px solid var(--sa-gold);
-  color: var(--sa-gold);
-  font-family: var(--sa-body);
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-.sa-opening-btn:hover { background: var(--sa-gold); color: var(--sa-night); }
-
 /* ── Corps ── */
 .sa-main { opacity: 0; transition: opacity 1s ease; }
 .sa-main.sa-visible { opacity: 1; }
@@ -366,15 +332,17 @@ const CSS = (display: string, body: string) => `
   height: 190px;
   background: linear-gradient(0deg, var(--sa-night) 0%, rgba(14, 11, 18, 0) 100%);
 }
+/* Ancré vers le haut du panneau, pas centré : le bas de la vidéo reste
+   visible sous le texte. */
 .sa-hero-content {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
-  padding: 0 26px;
+  padding: 14vh 26px 0;
 }
 /* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
@@ -530,11 +498,11 @@ const CSS = (display: string, body: string) => `
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
-  .sa-hero-panel { max-width: 100%; height: 84vh; min-height: 460px; }
-  .sa-hero-title { font-size: 40px; }
-  .sa-hero-date  { font-size: 19px; }
-  .sa-section    { padding: 44px 20px; }
-  .sa-opening-title { font-size: 28px; }
+  .sa-hero-panel   { max-width: 100%; height: 84vh; min-height: 460px; }
+  .sa-hero-content { padding-top: 11vh; }
+  .sa-hero-title   { font-size: 40px; }
+  .sa-hero-date    { font-size: 19px; }
+  .sa-section      { padding: 44px 20px; }
 }
 @media (max-width: 380px) {
   .sa-hero-title { font-size: 33px; }
