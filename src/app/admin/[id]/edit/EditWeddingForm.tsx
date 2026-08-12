@@ -512,7 +512,14 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             onChange={font => set('custom_font', font)}
             language={fontLanguage}
           />
-          <Field label="Taille pour les noms de famille (noms de famille arabes uniquement)" help="Ajuste la taille des textes de famille (ex: عائلة السيد). S'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.">
+          <Field
+            label={form.template_id === 'soiree_ar'
+              ? 'Taille du titre de la soirée'
+              : 'Taille pour les noms de famille (noms de famille arabes uniquement)'}
+            help={form.template_id === 'soiree_ar'
+              ? 'Ajuste la taille du titre affiché sur la vidéo, et du même titre repris en bas de l\'invitation.'
+              : 'Ajuste la taille des textes de famille (ex: عائلة السيد). S\'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.'}
+          >
             <select
               className="admin-input"
               value={form.custom_font_size}

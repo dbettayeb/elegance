@@ -65,6 +65,7 @@ export default function PreviewPage() {
         custom_message: parsed.custom_message || undefined,
         music_url: parsed.music_url || undefined,
         custom_font: parsed.custom_font || undefined,
+        custom_font_size: parsed.custom_font_size ?? 100,
 
         program: parsed.program || [],
         parties: parsed.parties || [],

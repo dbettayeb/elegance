@@ -40,6 +40,9 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   })
 
   const heroTitle = wedding.wedding_day_text || 'ليلة العمر'
+  // custom_font_size est un pourcentage. Appliqué comme facteur sur la taille de
+  // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
+  const titleScale = (wedding.custom_font_size ?? 100) / 100
   const hasVideo = !!wedding.intro_video_url && !videoFailed
 
   // No envelope to open: the invitation shows straight away. The shared hook
@@ -64,7 +67,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
         href={`https://fonts.googleapis.com/css2?family=${theme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
-      <style>{CSS(theme.display, theme.body)}</style>
+      <style>{CSS(theme.display, theme.body, titleScale)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
 
       <div className="sa-root" dir="rtl" lang="ar">
@@ -295,7 +298,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   )
 }
 
-const CSS = (display: string, body: string) => `
+const CSS = (display: string, body: string, titleScale: number) => `
 .sa-root {
   --sa-night:   #0E0B12;
   --sa-deep:    #16111C;
@@ -303,6 +306,7 @@ const CSS = (display: string, body: string) => `
   --sa-gold-dim: rgba(200, 162, 78, 0.45);
   --sa-cream:   #F3ECE0;
   --sa-muted:   rgba(243, 236, 224, 0.62);
+  --sa-title-scale: ${titleScale};
   --sa-display: ${display};
   --sa-body:    ${body};
 
@@ -374,7 +378,7 @@ const CSS = (display: string, body: string) => `
 /* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
   font-family: var(--sa-display);
-  font-size: 52px;
+  font-size: calc(52px * var(--sa-title-scale));
   color: var(--sa-gold);
   line-height: 1.45;
 }
@@ -538,18 +542,18 @@ const CSS = (display: string, body: string) => `
 /* ── Pied de page ── */
 .sa-footer { padding: 44px 20px 56px; text-align: center; }
 .sa-footer-orn   { color: var(--sa-gold); font-size: 13px; margin-bottom: 14px; }
-.sa-footer-title { font-family: var(--sa-display); font-size: 26px; color: var(--sa-gold); }
+.sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .sa-hero-panel   { max-width: 100%; height: 84vh; min-height: 460px; }
   .sa-hero-content { padding-top: 5vh; }
-  .sa-hero-title   { font-size: 40px; }
+  .sa-hero-title   { font-size: calc(40px * var(--sa-title-scale)); }
   .sa-hero-date    { font-size: 19px; }
   .sa-section      { padding: 44px 20px; }
 }
 @media (max-width: 380px) {
-  .sa-hero-title { font-size: 33px; }
+  .sa-hero-title { font-size: calc(33px * var(--sa-title-scale)); }
   .sa-hero-rule span { width: 44px; }
   .sa-cd-cell { min-width: 64px; }
 }

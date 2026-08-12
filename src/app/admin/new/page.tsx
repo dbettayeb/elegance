@@ -37,6 +37,7 @@ export default function NewWeddingPage() {
     custom_message: '',
     music_url: '',
     custom_font: '' as string | null,
+    custom_font_size: 100,
     ar_font_theme: 'classic' as string,
     show_rsvp: true,
     show_guestbook: true,
@@ -75,7 +76,7 @@ export default function NewWeddingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.template_id])
 
-  function set(key: string, value: string | boolean | null) {
+  function set(key: string, value: string | boolean | number | null) {
     setForm(f => ({ ...f, [key]: value }))
   }
 
@@ -476,6 +477,28 @@ export default function NewWeddingPage() {
             onChange={font => set('custom_font', font)}
             language={fontLanguage}
           />
+          <Field
+            label={form.template_id === 'soiree_ar'
+              ? 'Taille du titre de la soirée'
+              : 'Taille pour les noms de famille (noms de famille arabes uniquement)'}
+            help={form.template_id === 'soiree_ar'
+              ? 'Ajuste la taille du titre affiché sur la vidéo, et du même titre repris en bas de l\'invitation.'
+              : 'Ajuste la taille des textes de famille (ex: عائلة السيد). S\'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.'}
+          >
+            <select
+              className="admin-input"
+              value={form.custom_font_size}
+              onChange={e => set('custom_font_size', parseInt(e.target.value, 10))}
+            >
+              <option value={80}>Très petit (80%)</option>
+              <option value={90}>Petit (90%)</option>
+              <option value={100}>Normal (100%)</option>
+              <option value={110}>Légèrement plus grand (110%)</option>
+              <option value={120}>Plus grand (120%)</option>
+              <option value={130}>Très grand (130%)</option>
+              <option value={140}>Extra grand (140%)</option>
+            </select>
+          </Field>
         </Section>
 
         {form.template_id === 'soiree_ar' && (
