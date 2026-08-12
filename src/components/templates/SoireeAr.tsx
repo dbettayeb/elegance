@@ -123,11 +123,12 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ─── COMPTE À REBOURS ─── */}
-          {wedding.show_countdown && (
-            <section className="sa-section sa-countdown-wrap">
-              <p className="sa-label">في انتظار اللقاء</p>
+          {wedding.show_countdown !== false && (
+            <section className="sa-section">
+              <p className="sa-label">العد التنازلي</p>
+              <h2 className="sa-title">يقترب اليوم الموعود</h2>
               <div className="sa-countdown">
-                {([['أيام', countdown.d], ['ساعات', countdown.h], ['دقائق', countdown.m], ['ثوان', countdown.s]] as const).map(([label, value]) => (
+                {([['يوم', countdown.d], ['ساعة', countdown.h], ['دقيقة', countdown.m], ['ثانية', countdown.s]] as const).map(([label, value]) => (
                   <div className="sa-cd-cell" key={label}>
                     <div className="sa-cd-num">{value}</div>
                     <div className="sa-cd-label">{label}</div>
@@ -141,6 +142,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {parties.length > 0 && (
             <section className="sa-section">
               <p className="sa-label">الاحتفالات</p>
+              <h2 className="sa-title">مواعيد الأفراح</h2>
               <div className="sa-parties">
                 {parties.map((party, i) => (
                   <div className="sa-party" key={i}>
@@ -157,9 +159,10 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           )}
 
           {/* ─── PROGRAMME ─── */}
-          {wedding.show_program && program.length > 0 && (
+          {wedding.show_program !== false && program.length > 0 && (
             <section className="sa-section">
-              <p className="sa-label">البرنامج</p>
+              <p className="sa-label">برنامج الحفل</p>
+              <h2 className="sa-title">ترتيب الأحداث</h2>
               <div className="sa-program">
                 {program.map((item, i) => (
                   <div className="sa-program-row" key={i}>
@@ -176,21 +179,21 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
           {/* ─── LIEU ─── */}
           <section className="sa-section">
-            <p className="sa-label">المكان</p>
-            <div className="sa-venue-name">{wedding.venue_name}</div>
+            <p className="sa-label">مكان الحفل</p>
+            <h2 className="sa-title" data-ef="venue_name">{wedding.venue_name}</h2>
             {wedding.venue_address && (
-              <div className="sa-venue-address">{wedding.venue_address}</div>
+              <p className="sa-venue-address">{wedding.venue_address}</p>
             )}
             {(wedding.gps_google || wedding.gps_apple) && (
-              <div className="sa-maps">
+              <div className="sa-maps" dir="ltr">
                 {wedding.gps_google && (
                   <a className="sa-map-link" href={wedding.gps_google} target="_blank" rel="noopener noreferrer">
-                    خرائط جوجل
+                    Google Maps
                   </a>
                 )}
                 {wedding.gps_apple && (
                   <a className="sa-map-link" href={wedding.gps_apple} target="_blank" rel="noopener noreferrer">
-                    خرائط آبل
+                    Apple Maps
                   </a>
                 )}
               </div>
@@ -201,28 +204,44 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {wedding.show_rsvp && (
             <section className="sa-section sa-rsvp">
               <p className="sa-label">تأكيد الحضور</p>
+              <h2 className="sa-title">هل ستشرفوننا<br />بحضوركم؟</h2>
               {rsvpStatus === 'done' ? (
-                <p className="sa-success">تم تسجيل ردّكم. شكراً لكم.</p>
+                <p className="sa-success">جزاكم الله خيراً • Merci pour votre réponse ✦</p>
               ) : (
-                <form className="sa-form" onSubmit={submitRSVP}>
-                  <input className="sa-input" name="name" placeholder="الاسم واللقب" required />
-                  <input className="sa-input" name="phone" placeholder="رقم الواتساب" />
-                  <div className="sa-choices">
-                    {(['present', 'absent', 'maybe'] as const).map(s => (
-                      <button
-                        key={s}
-                        type="button"
-                        className={`sa-choice${rsvpChoice === s ? ' sa-choice-on' : ''}`}
-                        onClick={() => setRsvpChoice(s)}
-                      >
-                        {s === 'present' ? 'سأحضر' : s === 'absent' ? 'لن أتمكن' : 'لم أتأكد بعد'}
-                      </button>
-                    ))}
+                <form className="sa-form" onSubmit={submitRSVP} dir="ltr">
+                  <div className="sa-field">
+                    <label className="sa-field-label">Nom complet</label>
+                    <input className="sa-input" name="name" placeholder="Prénom et nom..." required />
                   </div>
-                  <input className="sa-input" name="guests" type="number" min="0" max="20" placeholder="عدد المرافقين" />
-                  <textarea className="sa-input sa-textarea" name="note" placeholder="رسالة (اختياري)" />
+                  <div className="sa-field">
+                    <label className="sa-field-label">WhatsApp</label>
+                    <input className="sa-input" name="phone" placeholder="+216 ..." />
+                  </div>
+                  <div className="sa-field">
+                    <label className="sa-field-label">Présence</label>
+                    <div className="sa-choices">
+                      {(['present', 'absent', 'maybe'] as const).map(s => (
+                        <button
+                          key={s}
+                          type="button"
+                          className={`sa-choice${rsvpChoice === s ? ' sa-choice-on' : ''}`}
+                          onClick={() => setRsvpChoice(s)}
+                        >
+                          {s === 'present' ? 'Présent(e)' : s === 'absent' ? 'Absent(e)' : 'À confirmer'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="sa-field">
+                    <label className="sa-field-label">Accompagnants</label>
+                    <input className="sa-input" name="guests" type="number" min="0" max="20" placeholder="Nombre de personnes..." />
+                  </div>
+                  <div className="sa-field">
+                    <label className="sa-field-label">Message (optionnel)</label>
+                    <textarea className="sa-input sa-textarea" name="note" placeholder="Un mot pour les mariés..." />
+                  </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? '...جارٍ الإرسال' : 'تأكيد'}
+                    {rsvpStatus === 'loading' ? 'Envoi...' : '✦  Confirmer ma présence  ✦'}
                   </button>
                 </form>
               )}
@@ -233,7 +252,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── LIVRE D'OR ─── */}
           {wedding.show_guestbook && (
             <section className="sa-section">
-              <p className="sa-label">سجل التهاني</p>
+              <p className="sa-label">دفتر التهاني</p>
+              <h2 className="sa-title">تهانيكم<br />ودعواتكم</h2>
               {messages.length > 0 && (
                 <div className="sa-messages">
                   {messages.map(msg => (
@@ -245,13 +265,21 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                 </div>
               )}
               {gbStatus === 'done' ? (
-                <p className="sa-success">{gbPending ? 'في انتظار المصادقة.' : 'تم النشر.'}</p>
+                <p className="sa-success">
+                  {gbPending ? 'En attente de validation ✦' : 'Message publié ✦'}
+                </p>
               ) : (
-                <form className="sa-form" onSubmit={submitMessage}>
-                  <input className="sa-input" name="author_name" placeholder="اسمكم" required />
-                  <textarea className="sa-input sa-textarea" name="message" placeholder="...رسالتكم" required />
+                <form className="sa-form" onSubmit={submitMessage} dir="ltr">
+                  <div className="sa-field">
+                    <label className="sa-field-label">Votre prénom</label>
+                    <input className="sa-input" name="author_name" placeholder="ex. Yasmine..." required />
+                  </div>
+                  <div className="sa-field">
+                    <label className="sa-field-label">Vos vœux</label>
+                    <textarea className="sa-input sa-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                  </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    نشر
+                    {gbStatus === 'loading' ? 'Envoi...' : '✦  Publier mon message  ✦'}
                   </button>
                 </form>
               )}
@@ -342,7 +370,7 @@ const CSS = (display: string, body: string) => `
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding: 14vh 26px 0;
+  padding: 6vh 26px 0;
 }
 /* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
@@ -385,10 +413,21 @@ const CSS = (display: string, body: string) => `
   text-align: center;
   border-bottom: 1px solid rgba(200, 162, 78, 0.14);
 }
+/* Paire surtitre + titre, reprise de Bismillah. */
 .sa-label {
-  font-family: var(--sa-display);
-  font-size: 22px;
+  font-family: var(--sa-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   color: var(--sa-gold);
+  margin-bottom: 8px;
+}
+.sa-title {
+  font-family: var(--sa-display);
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  font-weight: 700;
+  color: var(--sa-cream);
+  line-height: 1.4;
   margin-bottom: 26px;
 }
 .sa-welcome-intro { font-family: var(--sa-display); font-size: 25px; line-height: 1.9; margin-bottom: 16px; font-weight: 400; }
@@ -428,8 +467,7 @@ const CSS = (display: string, body: string) => `
 .sa-program-venue { display: block; font-size: 13px; color: var(--sa-muted); margin-top: 3px; }
 
 /* ── Lieu ── */
-.sa-venue-name    { font-family: var(--sa-display); font-size: 26px; margin-bottom: 8px; }
-.sa-venue-address { font-size: 15px; color: var(--sa-muted); line-height: 1.8; }
+.sa-venue-address { font-size: 15px; color: var(--sa-muted); line-height: 1.8; font-style: italic; }
 .sa-maps { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
 .sa-map-link {
   padding: 10px 20px;
@@ -442,7 +480,14 @@ const CSS = (display: string, body: string) => `
 .sa-map-link:hover { border-color: var(--sa-gold); }
 
 /* ── Formulaires ── */
-.sa-form { display: flex; flex-direction: column; gap: 11px; text-align: right; }
+.sa-form { display: flex; flex-direction: column; gap: 14px; text-align: left; }
+.sa-field { display: flex; flex-direction: column; gap: 6px; }
+.sa-field-label {
+  font-family: var(--sa-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--sa-muted);
+}
 .sa-input {
   width: 100%;
   padding: 13px 15px;
@@ -499,7 +544,7 @@ const CSS = (display: string, body: string) => `
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .sa-hero-panel   { max-width: 100%; height: 84vh; min-height: 460px; }
-  .sa-hero-content { padding-top: 11vh; }
+  .sa-hero-content { padding-top: 5vh; }
   .sa-hero-title   { font-size: 40px; }
   .sa-hero-date    { font-size: 19px; }
   .sa-section      { padding: 44px 20px; }
