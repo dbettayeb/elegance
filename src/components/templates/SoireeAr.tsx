@@ -30,6 +30,9 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [musicOn, setMusicOn] = useState(false)
+  // Enveloppe reprise de Viktor & Paula : 0 inerte, 1 colombe qui s'efface,
+  // 2 panneaux qui s'écartent, 3 écran qui disparaît, 4 invitation ouverte.
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
   const theme = getArTypographyTheme(wedding.ar_font_theme)
   // Restreint aux palettes de ce template : le défaut global est 'or_classique',
@@ -56,12 +59,36 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // null = illimité. Le serveur applique la même limite, le max HTML étant contournable.
   const maxGuests = wedding.max_guests ?? null
 
-  // No envelope to open: the invitation shows straight away. The shared hook
-  // starts closed for every other template, so it is opened here on mount.
+  // L'invité doit toucher l'enveloppe pour entrer. Ce geste est aussi ce qui
+  // autorise le son : sans lui, tout navigateur refuse de lancer la musique.
+  function startSequence() {
+    if (phase !== 0) return
+    setPhase(1)                          // la colombe et l'invite s'effacent
+    setTimeout(() => setPhase(2), 1000)  // les panneaux s'écartent
+    setTimeout(() => setPhase(3), 3500)  // l'écran s'efface
+    setTimeout(() => {
+      setPhase(4)
+      openEnvelope()
+    }, 4100)
+  }
+
+  // Met l'enveloppe à l'échelle de l'écran. Reprise telle quelle de Viktor &
+  // Paula : le papier fait 580px de haut dans une scène de 1200×850.
   useEffect(() => {
-    openEnvelope()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (phase >= 3) return
+    function scaleOpening() {
+      const stage = document.querySelector<HTMLElement>('.sa-stage')
+      if (!stage) return
+      const PAPER_H = 580
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / PAPER_H, 1.5)
+      stage.style.setProperty('--os-scale', scale.toFixed(4))
+    }
+    scaleOpening()
+    window.addEventListener('resize', scaleOpening)
+    return () => window.removeEventListener('resize', scaleOpening)
+  }, [phase])
 
   // Autoplay needs muted; some browsers still refuse, so failure is silent.
   useEffect(() => {
@@ -69,13 +96,12 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     heroVideoRef.current?.play().catch(() => {})
   }, [opened, hasVideo])
 
-  // La musique démarre seule quand le navigateur l'accepte. La plupart la
-  // refusent tant que l'invité n'a rien touché — et ce template n'a pas
-  // d'enveloppe à ouvrir, donc aucun clic ne vient l'autoriser. On réessaie
-  // alors au premier geste, quel qu'il soit, et le bouton reste là pour couper.
+  // La musique part à l'ouverture de l'enveloppe, comme chez Viktor & Paula :
+  // le clic qui vient d'avoir lieu autorise le son. Le repli sur le geste
+  // suivant ne sert plus que de garde-fou si le navigateur refuse quand même.
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !hasMusic) return
+    if (!audio || !hasMusic || !opened) return
 
     let armed = true
     const start = (ev?: Event) => {
@@ -98,7 +124,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     start()
     events.forEach(e => window.addEventListener(e, start, { passive: true }))
     return () => { armed = false; detach() }
-  }, [hasMusic])
+  }, [hasMusic, opened])
 
   const toggleMusic = () => {
     const audio = audioRef.current
@@ -122,6 +148,28 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
       />
       <style>{CSS(theme.display, theme.body, titleScale, palette)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
+
+      {!opened && (
+        <div className={`sa-opening${phase >= 3 ? ' sa-opening-gone' : ''}`}>
+          <div
+            className={`sa-stage${phase >= 1 ? ' sa-seal-out' : ''}${phase >= 2 ? ' sa-animating' : ''}`}
+            onClick={startSequence}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
+            role="button"
+            tabIndex={0}
+            aria-label="افتح الدعوة"
+          >
+            <img className="sa-poly sa-poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
+            <img className="sa-poly sa-poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
+            <img className="sa-poly sa-poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
+            <img className="sa-poly sa-poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
+            <span className="sa-dove" aria-hidden="true">
+              <img src="/assets/dove/dove-open.webp" alt="" />
+            </span>
+            <span className="sa-hint">اضغط للفتح</span>
+          </div>
+        </div>
+      )}
 
       <div className="sa-root" dir="rtl" lang="ar">
         <div className={`sa-main${visible ? ' sa-visible' : ''}`}>
@@ -360,7 +408,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           <audio ref={audioRef} loop preload="auto" src={wedding.music_url} />
           <button
             type="button"
-            className="sa-audio-control"
+            className={`sa-audio-control${opened ? '' : ' sa-audio-hidden'}`}
             onClick={toggleMusic}
             aria-label={musicOn ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
           >
@@ -638,6 +686,60 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
+/* ── ENVELOPPE D'OUVERTURE ──
+   Reprise de Viktor & Paula : même scène de 1200×850, mêmes décalages, mêmes
+   durées. Le fond garde le bordeaux de ses illustrations, qui sont peintes
+   dans cette teinte et jureraient sur la palette nuit du template. */
+.sa-opening {
+  position: fixed; inset: 0;
+  background: #66021f;
+  z-index: 10000; overflow: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.sa-opening-gone { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.sa-stage {
+  position: absolute; top: 50%; left: 50%;
+  width: 1200px; height: 850px;
+  cursor: pointer;
+  --os-scale: 1;
+  transform: translate(-50%, -50%) scale(var(--os-scale));
+  transform-origin: center center;
+}
+.sa-poly {
+  position: absolute; pointer-events: none;
+  transition: transform 2.5s ease, opacity 0.5s ease;
+}
+.sa-poly-left  { top: -13px; left: 98px;  width: 467px;  height: auto; z-index: 1; }
+.sa-poly-right { top: -13px; left: 635px; width: 467px;  height: auto; z-index: 1; }
+.sa-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
+.sa-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
+
+.sa-animating .sa-poly-left  { transform: translateX(-560px); opacity: 0; }
+.sa-animating .sa-poly-right { transform: translateX(560px);  opacity: 0; }
+.sa-animating .sa-poly-top   { transform: translateY(-430px); }
+.sa-animating .sa-poly-bot   { transform: translateY(566px); }
+
+.sa-dove {
+  position: absolute; top: 318px; left: 515px;
+  width: 170px; height: 170px; z-index: 3;
+  transition: transform 1.5s ease, opacity 1.5s ease;
+}
+.sa-dove img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sa-seal-out .sa-dove, .sa-animating .sa-dove { transform: scale(1.22); opacity: 0; }
+
+.sa-hint {
+  position: absolute; top: 540px; left: 535px;
+  width: 130px; text-align: center;
+  color: #66021f; font-family: ${body};
+  font-size: 20px; pointer-events: none; z-index: 1;
+  white-space: nowrap;
+  transition: opacity 1.5s ease;
+}
+.sa-seal-out .sa-hint, .sa-animating .sa-hint {
+  opacity: 0; transition: opacity 0.3s ease;
+}
+
 /* ── CONTRÔLE MUSIQUE ──
    Placé hors de .sa-root pour qu'aucun conteneur transformé ne détourne le
    position:fixed, donc hors de portée des variables --sa-* : les couleurs de
@@ -653,6 +755,8 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   transition: transform 0.25s ease, border-color 0.25s ease;
 }
 .sa-audio-control:hover { transform: scale(1.06); border-color: ${p.accent}; }
+/* Rien ne doit flotter au-dessus de l'enveloppe tant qu'elle est fermée. */
+.sa-audio-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .sa-audio-control svg { width: 20px; height: 20px; fill: ${p.accent}; }
 
 @media (max-width: 640px) {
