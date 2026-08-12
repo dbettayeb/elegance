@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 const DECO_KEY = 'assets/template3/deco3.png'
 const DECO_W = 857, DECO_H = 1200
@@ -34,9 +35,9 @@ export default function FloralArch({ wedding }: { wedding: Wedding }) {
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     day: 'numeric', month: 'long', year: 'numeric',
   })
-  const timeFr = eventDate.toLocaleTimeString('fr-FR', {
+  const timeFr = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-FR', {
     hour: '2-digit', minute: '2-digit', hour12: false,
-  })
+  }))
 
   const brideName = wedding.bride_name
   const groomName = wedding.groom_name

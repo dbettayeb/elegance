@@ -10,6 +10,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function BismillahStyle({
   wedding,
@@ -30,7 +31,7 @@ export default function BismillahStyle({
   const brideAr = getArabicName(wedding.bride_name_ar, wedding.bride_name)
   const groomAr = getArabicName(wedding.groom_name_ar, wedding.groom_name)
   const dateAr = formatDateArabic(eventDate)
-  const timeAr = formatTimeArabic(eventDate)
+  const timeAr = timeRange(wedding, eventDate, formatTimeArabic)
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })

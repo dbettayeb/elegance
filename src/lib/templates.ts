@@ -1,3 +1,4 @@
+import { createElement } from 'react'
 import Bismillah from '@/components/templates/Bismillah'
 import CoeurDore from '@/components/templates/Coeurdore'
 import ViktorPaula from '@/components/templates/Viktorpaula'
@@ -51,6 +52,9 @@ const COMPONENTS: Record<Wedding['template_id'], React.ComponentType<{ wedding: 
   template_7_ar: Template7Ar,
   template_8_ar: Template8Ar,
   soiree_ar: SoireeAr,
+  // Même composant : la langue est un paramètre, pas une copie du fichier.
+  // createElement plutôt que du JSX, ce fichier étant en .ts.
+  soiree_fr: (props: { wedding: Wedding }) => createElement(SoireeAr, { ...props, lang: 'fr' }),
 }
 
 export const TEMPLATES: TemplateFull[] = TEMPLATES_META.map(meta => ({

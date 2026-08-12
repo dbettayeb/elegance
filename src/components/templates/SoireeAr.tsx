@@ -8,6 +8,15 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import { SOIREE_AR_PALETTES } from '@/lib/bismillah-palettes'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { SOIREE_AR, SOIREE_FR, SOIREE_FR_THEME } from '@/lib/soiree-strings'
+import { timeRange } from '@/lib/event-time'
+
+/** Rend un titre multiligne sans passer par du HTML brut. */
+function lines(parts: readonly string[]) {
+  return parts.map((part, i) => (
+    <span key={i}>{i > 0 && <br />}{part}</span>
+  ))
+}
 
 /**
  * Arabic template built for a single evening (henna, engagement, reception).
@@ -18,7 +27,8 @@ import AddToCalendar from '@/components/common/AddToCalendar'
  *  - the line above the date is free text (wedding_day_text), so the evening
  *    names itself rather than always reading "Wedding Day"
  */
-export default function SoireeAr({ wedding }: { wedding: Wedding }) {
+export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; lang?: 'ar' | 'fr' }) {
+  const t = lang === 'fr' ? SOIREE_FR : SOIREE_AR
   const {
     opened, visible, openEnvelope, countdown,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -34,7 +44,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // 2 panneaux qui s'écartent, 3 écran qui disparaît, 4 invitation ouverte.
   const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
-  const theme = getArTypographyTheme(wedding.ar_font_theme)
+  const theme = lang === 'fr' ? SOIREE_FR_THEME : getArTypographyTheme(wedding.ar_font_theme)
   // Restreint aux palettes de ce template : le défaut global est 'or_classique',
   // une palette claire qui rendrait le texte illisible sur la vidéo.
   const palette =
@@ -43,14 +53,14 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // ar-TN gives Arabic month names with Western digits, which is what Tunisian
   // invitations use. The time is forced to 24h: the locale default would print
   // "07:00 م" for a 19:00 reception.
-  const formattedDate = eventDate.toLocaleDateString('ar-TN', {
+  const formattedDate = eventDate.toLocaleDateString(t.locale, {
     day: 'numeric', month: 'long', year: 'numeric',
   })
-  const eventTime = eventDate.toLocaleTimeString('ar-TN', {
-    hour: '2-digit', minute: '2-digit', hour12: false,
-  })
+  const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: false } as const
+  // Devient « 19:00 – 02:00 » dès que le marié renseigne une fin.
+  const eventTime = timeRange(wedding, eventDate, d => d.toLocaleTimeString(t.locale, timeOpts))
 
-  const heroTitle = wedding.wedding_day_text || 'ليلة العمر'
+  const heroTitle = wedding.wedding_day_text || t.heroTitleDefault
   // custom_font_size est un pourcentage. Appliqué comme facteur sur la taille de
   // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
   const titleScale = (wedding.custom_font_size ?? 100) / 100
@@ -139,6 +149,9 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
   const program: ProgramItem[] = Array.isArray(wedding.program) ? wedding.program : []
   const parties = (wedding.show_celebrations ?? true) ? (wedding.parties ?? []) : []
+  const dressWomen = wedding.dress_code_women?.trim()
+  const dressMen = wedding.dress_code_men?.trim()
+  const dressColors = Array.isArray(wedding.dress_code_colors) ? wedding.dress_code_colors : []
 
   return (
     <>
@@ -157,7 +170,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
             role="button"
             tabIndex={0}
-            aria-label="افتح الدعوة"
+            aria-label={t.openAria}
           >
             <img className="sa-poly sa-poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
             <img className="sa-poly sa-poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
@@ -166,12 +179,12 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             <span className="sa-dove" aria-hidden="true">
               <img src="/assets/dove/dove-open.webp" alt="" />
             </span>
-            <span className="sa-hint">اضغط للفتح</span>
+            <span className="sa-hint">{t.hint}</span>
           </div>
         </div>
       )}
 
-      <div className="sa-root" dir="rtl" lang="ar">
+      <div className="sa-root" dir={t.dir} lang={t.lang}>
         <div className={`sa-main${visible ? ' sa-visible' : ''}`}>
           {/* ─── HERO VIDÉO ─── */}
           <header className="sa-hero">
@@ -224,10 +237,10 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── COMPTE À REBOURS ─── */}
           {wedding.show_countdown !== false && (
             <section className="sa-section">
-              <p className="sa-label">العد التنازلي</p>
-              <h2 className="sa-title">يقترب اليوم الموعود</h2>
+              <p className="sa-label">{t.countdownLabel}</p>
+              <h2 className="sa-title">{t.countdownTitle}</h2>
               <div className="sa-countdown">
-                {([['يوم', countdown.d], ['ساعة', countdown.h], ['دقيقة', countdown.m], ['ثانية', countdown.s]] as const).map(([label, value]) => (
+                {([[t.units[0], countdown.d], [t.units[1], countdown.h], [t.units[2], countdown.m], [t.units[3], countdown.s]] as const).map(([label, value]) => (
                   <div className="sa-cd-cell" key={label}>
                     <div className="sa-cd-num">{value}</div>
                     <div className="sa-cd-label">{label}</div>
@@ -240,7 +253,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── CÉLÉBRATIONS ─── */}
           {parties.length > 0 && (
             <section className="sa-section">
-              <p className="sa-label">الاحتفالات</p>
+              <p className="sa-label">{t.celebrationsLabel}</p>
               <div className="sa-parties">
                 {parties.map((party, i) => (
                   <div className="sa-party" key={i}>
@@ -259,8 +272,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── PROGRAMME ─── */}
           {wedding.show_program !== false && program.length > 0 && (
             <section className="sa-section">
-              <p className="sa-label">برنامج الحفل</p>
-              <h2 className="sa-title">ترتيب الأحداث</h2>
+              <p className="sa-label">{t.programLabel}</p>
+              <h2 className="sa-title">{t.programTitle}</h2>
               <div className="sa-program">
                 {program.map((item, i) => (
                   <div className="sa-program-row" key={i}>
@@ -277,7 +290,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
           {/* ─── LIEU ─── */}
           <section className="sa-section">
-            <p className="sa-label">مكان الحفل</p>
+            <p className="sa-label">{t.venueLabel}</p>
             <h2 className="sa-title" data-ef="venue_name">{wedding.venue_name}</h2>
             {wedding.venue_address && (
               <p className="sa-venue-address">{wedding.venue_address}</p>
@@ -298,13 +311,42 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             )}
           </section>
 
+          {/* ─── DRESS CODE ─── */}
+          {wedding.show_dress_code && (dressWomen || dressMen || dressColors.length > 0) && (
+            <section className="sa-section">
+              <p className="sa-label">{t.dressLabel}</p>
+              <h2 className="sa-title">{t.dressTitle}</h2>
+              <div className="sa-dress">
+                {dressWomen && (
+                  <div className="sa-dress-col">
+                    <div className="sa-dress-who">{t.dressWomen}</div>
+                    <div className="sa-dress-text">{dressWomen}</div>
+                  </div>
+                )}
+                {dressMen && (
+                  <div className="sa-dress-col">
+                    <div className="sa-dress-who">{t.dressMen}</div>
+                    <div className="sa-dress-text">{dressMen}</div>
+                  </div>
+                )}
+              </div>
+              {dressColors.length > 0 && (
+                <div className="sa-dress-colors">
+                  {dressColors.map((color, i) => (
+                    <span className="sa-dress-dot" key={i} style={{ background: color }} />
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           {/* ─── RSVP ─── */}
           {wedding.show_rsvp && (
             <section className="sa-section sa-rsvp">
-              <p className="sa-label">تأكيد الحضور</p>
-              <h2 className="sa-title">هل ستشرفوننا<br />بحضوركم؟</h2>
+              <p className="sa-label">{t.rsvpLabel}</p>
+              <h2 className="sa-title">{lines(t.rsvpTitle)}</h2>
               {rsvpStatus === 'done' ? (
-                <p className="sa-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
+                <p className="sa-success">{t.rsvpSuccess}</p>
               ) : (
                 <form className="sa-form" onSubmit={submitRSVP} dir="ltr">
                   <div className="sa-field">
@@ -351,7 +393,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? 'Envoi...' : '۞  Confirmer ma présence  ۞'}
+                    {rsvpStatus === 'loading' ? 'Envoi...' : `${t.ornament}  Confirmer ma présence  ${t.ornament}`}
                   </button>
                 </form>
               )}
@@ -362,8 +404,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── LIVRE D'OR ─── */}
           {wedding.show_guestbook && (
             <section className="sa-section">
-              <p className="sa-label">دفتر التهاني</p>
-              <h2 className="sa-title">تهانيكم<br />ودعواتكم</h2>
+              <p className="sa-label">{t.guestbookLabel}</p>
+              <h2 className="sa-title">{lines(t.guestbookTitle)}</h2>
               {messages.length > 0 && (
                 <div className="sa-messages">
                   {messages.map(msg => (
@@ -376,7 +418,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
               )}
               {gbStatus === 'done' ? (
                 <p className="sa-success">
-                  {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
+                  {gbPending ? `En attente de validation ${t.ornament}` : `Message publié ${t.ornament}`}
                 </p>
               ) : (
                 <form className="sa-form" onSubmit={submitMessage} dir="ltr">
@@ -389,7 +431,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    {gbStatus === 'loading' ? 'Envoi...' : '۞  Publier mon message  ۞'}
+                    {gbStatus === 'loading' ? 'Envoi...' : `${t.ornament}  Publier mon message  ${t.ornament}`}
                   </button>
                 </form>
               )}
@@ -410,7 +452,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             type="button"
             className={`sa-audio-control${opened ? '' : ' sa-audio-hidden'}`}
             onClick={toggleMusic}
-            aria-label={musicOn ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
+            aria-label={musicOn ? t.musicPause : t.musicPlay}
           >
             {musicOn ? (
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -686,6 +728,39 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
+/* ── DRESS CODE ──
+   Deux colonnes sur grand écran, empilées sur mobile : une consigne pour les
+   femmes, une pour les hommes, et la palette en pastilles sous les deux. */
+.sa-dress {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 30px 56px; margin-top: 26px;
+}
+.sa-dress-col { flex: 1 1 220px; max-width: 300px; }
+.sa-dress-who {
+  font-family: var(--sa-body);
+  font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--sa-gold); margin-bottom: 10px;
+}
+.sa-dress-text {
+  font-family: var(--sa-body);
+  font-size: 16px; line-height: 1.7; color: var(--sa-second);
+}
+.sa-dress-colors {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 12px; margin-top: 30px;
+}
+.sa-dress-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--sa-gold-dim);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+}
+
+@media (max-width: 640px) {
+  .sa-dress     { gap: 26px; margin-top: 22px; }
+  .sa-dress-col { flex: 1 1 100%; max-width: none; }
+  .sa-dress-dot { width: 26px; height: 26px; }
+}
+
 /* ── ENVELOPPE D'OUVERTURE ──
    Reprise de Viktor & Paula : même scène de 1200×850, mêmes décalages, mêmes
    durées. Le fond garde le bordeaux de ses illustrations, qui sont peintes

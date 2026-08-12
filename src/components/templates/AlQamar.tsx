@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import { formatDateArabic, formatTimeArabic, toArabicNumerals, getArabicName, formatMonthArabic } from '@/lib/arabic-utils'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function AlQamar({ wedding }: { wedding: Wedding }) {
   const {
@@ -16,7 +17,7 @@ export default function AlQamar({ wedding }: { wedding: Wedding }) {
   const brideAr = getArabicName(wedding.bride_name_ar, wedding.bride_name)
   const groomAr = getArabicName(wedding.groom_name_ar, wedding.groom_name)
   const dateAr = formatDateArabic(eventDate)
-  const timeAr = formatTimeArabic(eventDate)
+  const timeAr = timeRange(wedding, eventDate, formatTimeArabic)
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })

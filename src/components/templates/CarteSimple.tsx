@@ -6,6 +6,7 @@ import OpeningScreen from '@/components/common/OpeningScreen'
 import { getIvoirePalette, IvoirePalette } from '@/lib/ivoire-palettes'
 import { getBgCSSForKey, BG_CONFIGS } from '@/lib/bg-texture-system'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 function parseVariant(v?: string | null) {
   const [paletteId = 'or_classique'] = (v ?? '').split('|')
@@ -33,9 +34,9 @@ export default function CarteSimple({ wedding }: { wedding: Wedding }) {
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     day: 'numeric', month: 'long', year: 'numeric',
   })
-  const timeFr = eventDate.toLocaleTimeString('fr-TN', {
+  const timeFr = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-TN', {
     hour: '2-digit', minute: '2-digit',
-  })
+  }))
 
   const brideName = wedding.bride_name
   const groomName = wedding.groom_name

@@ -13,6 +13,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
   wedding: Wedding
@@ -38,7 +39,7 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
   const dayNum   = toArabicNumerals(eventDate.getDate())
   const monthAr  = formatMonthArabic(eventDate)
   const yearAr   = toArabicNumerals(eventDate.getFullYear())
-  const timeAr   = formatTimeArabic(eventDate)
+  const timeAr   = timeRange(wedding, eventDate, formatTimeArabic)
   const dateFr   = eventDate.toLocaleDateString('fr-TN', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })

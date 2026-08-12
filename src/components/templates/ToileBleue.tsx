@@ -5,6 +5,7 @@ import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 const DECO_KEY = 'assets/template1/deco1.png'
 const ROSE_SRC = '/assets/template1/rose bleu apèrs les noms.png'
@@ -37,9 +38,9 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     day: 'numeric', month: 'long', year: 'numeric',
   }).toUpperCase()
-  const timeFr = eventDate.toLocaleTimeString('fr-TN', {
+  const timeFr = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-TN', {
     hour: '2-digit', minute: '2-digit',
-  })
+  }))
 
   const brideName = wedding.bride_name
   const groomName = wedding.groom_name

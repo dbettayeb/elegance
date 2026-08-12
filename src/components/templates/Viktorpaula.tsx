@@ -5,6 +5,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   const {
@@ -30,7 +31,8 @@ export default function ViktorPaula({ wedding }: { wedding: Wedding }) {
   const month = String(eventDate.getMonth() + 1).padStart(2, '0')
   const year = String(eventDate.getFullYear())
   const shortYear = year.slice(-2)
-  const eventTime = `${String(eventDate.getHours()).padStart(2,'0')}:${String(eventDate.getMinutes()).padStart(2,'0')}`
+  const eventTime = timeRange(wedding, eventDate, d =>
+    `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`)
 
   // --- Opening sequence ---
   function startSequence() {

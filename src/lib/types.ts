@@ -25,7 +25,14 @@ export interface Wedding {
   | 'toile_bleue_ar' | 'jardin_rose_ar' | 'floral_arch_ar' | 'roses_ivoire_ar' | 'rose_bleu_ar'
   | 'template_7' | 'template_8'
   | 'template_7_ar' | 'template_8_ar'
-  | 'soiree_ar'
+  | 'soiree_ar' | 'soiree_fr'
+  /** Fin de la fête. Instant complet : une soirée finissant à 2h finit le lendemain. */
+  event_end_date?: string
+  show_dress_code?: boolean
+  dress_code_women?: string
+  dress_code_men?: string
+  /** Codes hexadécimaux affichés en pastilles sous les consignes. */
+  dress_code_colors?: string[]
   music_url?: string
   background_image?: string
   decoration_image?: string

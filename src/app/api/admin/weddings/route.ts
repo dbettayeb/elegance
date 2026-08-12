@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       bride_family_prefix_ar, groom_family_prefix_ar,
       families_intro_ar,
       couple_email,
-      event_date, event_time,
+      event_date, event_time, event_end_date,
       venue_name, venue_address,
       gps_google, gps_apple,
       template_id, pack,
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       couple_photo, intro_video_url,
       wedding_day_text, venue_photo,
       parties, show_celebrations,
+      show_dress_code, dress_code_women, dress_code_men, dress_code_colors,
     } = body
 
     if (!bride_name || !groom_name || !couple_email || !event_date || !venue_name) {
@@ -71,6 +72,7 @@ export async function POST(req: NextRequest) {
         groom_family_prefix_ar: groom_family_prefix_ar || null,
         families_intro_ar:      families_intro_ar      || null,
         event_date: datetime,
+        event_end_date: event_end_date || null,
         venue_name,
         venue_address:  venue_address  || null,
         gps_google:     gps_google     || null,
@@ -101,6 +103,10 @@ export async function POST(req: NextRequest) {
         venue_photo:       venue_photo       || null,
         parties: Array.isArray(parties) ? parties : [],
         show_celebrations: show_celebrations ?? true,
+        show_dress_code:   show_dress_code ?? false,
+        dress_code_women:  dress_code_women || null,
+        dress_code_men:    dress_code_men || null,
+        dress_code_colors: Array.isArray(dress_code_colors) ? dress_code_colors : [],
         program: Array.isArray(program) ? program : [],
       })
       .select('id, slug, access_token, couple_token')
