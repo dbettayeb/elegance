@@ -10,6 +10,10 @@
 -- n'a été produit par elle : les cinq entités ci-dessous se décodent sans
 -- ambiguïté et dans n'importe quel ordre.
 
+-- Tout ou rien : sans transaction explicite, un échec sur la troisième table
+-- laisserait les deux premières déjà migrées.
+begin;
+
 create or replace function unescape_legacy_html(t text) returns text as $$
   select replace(replace(replace(replace(replace(
     t, '&#x2F;', '/'), '&#x27;', ''''), '&quot;', '"'), '&gt;', '>'), '&lt;', '<')
@@ -40,3 +44,5 @@ update weddings
     or custom_message    like '%&%' or families_intro_ar like '%&%';
 
 drop function unescape_legacy_html(text);
+
+commit;
