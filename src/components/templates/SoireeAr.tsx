@@ -369,7 +369,16 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-hero-veil {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--sa-night) 62%, transparent);
+  /* Dégradé plutôt qu'un voile uniforme : assez dense derrière le titre pour
+     le garder lisible sur une vidéo claire, presque nul plus bas pour ne pas
+     assombrir l'image. */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sa-night) 48%, transparent) 0%,
+    color-mix(in srgb, var(--sa-night) 32%, transparent) 38%,
+    color-mix(in srgb, var(--sa-night) 10%, transparent) 66%,
+    transparent 85%
+  );
 }
 .sa-hero-fade {
   position: absolute;
