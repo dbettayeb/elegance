@@ -216,7 +216,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="rp-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="rp-input rp-textarea" name="note" placeholder="Petit mot..." />
+              <textarea className="rp-input rp-textarea" name="note" maxLength={1500} placeholder="Petit mot..." />
               <button className="rp-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ❀'}
               </button>
@@ -248,7 +248,7 @@ export default function RosePoudre({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="rp-form" onSubmit={submitMessage} style={{ marginTop: '24px' }}>
                 <input className="rp-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="rp-input rp-textarea" name="message" placeholder="Vos vœux pour les mariés..." required />
+                <textarea className="rp-input rp-textarea" name="message" maxLength={3000} placeholder="Vos vœux pour les mariés..." required />
                 <button className="rp-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                   Publier ❀
                 </button>

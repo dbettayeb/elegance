@@ -200,7 +200,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
               </div>
               <input className="ed-input" name="guests" type="number" min="0" max="20"
                 placeholder="Nombre d'accompagnants" />
-              <textarea className="ed-input ed-textarea" name="note"
+              <textarea className="ed-input ed-textarea" name="note" maxLength={1500}
                 placeholder="Message optionnel..." />
               <button className="ed-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
@@ -237,7 +237,7 @@ export default function BlancDore({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="ed-gb-form" onSubmit={submitMessage}>
                 <input className="ed-gb-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="ed-gb-input ed-gb-textarea" name="message"
+                <textarea className="ed-gb-input ed-gb-textarea" name="message" maxLength={3000}
                   placeholder="Votre message de vœux..." required />
                 <button className="ed-btn-gb" type="submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi...' : 'Publier mon message ✦'}

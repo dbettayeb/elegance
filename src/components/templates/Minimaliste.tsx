@@ -155,7 +155,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="mn-input" name="guests" type="number" min="0" max="20" placeholder="Accompagnants" />
-              <textarea className="mn-input mn-textarea" name="note" placeholder="Message (optionnel)" />
+              <textarea className="mn-input mn-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
               <button className="mn-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
               </button>
@@ -186,7 +186,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="mn-form" onSubmit={submitMessage} style={{ marginTop: '20px' }}>
                 <input className="mn-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="mn-input mn-textarea" name="message" placeholder="Votre message..." required />
+                <textarea className="mn-input mn-textarea" name="message" maxLength={3000} placeholder="Votre message..." required />
                 <button className="mn-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                   Publier
                 </button>

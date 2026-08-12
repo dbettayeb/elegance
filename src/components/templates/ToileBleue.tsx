@@ -212,7 +212,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="tb-field">
                         <label className="tb-field-label">Message optionnel</label>
-                        <textarea className="tb-input tb-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="tb-input tb-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="tb-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : '◆  Confirmer ma présence  ◆'}
@@ -257,7 +257,7 @@ export default function ToileBleue({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="tb-field">
                         <label className="tb-field-label">Vos vœux</label>
-                        <textarea className="tb-input tb-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="tb-input tb-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="tb-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : '◆  Publier mon message  ◆'}

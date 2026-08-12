@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       status,
       // Plafond configuré par mariage ; 20 reste la borne dure quand c'est illimité.
       guests:  Math.min(Math.max(0, parseInt(guests) || 0), wedding.max_guests ?? 20),
-      note:    note ? sanitizeText(note, 300) : null,
+      note:    note ? sanitizeText(note, 1500) : null,
       ip_hash: ipHash,
     })
 

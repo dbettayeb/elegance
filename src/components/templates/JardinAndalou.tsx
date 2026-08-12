@@ -198,7 +198,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="ja-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="ja-input ja-textarea" name="note" placeholder="Message optionnel..." />
+              <textarea className="ja-input ja-textarea" name="note" maxLength={1500} placeholder="Message optionnel..." />
               <button className="ja-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
               </button>
@@ -230,7 +230,7 @@ export default function JardinAndalou({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="ja-form" onSubmit={submitMessage} style={{ marginTop: '20px' }}>
                 <input className="ja-input-light" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="ja-input-light ja-textarea" name="message" placeholder="Votre message..." required />
+                <textarea className="ja-input-light ja-textarea" name="message" maxLength={3000} placeholder="Votre message..." required />
                 <button className="ja-btn-light" type="submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi...' : 'Publier'}
                 </button>

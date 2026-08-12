@@ -600,7 +600,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                     <input className="ar-rsvp-input" name="phone"  placeholder="WhatsApp (optional)" />
                     <input className="ar-rsvp-input" name="guests" type="number" min="0" max="20" placeholder="Number of guests" />
                     <input className="ar-rsvp-input" name="food"   placeholder="Food intolerances (optional)" />
-                    <textarea className="ar-rsvp-input ar-rsvp-textarea" name="note" placeholder="A word for the couple (optional)" />
+                    <textarea className="ar-rsvp-input ar-rsvp-textarea" name="note" maxLength={1500} placeholder="A word for the couple (optional)" />
                   </div>
                   <button type="submit" className="ar-rsvp-submit" disabled={rsvpStatus === 'loading'}>
                     {rsvpStatus === 'loading' ? 'Submitting…' : 'RSVP'}
@@ -633,7 +633,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
               ) : (
                 <form className="ar-gb-form" onSubmit={submitMessage}>
                   <input    className="ar-gb-input"               name="author_name" placeholder="Your first name"                    required />
-                  <textarea className="ar-gb-input ar-gb-textarea" name="message"    placeholder="Leave a sweet note for the couple…" required />
+                  <textarea className="ar-gb-input ar-gb-textarea" name="message" maxLength={3000}    placeholder="Leave a sweet note for the couple…" required />
                   <button type="submit" className="ar-gb-submit" disabled={gbStatus === 'loading'}>
                     {gbStatus === 'loading' ? 'Sending…' : 'Send my message'}
                   </button>

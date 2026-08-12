@@ -197,7 +197,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="mb-input" name="guests" type="number" min="0" max="20" placeholder="Accompagnants" />
-              <textarea className="mb-input mb-textarea" name="note" placeholder="Message (optionnel)" />
+              <textarea className="mb-input mb-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
               <button className="mb-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
               </button>
@@ -229,7 +229,7 @@ export default function MarbreNoir({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="mb-form" onSubmit={submitMessage} style={{ marginTop: '24px' }}>
                 <input className="mb-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="mb-input mb-textarea" name="message" placeholder="Vos vœux..." required />
+                <textarea className="mb-input mb-textarea" name="message" maxLength={3000} placeholder="Vos vœux..." required />
                 <button className="mb-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                   Publier
                 </button>

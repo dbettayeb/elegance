@@ -215,7 +215,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="rb-field">
                         <label className="rb-field-label">Message optionnel</label>
-                        <textarea className="rb-input rb-textarea" name="note" placeholder="Une note pour les mariés..." />
+                        <textarea className="rb-input rb-textarea" name="note" maxLength={1500} placeholder="Une note pour les mariés..." />
                       </div>
                       <button className="rb-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                         {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
@@ -256,7 +256,7 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
                       </div>
                       <div className="rb-field">
                         <label className="rb-field-label">Vos vœux</label>
-                        <textarea className="rb-input rb-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                        <textarea className="rb-input rb-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                       </div>
                       <button className="rb-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                         {gbStatus === 'loading' ? 'Envoi...' : 'Publier mon message'}

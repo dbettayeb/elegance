@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { generateAccessToken } from '@/lib/tokens'
-import { sanitizeName, sanitizeText, sanitizePhone } from '@/lib/sanitize'
+import { sanitizeName, sanitizeText, sanitizePhone, escapeHtml } from '@/lib/sanitize'
 
 export async function POST(req: NextRequest) {
   try {
@@ -99,16 +99,16 @@ export async function POST(req: NextRequest) {
           subject: `Nouvelle demande : ${bride_name} & ${groom_name}`,
           html: `
             <h2>Nouvelle demande d'invitation</h2>
-            <p><strong>Référence :</strong> ${reference}</p>
-            <p><strong>Couple :</strong> ${bride_name} & ${groom_name}</p>
-            <p><strong>Email :</strong> ${couple_email}</p>
-            <p><strong>Téléphone :</strong> ${couple_phone}</p>
-            <p><strong>Date :</strong> ${event_date || 'non renseignée'}</p>
-            <p><strong>Design :</strong> ${template_id}</p>
-            <p><strong>Options :</strong> ${selectedOptions.join(', ') || 'aucune'}</p>
-            ${verse_ar ? `<p><strong>Bénédiction :</strong> ${verse_ar}</p>` : ''}
-            ${families_intro_ar ? `<p><strong>Intro arabe :</strong> ${families_intro_ar}</p>` : ''}
-            ${venue_name ? `<p><strong>Lieu :</strong> ${venue_name}</p>` : ''}
+            <p><strong>Référence :</strong> ${escapeHtml(reference)}</p>
+            <p><strong>Couple :</strong> ${escapeHtml(bride_name)} &amp; ${escapeHtml(groom_name)}</p>
+            <p><strong>Email :</strong> ${escapeHtml(couple_email)}</p>
+            <p><strong>Téléphone :</strong> ${escapeHtml(couple_phone)}</p>
+            <p><strong>Date :</strong> ${escapeHtml(event_date || 'non renseignée')}</p>
+            <p><strong>Design :</strong> ${escapeHtml(template_id)}</p>
+            <p><strong>Options :</strong> ${escapeHtml(selectedOptions.join(', ') || 'aucune')}</p>
+            ${verse_ar ? `<p><strong>Bénédiction :</strong> ${escapeHtml(verse_ar)}</p>` : ''}
+            ${families_intro_ar ? `<p><strong>Intro arabe :</strong> ${escapeHtml(families_intro_ar)}</p>` : ''}
+            ${venue_name ? `<p><strong>Lieu :</strong> ${escapeHtml(venue_name)}</p>` : ''}
             <hr>
             <p><a href="${process.env.NEXT_PUBLIC_BASE_URL}/admin/${wedding.id}">Voir dans l'admin →</a></p>
           `,
@@ -174,16 +174,16 @@ function buildOrderConfirmationEmail({ bride_name, groom_name, reference, templa
     <p style="margin:0;font-size:0.7rem;letter-spacing:0.45em;text-transform:uppercase;color:#B8985A;font-family:'Helvetica Neue',sans-serif">Élégance Digitale</p>
   </div>
   <div style="padding:40px 36px">
-    <h1 style="margin:0 0 8px;font-weight:300;font-size:1.7rem;line-height:1.2">Merci, ${bride_name} &amp; ${groom_name}&nbsp;!</h1>
+    <h1 style="margin:0 0 8px;font-weight:300;font-size:1.7rem;line-height:1.2">Merci, ${escapeHtml(bride_name)} &amp; ${escapeHtml(groom_name)}&nbsp;!</h1>
     <p style="margin:0 0 32px;color:#666;font-style:italic;font-size:1rem;line-height:1.6">
       Votre demande a bien été reçue. Nous vous contacterons dans les <strong>24h</strong> pour valider les détails et démarrer votre invitation.
     </p>
     <div style="background:#fafafa;border:1px solid #eee;padding:24px;margin-bottom:32px;font-family:'Helvetica Neue',sans-serif;font-size:0.88rem">
       <table style="width:100%;border-collapse:collapse">
-        <tr><td style="padding:6px 0;color:#888;width:140px">Référence</td><td style="padding:6px 0;font-weight:600;letter-spacing:0.05em">${reference}</td></tr>
-        <tr><td style="padding:6px 0;color:#888">Design</td><td style="padding:6px 0">${template_id.replace(/_/g, ' ')}</td></tr>
-        <tr><td style="padding:6px 0;color:#888">Options</td><td style="padding:6px 0">${optionsList}</td></tr>
-        ${event_date ? `<tr><td style="padding:6px 0;color:#888">Date du mariage</td><td style="padding:6px 0">${event_date}</td></tr>` : ''}
+        <tr><td style="padding:6px 0;color:#888;width:140px">Référence</td><td style="padding:6px 0;font-weight:600;letter-spacing:0.05em">${escapeHtml(reference)}</td></tr>
+        <tr><td style="padding:6px 0;color:#888">Design</td><td style="padding:6px 0">${escapeHtml(template_id.replace(/_/g, ' '))}</td></tr>
+        <tr><td style="padding:6px 0;color:#888">Options</td><td style="padding:6px 0">${escapeHtml(optionsList)}</td></tr>
+        ${event_date ? `<tr><td style="padding:6px 0;color:#888">Date du mariage</td><td style="padding:6px 0">${escapeHtml(event_date)}</td></tr>` : ''}
       </table>
     </div>
     <p style="margin:0 0 8px;color:#555;font-size:0.9rem;line-height:1.7">Pour toute question, répondez simplement à cet email — nous sommes là.</p>

@@ -321,7 +321,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
                     ))}
                   </div>
                   <input className="bs-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-                  <textarea className="bs-input bs-textarea" name="note" placeholder="Message (optionnel)" />
+                  <textarea className="bs-input bs-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
                   <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                     {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ۞'}
                   </button>
@@ -357,7 +357,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
               ) : (
                 <form className="bs-form" onSubmit={submitMessage} dir="ltr" style={{ marginTop: '24px' }}>
                   <input className="bs-input" name="author_name" placeholder="Votre prénom" required />
-                  <textarea className="bs-input bs-textarea" name="message" placeholder="Vos vœux..." required />
+                  <textarea className="bs-input bs-textarea" name="message" maxLength={3000} placeholder="Vos vœux..." required />
                   <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                     Publier ۞
                   </button>

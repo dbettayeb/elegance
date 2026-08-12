@@ -317,7 +317,7 @@ export default function BismillahStyle({
                     </div>
                     <div className="bs-field">
                       <label className="bs-field-label">Message (optionnel)</label>
-                      <textarea className="bs-input bs-textarea" name="note" placeholder="Un mot pour les mariés..." />
+                      <textarea className="bs-input bs-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
                     </div>
                     <button className="bs-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                       {rsvpStatus === 'loading' ? 'Envoi...' : '۞  Confirmer ma présence  ۞'}
@@ -362,7 +362,7 @@ export default function BismillahStyle({
                     </div>
                     <div className="bs-field">
                       <label className="bs-field-label">Vos vœux</label>
-                      <textarea className="bs-input bs-textarea" name="message" placeholder="Un mot doux pour les mariés..." required />
+                      <textarea className="bs-input bs-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                     </div>
                     <button className="bs-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                       {gbStatus === 'loading' ? 'Envoi...' : '۞  Publier mon message  ۞'}

@@ -338,7 +338,7 @@ export default function SceauRoyal({ wedding }: { wedding: Wedding }) {
                 </div>
                 <input className="sr-input" name="guests" type="number" min="0" max="20"
                   placeholder="Nombre d'accompagnants" />
-                <textarea className="sr-input sr-textarea" name="note" placeholder="Message (optionnel)" />
+                <textarea className="sr-input sr-textarea" name="note" maxLength={1500} placeholder="Message (optionnel)" />
                 <button className="sr-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                   {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer'}
                 </button>
@@ -372,7 +372,7 @@ export default function SceauRoyal({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="sr-gb-form" onSubmit={submitMessage}>
                 <input className="sr-gb-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="sr-gb-input sr-gb-textarea" name="message" placeholder="Votre message..." required />
+                <textarea className="sr-gb-input sr-gb-textarea" name="message" maxLength={3000} placeholder="Votre message..." required />
                 <button className="sr-btn-gb" type="submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi...' : 'Envoyer'}
                 </button>

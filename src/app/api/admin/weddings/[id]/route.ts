@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { generateAccessToken } from '@/lib/tokens'
 import { revalidatePath } from 'next/cache'
+import { escapeHtml } from '@/lib/sanitize'
 
 function checkAdmin(req: NextRequest): boolean {
   const session = req.cookies.get('admin_session')?.value
@@ -315,7 +316,7 @@ function buildActivationEmail({ bride_name, groom_name, invite_url, couple_url, 
   <div style="padding:40px 36px">
     <h1 style="margin:0 0 8px;font-weight:300;font-size:1.7rem;line-height:1.2">Votre invitation est prête&nbsp;!</h1>
     <p style="margin:0 0 32px;color:#666;font-style:italic;font-size:1rem;line-height:1.6">
-      Félicitations, ${bride_name} &amp; ${groom_name}. Votre invitation de mariage est maintenant active et prête à être partagée avec vos invités.
+      Félicitations, ${escapeHtml(bride_name)} &amp; ${escapeHtml(groom_name)}. Votre invitation de mariage est maintenant active et prête à être partagée avec vos invités.
     </p>
 
     <div style="margin-bottom:24px">
@@ -328,7 +329,7 @@ function buildActivationEmail({ bride_name, groom_name, invite_url, couple_url, 
     <div style="background:#fafafa;border:1px solid #eee;padding:24px;margin-bottom:32px;font-family:'Helvetica Neue',sans-serif;font-size:0.88rem">
       <p style="margin:0 0 12px;font-weight:600;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;color:#555">Votre espace mariés</p>
       <p style="margin:0 0 6px;color:#666">URL : <a href="${couple_url}" style="color:#0a0a0a">${couple_url}</a></p>
-      <p style="margin:0;color:#666">Code d'accès : <strong style="letter-spacing:0.12em">${couple_token}</strong></p>
+      <p style="margin:0;color:#666">Code d'accès : <strong style="letter-spacing:0.12em">${escapeHtml(couple_token)}</strong></p>
       <p style="margin:12px 0 0;color:#999;font-size:0.8rem;line-height:1.5">Depuis votre espace, suivez les confirmations de présence et gérez le livre d'or.</p>
     </div>
 

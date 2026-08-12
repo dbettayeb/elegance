@@ -167,7 +167,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
                 ))}
               </div>
               <input className="ne-input" name="guests" type="number" min="0" max="20" placeholder="Nombre d'accompagnants" />
-              <textarea className="ne-input ne-textarea" name="note" placeholder="Message optionnel..." />
+              <textarea className="ne-input ne-textarea" name="note" maxLength={1500} placeholder="Message optionnel..." />
               <button className="ne-btn-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                 {rsvpStatus === 'loading' ? 'Envoi...' : 'Confirmer ma présence'}
               </button>
@@ -199,7 +199,7 @@ export default function NuitEtoilee({ wedding }: { wedding: Wedding }) {
             ) : (
               <form className="ne-form" onSubmit={submitMessage} style={{ marginTop: '20px' }}>
                 <input className="ne-input" name="author_name" placeholder="Votre prénom" required />
-                <textarea className="ne-input ne-textarea" name="message" placeholder="Votre message de vœux..." required />
+                <textarea className="ne-input ne-textarea" name="message" maxLength={3000} placeholder="Votre message de vœux..." required />
                 <button className="ne-btn-submit" type="submit" disabled={gbStatus === 'loading'}>
                   {gbStatus === 'loading' ? 'Envoi...' : 'Publier'}
                 </button>
