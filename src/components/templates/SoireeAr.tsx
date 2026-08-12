@@ -78,8 +78,13 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     if (!audio || !hasMusic) return
 
     let armed = true
-    const start = () => {
+    const start = (ev?: Event) => {
       if (!armed) return
+      // Le bouton pilote déjà la lecture. Sans cette garde, un premier geste
+      // porté sur lui lancerait le son ici, puis toggleMusic le couperait
+      // aussitôt : l'invité appuierait sur « lecture » et n'entendrait rien.
+      const target = ev?.target
+      if (target instanceof Element && target.closest('.sa-audio-control')) return
       audio.play().then(() => {
         armed = false
         setMusicOn(true)
