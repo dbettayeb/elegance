@@ -117,14 +117,9 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           </header>
 
           {/* ─── MOT D'ACCUEIL ─── */}
-          {(wedding.families_intro_ar || wedding.custom_message) && (
+          {wedding.custom_message && (
             <section className="sa-section sa-welcome">
-              {wedding.families_intro_ar && (
-                <h2 className="sa-welcome-intro">{wedding.families_intro_ar}</h2>
-              )}
-              {wedding.custom_message && (
-                <p className="sa-welcome-text">{wedding.custom_message}</p>
-              )}
+              <p className="sa-welcome-text">{wedding.custom_message}</p>
             </section>
           )}
 
@@ -437,8 +432,6 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   line-height: 1.4;
   margin-bottom: 26px;
 }
-/* pre-line : la phrase d'introduction est saisie sur plusieurs lignes. */
-.sa-welcome-intro { font-family: var(--sa-display); font-size: 25px; line-height: 1.9; margin-bottom: 16px; font-weight: 400; white-space: pre-line; }
 .sa-welcome-text  { font-size: 17px; line-height: 2.1; color: var(--sa-muted); }
 
 /* ── Compte à rebours ── */
