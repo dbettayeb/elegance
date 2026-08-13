@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* L'application n'a pas de thème sombre : chaque page peint son propre fond
+     clair. Sans cette déclaration, le navigateur habille les contrôles natifs
+     — saisie automatique, sélecteurs de date et d'heure — aux couleurs du
+     thème système, illisibles sur ces fonds. */
+  color-scheme: light;
 }
 
 @theme inline {
@@ -12,12 +17,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Pas de bascule sombre ici. Elle passait --foreground en #ededed, et le
+   préflight Tailwind fait hériter cette couleur aux champs de saisie : sur un
+   téléphone en thème sombre, le code du portail s'écrivait en blanc sur une
+   carte blanche. Rien d'autre que le body ne consomme ces variables, et toutes
+   les pages fixent déjà leurs couleurs. */
 
 body {
   background: var(--background);
