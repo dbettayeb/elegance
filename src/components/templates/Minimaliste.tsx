@@ -401,7 +401,7 @@ const CSS = `
     max-width:440px;margin:0 auto;text-align:left;
   }
   .mn-msg{padding:0}
-  .mn-msg-text{
+  .mn-msg-text{ overflow-wrap: anywhere;
     font-family:Georgia,serif;font-size:1.05rem;font-style:italic;
     color:#333;line-height:1.7;
   }

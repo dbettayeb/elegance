@@ -1453,7 +1453,7 @@ const CSS = `
     background: var(--cd-card);
     padding: 0 0.4rem;
   }
-  .cd-gb-msg {
+  .cd-gb-msg { overflow-wrap: anywhere;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.1rem;

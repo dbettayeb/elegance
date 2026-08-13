@@ -507,7 +507,7 @@ const CSS = `
     border:1px solid rgba(212,163,115,0.25);
     border-radius:12px;padding:18px 22px;
   }
-  .rp-msg-text{
+  .rp-msg-text{ overflow-wrap: anywhere;
     font-family:Georgia,serif;font-size:1rem;font-style:italic;
     color:#7C3F58;line-height:1.7;
   }

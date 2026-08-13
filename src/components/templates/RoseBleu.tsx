@@ -469,7 +469,7 @@ function buildCSS(): string {
   /* MESSAGES */
   .rb-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 14px; text-align: left; }
   .rb-msg { border-bottom: 1px solid ${P.borderSoft}; padding: 10px 0; }
-  .rb-msg-text   { color: ${P.blue}; line-height: 1.8; font-size: .86rem; }
+  .rb-msg-text   { overflow-wrap: anywhere; color: ${P.blue}; line-height: 1.8; font-size: .86rem; }
   .rb-msg-author { margin-top: 4px; font-size: .48rem; color: ${P.blueLight}; letter-spacing: .08em; }
 
   /* FOOTER */

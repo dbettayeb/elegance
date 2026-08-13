@@ -517,7 +517,7 @@ function buildCSS(): string {
   /* MESSAGES */
   .t8-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 14px; text-align: left; }
   .t8-msg { border-bottom: 1px solid ${P.borderSoft}; padding: 10px 0; }
-  .t8-msg-text   { color: ${P.textSecondary}; line-height: 1.8; font-size: .86rem; }
+  .t8-msg-text   { overflow-wrap: anywhere; color: ${P.textSecondary}; line-height: 1.8; font-size: .86rem; }
   .t8-msg-author { margin-top: 4px; font-size: .48rem; color: ${P.pink}; letter-spacing: .08em; }
 
   /* FOOTER */

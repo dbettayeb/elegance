@@ -1068,7 +1068,7 @@ const CSS = `
     font-size: 1.4rem; line-height: 1; color: rgba(255,250,248,0.22);
     z-index: 0; pointer-events: none; font-family: Georgia, serif;
   }
-  .guestbook-message { position: relative; z-index: 1; color: var(--cream); font-style: italic; font-size: 1rem; line-height: 1.4; }
+  .guestbook-message { overflow-wrap: anywhere; position: relative; z-index: 1; color: var(--cream); font-style: italic; font-size: 1rem; line-height: 1.4; }
   .guestbook-author  { margin-top: 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; color: var(--cream); text-align: right; }
   .guestbook-form    { display: flex; flex-direction: column; gap: 0.75rem; }
   .guestbook-input {

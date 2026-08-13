@@ -946,7 +946,7 @@ const CSS = `
     color: var(--cc-gold-d);
     margin-bottom: 6px;
   }
-  .cc-msg-text {
+  .cc-msg-text { overflow-wrap: anywhere;
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.05rem;
     font-style: italic;

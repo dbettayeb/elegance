@@ -667,7 +667,7 @@ const CSS = `
     border: 1px solid var(--an-border);
     padding: 14px 18px; text-align: right;
   }
-  .an-msg-text {
+  .an-msg-text { overflow-wrap: anywhere;
     font-family: var(--an-font-body); font-size: 1rem; font-style: italic;
     color: var(--an-text-2); line-height: 1.8;
   }

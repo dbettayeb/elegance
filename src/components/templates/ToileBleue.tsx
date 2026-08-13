@@ -486,7 +486,7 @@ function buildCSS(): string {
   /* MESSAGES */
   .tb-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 16px; text-align: left; }
   .tb-msg { border-bottom: 1px solid ${P.border}; padding: 12px 0; }
-  .tb-msg-text   { font-style: italic; color: ${P.textSecondary}; line-height: 1.8; font-size: .95rem; }
+  .tb-msg-text   { overflow-wrap: anywhere; font-style: italic; color: ${P.textSecondary}; line-height: 1.8; font-size: .95rem; }
   .tb-msg-author { margin-top: 6px; font-size: .58rem; color: ${P.accent}; letter-spacing: .1em; }
 
   /* FOOTER */

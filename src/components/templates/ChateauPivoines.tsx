@@ -1409,7 +1409,7 @@ const CSS = `
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(60, 20, 30, 0.04);
   }
-  .cp-gb-msg {
+  .cp-gb-msg { overflow-wrap: anywhere;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.1rem;

@@ -483,7 +483,7 @@ function buildCSS(): string {
   /* MESSAGES */
   .ri-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 14px; text-align: left; }
   .ri-msg { border-bottom: 1px solid ${P.borderSoft}; padding: 10px 0; }
-  .ri-msg-text   { color: ${P.gold}; line-height: 1.8; font-size: .86rem; }
+  .ri-msg-text   { overflow-wrap: anywhere; color: ${P.gold}; line-height: 1.8; font-size: .86rem; }
   .ri-msg-author { margin-top: 4px; font-size: .48rem; color: ${P.goldMid}; letter-spacing: .08em; }
 
   /* FOOTER */

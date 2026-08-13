@@ -664,7 +664,7 @@ const CSS = `
   .aq-msg-moon{
     color:#D4AF37;font-size:1.1rem;margin-bottom:8px;opacity:.8;
   }
-  .aq-msg-text{
+  .aq-msg-text{ overflow-wrap: anywhere;
     font-family:'Amiri',serif;font-size:1rem;font-style:italic;
     color:rgba(244,229,176,0.9);line-height:1.8;
   }

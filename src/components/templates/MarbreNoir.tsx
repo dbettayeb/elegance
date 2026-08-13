@@ -530,7 +530,7 @@ const CSS = `
     background:rgba(42,42,42,0.5);
     border-left:2px solid #C0C0C0;
   }
-  .mb-msg-text{
+  .mb-msg-text{ overflow-wrap: anywhere;
     font-family:Georgia,serif;font-size:1rem;font-style:italic;
     color:#E5E4E2;line-height:1.7;
   }

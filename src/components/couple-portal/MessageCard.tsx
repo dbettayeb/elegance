@@ -59,6 +59,7 @@ export default function MessageCard({
             fontSize: '0.85rem',
             color: theme.textPrimary,
             fontFamily: theme.bodyFont,
+            overflowWrap: 'anywhere',
           }}>
             {message.author_name}
           </strong>
@@ -91,6 +92,8 @@ export default function MessageCard({
           color: theme.textSecondary,
           lineHeight: 1.6,
           margin: 0,
+          // Un mot sans espace — URL, suite de lettres — sort du cadre sans ça.
+          overflowWrap: 'anywhere',
         }}>
           "{message.message}"
         </p>
