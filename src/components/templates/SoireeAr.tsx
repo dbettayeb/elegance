@@ -661,9 +661,12 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
                               var(--sa-gold-dim) 65%, transparent);
 }
 .sa-cd-num {
-  font-family: var(--sa-display);
-  font-size: 40px; font-weight: 400; color: var(--sa-cream);
-  line-height: 1; font-variant-numeric: tabular-nums;
+  /* Chiffres pris dans la police de texte : ceux de la police de titre sont
+     dessinés en style ancien, où le 1 se confond avec un I majuscule. */
+  font-family: var(--sa-body);
+  font-size: 38px; font-weight: 300; color: var(--sa-cream);
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 .sa-cd-label {
   font-size: 10px; color: var(--sa-gold); margin-top: 10px;
