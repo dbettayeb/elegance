@@ -1280,7 +1280,7 @@ const CSS = `
     padding: 1.2rem; border-radius: 5px; text-align: left; overflow: hidden;
   }
   .ar-gb-quote   { position: absolute; top: 6px; right: 10px; font-size: 1.4rem; color: rgba(255,253,251,0.2); }
-  .ar-gb-message { position: relative; color: var(--ar-cream); font-style: italic; font-size: 1rem; line-height: 1.4; }
+  .ar-gb-message { overflow-wrap: anywhere; position: relative; color: var(--ar-cream); font-style: italic; font-size: 1rem; line-height: 1.4; }
   .ar-gb-author  { margin-top: 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; color: var(--ar-cream); text-align: right; }
   .ar-gb-form    { display: flex; flex-direction: column; gap: 0.75rem; }
   .ar-gb-input {

@@ -500,7 +500,7 @@ const CSS = `
     font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
     color:#A8B5A0;margin-bottom:5px;
   }
-  .ja-msg-text{
+  .ja-msg-text{ overflow-wrap: anywhere;
     font-family:Georgia,serif;font-size:1rem;font-style:italic;
     color:#3D4A3A;line-height:1.6;
   }

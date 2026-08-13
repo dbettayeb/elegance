@@ -777,7 +777,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 /* ── Livre d'or ── */
 .sa-messages { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
 .sa-message { padding: 17px; border: 1px solid color-mix(in srgb, var(--sa-gold) 16%, transparent); }
-.sa-message-text   { font-size: 16px; line-height: 1.9; }
+.sa-message-text   { overflow-wrap: anywhere; font-size: 16px; line-height: 1.9; }
 .sa-message-author { font-size: 13px; color: var(--sa-gold); margin-top: 9px; }
 
 /* ── Pied de page ── */

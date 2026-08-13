@@ -813,7 +813,7 @@ const CSS = `
     padding:16px 20px;position:relative;
   }
   .bs-msg-orn{color:var(--bs-accent);font-size:.9rem;margin-bottom:8px;opacity:.7;}
-  .bs-msg-text{
+  .bs-msg-text{ overflow-wrap: anywhere;
     font-family:var(--bs-font-body);font-size:1rem;font-style:italic;
     color:var(--bs-text-2);line-height:1.8;
   }

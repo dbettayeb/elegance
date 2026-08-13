@@ -139,7 +139,7 @@ export default async function CouplePortal({
                         <td style={{ fontWeight: 500 }}>
                           {r.name}
                           {r.note && (
-                            <div style={{ fontSize: '0.78rem', color: 'var(--cp-muted)', fontWeight: 400, marginTop: 2, fontStyle: 'italic' }}>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--cp-muted)', fontWeight: 400, marginTop: 2, fontStyle: 'italic', overflowWrap: 'anywhere' }}>
                               {r.note}
                             </div>
                           )}

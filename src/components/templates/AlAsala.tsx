@@ -546,7 +546,7 @@ const CSS = `
     border-right:3px solid #C97B5C;
     padding:18px 22px;
   }
-  .aa-msg-text{
+  .aa-msg-text{ overflow-wrap: anywhere;
     font-family:'Amiri',serif;font-size:1rem;font-style:italic;
     color:#3D2817;line-height:1.7;
   }

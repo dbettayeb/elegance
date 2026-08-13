@@ -954,7 +954,7 @@ const CSS = `
     text-transform: uppercase;
     color: var(--sr-wax); margin-bottom: 5px;
   }
-  .sr-msg-text {
+  .sr-msg-text { overflow-wrap: anywhere;
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.02rem; font-style: italic;
     color: var(--sr-mid); line-height: 1.6;

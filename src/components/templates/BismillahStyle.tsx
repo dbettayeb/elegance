@@ -503,7 +503,7 @@ const CSS = `
   .bs-messages{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:12px;}
   .bs-msg{background:rgba(250,247,240,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(201,168,76,0.2);padding:16px 20px;position:relative;}
   .bs-msg-orn{color:var(--bs-accent);font-size:.9rem;margin-bottom:8px;opacity:.7;}
-  .bs-msg-text{font-family:var(--bs-font-body);font-size:1rem;font-style:italic;color:var(--bs-text-2);line-height:1.8;}
+  .bs-msg-text{ overflow-wrap: anywhere;font-family:var(--bs-font-body);font-size:1rem;font-style:italic;color:var(--bs-text-2);line-height:1.8;}
   .bs-msg-author{margin-top:10px;font-family:var(--bs-font-body);font-size:.75rem;color:var(--bs-accent);font-weight:500;letter-spacing:.05em;}
   .bs-footer-names{font-family:var(--bs-font-display);font-size:1.8rem;color:var(--bs-accent);margin-bottom:4px;font-weight:700;direction:rtl;}
   .bs-footer-date{font-family:var(--bs-font-body);font-size:1rem;color:var(--bs-text-2);margin-bottom:4px;}

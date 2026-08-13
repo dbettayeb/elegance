@@ -370,7 +370,7 @@ const CSS = `
   .ed-messages{display:flex;flex-direction:column;gap:14px;max-width:540px;margin:32px auto 0;text-align:left}
   .ed-msg-card{border-left:2px solid var(--gold-l);padding:14px 18px;background:var(--cream)}
   .ed-msg-name{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
-  .ed-msg-text{font-family:Georgia,serif;font-size:1rem;font-style:italic;color:var(--mid);line-height:1.6}
+  .ed-msg-text{ overflow-wrap: anywhere;font-family:Georgia,serif;font-size:1rem;font-style:italic;color:var(--mid);line-height:1.6}
   .ed-gb-form{max-width:540px;margin:28px auto 0;display:flex;flex-direction:column;gap:12px;text-align:left}
   .ed-gb-input{width:100%;padding:13px 16px;border:1px solid rgba(201,168,76,.3);background:var(--cream);font-family:Georgia,serif;font-size:.95rem;outline:none;transition:border-color .3s;color:var(--text)}
   .ed-gb-input:focus{border-color:var(--gold)}

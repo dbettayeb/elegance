@@ -490,7 +490,7 @@ const CSS = `
     font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
     color:#D4AF37;margin-bottom:6px;
   }
-  .ne-msg-text{
+  .ne-msg-text{ overflow-wrap: anywhere;
     font-family:Georgia,serif;font-size:1rem;font-style:italic;
     color:#C5B47E;line-height:1.6;
   }

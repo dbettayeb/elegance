@@ -448,7 +448,7 @@ function buildCSS(): string {
   /* MESSAGES */
   .fa-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 14px; text-align: left; }
   .fa-msg { border-bottom: 1px solid rgba(73,112,67,.1); padding: 10px 0; }
-  .fa-msg-text   { color: ${P.muted}; line-height: 1.8; font-size: .86rem; }
+  .fa-msg-text   { overflow-wrap: anywhere; color: ${P.muted}; line-height: 1.8; font-size: .86rem; }
   .fa-msg-author { margin-top: 4px; font-size: .48rem; color: ${P.coral}; letter-spacing: .08em; }
 
   /* FOOTER */

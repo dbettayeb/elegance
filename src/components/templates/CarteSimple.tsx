@@ -488,7 +488,7 @@ function buildCSS(p: IvoirePalette): string {
   /* MESSAGES */
   .cs-messages { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 16px; text-align: left; }
   .cs-msg { border-bottom: 1px solid ${p.border}; padding: 12px 0; }
-  .cs-msg-text   { font-style: italic; color: ${p.textSecondary}; line-height: 1.8; font-size: .95rem; }
+  .cs-msg-text   { overflow-wrap: anywhere; font-style: italic; color: ${p.textSecondary}; line-height: 1.8; font-size: .95rem; }
   .cs-msg-author { margin-top: 6px; font-size: .58rem; color: ${p.accent}; letter-spacing: .1em; }
 
   /* FOOTER */
