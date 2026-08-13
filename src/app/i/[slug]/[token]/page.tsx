@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { Wedding } from '@/lib/types'
 import { getTemplate } from '@/lib/templates'
+import { buildShareCopy } from '@/lib/share-copy'
 
 // ✅ Cache CDN 1h — 10 000 visites = ~10 requêtes Supabase
 // Pour invalider manuellement après une modification admin, on utilise revalidatePath
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
   const supabase = createServiceSupabaseClient()
   const { data } = await supabase
     .from('weddings')
-    .select('bride_name, groom_name, event_date')
+    .select('bride_name, groom_name, event_date, template_id, wedding_day_text')
     .eq('slug', slug)
     .eq('access_token', token)
     .single()
@@ -29,8 +30,13 @@ export async function generateMetadata({ params }: Props) {
     day: 'numeric', month: 'long', year: 'numeric',
   })
 
-  const title = `${data.bride_name} & ${data.groom_name} · ${date}`
-  const description = `Vous êtes cordialement invités au mariage de ${data.bride_name} et ${data.groom_name}.`
+  const { title, description } = buildShareCopy({
+    templateId: data.template_id,
+    weddingDayText: data.wedding_day_text,
+    brideName: data.bride_name,
+    groomName: data.groom_name,
+    date,
+  })
 
   return {
     title,

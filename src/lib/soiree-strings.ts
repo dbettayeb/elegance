@@ -25,6 +25,8 @@ export interface SoireeStrings {
   programTitle: string
   venueLabel: string
   dressTitle: string
+  /** Phrase de l'aperçu partagé, sans mention de mariage. */
+  shareDescription: string
   /** Invite du champ libre du RSVP. */
   notePlaceholder: string
   /** Invite du champ du livre d'or. */
@@ -62,6 +64,7 @@ export const SOIREE_AR: SoireeStrings = {
   programTitle: 'ترتيب الأحداث',
   venueLabel: 'مكان الحفل',
   dressTitle: 'قواعد اللباس',
+  shareDescription: 'يسعدنا دعوتكم لمشاركتنا هذه الليلة.',
   notePlaceholder: 'كلمة إن أحببتم...',
   messagePlaceholder: 'تهانيكم بهذه المناسبة...',
   dressWomen: 'للنساء',
@@ -94,6 +97,7 @@ export const SOIREE_FR: SoireeStrings = {
   dressTitle: 'Dress code',
   // Une soirée de henné ou de fiançailles n'a pas de « mariés » : l'invite
   // reste ouverte plutôt que de nommer des rôles qui n'existent pas ce soir-là.
+  shareDescription: 'Vous êtes cordialement invités à partager cette soirée avec nous.',
   notePlaceholder: 'Un mot, si vous le souhaitez...',
   messagePlaceholder: 'Vos vœux pour cette soirée...',
   dressWomen: 'Pour les dames',
