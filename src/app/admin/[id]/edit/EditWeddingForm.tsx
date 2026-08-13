@@ -561,6 +561,32 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 onChange={e => set('wedding_day_text', e.target.value)}
                 placeholder="ليلة العمر" dir="rtl" />
             </Field>
+            {form.template_id === 'soiree_fr' && (
+            <Field
+              label="Police du titre si écrit en arabe"
+              help="S'applique seulement quand le titre ci-dessus contient de l'arabe : les polices latines du template n'ont pas ces lettres. Sans ce choix, le navigateur retomberait sur une police système au hasard.">
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                {AR_TYPOGRAPHY_THEMES.map(th => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => set('ar_font_theme', th.id)}
+                    style={{
+                      padding: '10px 14px', border: '2px solid',
+                      borderColor: form.ar_font_theme === th.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                      borderRadius: 'var(--admin-radius)',
+                      background: form.ar_font_theme === th.id ? '#fdf6e3' : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.1rem', fontFamily: th.display, direction: 'rtl' }}>ليلة العمر</span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--admin-text-muted)', fontWeight: 500 }}>{th.label}</span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+            )}
             <Field label="Vidéo du héros" help="URL d'une vidéo MP4. Elle occupe tout le haut de l'invitation, en fond du titre et de la date. Laissez vide pour un fond dégradé.">
               <input className="admin-input" type="url" value={form.intro_video_url}
                 onChange={e => set('intro_video_url', e.target.value)}

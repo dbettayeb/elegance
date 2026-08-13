@@ -61,6 +61,13 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
   const eventTime = timeRange(wedding, eventDate, d => d.toLocaleTimeString(t.locale, timeOpts))
 
   const heroTitle = wedding.wedding_day_text || t.heroTitleDefault
+  // Un titre arabe sur le template français : les polices latines n'ont pas ces
+  // glyphes, le navigateur retomberait sur une police système quelconque. On lui
+  // applique donc la calligraphie choisie par le marié, et on la charge en plus.
+  const titleIsArabic = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(heroTitle)
+  const arTheme = getArTypographyTheme(wedding.ar_font_theme)
+  const needsArabicTitle = lang === 'fr' && titleIsArabic
+  const titleFont = needsArabicTitle ? arTheme.display : theme.display
   // custom_font_size est un pourcentage. Appliqué comme facteur sur la taille de
   // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
   const titleScale = (wedding.custom_font_size ?? 100) / 100
@@ -81,6 +88,24 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
       openEnvelope()
     }, 4100)
   }
+
+  // Met l'enveloppe à l'échelle de l'écran : la scène est un gabarit fixe de
+  // 1200×850 dans lequel le papier fait 580px de haut.
+  useEffect(() => {
+    if (phase >= 3) return
+    function scaleOpening() {
+      const stage = document.querySelector<HTMLElement>('.sa-stage')
+      if (!stage) return
+      const PAPER_H = 580
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / PAPER_H, 1.5)
+      stage.style.setProperty('--os-scale', scale.toFixed(4))
+    }
+    scaleOpening()
+    window.addEventListener('resize', scaleOpening)
+    return () => window.removeEventListener('resize', scaleOpening)
+  }, [phase])
 
   // Autoplay needs muted; some browsers still refuse, so failure is silent.
   useEffect(() => {
@@ -142,7 +167,13 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
         href={`https://fonts.googleapis.com/css2?family=${theme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
-      <style>{CSS(theme.display, theme.body, titleScale, palette)}</style>
+      {needsArabicTitle && (
+        <link
+          href={`https://fonts.googleapis.com/css2?family=${arTheme.googleFonts}&display=swap`}
+          rel="stylesheet"
+        />
+      )}
+      <style>{CSS(theme.display, theme.body, titleScale, palette, titleFont)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
 
       {!opened && (
@@ -155,11 +186,13 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
             tabIndex={0}
             aria-label={t.openAria}
           >
-            <span className="sa-flap sa-flap-l" />
-            <span className="sa-flap sa-flap-r" />
-            <span className="sa-flap sa-flap-b" />
-            <span className="sa-flap sa-flap-t" />
-            <span className="sa-seal" aria-hidden="true">{t.ornament}</span>
+            <img className="sa-poly sa-poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
+            <img className="sa-poly sa-poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
+            <img className="sa-poly sa-poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
+            <img className="sa-poly sa-poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
+            <span className="sa-dove" aria-hidden="true">
+              <img src="/assets/dove/dove-open.webp" alt="" />
+            </span>
             <span className="sa-hint">{t.hint}</span>
           </div>
         </div>
@@ -460,7 +493,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
   )
 }
 
-const CSS = (display: string, body: string, titleScale: number, p: BismillahPalette) => `
+const CSS = (display: string, body: string, titleScale: number, p: BismillahPalette, titleFont: string) => `
 .sa-root {
   --sa-night:    ${p.bg};
   --sa-gold:     ${p.accent};
@@ -471,6 +504,9 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   --sa-muted:    ${p.textMuted};
   --sa-title-scale: ${titleScale};
   --sa-display: ${display};
+  /* Police du titre de la soirée : distincte quand il est écrit en arabe
+     alors que le reste du template est en latin. */
+  --sa-title-font: ${titleFont};
   --sa-body:    ${body};
 
   background: var(--sa-night);
@@ -549,7 +585,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 }
 /* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
-  font-family: var(--sa-display);
+  font-family: var(--sa-title-font);
   font-size: calc(52px * var(--sa-title-scale));
   color: var(--sa-gold);
   line-height: 1.45;
@@ -714,7 +750,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 /* ── Pied de page ── */
 .sa-footer { padding: 44px 20px 56px; text-align: center; }
 .sa-footer-orn   { color: var(--sa-gold); font-size: 13px; margin-bottom: 14px; }
-.sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
+.sa-footer-title { font-family: var(--sa-title-font); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
 /* ── DRESS CODE ──
@@ -753,7 +789,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   overflow-x: auto; scroll-snap-type: x mandatory;
   scrollbar-width: thin;
   scrollbar-color: var(--sa-gold-dim) transparent;
-  justify-content: flex-start;
+  justify-content: safe center;
 }
 .sa-dress-photo {
   flex: 0 0 auto;
@@ -771,92 +807,59 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 }
 
 /* ── ENVELOPPE D'OUVERTURE ──
-   Même chorégraphie que Viktor & Paula, mais dessinée plutôt qu'illustrée :
-   ses images sont peintes en bordeaux et ne pouvaient pas suivre la palette
-   que le marié choisit. Ici chaque pan est un triangle découpé au clip-path,
-   donc toutes les teintes viennent de la palette. */
+   Reprise de Viktor & Paula : même scène de 1200×850, mêmes décalages, mêmes
+   durées. Le fond garde le bordeaux de ses illustrations, qui sont peintes
+   dans cette teinte et jureraient sur la palette nuit du template. */
 .sa-opening {
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 42%, ${p.bg} 0%, #000 130%);
+  /* Seul le fond suit la palette : les pans et le sceau restent les
+     illustrations d'origine, avec leurs teintes. */
+  background: ${p.bg};
   z-index: 10000; overflow: hidden;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 30px;
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 .sa-opening-gone { opacity: 0; visibility: hidden; pointer-events: none; }
 
 .sa-stage {
-  position: relative;
-  width: min(86vw, 440px);
-  aspect-ratio: 1 / 0.7;
+  position: absolute; top: 50%; left: 50%;
+  width: 1200px; height: 850px;
   cursor: pointer;
-  filter: drop-shadow(0 24px 48px rgba(0,0,0,0.55));
+  --os-scale: 1;
+  transform: translate(-50%, -50%) scale(var(--os-scale));
+  transform-origin: center center;
 }
-
-/* Les quatre pans. Chacun couvre toute la scène et n'en garde qu'un triangle,
-   les quatre pointes se rejoignant au centre. */
-.sa-flap {
-  position: absolute; inset: 0;
+.sa-poly {
+  position: absolute; pointer-events: none;
   transition: transform 2.5s ease, opacity 0.5s ease;
 }
-.sa-flap-l {
-  clip-path: polygon(0 0, 50% 50%, 0 100%);
-  background: linear-gradient(90deg, rgba(0,0,0,0.09), rgba(0,0,0,0.01)), ${p.textPrimary};
-}
-.sa-flap-r {
-  clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-  background: linear-gradient(270deg, rgba(0,0,0,0.09), rgba(0,0,0,0.01)), ${p.textPrimary};
-}
-.sa-flap-b {
-  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
-  background: linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0)), ${p.textPrimary};
-}
-.sa-flap-t {
-  clip-path: polygon(0 0, 50% 50%, 100% 0);
-  /* Le pan rabattu par-dessus les autres : plus sombre, avec une ombre portée
-     le long de ses deux arêtes pour marquer l'épaisseur du papier. */
-  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.13)), ${p.textPrimary};
-  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.28));
-  z-index: 2;
-}
+.sa-poly-left  { top: -13px; left: 98px;  width: 467px;  height: auto; z-index: 1; }
+.sa-poly-right { top: -13px; left: 635px; width: 467px;  height: auto; z-index: 1; }
+.sa-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
+.sa-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
 
-.sa-animating .sa-flap-l { transform: translateX(-115%); opacity: 0; }
-.sa-animating .sa-flap-r { transform: translateX(115%);  opacity: 0; }
-.sa-animating .sa-flap-t { transform: translateY(-115%); }
-.sa-animating .sa-flap-b { transform: translateY(115%); }
+.sa-animating .sa-poly-left  { transform: translateX(-560px); opacity: 0; }
+.sa-animating .sa-poly-right { transform: translateX(560px);  opacity: 0; }
+.sa-animating .sa-poly-top   { transform: translateY(-430px); }
+.sa-animating .sa-poly-bot   { transform: translateY(566px); }
 
-/* Le sceau de cire, en couleur d'accent plutôt qu'en image dorée figée. */
-.sa-seal {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 84px; height: 84px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle at 35% 30%, ${p.accent}, ${p.accentDark});
-  color: ${p.bg}; font-family: ${display}; font-size: 34px; line-height: 1;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 -2px 6px rgba(0,0,0,0.25);
-  z-index: 3;
+.sa-dove {
+  position: absolute; top: 318px; left: 515px;
+  width: 170px; height: 170px; z-index: 3;
   transition: transform 1.5s ease, opacity 1.5s ease;
 }
-.sa-seal-out .sa-seal, .sa-animating .sa-seal {
-  transform: translate(-50%, -50%) scale(1.25); opacity: 0;
-}
+.sa-dove img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sa-seal-out .sa-dove, .sa-animating .sa-dove { transform: scale(1.22); opacity: 0; }
 
 .sa-hint {
-  position: absolute; top: calc(100% + 26px); left: 50%;
-  transform: translateX(-50%); white-space: nowrap;
-  font-family: ${body};
-  font-size: 13px; letter-spacing: 0.24em; text-transform: uppercase;
-  color: ${p.accent};
+  position: absolute; top: 540px; left: 535px;
+  width: 130px; text-align: center;
+  color: ${p.bg}; font-family: ${body};
+  font-size: 20px; pointer-events: none; z-index: 1;
+  white-space: nowrap;
   transition: opacity 1.5s ease;
 }
 .sa-seal-out .sa-hint, .sa-animating .sa-hint {
   opacity: 0; transition: opacity 0.3s ease;
-}
-
-@media (max-width: 640px) {
-  .sa-opening { gap: 22px; }
-  .sa-seal    { width: 68px; height: 68px; font-size: 28px; }
-  .sa-hint    { font-size: 11px; }
 }
 
 /* ── CONTRÔLE MUSIQUE ──
