@@ -31,6 +31,34 @@ function loadFonts() {
 
 const ARABIC = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/
 
+/**
+ * Remet les mots dans l'ordre visuel d'une ligne à base arabe.
+ *
+ * Le moteur de rendu ne fait aucun réordonnancement bidirectionnel : il pose
+ * les mots de gauche à droite dans l'ordre où ils arrivent. Sur une ligne
+ * arabe il faut donc les lui donner déjà retournés — mais pas n'importe
+ * comment : une suite de mots latins garde son propre sens de lecture. Sans
+ * cette nuance, « ليلة Amal et Karim » ressortait « Karim et Amal ليلة ».
+ *
+ * On inverse donc l'ensemble, puis on remet à l'endroit chaque suite latine.
+ */
+function reorderForArabicLine(text: string): string {
+  const words = text.trim().split(/\s+/).reverse()
+  const out: string[] = []
+  let latinRun: string[] = []
+
+  const flush = () => {
+    if (latinRun.length) { out.push(...latinRun.reverse()); latinRun = [] }
+  }
+
+  for (const word of words) {
+    if (ARABIC.test(word)) { flush(); out.push(word) }
+    else latinRun.push(word)
+  }
+  flush()
+  return out.join(' ')
+}
+
 /** Small gold lozenge used in the ornaments. */
 function Diamond({ size, color = GOLD }: { size: number; color?: string }) {
   return (
@@ -69,9 +97,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date,
   // Le moteur de rendu ne réordonne pas les mots pour l'arabe : il pose le
   // premier à gauche, si bien que « المحفل الجربي » se lit à l'envers. Les
   // lettres, elles, sont bien liées — seule la séquence est à inverser.
-  const titleText = titleIsArabic && title
-    ? title.trim().split(/\s+/).reverse().join(' ')
-    : title
+  const titleText = titleIsArabic && title ? reorderForArabicLine(title) : title
   const titleLength = title?.length ?? 0
   const titleFontSize = titleLength > 30 ? 56 : titleLength > 20 ? 70 : titleLength > 12 ? 84 : 96
 
