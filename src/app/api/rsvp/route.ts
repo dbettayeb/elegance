@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { sanitizeName, sanitizePhone, sanitizeText } from '@/lib/sanitize'
+import { isCheckViolation } from '@/lib/db-errors'
 import { hashIP } from '@/lib/tokens'
 
 export async function POST(req: NextRequest) {
@@ -76,6 +77,12 @@ export async function POST(req: NextRequest) {
 
   } catch (err) {
     console.error('[RSVP]', err)
+    if (isCheckViolation(err)) {
+      return NextResponse.json(
+        { error: 'Cette réponse ne peut pas être enregistrée telle quelle. Vérifiez les champs saisis.' },
+        { status: 400 }
+      )
+    }
     return NextResponse.json(
       { error: 'Erreur serveur.' },
       { status: 500 }
