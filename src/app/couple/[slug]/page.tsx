@@ -7,6 +7,7 @@ import Paginated from '@/components/couple-portal/Paginated'
 import GuestInvitationsPanel from '@/components/couple-portal/GuestInvitationsPanel'
 import type { CoupleTheme } from '@/lib/couple-themes'
 import { TEMPLATES_META } from '@/lib/templates-meta'
+import { invitationHeading } from '@/lib/share-copy'
 
 const NEUTRAL_THEME: CoupleTheme = {
   accent: '#2563eb', accentSoft: '#eff6ff', accentText: '#1e40af',
@@ -82,7 +83,12 @@ export default async function CouplePortal({
           <div className="cp-header-inner">
             <div>
               <h1 className="cp-header-title">
-                {wedding.bride_name} &amp; {wedding.groom_name}
+                {invitationHeading({
+                  templateId: wedding.template_id,
+                  weddingDayText: wedding.wedding_day_text,
+                  brideName: wedding.bride_name,
+                  groomName: wedding.groom_name,
+                })}
               </h1>
               <p className="cp-header-sub">{eventDate}</p>
             </div>
