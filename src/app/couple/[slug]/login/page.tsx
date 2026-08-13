@@ -117,6 +117,10 @@ export default function CoupleLogin() {
               width: '100%',
               padding: '12px 14px',
               fontSize: '1rem',
+              // Explicite plutôt qu'hérité : le préflight Tailwind donne
+              // color: inherit aux champs, qui prenaient donc la couleur du body.
+              color: '#171717',
+              background: '#fff',
               border: '1px solid #d4d4d4',
               borderRadius: '8px',
               outline: 'none',
