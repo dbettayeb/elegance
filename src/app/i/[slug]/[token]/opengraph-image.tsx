@@ -12,12 +12,13 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
   const supabase = createServiceSupabaseClient()
   const { data } = await supabase
     .from('weddings')
-    .select('bride_name, groom_name, event_date')
+    .select('bride_name, groom_name, event_date, template_id, wedding_day_text')
     .eq('slug', slug)
     .eq('access_token', token)
     .single()
 
   return createOgWeddingImageResponse({
+    title: soireeTitle(data?.template_id, data?.wedding_day_text),
     brideName: data?.bride_name ?? '',
     groomName: data?.groom_name ?? '',
     date: data
@@ -26,4 +27,17 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
         })
       : '',
   })
+}
+
+/**
+ * Titre de la soirée, sur les seuls templates concernés.
+ *
+ * Ailleurs on garde les prénoms : c'est bien un mariage. Soirée couvre un
+ * henné, des fiançailles, une réception — annoncer « invitation au mariage
+ * de » y serait faux, et le couple n'y est pas toujours nommé.
+ */
+function soireeTitle(templateId?: string | null, weddingDayText?: string | null) {
+  if (templateId !== 'soiree_ar' && templateId !== 'soiree_fr') return undefined
+  const fallback = templateId === 'soiree_fr' ? 'Notre soirée' : 'ليلة العمر'
+  return weddingDayText?.trim() || fallback
 }

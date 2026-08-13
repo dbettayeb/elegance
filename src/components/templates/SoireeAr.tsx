@@ -227,14 +227,10 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   {heroTitle}
                 </div>
 
-                <div className="sa-hero-rule sa-anim" style={{ animationDelay: '0.5s' }}>
-                  <span /><i>✦</i><span />
-                </div>
-
-                <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.65s' }}>
+                <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.5s' }}>
                   {formattedDate}
                 </div>
-                <div className="sa-hero-time sa-anim" style={{ animationDelay: '0.75s' }}>
+                <div className="sa-hero-time sa-anim" style={{ animationDelay: '0.62s' }}>
                   {eventTime}
                 </div>
               </div>
@@ -411,7 +407,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   </div>
                   <div className="sa-field">
                     <label className="sa-field-label">Message (optionnel)</label>
-                    <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
+                    <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder={t.notePlaceholder} />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                     {rsvpStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Confirmer ma présence  ${t.ornament}\u2069`}
@@ -449,7 +445,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   </div>
                   <div className="sa-field">
                     <label className="sa-field-label">Vos vœux</label>
-                    <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
+                    <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder={t.messagePlaceholder} required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
                     {gbStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Publier mon message  ${t.ornament}\u2069`}
@@ -591,6 +587,9 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   line-height: 1.45;
 }
 .sa-hero-date {
+  /* Collée au titre : le filet qui les séparait est parti, et l'écart qu'il
+     laissait derrière lui détachait la date de ce qu'elle date. */
+  margin-top: 18px;
   font-size: 21px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -601,14 +600,6 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   color: var(--sa-muted);
   margin-top: 6px;
 }
-.sa-hero-rule {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 22px 0;
-}
-.sa-hero-rule span { width: 62px; height: 1px; background: var(--sa-gold-dim); }
-.sa-hero-rule i    { color: var(--sa-gold); font-size: 11px; font-style: normal; }
 
 .sa-anim { opacity: 0; animation: saFadeUp 1.1s ease forwards; }
 @keyframes saFadeUp {
@@ -937,7 +928,6 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 }
 @media (max-width: 380px) {
   .sa-hero-title { font-size: calc(33px * var(--sa-title-scale)); }
-  .sa-hero-rule span { width: 44px; }
   .sa-cd-cell { min-width: 64px; }
 }
 `
