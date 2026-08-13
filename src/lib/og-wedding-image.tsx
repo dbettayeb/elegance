@@ -66,6 +66,12 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date,
 
   // Le titre tient sur une seule ligne : il rétrécit quand il s'allonge.
   const titleIsArabic = !!title && ARABIC.test(title)
+  // Le moteur de rendu ne réordonne pas les mots pour l'arabe : il pose le
+  // premier à gauche, si bien que « المحفل الجربي » se lit à l'envers. Les
+  // lettres, elles, sont bien liées — seule la séquence est à inverser.
+  const titleText = titleIsArabic && title
+    ? title.trim().split(/\s+/).reverse().join(' ')
+    : title
   const titleLength = title?.length ?? 0
   const titleFontSize = titleLength > 30 ? 56 : titleLength > 20 ? 70 : titleLength > 12 ? 84 : 96
 
@@ -109,7 +115,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date,
                 direction: titleIsArabic ? 'rtl' : 'ltr',
               }}
             >
-              {title}
+              {titleText}
             </div>
           ) : (
             <>
