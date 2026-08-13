@@ -4,6 +4,7 @@ import Bismillah from '@/components/templates/Bismillah'
 import GuestDedicationOverlay from '@/components/common/GuestDedicationOverlay'
 import { Wedding } from '@/lib/types'
 import { getTemplate } from '@/lib/templates'
+import { buildShareCopy } from '@/lib/share-copy'
 
 export const revalidate = 3600
 
@@ -12,18 +13,23 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const supabase = createServiceSupabaseClient()
   const { data: invite } = await supabase
     .from('guest_invitations')
-    .select('guest_name_ar, weddings(bride_name, groom_name, event_date)')
+    .select('guest_name_ar, weddings(bride_name, groom_name, event_date, template_id, wedding_day_text)')
     .eq('token', token)
     .single()
 
   if (!invite) return { title: 'Invitation' }
-  const w = invite.weddings as unknown as { bride_name: string; groom_name: string; event_date: string } | null
+  const w = invite.weddings as unknown as { bride_name: string; groom_name: string; event_date: string; template_id: string; wedding_day_text: string | null } | null
 
   const date = w?.event_date
     ? new Date(w.event_date).toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
     : ''
-  const title = `${w?.bride_name ?? ''} & ${w?.groom_name ?? ''} · ${date}`
-  const description = `Vous êtes cordialement invités au mariage de ${w?.bride_name ?? ''} et ${w?.groom_name ?? ''}.`
+  const { title, description } = buildShareCopy({
+    templateId: w?.template_id,
+    weddingDayText: w?.wedding_day_text,
+    brideName: w?.bride_name ?? '',
+    groomName: w?.groom_name ?? '',
+    date,
+  })
 
   return {
     title,
