@@ -414,7 +414,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                     <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? 'Envoi...' : `${t.ornament}  Confirmer ma présence  ${t.ornament}`}
+                    {rsvpStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Confirmer ma présence  ${t.ornament}\u2069`}
                   </button>
                 </form>
               )}
@@ -452,7 +452,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                     <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    {gbStatus === 'loading' ? 'Envoi...' : `${t.ornament}  Publier mon message  ${t.ornament}`}
+                    {gbStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Publier mon message  ${t.ornament}\u2069`}
                   </button>
                 </form>
               )}
@@ -497,6 +497,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   --sa-night:    ${p.bg};
   --sa-gold:     ${p.accent};
   --sa-gold-dim: ${p.border};
+  --sa-gold-deep: ${p.accentDark};
   --sa-soft:     ${p.accentSoft};
   --sa-cream:    ${p.textPrimary};
   --sa-second:   ${p.textSecondary};
@@ -626,11 +627,12 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 /* Paire surtitre + titre, reprise de Bismillah. */
 .sa-label {
   font-family: var(--sa-body);
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
   color: var(--sa-gold);
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 .sa-title {
   font-family: var(--sa-display);
@@ -644,13 +646,29 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 
 /* ── Compte à rebours ── */
 .sa-countdown { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.sa-countdown { gap: 0; }
+/* Les cellules n'ont plus de cadre : un filet vertical suffit à les séparer,
+   et il s'estompe aux extrémités pour ne pas redessiner une boîte. */
 .sa-cd-cell {
-  min-width: 74px;
-  padding: 14px 8px;
-  border: 1px solid var(--sa-gold-dim);
+  min-width: 78px;
+  padding: 4px 14px;
+  position: relative;
 }
-.sa-cd-num   { font-size: 27px; font-weight: 700; color: var(--sa-gold); line-height: 1; }
-.sa-cd-label { font-size: 12px; color: var(--sa-muted); margin-top: 7px; }
+.sa-cd-cell + .sa-cd-cell::before {
+  content: ''; position: absolute; inset-inline-start: 0; top: 12%; height: 76%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--sa-gold-dim) 35%,
+                              var(--sa-gold-dim) 65%, transparent);
+}
+.sa-cd-num {
+  font-family: var(--sa-display);
+  font-size: 40px; font-weight: 400; color: var(--sa-cream);
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.sa-cd-label {
+  font-size: 10px; color: var(--sa-gold); margin-top: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
 
 /* ── Célébrations ── */
 .sa-parties { display: flex; flex-direction: column; gap: 16px; }
@@ -667,11 +685,14 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   align-items: baseline;
   gap: 18px;
   padding: 15px 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 12%, transparent);
-  text-align: right;
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 9%, transparent);
+  text-align: start;
 }
 .sa-program-row:last-child { border-bottom: none; }
-.sa-program-time  { min-width: 62px; color: var(--sa-gold); font-weight: 700; font-size: 16px; }
+.sa-program-time {
+  min-width: 62px; color: var(--sa-gold); font-weight: 400; font-size: 15px;
+  letter-spacing: 0.06em; font-variant-numeric: tabular-nums;
+}
 .sa-program-event { font-size: 17px; }
 .sa-program-venue { display: block; font-size: 13px; color: var(--sa-muted); margin-top: 3px; }
 
@@ -689,54 +710,73 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-map-link:hover { border-color: var(--sa-gold); }
 
 /* ── Formulaires ── */
-.sa-form { display: flex; flex-direction: column; gap: 14px; text-align: left; }
-.sa-field { display: flex; flex-direction: column; gap: 6px; }
+.sa-form { display: flex; flex-direction: column; gap: 22px; text-align: start; }
+.sa-field { display: flex; flex-direction: column; gap: 9px; }
 .sa-field-label {
   font-family: var(--sa-body);
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: var(--sa-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sa-gold);
 }
 .sa-field-hint { opacity: 0.75; }
+/* Un simple filet sous le champ, pas un cadre : cinq boîtes empilées
+   donnaient au formulaire l'allure d'un guichet plutôt que d'une invitation. */
 .sa-input {
   width: 100%;
-  padding: 13px 15px;
-  background: var(--sa-soft);
-  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
+  padding: 11px 2px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 24%, transparent);
+  border-radius: 0;
   color: var(--sa-cream);
   font-family: var(--sa-body);
   font-size: 15px;
   outline: none;
-  transition: border-color 0.25s ease;
+  transition: border-color 0.3s ease;
 }
+.sa-input::placeholder { color: color-mix(in srgb, var(--sa-cream) 34%, transparent); }
+.sa-input:focus { border-bottom-color: var(--sa-gold); }
 .sa-input::placeholder { color: var(--sa-muted); opacity: 0.7; }
 .sa-input:focus { border-color: var(--sa-gold); }
-.sa-textarea { min-height: 96px; resize: vertical; }
+.sa-textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
 .sa-choices { display: flex; gap: 8px; flex-wrap: wrap; }
 .sa-choice {
   flex: 1;
   min-width: 96px;
   padding: 11px 8px;
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sa-gold) 22%, transparent);
+  border-radius: 999px;
   color: var(--sa-muted);
   font-family: var(--sa-body);
-  font-size: 14px;
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 .sa-choice-on { border-color: var(--sa-gold); color: var(--sa-gold); background: color-mix(in srgb, var(--sa-gold) 9%, transparent); }
 .sa-submit {
-  padding: 14px;
-  margin-top: 4px;
-  background: var(--sa-gold);
+  align-self: center;
+  padding: 15px 42px;
+  margin-top: 14px;
+  background: linear-gradient(160deg, var(--sa-gold), var(--sa-gold-deep));
   border: none;
+  border-radius: 999px;
   color: var(--sa-night);
   font-family: var(--sa-body);
-  font-size: 16px;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.25s ease;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--sa-gold) 22%, transparent);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.sa-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--sa-gold) 30%, transparent);
+}
+.sa-submit:disabled { opacity: 0.55; cursor: default; }
 .sa-submit:disabled { opacity: 0.55; cursor: default; }
 .sa-success { font-family: var(--sa-display); font-size: 20px; color: var(--sa-gold); }
 

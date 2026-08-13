@@ -10,7 +10,7 @@ export function useInvitationLogic(wedding: Wedding) {
 
   const [opened, setOpened] = useState(isCatalog)
   const [visible, setVisible] = useState(isCatalog)
-  const [countdown, setCountdown] = useState({ d: '000', h: '00', m: '00', s: '00' })
+  const [countdown, setCountdown] = useState({ d: '0', h: '00', m: '00', s: '00' })
   const [rsvpStatus, setRsvpStatus] = useState<'idle' | 'loading' | 'done'>('idle')
   const [rsvpChoice, setRsvpChoice] = useState<'present' | 'absent' | 'maybe'>('present')
   const [gbStatus, setGbStatus] = useState<'idle' | 'loading' | 'done'>('idle')
@@ -32,7 +32,10 @@ export function useInvitationLogic(wedding: Wedding) {
       const m = Math.floor((diff % 3600000) / 60000)
       const s = Math.floor((diff % 60000) / 1000)
       setCountdown({
-        d: String(d).padStart(3, '0'),
+        // Les jours ne sont pas complétés : « 9 jours » et non « 009 ». Le
+        // remplissage n'a de sens que pour heures, minutes et secondes, qui
+        // se lisent par paires.
+        d: String(d),
         h: String(h).padStart(2, '0'),
         m: String(m).padStart(2, '0'),
         s: String(s).padStart(2, '0'),
