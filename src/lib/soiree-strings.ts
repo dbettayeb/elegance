@@ -25,6 +25,10 @@ export interface SoireeStrings {
   programTitle: string
   venueLabel: string
   dressTitle: string
+  /** Invite du champ libre du RSVP. */
+  notePlaceholder: string
+  /** Invite du champ du livre d'or. */
+  messagePlaceholder: string
   dressWomen: string
   dressMen: string
   rsvpLabel: string
@@ -58,6 +62,8 @@ export const SOIREE_AR: SoireeStrings = {
   programTitle: 'ترتيب الأحداث',
   venueLabel: 'مكان الحفل',
   dressTitle: 'قواعد اللباس',
+  notePlaceholder: 'كلمة إن أحببتم...',
+  messagePlaceholder: 'تهانيكم بهذه المناسبة...',
   dressWomen: 'للنساء',
   dressMen: 'للرجال',
   rsvpLabel: 'تأكيد الحضور',
@@ -86,6 +92,10 @@ export const SOIREE_FR: SoireeStrings = {
   programTitle: 'Déroulé de la soirée',
   venueLabel: 'Lieu de la fête',
   dressTitle: 'Dress code',
+  // Une soirée de henné ou de fiançailles n'a pas de « mariés » : l'invite
+  // reste ouverte plutôt que de nommer des rôles qui n'existent pas ce soir-là.
+  notePlaceholder: 'Un mot, si vous le souhaitez...',
+  messagePlaceholder: 'Vos vœux pour cette soirée...',
   dressWomen: 'Pour les dames',
   dressMen: 'Pour les messieurs',
   rsvpLabel: 'Confirmation de présence',

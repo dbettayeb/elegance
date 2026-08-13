@@ -13,17 +13,23 @@ const MUTED = '#8A7A66'
 
 // Read once per lambda instance — the files ship in assets/ so there is no
 // network call during rendering.
-let fontsPromise: Promise<{ bold: Buffer; boldItalic: Buffer }> | null = null
+let fontsPromise: Promise<{ bold: Buffer; boldItalic: Buffer; arabic: Buffer }> | null = null
 
 function loadFonts() {
   if (!fontsPromise) {
     fontsPromise = Promise.all([
       readFile(join(process.cwd(), 'assets/CormorantGaramond-Bold.ttf')),
       readFile(join(process.cwd(), 'assets/CormorantGaramond-BoldItalic.ttf')),
-    ]).then(([bold, boldItalic]) => ({ bold, boldItalic }))
+      // Cormorant n'a aucun glyphe arabe : sans elle, un titre en arabe
+      // donnerait une image vide. Cairo plutôt qu'Amiri, plus calligraphique :
+      // ses substitutions contextuelles font échouer le moteur de rendu.
+      readFile(join(process.cwd(), 'assets/Cairo-Bold-Arabic.woff')),
+    ]).then(([bold, boldItalic, arabic]) => ({ bold, boldItalic, arabic }))
   }
   return fontsPromise
 }
+
+const ARABIC = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/
 
 /** Small gold lozenge used in the ornaments. */
 function Diamond({ size, color = GOLD }: { size: number; color?: string }) {
@@ -43,14 +49,25 @@ interface OgWeddingProps {
   brideName: string
   groomName: string
   date: string
+  /**
+   * Titre de la soirée. Renseigné, il remplace les prénoms : une soirée de
+   * henné ou de fiançailles n'est pas un mariage, et annoncer « invitation au
+   * mariage de » avec deux prénoms y serait faux.
+   */
+  title?: string
 }
 
-export async function createOgWeddingImageResponse({ brideName, groomName, date }: OgWeddingProps) {
-  const { bold, boldItalic } = await loadFonts()
+export async function createOgWeddingImageResponse({ brideName, groomName, date, title }: OgWeddingProps) {
+  const { bold, boldItalic, arabic } = await loadFonts()
 
   // Names stack vertically, so the longer of the two drives the size.
   const longest = Math.max(brideName.length, groomName.length)
   const nameFontSize = longest > 18 ? 58 : longest > 13 ? 70 : longest > 9 ? 82 : 94
+
+  // Le titre tient sur une seule ligne : il rétrécit quand il s'allonge.
+  const titleIsArabic = !!title && ARABIC.test(title)
+  const titleLength = title?.length ?? 0
+  const titleFontSize = titleLength > 30 ? 56 : titleLength > 20 ? 70 : titleLength > 12 ? 84 : 96
 
   return new ImageResponse(
     (
@@ -80,21 +97,39 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
             <Diamond size={5} color={GOLD_SOFT} />
           </div>
 
-          <div style={{ display: 'flex', fontSize: 21, letterSpacing: 9, color: GOLD, marginBottom: 26 }}>
-            INVITATION AU MARIAGE DE
-          </div>
+          {title ? (
+            <div
+              style={{
+                display: 'flex',
+                fontSize: titleFontSize,
+                fontFamily: titleIsArabic ? 'Cairo' : 'Cormorant',
+                color: INK,
+                lineHeight: 1.3,
+                textAlign: 'center',
+                direction: titleIsArabic ? 'rtl' : 'ltr',
+              }}
+            >
+              {title}
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', fontSize: 21, letterSpacing: 9, color: GOLD, marginBottom: 26 }}>
+                INVITATION AU MARIAGE DE
+              </div>
 
-          <div style={{ display: 'flex', fontSize: nameFontSize, color: INK, lineHeight: 1.1 }}>
-            {brideName}
-          </div>
+              <div style={{ display: 'flex', fontSize: nameFontSize, color: INK, lineHeight: 1.1 }}>
+                {brideName}
+              </div>
 
-          <div style={{ display: 'flex', fontSize: Math.round(nameFontSize * 0.5), color: GOLD, fontStyle: 'italic', margin: '2px 0' }}>
-            &
-          </div>
+              <div style={{ display: 'flex', fontSize: Math.round(nameFontSize * 0.5), color: GOLD, fontStyle: 'italic', margin: '2px 0' }}>
+                &
+              </div>
 
-          <div style={{ display: 'flex', fontSize: nameFontSize, color: INK, lineHeight: 1.1 }}>
-            {groomName}
-          </div>
+              <div style={{ display: 'flex', fontSize: nameFontSize, color: INK, lineHeight: 1.1 }}>
+                {groomName}
+              </div>
+            </>
+          )}
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 30, marginBottom: 18 }}>
@@ -114,6 +149,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date 
       fonts: [
         { name: 'Cormorant', data: bold, weight: 700, style: 'normal' },
         { name: 'Cormorant', data: boldItalic, weight: 700, style: 'italic' },
+        { name: 'Cairo', data: arabic, weight: 700, style: 'normal' },
       ],
     }
   )

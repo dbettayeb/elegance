@@ -407,7 +407,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   </div>
                   <div className="sa-field">
                     <label className="sa-field-label">Message (optionnel)</label>
-                    <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
+                    <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder={t.notePlaceholder} />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
                     {rsvpStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Confirmer ma présence  ${t.ornament}\u2069`}
@@ -445,7 +445,7 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   </div>
                   <div className="sa-field">
                     <label className="sa-field-label">Vos vœux</label>
-                    <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
+                    <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder={t.messagePlaceholder} required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
                     {gbStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Publier mon message  ${t.ornament}\u2069`}

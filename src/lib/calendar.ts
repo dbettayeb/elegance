@@ -105,7 +105,11 @@ export function getCalendarEvents(wedding: Wedding): CalendarEvent[] {
     dtStart: absoluteStamp(start),
     dtEnd: end ? absoluteStamp(end) : absoluteStamp(start, DEFAULT_DURATION_HOURS),
     location: venueLine(wedding.venue_name, wedding.venue_address),
-    description: `Vous êtes cordialement invités au mariage de ${couple}.`,
+    // Même raison que pour le titre : Soirée couvre un henné ou des
+    // fiançailles, où « invités au mariage de » serait inexact.
+    description: soireeStrings
+      ? `Vous êtes cordialement invités — ${couple}.`
+      : `Vous êtes cordialement invités au mariage de ${couple}.`,
   }]
 
   if (wedding.show_celebrations !== false && Array.isArray(wedding.parties)) {
