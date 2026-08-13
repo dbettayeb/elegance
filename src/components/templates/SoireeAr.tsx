@@ -884,8 +884,12 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-seal-out .sa-dove, .sa-animating .sa-dove { transform: scale(1.22); opacity: 0; }
 
 .sa-hint {
-  position: absolute; top: 540px; left: 535px;
-  width: 130px; text-align: center;
+  /* Tendue sur toute la scène plutôt qu'une boîte de 130px : celle-ci venait
+     de Viktor & Paula, dont « Click to open » y tenait. « Cliquez pour ouvrir »
+     déborde, et le dépassement part à droite — l'invite se retrouvait décalée
+     de 28px. Sans largeur fixe, elle se centre quelle que soit la langue. */
+  position: absolute; top: 540px; left: 0; right: 0;
+  text-align: center;
   color: ${p.bg}; font-family: ${body};
   font-size: 20px; pointer-events: none; z-index: 1;
   white-space: nowrap;
