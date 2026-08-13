@@ -8,6 +8,15 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import { SOIREE_AR_PALETTES } from '@/lib/bismillah-palettes'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { SOIREE_AR, SOIREE_FR, SOIREE_FR_THEME } from '@/lib/soiree-strings'
+import { timeRange } from '@/lib/event-time'
+
+/** Rend un titre multiligne sans passer par du HTML brut. */
+function lines(parts: readonly string[]) {
+  return parts.map((part, i) => (
+    <span key={i}>{i > 0 && <br />}{part}</span>
+  ))
+}
 
 /**
  * Arabic template built for a single evening (henna, engagement, reception).
@@ -18,7 +27,8 @@ import AddToCalendar from '@/components/common/AddToCalendar'
  *  - the line above the date is free text (wedding_day_text), so the evening
  *    names itself rather than always reading "Wedding Day"
  */
-export default function SoireeAr({ wedding }: { wedding: Wedding }) {
+export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; lang?: 'ar' | 'fr' }) {
+  const t = lang === 'fr' ? SOIREE_FR : SOIREE_AR
   const {
     opened, visible, openEnvelope, countdown,
     rsvpStatus, rsvpChoice, setRsvpChoice, submitRSVP,
@@ -30,8 +40,11 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   const heroVideoRef = useRef<HTMLVideoElement | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [musicOn, setMusicOn] = useState(false)
+  // Phases d'ouverture : 0 inerte, 1 le sceau s'efface, 2 les pans s'écartent,
+  // 3 l'écran disparaît, 4 invitation ouverte.
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3 | 4>(0)
 
-  const theme = getArTypographyTheme(wedding.ar_font_theme)
+  const theme = lang === 'fr' ? SOIREE_FR_THEME : getArTypographyTheme(wedding.ar_font_theme)
   // Restreint aux palettes de ce template : le défaut global est 'or_classique',
   // une palette claire qui rendrait le texte illisible sur la vidéo.
   const palette =
@@ -40,14 +53,21 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // ar-TN gives Arabic month names with Western digits, which is what Tunisian
   // invitations use. The time is forced to 24h: the locale default would print
   // "07:00 م" for a 19:00 reception.
-  const formattedDate = eventDate.toLocaleDateString('ar-TN', {
+  const formattedDate = eventDate.toLocaleDateString(t.locale, {
     day: 'numeric', month: 'long', year: 'numeric',
   })
-  const eventTime = eventDate.toLocaleTimeString('ar-TN', {
-    hour: '2-digit', minute: '2-digit', hour12: false,
-  })
+  const timeOpts = { hour: '2-digit', minute: '2-digit', hour12: false } as const
+  // Devient « 19:00 – 02:00 » dès que le marié renseigne une fin.
+  const eventTime = timeRange(wedding, eventDate, d => d.toLocaleTimeString(t.locale, timeOpts))
 
-  const heroTitle = wedding.wedding_day_text || 'ليلة العمر'
+  const heroTitle = wedding.wedding_day_text || t.heroTitleDefault
+  // Un titre arabe sur le template français : les polices latines n'ont pas ces
+  // glyphes, le navigateur retomberait sur une police système quelconque. On lui
+  // applique donc la calligraphie choisie par le marié, et on la charge en plus.
+  const titleIsArabic = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(heroTitle)
+  const arTheme = getArTypographyTheme(wedding.ar_font_theme)
+  const needsArabicTitle = lang === 'fr' && titleIsArabic
+  const titleFont = needsArabicTitle ? arTheme.display : theme.display
   // custom_font_size est un pourcentage. Appliqué comme facteur sur la taille de
   // base du titre plutôt qu'en font-size:%, qui se calculerait sur le parent.
   const titleScale = (wedding.custom_font_size ?? 100) / 100
@@ -56,12 +76,36 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   // null = illimité. Le serveur applique la même limite, le max HTML étant contournable.
   const maxGuests = wedding.max_guests ?? null
 
-  // No envelope to open: the invitation shows straight away. The shared hook
-  // starts closed for every other template, so it is opened here on mount.
+  // L'invité doit toucher l'enveloppe pour entrer. Ce geste est aussi ce qui
+  // autorise le son : sans lui, tout navigateur refuse de lancer la musique.
+  function startSequence() {
+    if (phase !== 0) return
+    setPhase(1)                          // le sceau et l'invite s'effacent
+    setTimeout(() => setPhase(2), 1000)  // les pans s'écartent
+    setTimeout(() => setPhase(3), 3500)  // l'écran s'efface
+    setTimeout(() => {
+      setPhase(4)
+      openEnvelope()
+    }, 4100)
+  }
+
+  // Met l'enveloppe à l'échelle de l'écran : la scène est un gabarit fixe de
+  // 1200×850 dans lequel le papier fait 580px de haut.
   useEffect(() => {
-    openEnvelope()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (phase >= 3) return
+    function scaleOpening() {
+      const stage = document.querySelector<HTMLElement>('.sa-stage')
+      if (!stage) return
+      const PAPER_H = 580
+      const scale = (window.innerWidth >= 1200 && window.innerHeight >= 850)
+        ? 1
+        : Math.min(window.innerHeight / PAPER_H, 1.5)
+      stage.style.setProperty('--os-scale', scale.toFixed(4))
+    }
+    scaleOpening()
+    window.addEventListener('resize', scaleOpening)
+    return () => window.removeEventListener('resize', scaleOpening)
+  }, [phase])
 
   // Autoplay needs muted; some browsers still refuse, so failure is silent.
   useEffect(() => {
@@ -69,17 +113,21 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     heroVideoRef.current?.play().catch(() => {})
   }, [opened, hasVideo])
 
-  // La musique démarre seule quand le navigateur l'accepte. La plupart la
-  // refusent tant que l'invité n'a rien touché — et ce template n'a pas
-  // d'enveloppe à ouvrir, donc aucun clic ne vient l'autoriser. On réessaie
-  // alors au premier geste, quel qu'il soit, et le bouton reste là pour couper.
+  // La musique part à l'ouverture de l'enveloppe, comme chez Viktor & Paula :
+  // le clic qui vient d'avoir lieu autorise le son. Le repli sur le geste
+  // suivant ne sert plus que de garde-fou si le navigateur refuse quand même.
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !hasMusic) return
+    if (!audio || !hasMusic || !opened) return
 
     let armed = true
-    const start = () => {
+    const start = (ev?: Event) => {
       if (!armed) return
+      // Le bouton pilote déjà la lecture. Sans cette garde, un premier geste
+      // porté sur lui lancerait le son ici, puis toggleMusic le couperait
+      // aussitôt : l'invité appuierait sur « lecture » et n'entendrait rien.
+      const target = ev?.target
+      if (target instanceof Element && target.closest('.sa-audio-control')) return
       audio.play().then(() => {
         armed = false
         setMusicOn(true)
@@ -93,7 +141,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
     start()
     events.forEach(e => window.addEventListener(e, start, { passive: true }))
     return () => { armed = false; detach() }
-  }, [hasMusic])
+  }, [hasMusic, opened])
 
   const toggleMusic = () => {
     const audio = audioRef.current
@@ -108,6 +156,10 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
   const program: ProgramItem[] = Array.isArray(wedding.program) ? wedding.program : []
   const parties = (wedding.show_celebrations ?? true) ? (wedding.parties ?? []) : []
+  const dressWomen = wedding.dress_code_women?.trim()
+  const dressMen = wedding.dress_code_men?.trim()
+  const dressColors = Array.isArray(wedding.dress_code_colors) ? wedding.dress_code_colors : []
+  const dressImages = (Array.isArray(wedding.dress_code_images) ? wedding.dress_code_images : []).filter(Boolean)
 
   return (
     <>
@@ -115,10 +167,38 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
         href={`https://fonts.googleapis.com/css2?family=${theme.googleFonts}&display=swap`}
         rel="stylesheet"
       />
-      <style>{CSS(theme.display, theme.body, titleScale, palette)}</style>
+      {needsArabicTitle && (
+        <link
+          href={`https://fonts.googleapis.com/css2?family=${arTheme.googleFonts}&display=swap`}
+          rel="stylesheet"
+        />
+      )}
+      <style>{CSS(theme.display, theme.body, titleScale, palette, titleFont)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
 
-      <div className="sa-root" dir="rtl" lang="ar">
+      {!opened && (
+        <div className={`sa-opening${phase >= 3 ? ' sa-opening-gone' : ''}`}>
+          <div
+            className={`sa-stage${phase >= 1 ? ' sa-seal-out' : ''}${phase >= 2 ? ' sa-animating' : ''}`}
+            onClick={startSequence}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') startSequence() }}
+            role="button"
+            tabIndex={0}
+            aria-label={t.openAria}
+          >
+            <img className="sa-poly sa-poly-left"  src="/assets/polygons/polygon-left.png"   alt="" />
+            <img className="sa-poly sa-poly-right" src="/assets/polygons/polygon-right.png"  alt="" />
+            <img className="sa-poly sa-poly-bot"   src="/assets/polygons/polygon-bottom.png" alt="" />
+            <img className="sa-poly sa-poly-top"   src="/assets/polygons/polygon-top.png"    alt="" />
+            <span className="sa-dove" aria-hidden="true">
+              <img src="/assets/dove/dove-open.webp" alt="" />
+            </span>
+            <span className="sa-hint">{t.hint}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="sa-root" dir={t.dir} lang={t.lang}>
         <div className={`sa-main${visible ? ' sa-visible' : ''}`}>
           {/* ─── HERO VIDÉO ─── */}
           <header className="sa-hero">
@@ -171,10 +251,10 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── COMPTE À REBOURS ─── */}
           {wedding.show_countdown !== false && (
             <section className="sa-section">
-              <p className="sa-label">العد التنازلي</p>
-              <h2 className="sa-title">يقترب اليوم الموعود</h2>
+              <p className="sa-label">{t.countdownLabel}</p>
+              <h2 className="sa-title">{t.countdownTitle}</h2>
               <div className="sa-countdown">
-                {([['يوم', countdown.d], ['ساعة', countdown.h], ['دقيقة', countdown.m], ['ثانية', countdown.s]] as const).map(([label, value]) => (
+                {([[t.units[0], countdown.d], [t.units[1], countdown.h], [t.units[2], countdown.m], [t.units[3], countdown.s]] as const).map(([label, value]) => (
                   <div className="sa-cd-cell" key={label}>
                     <div className="sa-cd-num">{value}</div>
                     <div className="sa-cd-label">{label}</div>
@@ -187,7 +267,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── CÉLÉBRATIONS ─── */}
           {parties.length > 0 && (
             <section className="sa-section">
-              <p className="sa-label">الاحتفالات</p>
+              <p className="sa-label">{t.celebrationsLabel}</p>
               <div className="sa-parties">
                 {parties.map((party, i) => (
                   <div className="sa-party" key={i}>
@@ -206,8 +286,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── PROGRAMME ─── */}
           {wedding.show_program !== false && program.length > 0 && (
             <section className="sa-section">
-              <p className="sa-label">برنامج الحفل</p>
-              <h2 className="sa-title">ترتيب الأحداث</h2>
+              <p className="sa-label">{t.programLabel}</p>
+              <h2 className="sa-title">{t.programTitle}</h2>
               <div className="sa-program">
                 {program.map((item, i) => (
                   <div className="sa-program-row" key={i}>
@@ -224,7 +304,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
 
           {/* ─── LIEU ─── */}
           <section className="sa-section">
-            <p className="sa-label">مكان الحفل</p>
+            <p className="sa-label">{t.venueLabel}</p>
             <h2 className="sa-title" data-ef="venue_name">{wedding.venue_name}</h2>
             {wedding.venue_address && (
               <p className="sa-venue-address">{wedding.venue_address}</p>
@@ -245,13 +325,49 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
             )}
           </section>
 
+          {/* ─── DRESS CODE ─── */}
+          {wedding.show_dress_code && (dressWomen || dressMen || dressColors.length > 0 || dressImages.length > 0) && (
+            <section className="sa-section">
+              <h2 className="sa-title">{t.dressTitle}</h2>
+              <div className="sa-dress">
+                {dressWomen && (
+                  <div className="sa-dress-col">
+                    <div className="sa-dress-who">{t.dressWomen}</div>
+                    <div className="sa-dress-text">{dressWomen}</div>
+                  </div>
+                )}
+                {dressMen && (
+                  <div className="sa-dress-col">
+                    <div className="sa-dress-who">{t.dressMen}</div>
+                    <div className="sa-dress-text">{dressMen}</div>
+                  </div>
+                )}
+              </div>
+              {dressColors.length > 0 && (
+                <div className="sa-dress-colors">
+                  {dressColors.map((color, i) => (
+                    <span className="sa-dress-dot" key={i} style={{ background: color }} />
+                  ))}
+                </div>
+              )}
+              {dressImages.length > 0 && (
+                <div className="sa-dress-gallery" dir="ltr">
+                  {dressImages.map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className="sa-dress-photo" key={i} src={src} alt="" loading="lazy" draggable={false} />
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           {/* ─── RSVP ─── */}
           {wedding.show_rsvp && (
             <section className="sa-section sa-rsvp">
-              <p className="sa-label">تأكيد الحضور</p>
-              <h2 className="sa-title">هل ستشرفوننا<br />بحضوركم؟</h2>
+              <p className="sa-label">{t.rsvpLabel}</p>
+              <h2 className="sa-title">{lines(t.rsvpTitle)}</h2>
               {rsvpStatus === 'done' ? (
-                <p className="sa-success">جزاكم الله خيراً • Merci pour votre réponse ۞</p>
+                <p className="sa-success">{t.rsvpSuccess}</p>
               ) : (
                 <form className="sa-form" onSubmit={submitRSVP} dir="ltr">
                   <div className="sa-field">
@@ -298,7 +414,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="note" maxLength={1500} placeholder="Un mot pour les mariés..." />
                   </div>
                   <button className="sa-submit" type="submit" disabled={rsvpStatus === 'loading'}>
-                    {rsvpStatus === 'loading' ? 'Envoi...' : '۞  Confirmer ma présence  ۞'}
+                    {rsvpStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Confirmer ma présence  ${t.ornament}\u2069`}
                   </button>
                 </form>
               )}
@@ -309,8 +425,8 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           {/* ─── LIVRE D'OR ─── */}
           {wedding.show_guestbook && (
             <section className="sa-section">
-              <p className="sa-label">دفتر التهاني</p>
-              <h2 className="sa-title">تهانيكم<br />ودعواتكم</h2>
+              <p className="sa-label">{t.guestbookLabel}</p>
+              <h2 className="sa-title">{lines(t.guestbookTitle)}</h2>
               {messages.length > 0 && (
                 <div className="sa-messages">
                   {messages.map(msg => (
@@ -323,7 +439,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
               )}
               {gbStatus === 'done' ? (
                 <p className="sa-success">
-                  {gbPending ? 'En attente de validation ۞' : 'Message publié ۞'}
+                  {gbPending ? `En attente de validation ${t.ornament}` : `Message publié ${t.ornament}`}
                 </p>
               ) : (
                 <form className="sa-form" onSubmit={submitMessage} dir="ltr">
@@ -336,7 +452,7 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
                     <textarea className="sa-input sa-textarea" name="message" maxLength={3000} placeholder="Un mot doux pour les mariés..." required />
                   </div>
                   <button className="sa-submit" type="submit" disabled={gbStatus === 'loading'}>
-                    {gbStatus === 'loading' ? 'Envoi...' : '۞  Publier mon message  ۞'}
+                    {gbStatus === 'loading' ? 'Envoi...' : `\u2066${t.ornament}  Publier mon message  ${t.ornament}\u2069`}
                   </button>
                 </form>
               )}
@@ -355,9 +471,9 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
           <audio ref={audioRef} loop preload="auto" src={wedding.music_url} />
           <button
             type="button"
-            className="sa-audio-control"
+            className={`sa-audio-control${opened ? '' : ' sa-audio-hidden'}`}
             onClick={toggleMusic}
-            aria-label={musicOn ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
+            aria-label={musicOn ? t.musicPause : t.musicPlay}
           >
             {musicOn ? (
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -376,17 +492,21 @@ export default function SoireeAr({ wedding }: { wedding: Wedding }) {
   )
 }
 
-const CSS = (display: string, body: string, titleScale: number, p: BismillahPalette) => `
+const CSS = (display: string, body: string, titleScale: number, p: BismillahPalette, titleFont: string) => `
 .sa-root {
   --sa-night:    ${p.bg};
   --sa-gold:     ${p.accent};
   --sa-gold-dim: ${p.border};
+  --sa-gold-deep: ${p.accentDark};
   --sa-soft:     ${p.accentSoft};
   --sa-cream:    ${p.textPrimary};
   --sa-second:   ${p.textSecondary};
   --sa-muted:    ${p.textMuted};
   --sa-title-scale: ${titleScale};
   --sa-display: ${display};
+  /* Police du titre de la soirée : distincte quand il est écrit en arabe
+     alors que le reste du template est en latin. */
+  --sa-title-font: ${titleFont};
   --sa-body:    ${body};
 
   background: var(--sa-night);
@@ -465,7 +585,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 }
 /* Le titre porte le hero à lui seul : pas de prénoms sous la date. */
 .sa-hero-title {
-  font-family: var(--sa-display);
+  font-family: var(--sa-title-font);
   font-size: calc(52px * var(--sa-title-scale));
   color: var(--sa-gold);
   line-height: 1.45;
@@ -507,11 +627,12 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 /* Paire surtitre + titre, reprise de Bismillah. */
 .sa-label {
   font-family: var(--sa-body);
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
   color: var(--sa-gold);
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 .sa-title {
   font-family: var(--sa-display);
@@ -525,13 +646,32 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 
 /* ── Compte à rebours ── */
 .sa-countdown { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.sa-countdown { gap: 0; }
+/* Les cellules n'ont plus de cadre : un filet vertical suffit à les séparer,
+   et il s'estompe aux extrémités pour ne pas redessiner une boîte. */
 .sa-cd-cell {
-  min-width: 74px;
-  padding: 14px 8px;
-  border: 1px solid var(--sa-gold-dim);
+  min-width: 78px;
+  padding: 4px 14px;
+  position: relative;
 }
-.sa-cd-num   { font-size: 27px; font-weight: 700; color: var(--sa-gold); line-height: 1; }
-.sa-cd-label { font-size: 12px; color: var(--sa-muted); margin-top: 7px; }
+.sa-cd-cell + .sa-cd-cell::before {
+  content: ''; position: absolute; inset-inline-start: 0; top: 12%; height: 76%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--sa-gold-dim) 35%,
+                              var(--sa-gold-dim) 65%, transparent);
+}
+.sa-cd-num {
+  /* Chiffres pris dans la police de texte : ceux de la police de titre sont
+     dessinés en style ancien, où le 1 se confond avec un I majuscule. */
+  font-family: var(--sa-body);
+  font-size: 38px; font-weight: 300; color: var(--sa-cream);
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.sa-cd-label {
+  font-size: 10px; color: var(--sa-gold); margin-top: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
 
 /* ── Célébrations ── */
 .sa-parties { display: flex; flex-direction: column; gap: 16px; }
@@ -548,11 +688,14 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   align-items: baseline;
   gap: 18px;
   padding: 15px 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 12%, transparent);
-  text-align: right;
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 9%, transparent);
+  text-align: start;
 }
 .sa-program-row:last-child { border-bottom: none; }
-.sa-program-time  { min-width: 62px; color: var(--sa-gold); font-weight: 700; font-size: 16px; }
+.sa-program-time {
+  min-width: 62px; color: var(--sa-gold); font-weight: 400; font-size: 15px;
+  letter-spacing: 0.06em; font-variant-numeric: tabular-nums;
+}
 .sa-program-event { font-size: 17px; }
 .sa-program-venue { display: block; font-size: 13px; color: var(--sa-muted); margin-top: 3px; }
 
@@ -570,54 +713,73 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 .sa-map-link:hover { border-color: var(--sa-gold); }
 
 /* ── Formulaires ── */
-.sa-form { display: flex; flex-direction: column; gap: 14px; text-align: left; }
-.sa-field { display: flex; flex-direction: column; gap: 6px; }
+.sa-form { display: flex; flex-direction: column; gap: 22px; text-align: start; }
+.sa-field { display: flex; flex-direction: column; gap: 9px; }
 .sa-field-label {
   font-family: var(--sa-body);
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: var(--sa-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sa-gold);
 }
 .sa-field-hint { opacity: 0.75; }
+/* Un simple filet sous le champ, pas un cadre : cinq boîtes empilées
+   donnaient au formulaire l'allure d'un guichet plutôt que d'une invitation. */
 .sa-input {
   width: 100%;
-  padding: 13px 15px;
-  background: var(--sa-soft);
-  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
+  padding: 11px 2px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--sa-gold) 24%, transparent);
+  border-radius: 0;
   color: var(--sa-cream);
   font-family: var(--sa-body);
   font-size: 15px;
   outline: none;
-  transition: border-color 0.25s ease;
+  transition: border-color 0.3s ease;
 }
+.sa-input::placeholder { color: color-mix(in srgb, var(--sa-cream) 34%, transparent); }
+.sa-input:focus { border-bottom-color: var(--sa-gold); }
 .sa-input::placeholder { color: var(--sa-muted); opacity: 0.7; }
 .sa-input:focus { border-color: var(--sa-gold); }
-.sa-textarea { min-height: 96px; resize: vertical; }
+.sa-textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
 .sa-choices { display: flex; gap: 8px; flex-wrap: wrap; }
 .sa-choice {
   flex: 1;
   min-width: 96px;
   padding: 11px 8px;
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--sa-gold) 26%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sa-gold) 22%, transparent);
+  border-radius: 999px;
   color: var(--sa-muted);
   font-family: var(--sa-body);
-  font-size: 14px;
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 .sa-choice-on { border-color: var(--sa-gold); color: var(--sa-gold); background: color-mix(in srgb, var(--sa-gold) 9%, transparent); }
 .sa-submit {
-  padding: 14px;
-  margin-top: 4px;
-  background: var(--sa-gold);
+  align-self: center;
+  padding: 15px 42px;
+  margin-top: 14px;
+  background: linear-gradient(160deg, var(--sa-gold), var(--sa-gold-deep));
   border: none;
+  border-radius: 999px;
   color: var(--sa-night);
   font-family: var(--sa-body);
-  font-size: 16px;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.25s ease;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--sa-gold) 22%, transparent);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.sa-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--sa-gold) 30%, transparent);
+}
+.sa-submit:disabled { opacity: 0.55; cursor: default; }
 .sa-submit:disabled { opacity: 0.55; cursor: default; }
 .sa-success { font-family: var(--sa-display); font-size: 20px; color: var(--sa-gold); }
 
@@ -630,9 +792,118 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 /* ── Pied de page ── */
 .sa-footer { padding: 44px 20px 56px; text-align: center; }
 .sa-footer-orn   { color: var(--sa-gold); font-size: 13px; margin-bottom: 14px; }
-.sa-footer-title { font-family: var(--sa-display); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
+.sa-footer-title { font-family: var(--sa-title-font); font-size: calc(26px * var(--sa-title-scale)); color: var(--sa-gold); }
 
 /* ── Responsive ── */
+/* ── DRESS CODE ──
+   Deux colonnes sur grand écran, empilées sur mobile : une consigne pour les
+   femmes, une pour les hommes, et la palette en pastilles sous les deux. */
+.sa-dress {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 30px 56px; margin-top: 26px;
+}
+.sa-dress-col { flex: 1 1 220px; max-width: 300px; }
+.sa-dress-who {
+  font-family: var(--sa-body);
+  font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--sa-gold); margin-bottom: 10px;
+}
+.sa-dress-text {
+  font-family: var(--sa-body);
+  font-size: 16px; line-height: 1.7; color: var(--sa-second);
+}
+.sa-dress-colors {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 12px; margin-top: 30px;
+}
+.sa-dress-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--sa-gold-dim);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+}
+
+/* Galerie d'inspiration. Défilement natif avec accroche plutôt qu'un carrousel
+   scripté : le geste tactile et le trackpad fonctionnent sans code, et une
+   image qui ne charge pas ne casse pas la rangée. */
+.sa-dress-gallery {
+  display: flex; gap: 14px;
+  margin-top: 32px; padding-bottom: 10px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sa-gold-dim) transparent;
+  justify-content: safe center;
+}
+.sa-dress-photo {
+  flex: 0 0 auto;
+  width: 260px; height: 350px; object-fit: cover;
+  border-radius: 3px; border: 1px solid var(--sa-gold-dim);
+  scroll-snap-align: center;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+}
+
+@media (max-width: 640px) {
+  .sa-dress     { gap: 26px; margin-top: 22px; }
+  .sa-dress-col { flex: 1 1 100%; max-width: none; }
+  .sa-dress-dot   { width: 26px; height: 26px; }
+  .sa-dress-photo { width: 215px; height: 290px; }
+}
+
+/* ── ENVELOPPE D'OUVERTURE ──
+   Reprise de Viktor & Paula : même scène de 1200×850, mêmes décalages, mêmes
+   durées. Le fond garde le bordeaux de ses illustrations, qui sont peintes
+   dans cette teinte et jureraient sur la palette nuit du template. */
+.sa-opening {
+  position: fixed; inset: 0;
+  /* Seul le fond suit la palette : les pans et le sceau restent les
+     illustrations d'origine, avec leurs teintes. */
+  background: ${p.bg};
+  z-index: 10000; overflow: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.sa-opening-gone { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.sa-stage {
+  position: absolute; top: 50%; left: 50%;
+  width: 1200px; height: 850px;
+  cursor: pointer;
+  --os-scale: 1;
+  transform: translate(-50%, -50%) scale(var(--os-scale));
+  transform-origin: center center;
+}
+.sa-poly {
+  position: absolute; pointer-events: none;
+  transition: transform 2.5s ease, opacity 0.5s ease;
+}
+.sa-poly-left  { top: -13px; left: 98px;  width: 467px;  height: auto; z-index: 1; }
+.sa-poly-right { top: -13px; left: 635px; width: 467px;  height: auto; z-index: 1; }
+.sa-poly-bot   { top: 271px; left: 95px;  width: 1011px; height: auto; z-index: 1; }
+.sa-poly-top   { top: -6px;  left: 94px;  width: 1012px; height: auto; z-index: 2; }
+
+.sa-animating .sa-poly-left  { transform: translateX(-560px); opacity: 0; }
+.sa-animating .sa-poly-right { transform: translateX(560px);  opacity: 0; }
+.sa-animating .sa-poly-top   { transform: translateY(-430px); }
+.sa-animating .sa-poly-bot   { transform: translateY(566px); }
+
+.sa-dove {
+  position: absolute; top: 318px; left: 515px;
+  width: 170px; height: 170px; z-index: 3;
+  transition: transform 1.5s ease, opacity 1.5s ease;
+}
+.sa-dove img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sa-seal-out .sa-dove, .sa-animating .sa-dove { transform: scale(1.22); opacity: 0; }
+
+.sa-hint {
+  position: absolute; top: 540px; left: 535px;
+  width: 130px; text-align: center;
+  color: ${p.bg}; font-family: ${body};
+  font-size: 20px; pointer-events: none; z-index: 1;
+  white-space: nowrap;
+  transition: opacity 1.5s ease;
+}
+.sa-seal-out .sa-hint, .sa-animating .sa-hint {
+  opacity: 0; transition: opacity 0.3s ease;
+}
+
 /* ── CONTRÔLE MUSIQUE ──
    Placé hors de .sa-root pour qu'aucun conteneur transformé ne détourne le
    position:fixed, donc hors de portée des variables --sa-* : les couleurs de
@@ -648,6 +919,8 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   transition: transform 0.25s ease, border-color 0.25s ease;
 }
 .sa-audio-control:hover { transform: scale(1.06); border-color: ${p.accent}; }
+/* Rien ne doit flotter au-dessus de l'enveloppe tant qu'elle est fermée. */
+.sa-audio-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .sa-audio-control svg { width: 20px; height: 20px; fill: ${p.accent}; }
 
 @media (max-width: 640px) {

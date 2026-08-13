@@ -1,8 +1,16 @@
 import { createServiceSupabaseClient } from '@/lib/supabase/server'
 
+// Plafonds par adresse IP et par mariage, sur une heure glissante.
+//
+// Ils comptent par adresse, pas par personne : une famille derrière un même
+// routeur, une tablée sur le WiFi de la salle, ou plusieurs invités chez le
+// même opérateur mobile — dont les abonnés partagent quelques adresses
+// publiques — se partagent le même compteur. À 3 réponses, le quatrième
+// membre d'une famille était refusé, et ni lui ni les mariés n'en savaient
+// rien : une réponse absente ne se voit pas.
 const LIMITS = {
-  rsvp:      { max: 3, windowMinutes: 60 },
-  guestbook: { max: 5, windowMinutes: 60 },
+  rsvp:      { max: 10, windowMinutes: 60 },
+  guestbook: { max: 15, windowMinutes: 60 },
 }
 
 type Action = keyof typeof LIMITS

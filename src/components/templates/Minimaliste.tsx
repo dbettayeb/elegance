@@ -3,6 +3,7 @@ import { Wedding, ProgramItem  } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function Minimaliste({ wedding }: { wedding: Wedding }) {
   const {
@@ -12,7 +13,7 @@ export default function Minimaliste({ wedding }: { wedding: Wedding }) {
     eventDate, introText,
   } = useInvitationLogic(wedding)
 
-  const formattedTime = eventDate.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' })
+  const formattedTime = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' }))
   const formattedDate = eventDate.toLocaleDateString('fr-TN', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })

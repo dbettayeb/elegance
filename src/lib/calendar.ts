@@ -1,6 +1,8 @@
 import { Wedding, Party } from '@/lib/types'
+import { SOIREE_AR, SOIREE_FR } from '@/lib/soiree-strings'
+import { getEventEnd } from '@/lib/event-time'
 
-// Weddings carry no end time, so each event gets a sensible default block.
+// Repli quand le marié n'a pas renseigné d'heure de fin.
 const DEFAULT_DURATION_HOURS = 4
 
 export interface CalendarEvent {
@@ -85,10 +87,23 @@ export function getCalendarEvents(wedding: Wedding): CalendarEvent[] {
   const couple = `${wedding.bride_name} & ${wedding.groom_name}`
   const start = new Date(wedding.event_date)
 
+  // Soirée nomme lui-même son événement — henné, fiançailles, réception — et
+  // ce titre est ce que l'invité a lu sur l'invitation : c'est donc lui qui
+  // doit apparaître dans son agenda, pas un « Mariage de » générique.
+  const soireeStrings =
+    wedding.template_id === 'soiree_ar' ? SOIREE_AR :
+    wedding.template_id === 'soiree_fr' ? SOIREE_FR : null
+  const title = soireeStrings
+    ? (wedding.wedding_day_text?.trim() || soireeStrings.heroTitleDefault)
+    : `Mariage de ${couple}`
+
+  // La fin renseignée par le marié prime sur la durée forfaitaire.
+  const end = getEventEnd(wedding)
+
   const events: CalendarEvent[] = [{
-    title: `Mariage de ${couple}`,
+    title,
     dtStart: absoluteStamp(start),
-    dtEnd: absoluteStamp(start, DEFAULT_DURATION_HOURS),
+    dtEnd: end ? absoluteStamp(end) : absoluteStamp(start, DEFAULT_DURATION_HOURS),
     location: venueLine(wedding.venue_name, wedding.venue_address),
     description: `Vous êtes cordialement invités au mariage de ${couple}.`,
   }]

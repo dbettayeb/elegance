@@ -573,6 +573,7 @@ export const AR_STYLE_PALETTES_MAP: Record<string, BismillahPalette[]> = {
   'template_7_ar':   TEMPLATE_7_AR_PALETTES,
   'template_8_ar':   TEMPLATE_8_AR_PALETTES,
   'soiree_ar':       SOIREE_AR_PALETTES,
+  'soiree_fr':       SOIREE_AR_PALETTES,
 }
 
 export function getArStylePalettes(templateId: string): BismillahPalette[] {

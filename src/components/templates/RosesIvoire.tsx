@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 const DECO_KEY  = 'assets/template4/deco4.png'
 const RINGS_KEY = 'assets/template4/rings.png'
@@ -35,7 +36,7 @@ export default function RosesIvoire({ wedding }: { wedding: Wedding }) {
   const monthFr = eventDate.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase()
   const dayNum  = eventDate.getDate().toString()
   const yearNum = eventDate.getFullYear().toString()
-  const timeFr  = eventDate.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' })
+  const timeFr  = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit' }))
   const dateFr  = eventDate.toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' })
 
   const brideName = wedding.bride_name

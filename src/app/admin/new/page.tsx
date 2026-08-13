@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { buildEndDate } from '@/lib/event-time'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ProgramEditor, { ProgramItem  } from '@/components/admin/ProgramEditor'
 import PartiesEditor, { Party } from '@/components/admin/PartiesEditor'
 import FontPicker from '@/components/admin/fontpicker'
+import DressCodeEditor from '@/components/admin/DressCodeEditor'
 import { TEMPLATES_META } from '@/lib/templates-meta'
 import { AR_TYPOGRAPHY_THEMES } from '@/lib/typography-themes'
 import { BISMILLAH_PALETTES, BISMILLAH_BACKGROUNDS, BISMILLAH_DECORATIONS, getArStylePalettes } from '@/lib/bismillah-palettes'
@@ -27,6 +29,7 @@ export default function NewWeddingPage() {
     couple_email: '',
     event_date: '',
     event_time: '19:00',
+    event_end_time: '',
     venue_name: '',
     venue_address: '',
     gps_google: '',
@@ -55,6 +58,9 @@ export default function NewWeddingPage() {
     couple_photo: '',
     intro_video_url: '',
     wedding_day_text: '',
+    show_dress_code: false,
+    dress_code_women: '',
+    dress_code_men: '',
     venue_photo: '',
   })
 
@@ -67,6 +73,8 @@ export default function NewWeddingPage() {
 
   const [program, setProgram] = useState<ProgramItem []>([])
   const [parties, setParties] = useState<Party[]>([])
+  const [dressImages, setDressImages] = useState<string[]>([])
+  const [dressColors, setDressColors] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -91,10 +99,15 @@ export default function NewWeddingPage() {
     const utcDate = localDt.toISOString().split('T')[0]
     const utcTime = localDt.toISOString().split('T')[1].slice(0, 5)
 
+    // La bascule au lendemain se décide en heure locale, seul endroit où
+    // « 2h du matin » veut dire quelque chose : une fin antérieure au début
+    // est forcément le lendemain.
+    const event_end_date = buildEndDate(form.event_date, form.event_time, form.event_end_time)
+
     const res = await fetch('/api/admin/weddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, program, parties }),
+      body: JSON.stringify({ ...form, event_date: utcDate, event_time: utcTime, event_end_date, program, parties, dress_code_colors: dressColors, dress_code_images: dressImages.filter(Boolean) }),
     })
 
     const data = await res.json()
@@ -107,12 +120,14 @@ export default function NewWeddingPage() {
   }
 
   function handlePreview() {
-  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties }))
+  localStorage.setItem('__preview_wedding', JSON.stringify({ ...form, program, parties, dress_code_colors: dressColors, dress_code_images: dressImages.filter(Boolean) }))
   window.open('/preview', '_blank', 'noopener,noreferrer')
 }
 
   const currentTemplate = TEMPLATES_META.find(t => t.id === form.template_id)
   const fontLanguage: 'fr' | 'ar' = currentTemplate?.language === 'ar' ? 'ar' : 'fr'
+  // Les deux versions de Soirée partagent les mêmes réglages propres au template.
+  const isSoiree = form.template_id === 'soiree_ar' || form.template_id === 'soiree_fr'
   const isArStyle = ['toile_bleue_ar', 'jardin_rose_ar', 'floral_arch_ar', 'roses_ivoire_ar', 'rose_bleu_ar', 'template_7_ar', 'template_8_ar', 'soiree_ar'].includes(form.template_id)
 
   const templatesDynamiques = TEMPLATES_META.filter(t => t.type === 'dynamique')
@@ -155,7 +170,7 @@ export default function NewWeddingPage() {
                 style={{ fontFamily: "'Amiri', serif" }} />
             </Field>
           </Row>
-          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && form.template_id !== 'soiree_ar' && (
+          {(form.template_id === 'bismillah' || form.template_id === 'al_nour' || isArStyle) && !isSoiree && (
             <>
               <div style={{ padding: '10px 12px', background: '#fffbeb', border: '1px solid #fde68a',
                 borderRadius: 'var(--admin-radius)', fontSize: '0.82rem', color: '#92400e' }}>
@@ -295,7 +310,7 @@ export default function NewWeddingPage() {
               </Row>
             </>
           )}
-          {isArStyle && (
+          {(isArStyle || isSoiree) && (
             <Field label="Palette de couleurs">
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
                 {getArStylePalettes(form.template_id).map(p => (
@@ -370,9 +385,13 @@ export default function NewWeddingPage() {
               <input className="admin-input" type="date" value={form.event_date}
                 onChange={e => set('event_date', e.target.value)} required />
             </Field>
-            <Field label="Heure" required>
+            <Field label="Heure de début" required>
               <input className="admin-input" type="time" value={form.event_time}
                 onChange={e => set('event_time', e.target.value)} required />
+            </Field>
+            <Field label="Heure de fin" help="Optionnel. Une fin antérieure au début est comprise comme le lendemain : 19h → 02h.">
+              <input className="admin-input" type="time" value={form.event_end_time}
+                onChange={e => set('event_end_time', e.target.value)} />
             </Field>
           </Row>
           <Field label="Nom du lieu" required>
@@ -445,7 +464,7 @@ export default function NewWeddingPage() {
                   const tid = e.target.value
                   set('template_id', tid)
                   set('custom_font', null)
-                  if (['toile_bleue_ar','jardin_rose_ar','floral_arch_ar','roses_ivoire_ar','rose_bleu_ar'].includes(tid)) {
+                  if (['toile_bleue_ar','jardin_rose_ar','floral_arch_ar','roses_ivoire_ar','rose_bleu_ar','soiree_ar','soiree_fr'].includes(tid)) {
                     set('bismillah_palette', getArStylePalettes(tid)[0].id)
                   }
                 }}>
@@ -479,10 +498,10 @@ export default function NewWeddingPage() {
             language={fontLanguage}
           />
           <Field
-            label={form.template_id === 'soiree_ar'
+            label={isSoiree
               ? 'Taille du titre de la soirée'
               : 'Taille pour les noms de famille (noms de famille arabes uniquement)'}
-            help={form.template_id === 'soiree_ar'
+            help={isSoiree
               ? 'Ajuste la taille du titre affiché sur la vidéo, et du même titre repris en bas de l\'invitation.'
               : 'Ajuste la taille des textes de famille (ex: عائلة السيد). S\'applique uniquement aux blocs « Familles » — les prénoms des mariés conservent leur taille originale.'}
           >
@@ -502,18 +521,70 @@ export default function NewWeddingPage() {
           </Field>
         </Section>
 
-        {form.template_id === 'soiree_ar' && (
+        {isSoiree && (
           <Section title="Soir&eacute;e — m&eacute;dias">
             <Field label="Titre de la soirée" help='Texte affiché en grand sur la vidéo, au-dessus de la date. Ex : ليلة الحناء. Par défaut "ليلة العمر".'>
               <input className="admin-input" value={form.wedding_day_text}
                 onChange={e => set('wedding_day_text', e.target.value)}
                 placeholder="ليلة العمر" dir="rtl" />
             </Field>
+            {form.template_id === 'soiree_fr' && (
+            <Field
+              label="Police du titre si écrit en arabe"
+              help="S'applique seulement quand le titre ci-dessus contient de l'arabe : les polices latines du template n'ont pas ces lettres. Sans ce choix, le navigateur retomberait sur une police système au hasard.">
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+                {AR_TYPOGRAPHY_THEMES.map(th => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => set('ar_font_theme', th.id)}
+                    style={{
+                      padding: '10px 14px', border: '2px solid',
+                      borderColor: form.ar_font_theme === th.id ? 'var(--admin-accent)' : 'var(--admin-border)',
+                      borderRadius: 'var(--admin-radius)',
+                      background: form.ar_font_theme === th.id ? '#fdf6e3' : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.1rem', fontFamily: th.display, direction: 'rtl' }}>ليلة العمر</span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--admin-text-muted)', fontWeight: 500 }}>{th.label}</span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+            )}
             <Field label="Vidéo du héros" help="URL d'une vidéo MP4. Elle occupe tout le haut de l'invitation, en fond du titre et de la date. Laissez vide pour un fond dégradé.">
               <input className="admin-input" type="url" value={form.intro_video_url}
                 onChange={e => set('intro_video_url', e.target.value)}
                 placeholder="https://..." />
             </Field>
+          </Section>
+        )}
+
+
+        {isSoiree && (
+          <Section title="Soir&eacute;e &mdash; dress code">
+            <Toggle label="Afficher la section dress code"
+              help="Indique aux invités la tenue attendue, avec une consigne distincte pour les femmes et pour les hommes."
+              checked={form.show_dress_code} onChange={v => set('show_dress_code', v)} />
+            {form.show_dress_code && (
+              <>
+                <Field label="Pour les femmes" help="Ex : robe longue, teintes pastel. Laissez vide pour ne rien afficher.">
+                  <input className="admin-input" value={form.dress_code_women}
+                    onChange={e => set('dress_code_women', e.target.value)}
+                    placeholder="Robe longue, teintes pastel" />
+                </Field>
+                <Field label="Pour les hommes" help="Ex : costume sombre, cravate. Laissez vide pour ne rien afficher.">
+                  <input className="admin-input" value={form.dress_code_men}
+                    onChange={e => set('dress_code_men', e.target.value)}
+                    placeholder="Costume sombre" />
+                </Field>
+                <DressCodeEditor
+                  colors={dressColors} onColorsChange={setDressColors}
+                  images={dressImages} onImagesChange={setDressImages} />
+              </>
+            )}
           </Section>
         )}
 

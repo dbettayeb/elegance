@@ -3,6 +3,7 @@ import { createServiceSupabaseClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { sanitizeName, sanitizeText } from '@/lib/sanitize'
 import { hashIP } from '@/lib/tokens'
+import { isCheckViolation } from '@/lib/db-errors'
 
 export async function POST(req: NextRequest) {
   try {
@@ -74,6 +75,12 @@ export async function POST(req: NextRequest) {
 
   } catch (err) {
     console.error('[GUESTBOOK]', err)
+    if (isCheckViolation(err)) {
+      return NextResponse.json(
+        { error: 'Ce message ne peut pas être enregistré tel quel. Essayez de le reformuler.' },
+        { status: 400 }
+      )
+    }
     return NextResponse.json(
       { error: 'Erreur serveur.' },
       { status: 500 }

@@ -4,6 +4,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 const DECO_KEY = 'assets/template5/deco5.png'
 const ROSE_KEY = 'assets/template5/rose bleu.png'
@@ -33,9 +34,9 @@ export default function RoseBleu({ wedding }: { wedding: Wedding }) {
   const dateFr = eventDate.toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'long', year: 'numeric',
   }).toUpperCase()
-  const timeFr = eventDate.toLocaleTimeString('fr-FR', {
+  const timeFr = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-FR', {
     hour: '2-digit', minute: '2-digit', hour12: false,
-  })
+  }))
 
   const brideName = wedding.bride_name
   const groomName = wedding.groom_name

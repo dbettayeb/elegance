@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { buildEndDate } from '@/lib/event-time'
 import { getTemplate } from '@/lib/templates'
 import { Wedding } from '@/lib/types'
 
@@ -56,6 +57,7 @@ export default function PreviewPage() {
 
         event_date: buildDate(),
         venue_name: parsed.venue_name || 'Lieu de réception',
+        event_end_date: buildEndDate(parsed.event_date, parsed.event_time, parsed.event_end_time) || undefined,
         venue_address: parsed.venue_address || undefined,
         gps_google: parsed.gps_google || undefined,
         gps_apple: parsed.gps_apple || undefined,
@@ -71,6 +73,11 @@ export default function PreviewPage() {
         program: parsed.program || [],
         parties: parsed.parties || [],
         show_celebrations: parsed.show_celebrations ?? true,
+        show_dress_code:   parsed.show_dress_code ?? false,
+        dress_code_women:  parsed.dress_code_women || undefined,
+        dress_code_men:    parsed.dress_code_men || undefined,
+        dress_code_colors: parsed.dress_code_colors ?? [],
+        dress_code_images: parsed.dress_code_images ?? [],
 
         wedding_day_text: parsed.wedding_day_text || undefined,
         venue_photo:      parsed.venue_photo      || undefined,

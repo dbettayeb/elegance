@@ -5,6 +5,7 @@ import { Wedding, ProgramItem } from '@/lib/types'
 import { useInvitationLogic } from '@/lib/use-invitation'
 import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const {
@@ -26,7 +27,8 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const day      = String(eventDate.getDate())
   const month    = eventDate.toLocaleDateString('en-GB', { month: 'long' })
   const year     = String(eventDate.getFullYear())
-  const eventTime = `${String(eventDate.getHours()).padStart(2,'0')}:${String(eventDate.getMinutes()).padStart(2,'0')}`
+  const eventTime = timeRange(wedding, eventDate, d =>
+    `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`)
 
   const GALLERY = [
     '/assets/alexa-richard/gallery/01.png',

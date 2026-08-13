@@ -5,6 +5,7 @@ import FontOverride from '@/components/common/fontoverride'
 import { getBgCSSForKey } from '@/lib/bg-texture-system'
 import OpeningScreen from '@/components/common/OpeningScreen'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import { timeRange } from '@/lib/event-time'
 
 const BG_KEY   = 'assets/template2/back2.png'
 const DECO_KEY = 'assets/template2/deco2.png'
@@ -38,9 +39,9 @@ export default function JardinRose({ wedding }: { wedding: Wedding }) {
   const dateFr = eventDate.toLocaleDateString('fr-TN', {
     day: 'numeric', month: 'long', year: 'numeric',
   })
-  const timeFr = eventDate.toLocaleTimeString('fr-TN', {
+  const timeFr = timeRange(wedding, eventDate, d => d.toLocaleTimeString('fr-TN', {
     hour: '2-digit', minute: '2-digit',
-  })
+  }))
 
   const brideName = wedding.bride_name
   const groomName = wedding.groom_name
