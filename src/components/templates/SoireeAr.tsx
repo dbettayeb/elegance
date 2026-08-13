@@ -328,7 +328,6 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
           {/* ─── DRESS CODE ─── */}
           {wedding.show_dress_code && (dressWomen || dressMen || dressColors.length > 0 || dressImages.length > 0) && (
             <section className="sa-section">
-              <p className="sa-label">{t.dressLabel}</p>
               <h2 className="sa-title">{t.dressTitle}</h2>
               <div className="sa-dress">
                 {dressWomen && (
@@ -793,7 +792,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
 }
 .sa-dress-photo {
   flex: 0 0 auto;
-  width: 190px; height: 260px; object-fit: cover;
+  width: 260px; height: 350px; object-fit: cover;
   border-radius: 3px; border: 1px solid var(--sa-gold-dim);
   scroll-snap-align: center;
   box-shadow: 0 8px 22px rgba(0,0,0,0.35);
@@ -803,7 +802,7 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   .sa-dress     { gap: 26px; margin-top: 22px; }
   .sa-dress-col { flex: 1 1 100%; max-width: none; }
   .sa-dress-dot   { width: 26px; height: 26px; }
-  .sa-dress-photo { width: 150px; height: 206px; }
+  .sa-dress-photo { width: 215px; height: 290px; }
 }
 
 /* ── ENVELOPPE D'OUVERTURE ──

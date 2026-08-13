@@ -24,7 +24,6 @@ export interface SoireeStrings {
   programLabel: string
   programTitle: string
   venueLabel: string
-  dressLabel: string
   dressTitle: string
   dressWomen: string
   dressMen: string
@@ -58,7 +57,6 @@ export const SOIREE_AR: SoireeStrings = {
   programLabel: 'برنامج الحفل',
   programTitle: 'ترتيب الأحداث',
   venueLabel: 'مكان الحفل',
-  dressLabel: 'اللباس',
   dressTitle: 'قواعد اللباس',
   dressWomen: 'للنساء',
   dressMen: 'للرجال',
@@ -87,7 +85,6 @@ export const SOIREE_FR: SoireeStrings = {
   programLabel: 'Programme',
   programTitle: 'Déroulé de la soirée',
   venueLabel: 'Lieu de la fête',
-  dressLabel: 'Tenue',
   dressTitle: 'Dress code',
   dressWomen: 'Pour ces dames',
   dressMen: 'Pour ces messieurs',
