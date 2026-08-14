@@ -60,6 +60,9 @@ export default async function CouplePortal({
       : Promise.resolve({ data: [] }),
   ])
 
+  // Masqués par défaut : un numéro n'aide pas au coup d'œil quotidien et
+  // encombrait la carte sur téléphone. Activable par mariage depuis l'admin.
+  const showPhones = wedding.show_guest_phones ?? false
   const allRsvps = (rsvps ?? []) as RSVP[]
   const allMessages = (messages ?? []) as GuestMessage[]
 
@@ -129,11 +132,11 @@ export default async function CouplePortal({
                       <th>Nom</th>
                       <th>Statut</th>
                       <th>Acc.</th>
-                      <th>WhatsApp</th>
+                      {showPhones && <th>WhatsApp</th>}
                       <th>Date</th>
                     </tr>
                   </thead>
-                  <Paginated as="tbody" columns={5} pageSize={15}>
+                  <Paginated as="tbody" columns={showPhones ? 5 : 4} pageSize={15}>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
                         <td data-label="Nom" style={{ fontWeight: 600 }}>
@@ -152,7 +155,7 @@ export default async function CouplePortal({
                           </span>
                         </td>
                         <td data-label="Accompagnants">{r.guests}</td>
-                        <td data-label="WhatsApp">{r.phone ?? '—'}</td>
+                        {showPhones && <td data-label="WhatsApp">{r.phone ?? '—'}</td>}
                         <td data-label="Reçue le" style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
                           {new Date(r.created_at).toLocaleDateString('fr-TN', { day: 'numeric', month: 'short' })}
                         </td>
@@ -319,45 +322,55 @@ const CSS = `
     .cp-table,
     .cp-table tbody,
     .cp-table tfoot,
-    .cp-table tr,
     .cp-table td { display: block; width: 100%; }
 
     .cp-table { border: none; background: none; border-radius: 0; }
     .cp-table thead { display: none; }
 
+    /* La ligne devient une carte, et ses cellules des éléments flexibles :
+       c'est ce qui permet de réordonner sans toucher au tableau du bureau,
+       et de faire tenir accompagnants et date sur une même ligne. */
     .cp-table tbody tr {
+      display: flex; flex-wrap: wrap; align-items: baseline;
       background: var(--cp-surface);
       border: 1px solid var(--cp-border);
       border-radius: var(--cp-radius);
-      padding: 14px 16px;
+      padding: 12px 14px;
       margin-bottom: 10px;
     }
 
-    .cp-table td { border: none; padding: 3px 0; }
+    .cp-table td { border: none; padding: 0; width: auto; }
 
-    /* Le nom fait le titre de la carte. */
-    .cp-table td[data-label="Nom"] {
-      font-size: 1rem; padding-bottom: 6px;
+    /* Le statut d'abord, en haut à gauche : c'est l'information qu'on cherche
+       en parcourant la liste. */
+    .cp-table td[data-label="Statut"] { order: 1; width: 100%; margin-bottom: 6px; }
+    .cp-table td[data-label="Nom"]    { order: 2; width: 100%; font-size: 1rem; }
+
+    /* Ces trois-là se suivent sur une seule ligne discrète, sous la note. */
+    .cp-table td[data-label="Accompagnants"] { order: 3; }
+    .cp-table td[data-label="WhatsApp"]      { order: 4; }
+    .cp-table td[data-label="Reçue le"]      { order: 5; }
+
+    .cp-table td[data-label="Accompagnants"],
+    .cp-table td[data-label="WhatsApp"],
+    .cp-table td[data-label="Reçue le"] {
+      margin-top: 8px;
+      font-size: 0.78rem; color: var(--cp-muted);
     }
-    .cp-table td[data-label="Statut"] { padding: 4px 0 10px; }
-
-    /* Les autres valeurs sont précédées de leur intitulé, sans quoi un
-       « 1 » isolé ne veut rien dire une fois l'en-tête masqué. */
-    .cp-table td[data-label="Accompagnants"]::before,
+    /* « 1 » seul ne dit rien une fois l'en-tête masqué. */
+    .cp-table td[data-label="Accompagnants"]::after { content: ' acc.'; }
+    /* Séparateur entre les valeurs de la ligne, jamais en tête. */
     .cp-table td[data-label="WhatsApp"]::before,
     .cp-table td[data-label="Reçue le"]::before {
-      content: attr(data-label);
-      display: inline-block; min-width: 118px;
-      color: var(--cp-muted); font-size: 0.72rem;
-      text-transform: uppercase; letter-spacing: 0.05em;
+      content: '·'; margin: 0 7px; opacity: 0.55;
     }
 
     .cp-rsvp-note {
+      order: 2; width: 100%;
       font-size: 0.85rem; line-height: 1.55;
-      margin: 8px 0 2px; color: var(--cp-text);
+      margin: 6px 0 0; color: var(--cp-text);
     }
 
-    /* La barre de pagination reprend l'allure d'une carte. */
     .cp-table tfoot tr { border: none; padding: 0; }
   }
   .cp-table tr:last-child td { border-bottom: none; }

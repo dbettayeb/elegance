@@ -47,6 +47,8 @@ export interface Wedding {
   show_rsvp: boolean
   show_guestbook: boolean
   show_countdown: boolean
+  /** Affiche les numéros des invités dans le portail des mariés. */
+  show_guest_phones?: boolean
   moderation_on: boolean
   bismillah_palette?: 'or_classique' | 'emeraude' | 'bordeaux' | 'marine_dore' | 'rose_cuivre' | 'noir_elegant'
     | 'tb_ar_bleu' | 'tb_ar_marine' | 'tb_ar_sable' | 'tb_ar_noir'
