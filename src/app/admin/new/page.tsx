@@ -49,6 +49,7 @@ export default function NewWeddingPage() {
     show_countdown: true,
     show_program: true,
     show_celebrations: true,
+    show_guest_phones: false,
     moderation_on: true,
     bismillah_palette: 'or_classique',
     background_image: 'bg-texture.jpg',
@@ -627,6 +628,9 @@ export default function NewWeddingPage() {
             <Toggle label="Confirmation de présence (RSVP)"
               help="Permet aux invités de confirmer leur présence"
               checked={form.show_rsvp} onChange={v => set('show_rsvp', v)} />
+            <Toggle label="Afficher les numéros dans l'espace mariés"
+              help="Masqués par défaut. Les mariés voient nom, réponse, accompagnants et date ; activez si le couple veut rappeler ses invités."
+              checked={form.show_guest_phones} onChange={v => set('show_guest_phones', v)} />
             {form.show_rsvp && (
               <div style={{ padding: '10px', border: '1px solid var(--admin-border)',
                 borderRadius: 'var(--admin-radius)', background: '#fafafa',

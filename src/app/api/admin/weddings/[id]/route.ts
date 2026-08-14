@@ -169,7 +169,7 @@ export async function PATCH(
       guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
       couple_photo, intro_video_url,
       wedding_day_text, venue_photo,
-      parties, show_celebrations,
+      parties, show_celebrations, show_guest_phones,
       show_dress_code, dress_code_women, dress_code_men, dress_code_colors, dress_code_images,
     } = body
 
@@ -236,6 +236,7 @@ export async function PATCH(
         venue_photo:       venue_photo       || null,
         parties: Array.isArray(parties) ? parties : [],
         show_celebrations: show_celebrations ?? true,
+        show_guest_phones: show_guest_phones ?? false,
         show_dress_code:   show_dress_code ?? false,
         dress_code_women:  dress_code_women || null,
         dress_code_men:    dress_code_men || null,

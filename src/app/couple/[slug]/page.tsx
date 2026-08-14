@@ -60,6 +60,9 @@ export default async function CouplePortal({
       : Promise.resolve({ data: [] }),
   ])
 
+  // Masqués par défaut : un numéro n'aide pas au coup d'œil quotidien et
+  // encombrait la carte sur téléphone. Activable par mariage depuis l'admin.
+  const showPhones = wedding.show_guest_phones ?? false
   const allRsvps = (rsvps ?? []) as RSVP[]
   const allMessages = (messages ?? []) as GuestMessage[]
 
@@ -129,22 +132,20 @@ export default async function CouplePortal({
                       <th>Nom</th>
                       <th>Statut</th>
                       <th>Acc.</th>
-                      <th>WhatsApp</th>
+                      {showPhones && <th>WhatsApp</th>}
                       <th>Date</th>
                     </tr>
                   </thead>
-                  <Paginated as="tbody" columns={5} pageSize={15}>
+                  <Paginated as="tbody" columns={showPhones ? 5 : 4} pageSize={15}>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
-                        <td style={{ fontWeight: 500 }}>
+                        <td data-label="Nom" style={{ fontWeight: 600 }}>
                           {r.name}
                           {r.note && (
-                            <div style={{ fontSize: '0.78rem', color: 'var(--cp-muted)', fontWeight: 400, marginTop: 2, fontStyle: 'italic', overflowWrap: 'anywhere' }}>
-                              {r.note}
-                            </div>
+                            <div className="cp-rsvp-note">{r.note}</div>
                           )}
                         </td>
-                        <td>
+                        <td data-label="Statut">
                           <span className={`cp-badge ${
                             r.status === 'present' ? 'cp-badge-success' :
                             r.status === 'absent'  ? 'cp-badge-danger'  :
@@ -153,9 +154,9 @@ export default async function CouplePortal({
                             {r.status === 'present' ? 'Présent(e)' : r.status === 'absent' ? 'Absent(e)' : 'À confirmer'}
                           </span>
                         </td>
-                        <td>{r.guests}</td>
-                        <td>{r.phone ?? '—'}</td>
-                        <td style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
+                        <td data-label="Accompagnants">{r.guests}</td>
+                        {showPhones && <td data-label="WhatsApp">{r.phone ?? '—'}</td>}
+                        <td data-label="Reçue le" style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
                           {new Date(r.created_at).toLocaleDateString('fr-TN', { day: 'numeric', month: 'short' })}
                         </td>
                       </tr>
@@ -305,6 +306,73 @@ const CSS = `
     text-transform: uppercase; letter-spacing: 0.04em;
   }
   .cp-table td { padding: 11px 14px; border-bottom: 1px solid var(--cp-border); }
+
+  .cp-rsvp-note {
+    font-size: 0.78rem; color: var(--cp-muted); font-weight: 400;
+    margin-top: 3px; font-style: italic; overflow-wrap: anywhere;
+  }
+
+  /* ── Réponses sur petit écran ──
+     Un tableau de cinq colonnes n'entre pas dans un téléphone : la colonne du
+     nom tombait à une soixantaine de pixels et la note s'y coupait lettre par
+     lettre, tandis que le reste demandait un défilement horizontal. Chaque
+     ligne devient donc une carte, dont les intitulés sont repris des cellules
+     elles-mêmes — un seul balisage, une seule pagination. */
+  @media (max-width: 700px) {
+    .cp-table,
+    .cp-table tbody,
+    .cp-table tfoot,
+    .cp-table td { display: block; width: 100%; }
+
+    .cp-table { border: none; background: none; border-radius: 0; }
+    .cp-table thead { display: none; }
+
+    /* La ligne devient une carte, et ses cellules des éléments flexibles :
+       c'est ce qui permet de réordonner sans toucher au tableau du bureau,
+       et de faire tenir accompagnants et date sur une même ligne. */
+    .cp-table tbody tr {
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: var(--cp-radius);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+
+    .cp-table td { border: none; padding: 0; width: auto; }
+
+    /* Le statut d'abord, en haut à gauche : c'est l'information qu'on cherche
+       en parcourant la liste. */
+    .cp-table td[data-label="Statut"] { order: 1; width: 100%; margin-bottom: 6px; }
+    .cp-table td[data-label="Nom"]    { order: 2; width: 100%; font-size: 1rem; }
+
+    /* Ces trois-là se suivent sur une seule ligne discrète, sous la note. */
+    .cp-table td[data-label="Accompagnants"] { order: 3; }
+    .cp-table td[data-label="WhatsApp"]      { order: 4; }
+    .cp-table td[data-label="Reçue le"]      { order: 5; }
+
+    .cp-table td[data-label="Accompagnants"],
+    .cp-table td[data-label="WhatsApp"],
+    .cp-table td[data-label="Reçue le"] {
+      margin-top: 8px;
+      font-size: 0.78rem; color: var(--cp-muted);
+    }
+    /* « 1 » seul ne dit rien une fois l'en-tête masqué. */
+    .cp-table td[data-label="Accompagnants"]::after { content: ' acc.'; }
+    /* Séparateur entre les valeurs de la ligne, jamais en tête. */
+    .cp-table td[data-label="WhatsApp"]::before,
+    .cp-table td[data-label="Reçue le"]::before {
+      content: '·'; margin: 0 7px; opacity: 0.55;
+    }
+
+    .cp-rsvp-note {
+      order: 2; width: 100%;
+      font-size: 0.85rem; line-height: 1.55;
+      margin: 6px 0 0; color: var(--cp-text);
+    }
+
+    .cp-table tfoot tr { border: none; padding: 0; }
+  }
   .cp-table tr:last-child td { border-bottom: none; }
 
   .cp-badge {
