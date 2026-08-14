@@ -136,7 +136,7 @@ export default async function CouplePortal({
                       <th>Date</th>
                     </tr>
                   </thead>
-                  <Paginated as="tbody" columns={showPhones ? 5 : 4} pageSize={15}>
+                  <Paginated as="tbody" columns={showPhones ? 5 : 4} pageSize={5}>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
                         <td data-label="Nom" style={{ fontWeight: 600 }}>
@@ -170,7 +170,7 @@ export default async function CouplePortal({
           {/* Messages en attente */}
           {wedding.moderation_on && pending.length > 0 && (
             <Section title="En attente d'approbation" badge={pending.length}>
-              <Paginated pageSize={8}>
+              <Paginated pageSize={5}>
                 {pending.map(msg => (
                   <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
@@ -185,7 +185,7 @@ export default async function CouplePortal({
                 Aucun message publié pour l'instant.
               </p>
             ) : (
-              <Paginated pageSize={8}>
+              <Paginated pageSize={5}>
                 {approved.map(msg => (
                   <MessageCard key={msg.id} message={msg} weddingId={wedding.id} coupleToken="" theme={NEUTRAL_THEME} guestbookPrivate={wedding.guestbook_private} />
                 ))}
