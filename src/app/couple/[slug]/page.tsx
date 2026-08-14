@@ -136,15 +136,13 @@ export default async function CouplePortal({
                   <Paginated as="tbody" columns={5} pageSize={15}>
                     {allRsvps.map(r => (
                       <tr key={r.id}>
-                        <td style={{ fontWeight: 500 }}>
+                        <td data-label="Nom" style={{ fontWeight: 600 }}>
                           {r.name}
                           {r.note && (
-                            <div style={{ fontSize: '0.78rem', color: 'var(--cp-muted)', fontWeight: 400, marginTop: 2, fontStyle: 'italic', overflowWrap: 'anywhere' }}>
-                              {r.note}
-                            </div>
+                            <div className="cp-rsvp-note">{r.note}</div>
                           )}
                         </td>
-                        <td>
+                        <td data-label="Statut">
                           <span className={`cp-badge ${
                             r.status === 'present' ? 'cp-badge-success' :
                             r.status === 'absent'  ? 'cp-badge-danger'  :
@@ -153,9 +151,9 @@ export default async function CouplePortal({
                             {r.status === 'present' ? 'Présent(e)' : r.status === 'absent' ? 'Absent(e)' : 'À confirmer'}
                           </span>
                         </td>
-                        <td>{r.guests}</td>
-                        <td>{r.phone ?? '—'}</td>
-                        <td style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
+                        <td data-label="Accompagnants">{r.guests}</td>
+                        <td data-label="WhatsApp">{r.phone ?? '—'}</td>
+                        <td data-label="Reçue le" style={{ whiteSpace: 'nowrap', color: 'var(--cp-muted)' }}>
                           {new Date(r.created_at).toLocaleDateString('fr-TN', { day: 'numeric', month: 'short' })}
                         </td>
                       </tr>
@@ -305,6 +303,63 @@ const CSS = `
     text-transform: uppercase; letter-spacing: 0.04em;
   }
   .cp-table td { padding: 11px 14px; border-bottom: 1px solid var(--cp-border); }
+
+  .cp-rsvp-note {
+    font-size: 0.78rem; color: var(--cp-muted); font-weight: 400;
+    margin-top: 3px; font-style: italic; overflow-wrap: anywhere;
+  }
+
+  /* ── Réponses sur petit écran ──
+     Un tableau de cinq colonnes n'entre pas dans un téléphone : la colonne du
+     nom tombait à une soixantaine de pixels et la note s'y coupait lettre par
+     lettre, tandis que le reste demandait un défilement horizontal. Chaque
+     ligne devient donc une carte, dont les intitulés sont repris des cellules
+     elles-mêmes — un seul balisage, une seule pagination. */
+  @media (max-width: 700px) {
+    .cp-table,
+    .cp-table tbody,
+    .cp-table tfoot,
+    .cp-table tr,
+    .cp-table td { display: block; width: 100%; }
+
+    .cp-table { border: none; background: none; border-radius: 0; }
+    .cp-table thead { display: none; }
+
+    .cp-table tbody tr {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: var(--cp-radius);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .cp-table td { border: none; padding: 3px 0; }
+
+    /* Le nom fait le titre de la carte. */
+    .cp-table td[data-label="Nom"] {
+      font-size: 1rem; padding-bottom: 6px;
+    }
+    .cp-table td[data-label="Statut"] { padding: 4px 0 10px; }
+
+    /* Les autres valeurs sont précédées de leur intitulé, sans quoi un
+       « 1 » isolé ne veut rien dire une fois l'en-tête masqué. */
+    .cp-table td[data-label="Accompagnants"]::before,
+    .cp-table td[data-label="WhatsApp"]::before,
+    .cp-table td[data-label="Reçue le"]::before {
+      content: attr(data-label);
+      display: inline-block; min-width: 118px;
+      color: var(--cp-muted); font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .cp-rsvp-note {
+      font-size: 0.85rem; line-height: 1.55;
+      margin: 8px 0 2px; color: var(--cp-text);
+    }
+
+    /* La barre de pagination reprend l'allure d'une carte. */
+    .cp-table tfoot tr { border: none; padding: 0; }
+  }
   .cp-table tr:last-child td { border-bottom: none; }
 
   .cp-badge {
