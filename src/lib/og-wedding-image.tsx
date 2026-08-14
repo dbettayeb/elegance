@@ -144,7 +144,11 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date,
               {titleText}
             </div>
           ) : (
-            <>
+            /* Un conteneur réel, pas un fragment : le moteur de rendu ne traite
+               pas les fragments comme transparents, et posait les quatre blocs
+               côte à côte — « INVITATION AU MARIAGE DE Mohamed Ali & Hela » sur
+               une seule ligne. */
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{ display: 'flex', fontSize: 21, letterSpacing: 9, color: GOLD, marginBottom: 26 }}>
                 INVITATION AU MARIAGE DE
               </div>
@@ -160,7 +164,7 @@ export async function createOgWeddingImageResponse({ brideName, groomName, date,
               <div style={{ display: 'flex', fontSize: nameFontSize, color: INK, lineHeight: 1.1 }}>
                 {groomName}
               </div>
-            </>
+            </div>
           )}
 
           {/* Divider */}
