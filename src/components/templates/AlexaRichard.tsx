@@ -30,6 +30,14 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const eventTime = timeRange(wedding, eventDate, d =>
     `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`)
 
+  // Le dress code se règle depuis l'admin, comme sur Soirée. Ce que le couple
+  // ne renseigne pas retombe sur l'habillage d'origine du template, qui reste
+  // beau tel quel plutôt que de laisser des blocs vides.
+  const dressColors = (wedding.dress_code_colors ?? []).filter(Boolean)
+  const dressImages = (wedding.dress_code_images ?? []).filter(Boolean)
+  const dressWomen = wedding.dress_code_women?.trim()
+  const dressMen = wedding.dress_code_men?.trim()
+
   const GALLERY = [
     '/assets/alexa-richard/gallery/01.png',
     '/assets/alexa-richard/gallery/02.png',
@@ -379,9 +387,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
             <div className="ar-hero-overlay"></div>
             <div className="ar-hero-fade-bottom"></div>
             <div className="ar-hero-text ar-hero-names ar-anim-up" style={{ animationDelay: '3.2s' }}>
-              <span data-ef="bride_name">{wedding.bride_name}</span>
-              {' & '}
-              <span data-ef="groom_name">{wedding.groom_name}</span>
+              <span className="ar-hero-name" data-ef="bride_name">{wedding.bride_name}</span>
+              <span className="ar-hero-amp">&amp;</span>
+              <span className="ar-hero-name" data-ef="groom_name">{wedding.groom_name}</span>
             </div>
             <div className="ar-hero-text ar-hero-sub ar-anim-up" style={{ animationDelay: '3.35s' }}>
               {wedding.wedding_day_text || 'are getting married!'}
@@ -478,15 +486,19 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
         <div id="ar-venue">
           <div className="ar-venue-inner">
             <h2 className="ar-venue-title">Wedding Venue</h2>
-            <div className="ar-venue-photo-wrap">
-              <img
-                src="/assets/alexa-richard/venue/photo.jpg"
-                alt={wedding.venue_name || 'Wedding Venue'}
-                className="ar-venue-photo"
-                onError={e => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22440%22 height=%22580%22%3E%3Crect fill=%22%23e8eff3%22 width=%22440%22 height=%22580%22/%3E%3C/svg%3E' }}
-              />
-              <div className="ar-venue-fade"></div>
-            </div>
+            {/* La photo vient du couple. Sans elle, le bloc disparaît plutôt
+                que d'afficher un lieu qui n'est pas le leur. */}
+            {wedding.venue_photo && (
+              <div className="ar-venue-photo-wrap">
+                <img
+                  src={wedding.venue_photo}
+                  alt={wedding.venue_name || 'Wedding Venue'}
+                  className="ar-venue-photo"
+                  onError={e => { (e.target as HTMLImageElement).closest('.ar-venue-photo-wrap')?.remove() }}
+                />
+                <div className="ar-venue-fade"></div>
+              </div>
+            )}
             <div className="ar-venue-info">
               <div className="ar-venue-pin">
                 <img src="/assets/alexa-richard/venue/pin.png" alt="" />
@@ -506,6 +518,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
         </div>
 
         {/* ── DRESS CODE ── */}
+        {wedding.show_dress_code && (
         <div id="ar-dress">
           <div className="ar-dress-inner">
             <h2 className="ar-dress-title">Dress Code</h2>
@@ -544,7 +557,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
                   window.addEventListener('mouseup', onUp)
                 }}
               >
-                {GALLERY.map((src, i) => (
+                {(dressImages.length ? dressImages : GALLERY).map((src, i) => (
                   <div key={i} className="t1148__item ar-dress-item">
                     <div className="t1148__img-wrapper ar-dress-img-wrapper">
                       <img className="t1148__img ar-dress-slide" src={src} alt="" draggable={false} />
@@ -567,16 +580,17 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
             </div>
 
             <div className="ar-swatches">
-              {['#faf1db','#f5d9b1','#f2cac9','#afcff1','#7ebbfa'].map((c, i) => (
+              {(dressColors.length ? dressColors : ['#faf1db','#f5d9b1','#f2cac9','#afcff1','#7ebbfa']).map((c, i) => (
                 <div key={i} className="ar-swatch" style={{ background: c }}></div>
               ))}
             </div>
             <p className="ar-dress-note">
-              <strong>Ladies:</strong> Elegant summer dresses in pastel tones.<br/>
-              <strong>Gentlemen:</strong> Suits or shirts in grey, blue, brown or beige.
+              <strong>Ladies:</strong> {dressWomen || 'Elegant summer dresses in pastel tones.'}<br/>
+              <strong>Gentlemen:</strong> {dressMen || 'Suits or shirts in grey, blue, brown or beige.'}
             </p>
           </div>
         </div>
+        )}
 
         {/* ── RSVP ── */}
         {wedding.show_rsvp && (
@@ -819,14 +833,24 @@ const CSS = `
     font-family: var(--ar-font);
     text-shadow: 0 0 9px rgba(255,255,255,1);
   }
+  /* Les prénoms s'empilent : sur une seule ligne, deux prénoms longs
+     débordaient de la colonne vidéo et se réduisaient à un fil illisible. */
   .ar-hero-names {
-    top: 250px; left: 320px;
+    top: 196px; left: 320px;
     width: 560px;
     font-family: 'Parisienne', cursive;
-    font-size: 45px; font-weight: 400; line-height: 1.55;
+    font-size: 45px; font-weight: 400; line-height: 1.2;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ar-hero-name { display: block; }
+  .ar-hero-amp {
+    display: block;
+    font-family: var(--ar-font); font-style: italic;
+    font-size: 26px; color: var(--ar-blue-soft);
+    margin: 4px 0 2px;
   }
   .ar-hero-sub {
-    top: 310px; left: 430px;
+    top: 372px; left: 430px;
     width: 340px;
     font-size: 22px; font-weight: 400; line-height: 1.15;
   }
