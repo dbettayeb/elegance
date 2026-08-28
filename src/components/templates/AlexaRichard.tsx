@@ -664,16 +664,20 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
           <div className="ar-closing-inner">
             <h2 className="ar-closing-title">Hope to see you there!</h2>
             <p className="ar-closing-names">{wedding.bride_name} &amp; {wedding.groom_name}</p>
-            <div className="ar-closing-photo-wrap">
-              <img
-                src="/assets/alexa-richard/closing/couple.jpg"
-                alt="The couple"
-                className="ar-closing-photo"
-                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-              />
-              <img className="ar-closing-deco" src="/assets/alexa-richard/closing/heart-small.png" alt="" />
-              <div className="ar-closing-fade"></div>
-            </div>
+            {/* La photo vient du couple. Sans elle, le bloc disparaît plutôt
+                que de clôturer l'invitation sur des inconnus. */}
+            {wedding.couple_photo && (
+              <div className="ar-closing-photo-wrap">
+                <img
+                  src={wedding.couple_photo}
+                  alt={`${wedding.bride_name} & ${wedding.groom_name}`}
+                  className="ar-closing-photo"
+                  onError={e => { (e.target as HTMLImageElement).closest('.ar-closing-photo-wrap')?.remove() }}
+                />
+                <img className="ar-closing-deco" src="/assets/alexa-richard/closing/heart-small.png" alt="" />
+                <div className="ar-closing-fade"></div>
+              </div>
+            )}
           </div>
         </div>
 

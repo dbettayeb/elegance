@@ -630,6 +630,11 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 onChange={e => set('venue_photo', e.target.value)}
                 placeholder="https://..." />
             </Field>
+            <Field label="Photo du couple (clôture)" help="URL d'une image JPG/PNG. Affichée en bas de l'invitation sous « Hope to see you there ». Laissez vide pour ne pas afficher de photo.">
+              <input className="admin-input" type="url" value={form.couple_photo}
+                onChange={e => set('couple_photo', e.target.value)}
+                placeholder="https://..." />
+            </Field>
           </Section>
         )}
 
