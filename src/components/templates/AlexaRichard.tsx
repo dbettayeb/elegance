@@ -7,6 +7,24 @@ import FontOverride from '@/components/common/fontoverride'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import { timeRange } from '@/lib/event-time'
 
+// Frise du planning — coordonnées Tilda dans l'artboard de 1200px.
+// Les puces et les événements gardent leur position d'origine ; seules la
+// hauteur du trait et celle de l'artboard dépendent du nombre d'événements.
+const SCHED_MAX = 6
+const SCHED_DOT_TOPS = [133, 209, 285, 361, 437, 513]
+const SCHED_EVT_TOPS = [103, 187, 257, 332, 413, 489]
+const SCHED_LINE_TOP = 130
+const SCHED_LINE_TAIL = 41   // longueur de trait qui dépasse la dernière puce
+const SCHED_BOTTOM_PAD = 30  // respiration sous le dernier événement
+const SCHED_MIN_H = 300      // en dessous, la section paraîtrait tronquée
+// Les nuages sont taillés pour six événements : à l'échelle 1, la partie dense de
+// leaves-2 s'arrête pile au bas de l'artboard Tilda (69 + 100 de décalage + 403 de
+// zone opaque ≈ 572, le reste n'étant qu'un dégradé). On garde ce rapport quand la
+// frise raccourcit, sinon le nuage serait tranché net par le clip de la section.
+// Plancher à 0.42 : en dessous, les nuages ne couvriraient plus les événements
+// (qui s'étalent de x=421 à x=762 dans l'artboard de 1200px).
+const schedLeafScale = (h: number) => Math.min(1, Math.max(0.42, (h - 69) / 503))
+
 export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   const {
     opened, visible, openEnvelope, countdown,
@@ -98,22 +116,41 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   // clouds of the schedule remain wide enough to keep covering the timeline before the reveal.
   useEffect(() => {
     const ARTBOARDS = [
-      { sel: '.ar-dear-artboard',  contentW: 500, height: 670 }, // 490px envelope + 10px breathing room
-      { sel: '.ar-sched-artboard', contentW: 620, height: 608 }, // 560px title/timeline + margins
+      { sel: '.ar-dear-artboard',  contentW: 500 }, // 490px envelope + 10px breathing room
+      { sel: '.ar-sched-artboard', contentW: 620 }, // 560px title/timeline + margins
     ]
+    // La hauteur estimée au rendu suppose un libellé sur une ligne. Une fois le
+    // texte mis en page, on remesure le bas réel de la frise pour que l'artboard
+    // s'arrête juste sous le dernier événement, quel qu'en soit le nombre.
+    function measureSchedule() {
+      const el = scheduleRef.current
+      if (!el) return
+      const line = el.querySelector<HTMLElement>('.ar-tl-line')
+      const evts = el.querySelectorAll<HTMLElement>('.ar-sched-evt')
+      const last = evts[evts.length - 1]
+      let bottom = 0
+      if (line) bottom = Math.max(bottom, line.offsetTop + line.offsetHeight)
+      if (last) bottom = Math.max(bottom, last.offsetTop + last.offsetHeight)
+      if (!bottom) return
+      const h = Math.max(SCHED_MIN_H, Math.ceil(bottom + SCHED_BOTTOM_PAD))
+      el.style.setProperty('--sched-h', h + 'px')
+      el.style.setProperty('--leaf-k', String(schedLeafScale(h)))
+    }
     function scaleArtboards() {
+      measureSchedule()
       const vw = window.innerWidth
-      ARTBOARDS.forEach(({ sel, contentW, height }) => {
+      ARTBOARDS.forEach(({ sel, contentW }) => {
         const el = document.querySelector<HTMLElement>(sel)
         if (!el) return
         const scale = Math.min(1, vw / contentW)
         el.style.setProperty('--ab-scale', scale.toFixed(4))
         // compensate the visual height lost by the scale so the next section sits right under
-        el.style.setProperty('--ab-mb', (-(height * (1 - scale))).toFixed(1) + 'px')
+        el.style.setProperty('--ab-mb', (-(el.offsetHeight * (1 - scale))).toFixed(1) + 'px')
       })
     }
     scaleArtboards()
     window.addEventListener('resize', scaleArtboards)
+    if (document.fonts?.ready) document.fonts.ready.then(scaleArtboards).catch(() => {})
     return () => window.removeEventListener('resize', scaleArtboards)
   }, [opened, visible])
 
@@ -137,7 +174,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
     // --- Schedule clouds (EXACT Tilda sbs-opts: dd delay, di move) ---
     const SCHED_MOVE  = 300                       // di: px of scroll over which a cloud parts
     const LEAF1_TOP = 69,  LEAF1_DELAY = 350      // leaves-1 (cloud): top + dd delay
-    const LEAF2_TOP = 169, LEAF2_DELAY = 280      // leaves-2 (cloud): top + dd delay
+    const LEAF2_DELAY = 280                       // leaves-2 (cloud): dd delay (son top suit --leaf-k)
 
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
     const getScale = (el: HTMLElement) =>
@@ -161,8 +198,9 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
       if (sched) {
         const s = getScale(sched)
         const r = sched.getBoundingClientRect()
+        const k = parseFloat(sched.style.getPropertyValue('--leaf-k')) || 1
         const d1 = vh - (r.top + LEAF1_TOP * s)
-        const d2 = vh - (r.top + LEAF2_TOP * s)
+        const d2 = vh - (r.top + (69 + 100 * k) * s)
         const p1 = clamp((d1 - LEAF1_DELAY) / SCHED_MOVE, 0, 1)
         const p2 = clamp((d2 - LEAF2_DELAY) / SCHED_MOVE, 0, 1)
         // Tilda mx values applied directly as px so the CSS just does translateX(var(--cloudN-x))
@@ -318,6 +356,20 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
   ]
   const program = (wedding.show_program === false) ? [] : (wedding.program && wedding.program.length > 0) ? wedding.program : defaultProgram
 
+  // Le planning garde les coordonnées Tilda (pas de 76px entre les puces), mais la
+  // hauteur de la frise suit le nombre d'événements : avec deux entrées, plus de
+  // grand vide sous la dernière. La valeur ci-dessous n'est qu'une estimation pour
+  // le premier rendu ; le JS la remesure ensuite (un libellé peut passer sur deux lignes).
+  const schedule = program.slice(0, SCHED_MAX)
+  const schedCount = schedule.length
+  const schedLineH = schedCount ? SCHED_DOT_TOPS[schedCount - 1] + SCHED_LINE_TAIL - SCHED_LINE_TOP : 0
+  const schedEstH = schedCount
+    ? Math.max(SCHED_MIN_H, Math.round(Math.max(
+        SCHED_LINE_TOP + schedLineH,
+        SCHED_EVT_TOPS[schedCount - 1] + (schedule[schedCount - 1].venue ? 92 : 72),
+      ) + SCHED_BOTTOM_PAD))
+    : 0
+
   const AudioControl = () => {
     const [playing, setPlaying] = useState(false)
     useEffect(() => setPlaying(audioPlaying), [audioPlaying])
@@ -455,9 +507,17 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
         </div>
 
         {/* ── SCHEDULE ── */}
-        {program.length > 0 && (
+        {schedCount > 0 && (
           <div id="ar-schedule">
-            <div className="ar-artboard ar-sched-artboard" ref={scheduleRef}>
+            <div
+              className="ar-artboard ar-sched-artboard"
+              ref={scheduleRef}
+              style={{
+                '--sched-est': `${schedEstH}px`,
+                '--line-h': `${schedLineH}px`,
+                '--leaf-k': schedLeafScale(schedEstH),
+              } as React.CSSProperties}
+            >
               <div className="ar-sched-title">Schedule of Events</div>
 
               <img className="ar-sched-leaves ar-leaves-1" src="/assets/alexa-richard/schedule/leaves-1.png" alt="" />
@@ -465,7 +525,7 @@ export default function AlexaRichard({ wedding }: { wedding: Wedding }) {
 
               <div className="ar-tl-line"></div>
 
-              {program.slice(0, 6).map((item, idx) => {
+              {schedule.map((item, idx) => {
                 const isRight = idx % 2 === 0
                 return (
                   <div key={idx}>
@@ -1064,7 +1124,9 @@ const CSS = `
      at every scale; the overflow is clipped by #ar-schedule. */
   .ar-sched-artboard {
     position: relative;
-    width: 1200px; height: 608px;
+    /* --sched-est : estimation calculée au rendu depuis le nombre d'événements.
+       --sched-h  : hauteur remesurée par le JS une fois le texte mis en page. */
+    width: 1200px; height: var(--sched-h, var(--sched-est, 608px));
     left: 50%;
     transform: translateX(-50%) scale(var(--ab-scale, 1));
     transform-origin: top center;
@@ -1079,11 +1141,14 @@ const CSS = `
     color: var(--ar-dark);
     font-size: 41px; font-weight: 500; line-height: 1.55;
   }
-  /* Clouds: EXACT Tilda placement -> left=122 inside the 1200px artboard, width=957. */
+  /* Clouds: Tilda placement -> left=122, width=957 (centre x = 600.5) for six events.
+     Sur une frise plus courte, --leaf-k les réduit autour du même centre pour qu'ils
+     ne débordent pas sous l'artboard ; ils couvrent encore largement la frise. */
   .ar-sched-leaves {
     position: absolute;
-    left: 122px;
-    width: 957px; height: auto;
+    width: calc(957px * var(--leaf-k, 1));
+    left: calc(600.5px - 957px * var(--leaf-k, 1) / 2);
+    height: auto;
     display: block;
     z-index: 5;
     pointer-events: none;
@@ -1091,12 +1156,12 @@ const CSS = `
   }
   /* --cloud1-x / --cloud2-x come from the scroll effect (Tilda dd delay then di move, mx +700 / -690). */
   .ar-leaves-1 { top: 69px;  transform: translateX(var(--cloud1-x, 0px)); }
-  .ar-leaves-2 { top: 169px; transform: translateX(var(--cloud2-x, 0px)); }
+  .ar-leaves-2 { top: calc(69px + 100px * var(--leaf-k, 1)); transform: translateX(var(--cloud2-x, 0px)); }
 
   .ar-tl-line {
     position: absolute;
     top: 130px; left: 598px;
-    width: 4px; height: 424px;
+    width: 4px; height: var(--line-h, 424px);
     background: var(--ar-blue);
     opacity: 0.6; z-index: 2; border-radius: 2px;
   }
