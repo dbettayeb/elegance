@@ -227,6 +227,12 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   {heroTitle}
                 </div>
 
+                {lang === 'fr' && wedding.show_groom_name_under_title && wedding.groom_name?.trim() && (
+                  <div className="sa-hero-groom sa-anim" style={{ animationDelay: '0.42s' }}>
+                    {wedding.groom_name}
+                  </div>
+                )}
+
                 <div className="sa-hero-date sa-anim" style={{ animationDelay: '0.5s' }}>
                   {formattedDate}
                 </div>
@@ -585,6 +591,14 @@ const CSS = (display: string, body: string, titleScale: number, p: BismillahPale
   font-size: calc(52px * var(--sa-title-scale));
   color: var(--sa-gold);
   line-height: 1.45;
+}
+.sa-hero-groom {
+  max-width: 100%;
+  margin-top: 4px;
+  color: var(--sa-cream);
+  font-family: var(--sa-body);
+  font-size: 18px;
+  line-height: 1.4;
 }
 .sa-hero-date {
   /* Collée au titre : le filet qui les séparait est parti, et l'écart qu'il

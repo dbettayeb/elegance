@@ -71,6 +71,7 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     couple_photo: wedding.couple_photo ?? '',
     intro_video_url: wedding.intro_video_url ?? '',
     wedding_day_text: wedding.wedding_day_text ?? '',
+    show_groom_name_under_title: wedding.show_groom_name_under_title ?? false,
     show_dress_code: wedding.show_dress_code ?? false,
     dress_code_women: wedding.dress_code_women ?? '',
     dress_code_men: wedding.dress_code_men ?? '',
@@ -562,6 +563,14 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
                 onChange={e => set('wedding_day_text', e.target.value)}
                 placeholder="ليلة العمر" dir="rtl" />
             </Field>
+            {form.template_id === 'soiree_fr' && (
+              <Toggle
+                label="Afficher le nom du marié sous le titre"
+                help="Ajoute le nom du marié juste sous le nom de la soirée dans l'invitation."
+                checked={form.show_groom_name_under_title}
+                onChange={v => set('show_groom_name_under_title', v)}
+              />
+            )}
             {form.template_id === 'soiree_fr' && (
             <Field
               label="Police du titre si écrit en arabe"
