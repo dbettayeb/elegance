@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+export function startInvitationMusic() {
+  if (typeof document === 'undefined') return
+  const audio = document.querySelector<HTMLAudioElement>('[data-invitation-music]')
+  if (!audio || !audio.paused) return
+  audio.play().catch(() => {})
+}
+
 export default function InvitationMusic({
   musicUrl,
   active,
@@ -19,27 +26,26 @@ export default function InvitationMusic({
   const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
-    if (!musicUrl) return
+    const audio = audioRef.current
+    if (!audio || !musicUrl || !active) return
 
-    function startFromOpening(event: Event) {
-      const target = event.target
-      if (!(target instanceof Element) || !target.closest('[data-invitation-open-trigger]')) return
-      const audio = audioRef.current
-      if (!audio || !audio.paused) return
-      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+    let armed = true
+    const start = (event?: Event) => {
+      if (!armed) return
+      const target = event?.target
+      if (target instanceof Element && target.closest('.invitation-music')) return
+      audio.play().then(() => {
+        armed = false
+        detach()
+      }).catch(() => {})
     }
+    const events = ['pointerdown', 'keydown', 'touchstart', 'scroll'] as const
+    const detach = () => events.forEach(name => window.removeEventListener(name, start))
 
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Enter' || event.key === ' ') startFromOpening(event)
-    }
-
-    document.addEventListener('pointerdown', startFromOpening, true)
-    document.addEventListener('keydown', onKeyDown, true)
-    return () => {
-      document.removeEventListener('pointerdown', startFromOpening, true)
-      document.removeEventListener('keydown', onKeyDown, true)
-    }
-  }, [musicUrl])
+    start()
+    events.forEach(name => window.addEventListener(name, start, { passive: true }))
+    return () => { armed = false; detach() }
+  }, [active, musicUrl])
 
   if (!musicUrl) return null
 
@@ -58,6 +64,7 @@ export default function InvitationMusic({
     <>
       <audio
         ref={audioRef}
+        data-invitation-music
         loop
         preload="auto"
         src={musicUrl}

@@ -14,7 +14,7 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
-import InvitationMusic from '@/components/common/InvitationMusic'
+import InvitationMusic, { startInvitationMusic } from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
@@ -125,7 +125,15 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
         pauseLabel="إيقاف الموسيقى"
       />
 
-      <div className={`an-invitation${visible ? ' an-visible' : ''}`} dir="rtl">
+      <div
+        className={`an-invitation${visible ? ' an-visible' : ''}`}
+        dir="rtl"
+        onPointerDown={event => {
+          const target = event.target
+          if (target instanceof Element && target.closest('button, a, input, textarea, select')) return
+          startInvitationMusic()
+        }}
+      >
 
         {/* Cadre décoratif */}
         <img

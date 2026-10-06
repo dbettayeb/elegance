@@ -11,7 +11,7 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
-import InvitationMusic from '@/components/common/InvitationMusic'
+import InvitationMusic, { startInvitationMusic } from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function BismillahStyle({
@@ -62,6 +62,7 @@ export default function BismillahStyle({
 
   function startSequence() {
     if (phase !== 0) return
+    startInvitationMusic()
     setPhase(1)
     setTimeout(() => setPhase(2), 800)
     setTimeout(() => setPhase(3), 3000)

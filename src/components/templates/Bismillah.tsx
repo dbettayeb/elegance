@@ -11,7 +11,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
-import InvitationMusic from '@/components/common/InvitationMusic'
+import InvitationMusic, { startInvitationMusic } from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
@@ -50,6 +50,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
 
   function startSequence() {
     if (phase !== 0) return
+    startInvitationMusic()
     setPhase(1)
     setTimeout(() => setPhase(2), 800)
     setTimeout(() => setPhase(3), 3000)
