@@ -82,6 +82,8 @@ export default function PreviewPage() {
         wedding_day_text: parsed.wedding_day_text || undefined,
         venue_photo:      parsed.venue_photo      || undefined,
         couple_photo:     parsed.couple_photo     || undefined,
+        couple_reveal_photo_url: parsed.couple_reveal_photo_url || undefined,
+        couple_reveal_fade_seconds: parsed.couple_reveal_fade_seconds ?? 4,
         intro_video_url:  parsed.intro_video_url  || undefined,
 
         pack: (parsed.pack || 'essentiel') as Wedding['pack'],

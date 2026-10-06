@@ -10,6 +10,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
 import { timeRange } from '@/lib/event-time'
 
 export default function BismillahStyle({
@@ -132,6 +133,11 @@ export default function BismillahStyle({
         }
       `}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".bs-container" />
+      <CouplePhotoReveal
+        photoUrl={wedding.couple_reveal_photo_url}
+        fadeSeconds={wedding.couple_reveal_fade_seconds}
+        active={opened}
+      />
 
       {/* OPENING */}
       {!opened && (

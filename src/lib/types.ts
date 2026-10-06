@@ -65,6 +65,8 @@ export interface Wedding {
   guest_invite_prefix_ar?: string
   guest_invite_suffix_ar?: string
   couple_photo?: string
+  couple_reveal_photo_url?: string
+  couple_reveal_fade_seconds?: number
   intro_video_url?: string
   wedding_day_text?: string
   show_groom_name_under_title?: boolean

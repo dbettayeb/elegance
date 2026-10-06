@@ -69,6 +69,8 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
     verse_ar: wedding.verse_ar ?? 'roum_21',
     guest_invite_enabled: wedding.guest_invite_enabled ?? false,
     couple_photo: wedding.couple_photo ?? '',
+    couple_reveal_photo_url: wedding.couple_reveal_photo_url ?? '',
+    couple_reveal_fade_seconds: wedding.couple_reveal_fade_seconds ?? 4,
     intro_video_url: wedding.intro_video_url ?? '',
     wedding_day_text: wedding.wedding_day_text ?? '',
     show_groom_name_under_title: wedding.show_groom_name_under_title ?? false,
@@ -459,6 +461,21 @@ export default function EditWeddingForm({ wedding }: { wedding: Wedding }) {
             </Field>
           </Row>
         </Section>
+
+        {currentTemplate?.language === 'ar' && (
+          <Section title="Ouverture de l'invitation">
+            <Field label="URL de la photo des mariés" help="Affichée après l'ouverture, puis fondue pour révéler l'invitation.">
+              <input className="admin-input" type="url" value={form.couple_reveal_photo_url}
+                onChange={e => set('couple_reveal_photo_url', e.target.value)}
+                placeholder="https://..." />
+            </Field>
+            <Field label="Durée du fondu (secondes)" help="De 1 à 15 secondes. La photo reste affichée pendant cette durée avant de disparaître.">
+              <input className="admin-input" type="number" min={1} max={15} step={1}
+                value={form.couple_reveal_fade_seconds}
+                onChange={e => set('couple_reveal_fade_seconds', parseInt(e.target.value, 10) || 4)} />
+            </Field>
+          </Section>
+        )}
 
         <Section title="Textes de l'invitation">
           <Field label="Message d'introduction" help={form.template_id === 'viktor_paula' ? 'Titre de la section "Dear Friends". Ex : Dear Friends and Family,' : 'Phrase d\'accroche en haut de l\'invitation.'}>

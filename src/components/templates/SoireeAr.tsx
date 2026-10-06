@@ -7,6 +7,7 @@ import { useInvitationLogic } from '@/lib/use-invitation'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import { SOIREE_AR_PALETTES } from '@/lib/bismillah-palettes'
 import FontOverride from '@/components/common/fontoverride'
+import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import { SOIREE_AR, SOIREE_FR, SOIREE_FR_THEME } from '@/lib/soiree-strings'
 import { timeRange } from '@/lib/event-time'
@@ -175,6 +176,13 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
       )}
       <style>{CSS(theme.display, theme.body, titleScale, palette, titleFont)}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".sa-root" />
+      {lang === 'ar' && (
+        <CouplePhotoReveal
+          photoUrl={wedding.couple_reveal_photo_url}
+          fadeSeconds={wedding.couple_reveal_fade_seconds}
+          active={opened}
+        />
+      )}
 
       {!opened && (
         <div className={`sa-opening${phase >= 3 ? ' sa-opening-gone' : ''}`}>

@@ -13,6 +13,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
+import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
 import { timeRange } from '@/lib/event-time'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
@@ -109,6 +110,11 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
         }
       `}</style>
       <FontOverride font={wedding.custom_font} fontSize={wedding.custom_font_size} container=".an-invitation" />
+      <CouplePhotoReveal
+        photoUrl={wedding.couple_reveal_photo_url}
+        fadeSeconds={wedding.couple_reveal_fade_seconds}
+        active={opened}
+      />
 
       <div className={`an-invitation${visible ? ' an-visible' : ''}`} dir="rtl">
 

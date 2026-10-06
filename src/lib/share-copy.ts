@@ -57,12 +57,9 @@ export function buildShareCopy({
     return {
       /** Titre passé au générateur d'image ; absent, il retombe sur les prénoms. */
       imageTitle: eveningTitle,
-      // Isolats directionnels. Un titre arabe impose sinon sa direction à toute
-      // la ligne, et « 22 août 2026 » s'y réordonne en « août 2026 · 22 ».
-      // U+2068 laisse le titre choisir son sens, U+2066 fige la date de gauche
-      // à droite, U+2069 referme : chaque bloc est mis en forme sans influencer
-      // l'autre.
-      title: `\u2068${eveningTitle}\u2069 · \u2066${date}\u2069`,
+      // WhatsApp peut ignorer les isolats directionnels : placer la date en
+      // premier et fixer la base LTR évite de réordonner jour/mois/année.
+      title: `\u200E${date} · ${eveningTitle}`,
       description: strings.shareDescription,
     }
   }
