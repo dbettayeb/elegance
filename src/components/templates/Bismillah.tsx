@@ -11,6 +11,7 @@ import { getVersePreset } from '@/lib/arabic-presets'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
+import InvitationMusic from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: { wedding: Wedding; guestNameAr?: string; guestPrefixAr?: string; guestSuffixAr?: string }) {
@@ -129,6 +130,14 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         photoUrl={wedding.couple_reveal_photo_url}
         fadeSeconds={wedding.couple_reveal_fade_seconds}
         active={opened}
+        desktopWidth={`${decoWidthVh}vh`}
+      />
+      <InvitationMusic
+        musicUrl={wedding.music_url}
+        active={visible}
+        accentColor={palette.accent}
+        playLabel="تشغيل الموسيقى"
+        pauseLabel="إيقاف الموسيقى"
       />
 
       {/* OPENING */}
@@ -136,6 +145,7 @@ export default function Bismillah({ wedding, guestNameAr, guestPrefixAr, guestSu
         <div className={`bs-opening${phase >= 3 ? ' bs-op-hidden' : ''}`}>
           <div
             className={`bs-opening-stage${phase >= 1 ? ' bs-seal-out' : ''}${phase >= 2 ? ' bs-animating' : ''}`}
+            data-invitation-open-trigger
             onClick={startSequence}
             role="button"
             tabIndex={0}

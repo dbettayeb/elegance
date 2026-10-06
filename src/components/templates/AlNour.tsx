@@ -14,6 +14,7 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
+import InvitationMusic from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffixAr }: {
@@ -114,6 +115,14 @@ export default function AlNour({ wedding, guestNameAr, guestPrefixAr, guestSuffi
         photoUrl={wedding.couple_reveal_photo_url}
         fadeSeconds={wedding.couple_reveal_fade_seconds}
         active={opened}
+        desktopWidth={`${decoWidthVh}vh`}
+      />
+      <InvitationMusic
+        musicUrl={wedding.music_url}
+        active={visible}
+        accentColor={palette.accent}
+        playLabel="تشغيل الموسيقى"
+        pauseLabel="إيقاف الموسيقى"
       />
 
       <div className={`an-invitation${visible ? ' an-visible' : ''}`} dir="rtl">

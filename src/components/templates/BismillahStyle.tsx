@@ -11,6 +11,7 @@ import { getArTypographyTheme } from '@/lib/typography-themes'
 import ArabicFamilies from '@/components/templates/ArabicFamilies'
 import AddToCalendar from '@/components/common/AddToCalendar'
 import CouplePhotoReveal from '@/components/common/CouplePhotoReveal'
+import InvitationMusic from '@/components/common/InvitationMusic'
 import { timeRange } from '@/lib/event-time'
 
 export default function BismillahStyle({
@@ -137,6 +138,14 @@ export default function BismillahStyle({
         photoUrl={wedding.couple_reveal_photo_url}
         fadeSeconds={wedding.couple_reveal_fade_seconds}
         active={opened}
+        desktopWidth={`${decoWidthVh}vh`}
+      />
+      <InvitationMusic
+        musicUrl={wedding.music_url}
+        active={visible}
+        accentColor={palette.accent}
+        playLabel="تشغيل الموسيقى"
+        pauseLabel="إيقاف الموسيقى"
       />
 
       {/* OPENING */}
@@ -144,6 +153,7 @@ export default function BismillahStyle({
         <div className={`bs-opening${phase >= 3 ? ' bs-op-hidden' : ''}`}>
           <div
             className={`bs-opening-stage${phase >= 1 ? ' bs-seal-out' : ''}${phase >= 2 ? ' bs-animating' : ''}`}
+            data-invitation-open-trigger
             onClick={startSequence}
             role="button"
             tabIndex={0}
