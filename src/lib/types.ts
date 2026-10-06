@@ -68,6 +68,7 @@ export interface Wedding {
   intro_video_url?: string
   wedding_day_text?: string
   show_groom_name_under_title?: boolean
+  soiree_groom_display_name?: string
   venue_photo?: string
   custom_font_size?: number
   /** Accompagnants max par invité au RSVP. null/undefined = illimité. */

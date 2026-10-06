@@ -60,6 +60,7 @@ export default function NewWeddingPage() {
     intro_video_url: '',
     wedding_day_text: '',
     show_groom_name_under_title: false,
+    soiree_groom_display_name: '',
     show_dress_code: false,
     dress_code_women: '',
     dress_code_men: '',
@@ -530,6 +531,16 @@ export default function NewWeddingPage() {
                 onChange={e => set('wedding_day_text', e.target.value)}
                 placeholder="ليلة العمر" dir="rtl" />
             </Field>
+            {form.template_id === 'soiree_fr' && (
+              <Field
+                label="Nom à afficher sous le titre"
+                help="Champ indépendant du prénom du marié renseigné dans les informations du couple."
+              >
+                <input className="admin-input" value={form.soiree_groom_display_name}
+                  onChange={e => set('soiree_groom_display_name', e.target.value)}
+                  placeholder="Ex. Mehdi" />
+              </Field>
+            )}
             {form.template_id === 'soiree_fr' && (
               <Toggle
                 label="Afficher le nom du marié sous le titre"

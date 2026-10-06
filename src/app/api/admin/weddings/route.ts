@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       bismillah_palette, background_image, decoration_image,
       guest_invite_enabled, guest_invite_prefix_ar, guest_invite_suffix_ar,
       couple_photo, intro_video_url,
-      wedding_day_text, show_groom_name_under_title, venue_photo,
+      wedding_day_text, show_groom_name_under_title, soiree_groom_display_name, venue_photo,
       parties, show_celebrations, show_guest_phones,
       show_dress_code, dress_code_women, dress_code_men, dress_code_colors, dress_code_images,
     } = body
@@ -101,6 +101,7 @@ export async function POST(req: NextRequest) {
         intro_video_url:   intro_video_url   || null,
         wedding_day_text:  wedding_day_text  || null,
         show_groom_name_under_title: show_groom_name_under_title ?? false,
+        soiree_groom_display_name: soiree_groom_display_name?.trim() || null,
         venue_photo:       venue_photo       || null,
         parties: Array.isArray(parties) ? parties : [],
         show_celebrations: show_celebrations ?? true,

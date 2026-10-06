@@ -227,9 +227,9 @@ export default function SoireeAr({ wedding, lang = 'ar' }: { wedding: Wedding; l
                   {heroTitle}
                 </div>
 
-                {lang === 'fr' && wedding.show_groom_name_under_title && wedding.groom_name?.trim() && (
+                {lang === 'fr' && wedding.show_groom_name_under_title && wedding.soiree_groom_display_name?.trim() && (
                   <div className="sa-hero-groom sa-anim" style={{ animationDelay: '0.42s' }}>
-                    {wedding.groom_name}
+                    {wedding.soiree_groom_display_name}
                   </div>
                 )}
 
